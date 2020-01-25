@@ -26,7 +26,7 @@
                             <td class="text-right">{{number_format($item->LOOT_ISK, 0, " ",",")}} ISK</td>
                             <td>{!!$item->SURVIVED ? 'Survived' : '<img src="/dead.png"/>&nbsp;<span class="text-danger">Destroyed</span>'!!}</td>
                             <td>{{$item->RUN_DATE}}</td>
-                            <td class="td-action"><img src="https://img.icons8.com/small/16/000000/view-file.png"></td>
+                            <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}" title="Open"><img src="https://img.icons8.com/small/16/000000/view-file.png"></a></td>
                         </tr>
                     @endforeach
                 </table>

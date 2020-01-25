@@ -91,7 +91,9 @@
 <footer class="footer mt-auto py-3 mt-5">
     <div class="container">
         <div class="col-sm-12">
-            <p class="text-justify mt-5 text-small text-black-50">
+            <p class="mt-5">This is an open source application created by <a href="https://twitter.com/veetor_in_eve">Veetor</a> - <a
+                    href="https://github.com/molbal/abyss-tracker"><img src="https://img.icons8.com/small/16/000000/github.png"> source code here</a></p>
+            <p class="text-justify mt-3 text-small text-black-50">
                 All images are material are property of CCP Games: EVE Online and the EVE logo are the registered
                 trademarks
                 of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective
