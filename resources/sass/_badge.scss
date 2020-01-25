@@ -1,0 +1,16 @@
+.badge {
+  &.badge-danger-pastel {
+    color: $pastel-red;
+    background-color: $pastel-red-lighter;
+  }
+
+  &.badge-info-pastel {
+    color: $pastel-blue;
+    background-color: $pastel-blue-lighter;
+  }
+
+  &.badge-success-pastel {
+    color: $pastel-green;
+    background-color: $pastel-green-lighter;
+  }
+}

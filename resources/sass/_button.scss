@@ -1,0 +1,50 @@
+.btn {
+  font-weight: 700;
+  transition: all 250ms ease-in-out;
+}
+
+.btn-outline-secondary {
+  color: #5b7095;
+  border-color: #5b7095;
+
+  &:hover,
+  &:active {
+    background-color: #5b7095;
+    border-color: #5b7095;
+  }
+}
+
+.btn-teal {
+  background-color: $teal;
+  color: #ffffff;
+  
+  &:hover {
+    background-color: $teal-lighter;
+    color: #ffffff;
+  }
+}
+
+.btn-outline-teal {
+  background-color: transparent;
+  border-color: $teal;
+  color: $teal;
+
+  &:hover {
+    background-color: transparent;
+    border-color: $teal-lighter;
+    color: $teal-lighter;
+  }
+}
+
+.btn-toolbar .btn-sm {
+  padding: 0.5rem 0.75rem;
+}
+
+.btn-muted {
+  color: transparentize(#162642, 0.66);
+  transition: all 250ms ease-in-out;
+
+  &:hover {
+    color: transparentize(#162642, 0.33);
+  }
+}

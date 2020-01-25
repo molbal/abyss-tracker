@@ -1,0 +1,68 @@
+$faded: 0.25;
+$hovered: 0.5;
+$active: 1;
+$transition-speed: 250ms;
+
+.copyable {
+  cursor: pointer;
+}
+
+.customer-chooser {
+  .customer-chooser-label {
+    color: #000000;
+  }
+
+  .customer-chooser-container {
+    display: block;
+    
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .customer-chooser-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+
+  .customer-chooser-img,
+  .customer-chooser-label {
+    opacity: $faded;
+  }
+
+  .customer-chooser-input:checked ~ .customer-chooser-img,
+  .customer-chooser-input:checked ~ .customer-chooser-label {
+    opacity: $active;
+
+    &:hover ~ .customer-chooser-img,
+    &:hover ~ .customer-chooser-label {
+      opacity: $active;
+    }
+  }
+
+  &:hover .customer-chooser-img,
+  &:hover .customer-chooser-label {
+    opacity: $hovered;
+  }
+}
+
+.customer-chooser-img,
+.customer-chooser-label {
+  transition: all $transition-speed ease-in-out;
+}
+
+.customer {
+  &:hover {
+    cursor: pointer;
+    background-color: $body-bg;
+  }
+}
+
+.customer-purchase {
+  &:hover {
+    cursor: pointer;
+    background-color: $body-bg;
+  }
+}

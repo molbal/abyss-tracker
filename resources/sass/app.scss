@@ -1,0 +1,18 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:300,400,700&display=swap');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+@import "layout";
+@import "customer";
+@import "button";
+@import "form";
+@import "comment";
+@import "toast";
+@import "icon";
+@import "modal";
+@import "badge";

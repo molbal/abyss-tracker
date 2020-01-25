@@ -1,0 +1,17 @@
+.comment {
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-left: 5px solid $black;
+  
+  .text-muted {
+    color: #5e77a2 !important;
+  }
+}
+
+.alert-completed .alert-details {
+  opacity: 0.25;
+}
+
+.alert-overdue {
+  background-color: transparentize(red, 0.8);
+}
