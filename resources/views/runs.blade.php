@@ -10,12 +10,12 @@
             <div class="card card-body border-0 shadow-sm p-0">
                 <table class="table table-striped table-sm m-0 table-hover">
                     <tr>
-                        <th>Recorded by</th>
-                        <th>Abyss type</th>
-                        <th>Abyss tier</th>
-                        <th class="text-right">Loot value</th>
-                        <th>Survived</th>
-                        <th>Run at</th>
+                        <th>Recorded by <a href="{{route("runs", ["order_by" => 'CHAR_ID', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'CHAR_ID', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
+                        <th>Abyss type <a href="{{route("runs", ["order_by" => 'TYPE', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'TYPE', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
+                        <th>Abyss tier <a href="{{route("runs", ["order_by" => 'TIER', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'TIER', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
+                        <th class="text-right">Loot value <a href="{{route("runs", ["order_by" => 'LOOT_ISK', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'LOOT_ISK', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
+                        <th>Survived <a href="{{route("runs", ["order_by" => 'SURVIVED', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'SURVIVED', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
+                        <th>Run at <a href="{{route("runs", ["order_by" => 'RUN_DATE', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'RUN_DATE', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
                         <th>&nbsp;</th>
                     </tr>
                     @foreach($items as $item)
