@@ -14,7 +14,7 @@
                 <a class="nav-link {{"runs" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs")}}">All runs</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{"my-runs" == Route::currentRouteName() ? "active" : ""}}" href="">My runs</a>
+                <a class="nav-link {{"runs_mine" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs_mine")}}">My runs</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"new" == Route::currentRouteName() ? "active" : ""}}" href="{{route("new")}}">Add

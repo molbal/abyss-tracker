@@ -24,6 +24,8 @@
 
     Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
     Route::get("/runs/{order_by?}/{order_type?}", 'AbyssController@get_all')->name("runs");
+    Route::get("/runs_mine/{order_by?}/{order_type?}", 'AbyssController@get_mine')->name("runs_mine");
+    Route::get("/runs/{charID}/{order_by?}/{order_type?}", 'AbyssController@get_char')->name("runs_char");
 
     /**
      * EVE Authentication routes

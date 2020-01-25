@@ -50,6 +50,29 @@
 
         public function get_all($order_by = "", $order_type = "") {
             $builder = DB::table("v_runall");
+            list($order_by, $order_by_text, $order_type_text, $order_type) = $this->getSort($order_by, $order_type);
+
+            $items = $builder->orderBy($order_by, $order_type)->paginate(25);
+            return view("runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items]);
+        }
+
+        public function get_mine($order_by = "", $order_type = "") {
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to list your runs"]);
+            }
+            $builder = DB::table("v_runall")->where("CHAR_ID", session()->get('login_id'));
+            list($order_by, $order_by_text, $order_type_text, $order_type) = $this->getSort($order_by, $order_type);
+
+            $items = $builder->orderBy($order_by, $order_type)->paginate(25);
+            return view("my_runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items]);
+        }
+
+        /**
+         * @param $order_by
+         * @param $order_type
+         * @return array
+         */
+        private function getSort($order_by, $order_type): array {
             switch (strtoupper($order_by)) {
                 case 'CHAR_ID':
                     $order_by = "NAME";
@@ -88,8 +111,6 @@
                     $order_type = "ASC";
                     $order_type_text = "in ascending order";
             }
-
-            $items = $builder->orderBy($order_by, $order_type)->paginate(25);
-            return view("runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items]);
+            return [$order_by, $order_by_text, $order_type_text, $order_type];
         }
     }
