@@ -5,6 +5,7 @@
 
 
     use App\Charts\LootAveragesChart;
+    use App\Charts\LootTierChart;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use Illuminate\Support\Facades\Cache;
@@ -111,6 +112,35 @@
                 $data->I,
                 $data->J
             ]);
+            return $chart->api();
+        }
+
+        public function tierAverages() {
+
+            if (Cache::has("home.tier_averages")) {
+                $data = Cache::get("home.tier_averages");
+            } else {
+                $data = DB::table("runs")
+
+                    ->select("TIER")
+                    ->selectRaw("AVG(LOOT_ISK) as AVG")
+                    ->groupBy("TIER")
+                    ->orderBy("TIER", "ASC")
+                    ->get();
+                Cache::put("home.tier_averages", $data, 15);
+            }
+
+            $chart = new LootTierChart();
+
+            $dataset = [];
+            $values = [];
+            foreach ($data as $type) {
+                $dataset[] = "Tier ".$type->TIER;
+                $values[] = round($type->AVG/1000000, 2);
+            }
+
+            $chart->labels($dataset);
+            $chart->dataset('Average loot value/tier (Million ISK)', 'bar', $values);
             return $chart->api();
         }
     }

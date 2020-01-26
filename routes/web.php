@@ -34,6 +34,7 @@
     Route::get("/api/chart/home/tiers", 'GraphHelper@homeTier')->name("chart.home.tier");
     Route::get("/api/chart/home/loot_levels", 'GraphHelper@homeLootLevels')->name("chart.home.loot_levels");
     Route::get("/api/chart/home/survival", 'GraphHelper@homeSurvival')->name("chart.home.survival");
+    Route::get("/api/chart/home/tiers/averages", 'GraphHelper@tierAverages')->name("chart.home.tier_averages");
 
     /**
      * EVE Authentication routes

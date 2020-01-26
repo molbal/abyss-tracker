@@ -5,6 +5,7 @@
 
 
     use App\Charts\LootAveragesChart;
+    use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
@@ -21,25 +22,41 @@
             $lootTypesChart = new LootTypesChart();
             $lootTypesChart->load(route("chart.home.type"));
             $lootTypesChart->displayAxes(false);
+            $lootTypesChart->displayLegend(false);
             $lootTypesChart->export(true, "Download");
             $lootTypesChart->height("400");
+            $lootTypesChart->theme("light");
 
             $tierLevelsChart = new TierLevelsChart();
             $tierLevelsChart->load(route("chart.home.tier"));
             $tierLevelsChart->displayAxes(false);
+            $tierLevelsChart->displayLegend(false);
             $tierLevelsChart->export(true, "Download");
             $tierLevelsChart->height("400");
+            $tierLevelsChart->theme("light");
 
             $survival_chart = new SurvivalLevelChart();
             $survival_chart->load(route("chart.home.survival"));
             $survival_chart->export(true, "Download");
             $survival_chart->displayAxes(false);
             $survival_chart->height(400);
+            $survival_chart->theme("light");
+            $survival_chart->displayLegend(false);
+
+            $loot_tier_chart = new LootTierChart();
+            $loot_tier_chart->load(route("chart.home.tier_averages"));
+            $loot_tier_chart->export(true, "Download");
+            $loot_tier_chart->displayAxes(true);
+            $loot_tier_chart->height(400);
+            $loot_tier_chart->labels(["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5"]);
+            $loot_tier_chart->theme("light");
+            $loot_tier_chart->displayLegend(false);
 
             return view("welcome", [
                 'loot_types_chart' => $lootTypesChart,
                 'tier_levels_chart' => $tierLevelsChart,
                 'survival_chart' => $survival_chart,
+                'loot_tier_chart' => $loot_tier_chart,
             ]);
         }
 
