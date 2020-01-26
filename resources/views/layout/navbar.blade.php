@@ -11,6 +11,9 @@
                 <a class="nav-link {{"home" == Route::currentRouteName() ? "active" : ""}}" href="{{route("home")}}">Stats</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{"home_mine" == Route::currentRouteName() ? "active" : ""}}" href="{{route("home_mine")}}">My stats</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{"runs" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs")}}">All runs</a>
             </li>
             <li class="nav-item">

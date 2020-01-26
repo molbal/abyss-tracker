@@ -11,6 +11,31 @@
 
     class AbyssController extends Controller {
 
+        public function home() {
+
+        }
+
+
+        public function home_mine() {
+
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
+            }
+
+            $my_runs = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->count();
+            $my_avg_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->avg('LOOT_ISK');
+            $my_sum_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->sum('LOOT_ISK');
+            $my_survival_ratio = (DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->where("SURVIVED", '=', true)->count())/max(1,$my_runs)*100;
+
+            return view("home_mine", [
+                'my_runs' => $my_runs,
+                'my_avg_loot' => $my_avg_loot,
+                'my_sum_loot' => $my_sum_loot,
+                'my_survival_ratio' => $my_survival_ratio,
+            ]);
+        }
+
+
         public function store(Request $request) {
             Validator::make($request->all(), [
                 'TYPE' => 'required',
@@ -45,6 +70,10 @@
         }
 
         public function get_single($id) {
+            $builder = DB::table("v_runall")->where("ID", $id);
+            if (!$builder->exists()) {
+                return view("error", ["error" => "Can't find this run"]);
+            }
             return view("run", ["id" => $id]);
         }
 

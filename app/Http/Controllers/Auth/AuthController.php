@@ -14,6 +14,7 @@
 
     class AuthController extends Controller {
 
+
         /**
          * Redirect the user to the Eve Online authentication page.
          *
@@ -41,7 +42,7 @@
             ]);
             \session()->put("login_id", $id);
             \session()->put("login_name", $name);
-            return redirect(route("new"));
+            return redirect(route("home_mine"));
         }
 
         public function logout() {

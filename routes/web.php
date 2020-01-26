@@ -18,6 +18,8 @@
         return view('welcome');
     })->name("home");
 
+    Route::get("/stats_mine/",'AbyssController@home_mine')->name("home_mine");
+
 
     Route::post("/new", 'AbyssController@store')->name("store");
     Route::get("/new", 'AbyssController@form_new')->name("new");
