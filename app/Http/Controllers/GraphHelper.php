@@ -6,6 +6,7 @@
 
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
+    use App\Charts\PersonalDaily;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use Illuminate\Support\Facades\Cache;
@@ -141,6 +142,39 @@
 
             $chart->labels($dataset);
             $chart->dataset('Average loot value/tier (Million ISK)', 'bar', $values);
+            return $chart->api();
+        }
+
+        public function personalLoot() {
+
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
+            }
+
+            $id = session()->get("login_id");
+
+            $data = DB::table("runs")
+                ->where("CHAR_ID", '=', $id)
+                ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
+                ->select("RUN_DATE")
+                ->selectRaw("SUM(LOOT_ISK) AS SUM_ISK")
+                ->selectRaw("AVG(LOOT_ISK) AS AVG_ISK")
+                ->groupBy("RUN_DATE")
+                ->get();
+
+            $chart = new PersonalDaily();
+
+            $dataset = [];
+            $values = [];
+            $values2 = [];
+            foreach ($data as $type) {
+                $dataset[] = $type->RUN_DATE;
+                $values[] = round($type->SUM_ISK/1000000, 2);
+                $values2[] = round($type->AVG_ISK/1000000, 2);
+            }
+            $chart->labels($dataset);
+            $chart->dataset('Sum loot / day (Million ISK)', 'bar', $values);
+            $chart->dataset('Average loot / day (Million ISK)', 'bar', $values2);
             return $chart->api();
         }
     }

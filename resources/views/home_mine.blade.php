@@ -56,15 +56,24 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-12">
-
+        <div class="col-sm-6">
+            <div class="card card-body border-0 shadow-sm my-4">
+                <h5 class="font-weight-bold mb-2">Average loot per day</h5>
+                {!! $personal_chart_loot->container(); !!}
+            </div>
+        </div>
+        <div class="col-sm-6">
             <div class="card card-body border-0 shadow-sm my-4">
                 ...
                 <br>
-                <div class="btn-group col-md-4">
-                    <a href="{{route("runs_mine")}}" class="btn btn-secondary">My runs</a>
-                    <a href="{{route("new")}}" class="btn btn-secondary">Add new run</a>
-                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="btn-group col-md-4">
+                <a href="{{route("runs_mine")}}" class="btn btn-secondary">My runs</a>
+                <a href="{{route("new")}}" class="btn btn-secondary">Add new run</a>
             </div>
         </div>
     </div>
@@ -117,4 +126,5 @@
             });
         });
     </script>
+    {!! $personal_chart_loot->script(); !!}
 @endsection
