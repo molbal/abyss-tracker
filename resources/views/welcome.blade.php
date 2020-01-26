@@ -31,6 +31,18 @@
                 {!! $loot_tier_chart->container(); !!}
             </div>
         </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">What is this site?</h5>
+                <p class="text-justify">Welcome,<br>
+                This is a website to track and compare your Abyss runs, how much loot ISK you looted, what kind of filaments are popular.
+                    <br>
+                If you also add your Abyssal deadspace runs we will have a better idea on how much loot spawns in Abyssal sites (which is really hectic).</p>
+                <p>Cheers, <br>
+                    <img src="https://images.evetech.net/characters/93940047/portrait?size=32" alt="" class="rounded-circle shadow-sm"> Veetor Nara
+                    </p>
+            </div>
+        </div>
     </div>
 
 @endsection
