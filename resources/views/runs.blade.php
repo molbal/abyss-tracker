@@ -3,7 +3,7 @@
     <div class="row mt-5">
         <div class="col-sm-12">
 
-            <h2 class="h4">Here you find a list of all recorded runs</h2>
+            <h4 class="font-weight-bold">Here you find a list of all recorded runs</h4>
             <p class="text-small">Displaying results <strong>{{$order_type}}</strong> by <strong>{{$order_by}}</strong></p>
         </div>
         <div class="col-sm-12">

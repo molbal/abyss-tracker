@@ -139,7 +139,12 @@
             if (!$builder->exists()) {
                 return view("error", ["error" => "Can't find this run"]);
             }
-            return view("run", ["id" => $id]);
+
+            $data = DB::table("v_runall")->where("ID", $id)->get();
+
+
+
+            return view("run", ["id" => $id, "run" => $data->get(0)]);
         }
 
         public function get_all($order_by = "", $order_type = "") {

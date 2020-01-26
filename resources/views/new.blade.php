@@ -1,6 +1,10 @@
 @extends("layout.app")
 @section("content")
-    <div class="row mt-5">
+
+    <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
+        <h4 class="font-weight-bold">Add new Abyss run</h4>
+    </div>
+    <div class="row">
         <div class="card card-body border-0 shadow-sm">
 
             @if(isset($errors))
@@ -17,8 +21,6 @@
             @if(isset($message))
                 <div class="alert alert-info">{{$message}}</div>
             @endif
-
-            <h4>Add a new Abyss run</h4>
             <form action="{{route("store")}}" method="post">
                 {{csrf_field()}}
                 <div class="container">
