@@ -4,11 +4,13 @@
     namespace App\Http\Controllers;
 
 
+    use App\Charts\AbyssSurvivalType;
     use App\Charts\IskPerHourChart;
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
+    use App\Charts\RunBetter;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use Illuminate\Http\Request;
@@ -140,11 +142,26 @@
                 return view("error", ["error" => "Can't find this run"]);
             }
 
-            $data = DB::table("v_runall")->where("ID", $id)->get();
+            $data = DB::table("v_runall")->where("ID", $id)->get()->get(0);
 
+            $explodeCharts = new AbyssSurvivalType();
+            $explodeCharts->labels(["Failures", "Successes"]);
+            $explodeCharts->dataset(sprintf("%s tier %s survival ratio", $data->TYPE, $data->TIER), 'pie', [
+                DB::table("runs")->where("TIER",$data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", false)->count(),
+                DB::table("runs")->where("TIER",$data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->count()]);
+            $explodeCharts->theme('light');
+            $explodeCharts->displayAxes(false);
+            $explodeCharts->displayLegend(false);
 
+            $otherCharts = new RunBetter();
+            $otherCharts->dataset(sprintf("Average loot for %s tier %s ", $data->TYPE, $data->TIER), 'bar', [DB::table("runs")->where("TIER",$data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->avg("LOOT_ISK")]);
+            $otherCharts->dataset(sprintf("Average loot for tier %s ", $data->TIER), 'bar', [DB::table("runs")->where("TIER",$data->TIER)->where("SURVIVED", true)->avg("LOOT_ISK")]);
+            $otherCharts->dataset(sprintf("This run's loot"), 'bar', [$data->LOOT_ISK]);
+            $otherCharts->theme('light');
+            $otherCharts->displayAxes(true);
+            $otherCharts->displayLegend(true);
 
-            return view("run", ["id" => $id, "run" => $data->get(0)]);
+            return view("run", ["id" => $id, "run" => $data, "survival" => $explodeCharts, "other" => $otherCharts]);
         }
 
         public function get_all($order_by = "", $order_type = "") {

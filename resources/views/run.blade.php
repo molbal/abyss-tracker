@@ -50,4 +50,24 @@
         </div>
     </div>
 
+    <div class="row mt-3">
+        <div class="col-md-6 col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h4 class="font-weight-bold">Survival of {{$run->TYPE}} tier {{$run->TIER}}</h4>
+                {!! $survival->container(); !!}
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h4 class="font-weight-bold">Loot value comparision</h4>
+                {!! $other->container(); !!}
+            </div>
+        </div>
+    </div>
+
+@endsection
+
+@section("scripts")
+{!! $survival->script(); !!}
+{!! $other->script(); !!}
 @endsection
