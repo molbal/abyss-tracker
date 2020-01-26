@@ -48,7 +48,7 @@
         public function logout() {
             \session()->forget("login_id");
             \session()->forget("login_name");
-            return view('welcome');
+            return redirect(route("home"));
 
         }
 
