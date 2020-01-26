@@ -64,8 +64,8 @@
         </div>
         <div class="col-sm-6">
             <div class="card card-body border-0 shadow-sm my-4">
-                ...
-                <br>
+                <h5 class="font-weight-bold mb-2">Approximate ISK/hour</h5>
+                {!! $personal_isk_per_hour->container(); !!}
             </div>
         </div>
     </div>
@@ -127,4 +127,5 @@
         });
     </script>
     {!! $personal_chart_loot->script(); !!}
+    {!! $personal_isk_per_hour->script(); !!}
 @endsection

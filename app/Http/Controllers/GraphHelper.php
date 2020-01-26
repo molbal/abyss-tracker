@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use App\Charts\IskPerHourChart;
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
     use App\Charts\PersonalDaily;
@@ -175,6 +176,36 @@
             $chart->labels($dataset);
             $chart->dataset('Sum loot / day (Million ISK)', 'bar', $values);
             $chart->dataset('Average loot / day (Million ISK)', 'bar', $values2);
+            return $chart->api();
+        }
+
+        public function personalIsk() {
+
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
+            }
+
+            $id = session()->get("login_id");
+
+            $data = DB::table("runs")
+                ->where("CHAR_ID", '=', $id)
+                ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
+                ->select("RUN_DATE")
+                ->selectRaw("SUM(LOOT_ISK)/COUNT(ID)*3  AS ISK_PER_HOUR")
+                ->groupBy("RUN_DATE")
+                ->get();
+
+            $chart = new IskPerHourChart();
+
+            $dataset = [];
+            $values = [];
+            foreach ($data as $type) {
+                $dataset[] = $type->RUN_DATE;
+                $values[] = round($type->ISK_PER_HOUR/1000000, 2);
+            }
+            $chart->labels($dataset);
+            $chart->dataset('Approximate ISK/hour (Million ISK)', 'line', $values)->options(["smooth" => true]);
+
             return $chart->api();
         }
     }

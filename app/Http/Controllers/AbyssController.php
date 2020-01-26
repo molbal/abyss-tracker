@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use App\Charts\IskPerHourChart;
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
@@ -73,7 +74,6 @@
             $my_sum_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->sum('LOOT_ISK');
             $my_survival_ratio = (DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->where("SURVIVED", '=', true)->count())/max(1,$my_runs)*100;
 
-
             $personalDaily = new PersonalDaily();
             $personalDaily->load(route("chart.personal.loot"));
             $personalDaily->displayAxes(true);
@@ -82,12 +82,21 @@
             $personalDaily->height("400");
             $personalDaily->theme("light");
 
+            $iskPerHour = new IskPerHourChart();
+            $iskPerHour->load(route("chart.personal.ihp"));
+            $iskPerHour->displayAxes(true);
+            $iskPerHour->displayLegend(true);
+            $iskPerHour->export(true, "Download");
+            $iskPerHour->height("400");
+            $iskPerHour->theme("light");
+
             return view("home_mine", [
                 'my_runs' => $my_runs,
                 'my_avg_loot' => $my_avg_loot,
                 'my_sum_loot' => $my_sum_loot,
                 'my_survival_ratio' => $my_survival_ratio,
                 'personal_chart_loot' => $personalDaily,
+                'personal_isk_per_hour' => $iskPerHour,
             ]);
         }
 
