@@ -14,10 +14,7 @@
     use Illuminate\Support\Facades\Artisan;
     use Illuminate\Support\Facades\Route;
 
-    Route::get('/', function () {
-        return view('welcome');
-    })->name("home");
-
+    Route::get("/",'AbyssController@home')->name("home");
     Route::get("/stats_mine/",'AbyssController@home_mine')->name("home_mine");
 
 
@@ -28,6 +25,15 @@
     Route::get("/runs/{order_by?}/{order_type?}", 'AbyssController@get_all')->name("runs");
     Route::get("/runs_mine/{order_by?}/{order_type?}", 'AbyssController@get_mine')->name("runs_mine");
     Route::get("/runs/{charID}/{order_by?}/{order_type?}", 'AbyssController@get_char')->name("runs_char");
+
+
+    /**
+     *
+     */
+    Route::get("/api/chart/home/types", 'GraphHelper@homeType')->name("chart.home.type");
+    Route::get("/api/chart/home/tiers", 'GraphHelper@homeTier')->name("chart.home.tier");
+    Route::get("/api/chart/home/loot_levels", 'GraphHelper@homeLootLevels')->name("chart.home.loot_levels");
+    Route::get("/api/chart/home/survival", 'GraphHelper@homeSurvival')->name("chart.home.survival");
 
     /**
      * EVE Authentication routes

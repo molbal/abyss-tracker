@@ -9,7 +9,7 @@
 
 
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
                     <img src="https://img.icons8.com/dusk/64/000000/counter.png" class="pull-left ml-2">
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
                     <img src="https://img.icons8.com/dusk/64/000000/average-2.png" class="pull-left ml-2">
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
                     <img src="https://img.icons8.com/dusk/64/000000/treasure-chest.png" class="pull-left ml-2">
@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
                     <img src="https://img.icons8.com/dusk/64/000000/web-shield.png" class="pull-left ml-2">
@@ -58,11 +58,10 @@
     <div class="row">
         <div class="col-sm-12">
 
-            <div class="card-body border-0 shadow-sm my-4">
+            <div class="card card-body border-0 shadow-sm my-4">
                 ...
                 <br>
-                <div class="btn-group">
-
+                <div class="btn-group col-md-4">
                     <a href="{{route("runs_mine")}}" class="btn btn-secondary">My runs</a>
                     <a href="{{route("new")}}" class="btn btn-secondary">Add new run</a>
                 </div>

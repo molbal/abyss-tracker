@@ -1,11 +1,11 @@
 @extends("layout.app")
 @section("content")
-    <div class="row mt-5">
-        <div class="col-sm-12">
 
-            <h2 class="h4">Here you find a list of all your recorded runs ({{session()->get('login_name')}})</h2>
-            <p class="text-small">Displaying results <strong>{{$order_type}}</strong> by <strong>{{$order_by}}</strong></p>
-        </div>
+    <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
+        <h4 class="font-weight-bold">Here you find a list of all your recorded runs ({{session()->get('login_name')}})</h4>
+        <p class="">Displaying {{$items->total()}} results <strong>{{$order_type}}</strong> by <strong>{{$order_by}}</strong></p>
+    </div>
+    <div class="row mt-3">
         <div class="col-sm-12">
             <div class="card card-body border-0 shadow-sm p-0">
                 <table class="table table-striped table-sm m-0 table-hover">

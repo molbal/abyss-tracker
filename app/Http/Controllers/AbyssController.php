@@ -4,7 +4,12 @@
     namespace App\Http\Controllers;
 
 
+    use App\Charts\LootAveragesChart;
+    use App\Charts\LootTypesChart;
+    use App\Charts\SurvivalLevelChart;
+    use App\Charts\TierLevelsChart;
     use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Validator;
@@ -13,6 +18,29 @@
 
         public function home() {
 
+            $lootTypesChart = new LootTypesChart();
+            $lootTypesChart->load(route("chart.home.type"));
+            $lootTypesChart->displayAxes(false);
+            $lootTypesChart->export(true, "Download");
+            $lootTypesChart->height("400");
+
+            $tierLevelsChart = new TierLevelsChart();
+            $tierLevelsChart->load(route("chart.home.tier"));
+            $tierLevelsChart->displayAxes(false);
+            $tierLevelsChart->export(true, "Download");
+            $tierLevelsChart->height("400");
+
+            $survival_chart = new SurvivalLevelChart();
+            $survival_chart->load(route("chart.home.survival"));
+            $survival_chart->export(true, "Download");
+            $survival_chart->displayAxes(false);
+            $survival_chart->height(400);
+
+            return view("welcome", [
+                'loot_types_chart' => $lootTypesChart,
+                'tier_levels_chart' => $tierLevelsChart,
+                'survival_chart' => $survival_chart,
+            ]);
         }
 
 
