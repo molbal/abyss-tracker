@@ -75,7 +75,19 @@
             $my_avg_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->avg('LOOT_ISK');
             $my_sum_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->sum('LOOT_ISK');
             $my_survival_ratio = (DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->where("SURVIVED", '=', true)->count())/max(1,$my_runs)*100;
+            $id = session()->get("login_id");
+            $data = DB::table("runs")
+                ->where("CHAR_ID", '=', $id)
+                ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
+                ->select("RUN_DATE")
+                ->groupBy("RUN_DATE")
+                ->get();
 
+            $chart = new IskPerHourChart();
+            $labels = [];
+            foreach ($data as $type) {
+                $labels[] = date("m.d", strtotime($type->RUN_DATE));
+            }
             $personalDaily = new PersonalDaily();
             $personalDaily->load(route("chart.personal.loot"));
             $personalDaily->displayAxes(true);
@@ -83,6 +95,7 @@
             $personalDaily->export(true, "Download");
             $personalDaily->height("400");
             $personalDaily->theme("light");
+            $personalDaily->labels($labels);
 
             $iskPerHour = new IskPerHourChart();
             $iskPerHour->load(route("chart.personal.ihp"));
@@ -91,6 +104,7 @@
             $iskPerHour->export(true, "Download");
             $iskPerHour->height("400");
             $iskPerHour->theme("light");
+            $iskPerHour->labels($labels);
 
             return view("home_mine", [
                 'my_runs' => $my_runs,
@@ -154,9 +168,12 @@
             $explodeCharts->displayLegend(false);
 
             $otherCharts = new RunBetter();
-            $otherCharts->dataset(sprintf("Average loot for %s tier %s ", $data->TYPE, $data->TIER), 'bar', [DB::table("runs")->where("TIER",$data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->avg("LOOT_ISK")]);
-            $otherCharts->dataset(sprintf("Average loot for tier %s ", $data->TIER), 'bar', [DB::table("runs")->where("TIER",$data->TIER)->where("SURVIVED", true)->avg("LOOT_ISK")]);
-            $otherCharts->dataset(sprintf("This run's loot"), 'bar', [$data->LOOT_ISK]);
+            $averageLootForTierType = DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->avg("LOOT_ISK");
+
+            $averageLootForTier = DB::table("runs")->where("TIER", $data->TIER)->where("SURVIVED", true)->avg("LOOT_ISK");
+            $otherCharts->dataset(sprintf("Average loot for %s tier %s  (M ISK)", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType/1000000, 2)]);
+            $otherCharts->dataset(sprintf("Average loot for tier %s  (M ISK)", $data->TIER), 'bar', [round($averageLootForTier/1000000, 2)]);
+            $otherCharts->dataset(sprintf("This run's loot (M ISK)"), 'bar', [round($data->LOOT_ISK/1000000, 2)]);
             $otherCharts->theme('light');
             $otherCharts->displayAxes(true);
             $otherCharts->displayLegend(true);

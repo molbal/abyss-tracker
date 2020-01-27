@@ -40,10 +40,10 @@
         <div class="col-md-3 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
-                    <img src="https://imageserver.eveonline.com/Type/15331_64.png" class="pull-left ml-2">
+                    <img src="https://image.eveonline.com/Type/{{!$run->SURVIVED ? "37885" : "34432"}}_64.png" class="pull-left ml-2">
                     <div class="col">
-                        <h2 class="font-weight-bold mb-0">{{$run->SURVIVED ? "Survived" : "Exploded"}}</h2>
-                        <small class="text-muted font-weight-bold">Survived</small>
+                        <h2 class="font-weight-bold mb-0 {{!$run->SURVIVED ? "text-danger" : ""}}">{{$run->SURVIVED ? "Survived" : "Exploded"}}</h2>
+                        <small class="text-muted font-weight-bold">Survival</small>
                     </div>
                 </div>
             </div>

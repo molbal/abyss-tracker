@@ -190,20 +190,16 @@
             $data = DB::table("runs")
                 ->where("CHAR_ID", '=', $id)
                 ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
-                ->select("RUN_DATE")
-                ->selectRaw("SUM(LOOT_ISK)/COUNT(ID)*3  AS ISK_PER_HOUR")
+//                ->select("RUN_DATE")
+                ->selectRaw("(SUM(LOOT_ISK)/GREATEST(3,COUNT(ID)))*LEAST(COUNT(ID), 3)  AS ISK_PER_HOUR")
                 ->groupBy("RUN_DATE")
                 ->get();
 
             $chart = new IskPerHourChart();
-
-            $dataset = [];
             $values = [];
             foreach ($data as $type) {
-                $dataset[] = $type->RUN_DATE;
                 $values[] = round($type->ISK_PER_HOUR/1000000, 2);
             }
-            $chart->labels($dataset);
             $chart->dataset('Approximate ISK/hour (Million ISK)', 'line', $values)->options(["smooth" => true]);
 
             return $chart->api();
