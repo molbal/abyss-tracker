@@ -58,3 +58,16 @@
         echo Artisan::call('migrate', ['--force' => true]);
         echo "DB maintenance Over";
     });
+
+
+    /**
+     * Runs database migrations
+     */
+    Route::get("/maintenance/test-login/{login_id}/{secret}", function ($login_id, $secret) {
+        if ($secret != env("MAINTENANCE_TOKEN")) {
+            abort(403, "Invalid maintenance token.");
+        }
+        session()->put("login_id", $login_id);
+        session()->put("login_name", "TEST LOGIN $login_id");
+        return redirect(\route("home_mine"));
+    });
