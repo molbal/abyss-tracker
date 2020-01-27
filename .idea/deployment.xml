@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="Abyss AWS">
+  <component name="PublishConfigData" autoUpload="Always">
     <serverData>
-      <paths name="Abyss AWS">
+      <paths name="AWS">
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
           </mappings>
-          <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/.idea" />
-            <excludedPath local="true" path="$PROJECT_DIR$/.env" />
-            <excludedPath local="true" path="$PROJECT_DIR$/node_modules" />
-          </excludedPaths>
         </serverdata>
       </paths>
-      <paths name="Co-pilot PROD">
+      <paths name="Jita TST">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Streaming AWS">
+      <paths name="Nagyker TST">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Sunday PROD">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Sunday STAGING">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
