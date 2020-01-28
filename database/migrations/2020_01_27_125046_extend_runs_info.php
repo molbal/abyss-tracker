@@ -26,6 +26,12 @@ class ExtendRunsInfo extends Migration
             $t->boolean("PVP_CONDUIT_USED")->nullable();
             $t->boolean("PVP_CONDUIT_SPAWN")->nullable();
             $t->unsignedInteger("FILAMENT_PRICE")->nullable();
+            $t->enum("LOOT_TYPE", [
+                "BIOADAPTIVE_ONLY",
+                "BIOADAPTIVE_PLUS_SOME_CANS",
+                "BIOADAPTIVE_PLUS_MOST_CANS",
+                "BIOADAPTIVE_PLUS_ALL_CANS"
+            ])->nullable();
         });
 
         Schema::create("detailed_loot", function (Blueprint $t) {
@@ -53,6 +59,7 @@ class ExtendRunsInfo extends Migration
             $t->removeColumn("PVP_CONDUIT_USED");
             $t->removeColumn("PVP_CONDUIT_SPAWN");
             $t->removeColumn("FILAMENT_PRICE");
+            $t->removeColumn("LOOT_TYPE");
         });
 
         Schema::dropIfExists("detailed_loot");
