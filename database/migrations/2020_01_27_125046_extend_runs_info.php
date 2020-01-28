@@ -42,7 +42,7 @@ class ExtendRunsInfo extends Migration
            $t->integer("RUN_ID");
            $t->enum("TYPE", [
                "RED_LOOT", "BLUEPRINT", "SKILLBOOK", "MATERIAL", "OTHER"
-           ]);
+           ])->nullable();
         });
     }
 

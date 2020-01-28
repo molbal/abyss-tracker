@@ -19,6 +19,10 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
           integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U=" crossorigin="anonymous"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" integrity="sha256-nbyata2PJRjImhByQzik2ot6gSHSU4Cqdz5bNYL2zcU=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap4-select2-theme@1.0.3/src/css/bootstrap4-select2-theme.css">
+
     <title>{{ config('app.name', 'S') }}</title>
     <style>
         .navbar-brand > img {
@@ -80,6 +84,11 @@
         * {
             font-family: 'Shentox 13';
         }
+
+        option {
+            font-family: 'Shentox 13';
+
+        }
     </style>
     @yield('styles')
 </head>
@@ -89,25 +98,34 @@
     @yield('content')
 </div>
 <footer class="footer mt-auto py-3 mt-5">
-    <div class="container">
-        <div class="col-sm-12">
-            <p class="mt-5">This is an open source application created by <a href="https://twitter.com/veetor_in_eve">Veetor</a> - <a
-                    href="https://github.com/molbal/abyss-tracker"><img src="https://img.icons8.com/small/16/000000/github.png"> source code here</a></p>
-            <p class="text-justify mt-3 text-small text-black-50">
-                All images are material are property of CCP Games: EVE Online and the EVE logo are the registered
-                trademarks
-                of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective
-                owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property
-                of
-                CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable
-                features of the intellectual property relating to these trademarks are likewise the intellectual
-                property of
-                CCP hf. CCP hf. has granted permission to evewho.com to use EVE Online and all associated logos and
-                designs
-                for promotional and zKillboard.com purposes on its website but does not endorse, and is not in any way
-                affiliated with, zKillboard.com. CCP is in no way responsible for the content on or functioning of this
-                website, nor can it be liable for any damage arising from the use of this website. <br>
-                Some icons were provided by <a href="https://icons8.com" rel="nofollow" target="_blank">Icons8</a>
+    <div class="container mt-5">
+        <div class="col-sm-12 mt-5">
+            <p class="mt-5 text-center">Abyss Tracker v1.1 is an open source application created by <a
+                    href="https://twitter.com/veetor_in_eve">Veetor Nara</a> - <a
+                    href="https://github.com/molbal/abyss-tracker"><img
+                        src="https://img.icons8.com/small/16/000000/github.png"> source code here</a></p>
+            <p class="text-justify mt-3 text-small text-black-50"><small>
+                    All images are material are property of CCP Games: EVE Online and the EVE logo are the registered
+                    trademarks
+                    of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their
+                    respective
+                    owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual
+                    property
+                    of
+                    CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other
+                    recognizable
+                    features of the intellectual property relating to these trademarks are likewise the intellectual
+                    property of
+                    CCP hf. CCP hf. has granted permission to evewho.com to use EVE Online and all associated logos and
+                    designs
+                    for promotional and zKillboard.com purposes on its website but does not endorse, and is not in any
+                    way
+                    affiliated with, zKillboard.com. CCP is in no way responsible for the content on or functioning of
+                    this
+                    website, nor can it be liable for any damage arising from the use of this website. The website uses
+                    cookies for Google Analytics reporting.
+                    Some icons were provided by <a href="https://icons8.com" rel="nofollow"
+                                                   target="_blank">Icons8</a></small>
             </p>
         </div>
     </div>
@@ -130,20 +148,35 @@
         integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts-en.min.js" charset="utf-8"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
 @yield('scripts')
 <script>
     $(function () {
-        Ladda.bind('[type=submit]');
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $(".select2-default").select2({
+            theme: 'bootstrap'
+        });
+
+        $(".select2-nosearch").select2({
+            theme: 'bootstrap',
+            minimumResultsForSearch: -1
+        });
     });
 </script>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86961430-8"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'UA-86961430-8');
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-86961430-8');
 </script>
 
 </body>
