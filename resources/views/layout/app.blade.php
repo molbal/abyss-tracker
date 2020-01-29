@@ -156,12 +156,14 @@
         $('[data-toggle="tooltip"]').tooltip();
 
         $(".select2-default").select2({
-            theme: 'bootstrap'
+            theme: 'bootstrap',
+            width: '100%'
         });
 
         $(".select2-nosearch").select2({
             theme: 'bootstrap',
-            minimumResultsForSearch: -1
+            minimumResultsForSearch: -1,
+            width: '100%'
         });
     });
 </script>

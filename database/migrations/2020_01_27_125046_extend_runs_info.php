@@ -19,9 +19,11 @@ class ExtendRunsInfo extends Migration
                 'TIMEOUT',
                 'TANK_FAILED',
                 'CONNECTION_DROP',
-                'PILOTING_FAIL',
+                'PILOTING_MISTAKE',
                 'PVP_DEATH',
-                'OVERHEAT_FAILURE'
+                'OVERHEAT_FAILURE',
+                'EXPERIMENTAL_FIT',
+                'OTHER'
             ])->nullable();
             $t->boolean("PVP_CONDUIT_USED")->nullable();
             $t->boolean("PVP_CONDUIT_SPAWN")->nullable();
@@ -32,6 +34,8 @@ class ExtendRunsInfo extends Migration
                 "BIOADAPTIVE_PLUS_MOST_CANS",
                 "BIOADAPTIVE_PLUS_ALL_CANS"
             ])->nullable();
+            $t->string("KILLMAIL", 128)->nullable();
+            $t->timestamp("CREATED_AT")->useCurrent()->index();
         });
 
         Schema::create("detailed_loot", function (Blueprint $t) {
@@ -60,6 +64,8 @@ class ExtendRunsInfo extends Migration
             $t->removeColumn("PVP_CONDUIT_SPAWN");
             $t->removeColumn("FILAMENT_PRICE");
             $t->removeColumn("LOOT_TYPE");
+            $t->removeColumn("KILLMAIL");
+            $t->removeColumn("CREATED_AT");
         });
 
         Schema::dropIfExists("detailed_loot");
