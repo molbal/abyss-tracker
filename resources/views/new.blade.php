@@ -106,7 +106,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label for="">How much loot did you return with? <img
+                                    <label for="">How much loot did you return with? <a href="/how-to-loot.gif" target="_blank">How to use?</a> <img
                                             src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
                                             title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language."></label>
                                     {{--                        <input type="text" class="form-control" id="loot" name="LOOT_ISK" required>--}}
