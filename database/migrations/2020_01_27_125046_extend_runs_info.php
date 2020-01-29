@@ -43,15 +43,15 @@ class ExtendRunsInfo extends Migration
            $t->unsignedBigInteger("ITEM_ID");
             $t->integer("RUN_ID");
             $t->unsignedInteger("COUNT");
-           $t->enum("TYPE", [
-               "RED_LOOT", "BLUEPRINT", "SKILLBOOK", "MATERIAL", "OTHER"
-           ])->nullable();
         });
 
         Schema::create("item_prices", function (Blueprint $t) {
             $t->unsignedBigInteger("ITEM_ID")->primary();
             $t->unsignedBigInteger("PRICE");
             $t->timestamp("PRICE_LAST_UPDATED")->useCurrent()->index();
+            $t->enum("TYPE", [
+                "RED_LOOT", "BLUEPRINT", "SKILLBOOK", "MATERIAL", "OTHER"
+            ])->nullable();
         });
     }
 
