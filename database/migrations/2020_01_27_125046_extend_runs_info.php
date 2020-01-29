@@ -41,12 +41,17 @@ class ExtendRunsInfo extends Migration
         Schema::create("detailed_loot", function (Blueprint $t) {
            $t->bigIncrements("ID");
            $t->unsignedBigInteger("ITEM_ID");
-           $t->unsignedInteger("COUNT");
-           $t->timestamp("PRICE_LAST_UPDATED")->useCurrent()->index();
-           $t->integer("RUN_ID");
+            $t->integer("RUN_ID");
+            $t->unsignedInteger("COUNT");
            $t->enum("TYPE", [
                "RED_LOOT", "BLUEPRINT", "SKILLBOOK", "MATERIAL", "OTHER"
            ])->nullable();
+        });
+
+        Schema::create("item_prices", function (Blueprint $t) {
+            $t->unsignedBigInteger("ITEM_ID")->primary();
+            $t->unsignedBigInteger("PRICE");
+            $t->timestamp("PRICE_LAST_UPDATED")->useCurrent()->index();
         });
     }
 
@@ -69,5 +74,6 @@ class ExtendRunsInfo extends Migration
         });
 
         Schema::dropIfExists("detailed_loot");
+        Schema::dropIfExists("item_prices");
     }
 }

@@ -108,7 +108,7 @@
                                 <div class="form-group">
                                     <label for="">How much loot did you return with? <img
                                             src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
-                                            title="Please copy the loot from your inventory (list view!) and paste it here."></label>
+                                            title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language."></label>
                                     {{--                        <input type="text" class="form-control" id="loot" name="LOOT_ISK" required>--}}
                                     <textarea name="LOOT_DETAILED" id="" rows="4" class="form-control"></textarea>
                                     <p class="text-right">Total value is approximately <strong>000 000 000</strong> ISK
