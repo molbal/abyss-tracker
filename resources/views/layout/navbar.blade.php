@@ -23,6 +23,9 @@
                 <a class="nav-link {{"new" == Route::currentRouteName() ? "active" : ""}}" href="{{route("new")}}">Add
                     run</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{"changelog" == Route::currentRouteName() ? "active" : ""}}" href="{{route("changelog")}}">Changelog</a>
+            </li>
         </ul>
         <form class="ml-auto">
             @if(session()->has("login_id"))

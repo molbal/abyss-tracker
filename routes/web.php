@@ -31,6 +31,7 @@
      * Item check
      */
     Route::get("/loot/item/{item_id}/", 'ItemController@get_single')->name("item_single");
+    Route::view("/changelog", "changelog")->name("changelog");
 
     /**
      *
