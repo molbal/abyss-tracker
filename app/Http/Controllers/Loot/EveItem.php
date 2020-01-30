@@ -15,6 +15,25 @@
         private $sellValue;
         /** @var int */
         private $buyValue;
+        /** @var int */
+        private $count;
+
+        /**
+         * @return int
+         */
+        public function getCount(): int {
+            return $this->count;
+        }
+
+        /**
+         * @param int $count
+         * @return EveItem
+         */
+        public function setCount(int $count): EveItem {
+            $this->count = $count;
+            return $this;
+        }
+
 
         /**
          * EveItem constructor.

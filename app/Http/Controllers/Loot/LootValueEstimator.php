@@ -4,8 +4,10 @@
     namespace App\Http\Controllers\Loot;
 
 
-    class LootValueEstimator
-    {
+    use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
+
+    class LootValueEstimator {
         /** @var string */
         private $rawData;
 
@@ -14,39 +16,35 @@
 
         /** @var int */
         private $totalPrice;
+
         /**
          * LootValueEstimator constructor.
          *
          * @param string $rawData
          */
-        public function __construct(string $rawData)
-        {
+        public function __construct(string $rawData) {
             $this->rawData = $rawData;
             $this->items = [];
             $this->totalPrice = null;
             $this->process();
         }
 
-        public function getItems()
-        {
+        public function getItems() {
             return $this->items;
         }
 
         /**
          * @return int
          */
-        public function getTotalPrice() : int
-        {
+        public function getTotalPrice(): int {
             return $this->totalPrice;
         }
 
 
-
-        private function process()
-        {
+        private function process() {
             $data = $this->sendToEvePraisal();
 
-            $this->totalPrice = round(($data->totals->buy+$data->totals->sell)/2);
+            $this->totalPrice = round(($data->totals->buy + $data->totals->sell) / 2);
 
             foreach ($data->items as $item) {
                 $eveItem = new EveItem();
@@ -54,7 +52,8 @@
                     ->setItemName($item->name)
                     ->setItemId($item->typeID)
                     ->setBuyValue($item->prices->buy->max)
-                    ->setSellValue($item->prices->sell->min);
+                    ->setSellValue($item->prices->sell->min)
+                    ->setCount($item->quantity);
                 $this->items[] = $eveItem;
             }
 
@@ -65,8 +64,7 @@
          *
          * @return mixed
          */
-        private function sendToEvePraisal()
-        {
+        private function sendToEvePraisal() {
             $ch = curl_init("http://evepraisal.com/appraisal");
             curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_USERAGENT => "Abyss Loot Tracker (https://abyss.eve-nt.uk)", CURLOPT_POST => true, CURLOPT_POSTFIELDS => http_build_query(['visibility' => "private", 'persist' => "yes", 'price_percentage' => "100", 'expire_after' => "3m", 'raw_textarea' => $this->rawData, 'market' => "jita",]), CURLOPT_VERBOSE => true, CURLOPT_HEADER => true]);
             $response = curl_exec($ch);
@@ -88,6 +86,34 @@
             $json = file_get_contents("http://evepraisal.com/a/$id.json");
 
             return json_decode($json);
+        }
+
+
+        public static function setItemPrice(EveItem $item) {
+            if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->doesntExist()) {
+                Log::info("Inserting ".$item->getItemName());
+                $data = json_decode(file_get_contents("https://esi.evetech.net/latest/universe/types/" . $item->getItemId() . "/?datasource=tranquility&language=en-us"));
+                $group_data = json_decode(file_get_contents("https://esi.evetech.net/latest/universe/groups/" . $data->group_id . "/?datasource=tranquility&language=en-us"));
+
+                DB::table("item_prices")->insert([
+                   "ITEM_ID" => $item->getItemId(),
+                   "PRICE_BUY"  => $item->getBuyValue(),
+                   "PRICE_SELL"  => $item->getSellValue(),
+                   "DESCRIPTION"  => $data->description,
+                   "GROUP_ID"  => $data->group_id,
+                   "GROUP_NAME"  => $group_data->name
+                ]);
+            }
+        else if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->whereRaw("PRICE_LAST_UPDATED > NOW() - INTERVAL 24 HOURS")) {
+                Log::info("Updating ".$item->getItemName());
+            DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->update([
+                    "PRICE_BUY"  => $item->getBuyValue(),
+                    "PRICE_SELL"  => $item->getSellValue()
+                ]);
+            }
+        else {
+                Log::info("Not updating item ".$item->getItemName());
+            }
         }
 
     }

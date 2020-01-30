@@ -20,7 +20,7 @@
                     </tr>
                     @foreach($items as $item)
                         <tr class="action-hover-only">
-                            <td>{!!$item->PUBLIC ? $item->NAME : '<em class="text-black-50">Pilot hidden</em>' !!}</td>
+                            <td>{!!$item->PUBLIC ? $item->NAME : '<em class="text-black-50">Unknown</em>' !!}</td>
                             <td>{{$item->TYPE}}</td>
                             <td>{{$item->TIER}}</td>
                             <td class="text-right">{{number_format($item->LOOT_ISK, 0, " ",",")}} ISK</td>

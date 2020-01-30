@@ -47,11 +47,12 @@ class ExtendRunsInfo extends Migration
 
         Schema::create("item_prices", function (Blueprint $t) {
             $t->unsignedBigInteger("ITEM_ID")->primary();
-            $t->unsignedBigInteger("PRICE");
+            $t->unsignedBigInteger("PRICE_BUY");
+            $t->unsignedBigInteger("PRICE_SELL");
             $t->timestamp("PRICE_LAST_UPDATED")->useCurrent()->index();
-            $t->enum("TYPE", [
-                "RED_LOOT", "BLUEPRINT", "SKILLBOOK", "MATERIAL", "OTHER"
-            ])->nullable();
+            $t->longText("DESCRIPTION");
+            $t->unsignedBigInteger("GROUP_ID");
+            $t->string("GROUP_NAME", 64);
         });
     }
 

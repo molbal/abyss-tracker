@@ -150,6 +150,17 @@
                 'KILLMAIL' => $request->get('KILLMAIL'),
             ]);
 
+            foreach ($lootEstimator->getItems() as $item) {
+                LootValueEstimator::setItemPrice($item);
+                DB::table("detailed_loot")->insert([
+                   "RUN_ID" => $id,
+                   "ITEM_ID" => $item->getItemId(),
+                   "COUNT" => $item->getCount()
+                ]);
+
+
+            }
+
             return redirect(route("view_single", ["id" => $id]));
         }
 

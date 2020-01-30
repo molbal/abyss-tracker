@@ -71,8 +71,8 @@
                                 <div class="form-group">
                                     <label for="">Submit with your name or anonymus?</label>
                                     <select name="PUBLIC" class="form-control select2-default">
-                                        <option value="0">Submit as anonymus</option>
-                                        <option value="1" selected>Submit with my name</option>
+                                        <option value="0" selected>Submit as anonymus</option>
+                                        <option value="1">Submit with my name</option>
                                     </select>
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
                                     <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
                                         <option value="">I don't remember</option>
                                         <option value="1">Yes, I went into the PVP room</option>
-                                        <option value="0">No, it did not go into the PVP room</option>
+                                        <option value="0">No, I did not go into the PVP room</option>
                                     </select>
                                 </div>
                             </div>
