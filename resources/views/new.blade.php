@@ -85,8 +85,8 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="">What ship did you fly?</label>
-                                    <select name="PUBLIC" class="form-control select2-default">
-                                        <option value="null">I don't remember / secret</option>
+                                    <select name="SHIP_ID" class="form-control select2-default">
+                                        <option value="">I don't remember / secret</option>
                                         @foreach($ships as $ship)
                                             <option value="{{$ship->ID}}">{{$ship->NAME}}
                                                 ({{$ship->GROUP}})
@@ -113,7 +113,7 @@
                                             title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language."></label>
                                     {{--                        <input type="text" class="form-control" id="loot" name="LOOT_ISK" required>--}}
                                     <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4"
-                                              class="form-control"></textarea>
+                                              class="form-control" required></textarea>
                                     <p class="text-right">Total value is approximately <strong
                                             id="loot_value">0</strong> ISK
                                     </p>
@@ -140,7 +140,7 @@
                                 <div class="form-group">
                                     <label for="">Did the Proving Conduit spawn?</label>
                                     <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
-                                        <option value="null">I don't remember</option>
+                                        <option value="">I don't remember</option>
                                         <option value="1">Yes, it spawned</option>
                                         <option value="0">No, it did not</option>
                                     </select>
@@ -150,7 +150,7 @@
                                 <div class="form-group">
                                     <label for="">Did you go into the PVP room?</label>
                                     <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
-                                        <option value="null">I don't remember</option>
+                                        <option value="">I don't remember</option>
                                         <option value="1">Yes, I went into the PVP room</option>
                                         <option value="0">No, it did not go into the PVP room</option>
                                     </select>
@@ -171,7 +171,7 @@
                                         src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
                                         title="A lot of reasons can contribute to losing a ship. Select the one you think contributed most to this loss."></label>
                                 <select name="DEATH_REASON" id="" class="form-control select2-nosearch">
-                                    <option value="null">I don't remember / secret</option>
+                                    <option value="">I don't remember / secret</option>
                                     <option value="TIMEOUT">Timer ran out</option>
                                     <option value="TANK_FAILED">My tank could not handle the DPS</option>
                                     <option value="CONNECTION_DROP">Connection dropped</option>

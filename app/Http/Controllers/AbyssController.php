@@ -124,23 +124,30 @@
                 'TIER' => 'required',
                 'SURVIVED' => 'required',
                 'PUBLIC' => 'required',
-//                'LOOT_ISK' => 'required|numeric',
+                'LOOT_DETAILED' => 'required',
                 'RUN_DATE' => 'required|date',
+            ],[
+                'required' => "Please fill :attribute before saving your request"
             ])->validate();
 
 
             $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED"));
-            dd($lootEstimator->getItems(),
-            $lootEstimator->getTotalPrice());
 
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID' => session()->get("login_id"),
                 'PUBLIC' => $request->get("PUBLIC"),
                 'TIER' => $request->get("TIER"),
                 'TYPE' => $request->get("TYPE"),
-                'LOOT_ISK' => $request->get("SURVIVED") ? $request->get("LOOT_ISK") : 0,
+                'LOOT_ISK' => $request->get("SURVIVED") ? $lootEstimator->getTotalPrice() : 0,
                 'SURVIVED' => $request->get("SURVIVED"),
                 'RUN_DATE' => $request->get("RUN_DATE"),
+                'SHIP_ID' => $request->get('SHIP_ID'),
+                'DEATH_REASON' => $request->get('DEATH_REASON'),
+                'PVP_CONDUIT_USED' => $request->get('PVP_CONDUIT_USED'),
+                'PVP_CONDUIT_SPAWN' => $request->get('PVP_CONDUIT_SPAWN'),
+                'FILAMENT_PRICE' => $request->get('FILAMENT_PRICE'),
+                'LOOT_TYPE' => $request->get('LOOT_TYPE'),
+                'KILLMAIL' => $request->get('KILLMAIL'),
             ]);
 
             return redirect(route("view_single", ["id" => $id]));
