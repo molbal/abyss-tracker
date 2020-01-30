@@ -58,33 +58,40 @@
                 <h5 class="font-weight-bold">Exact loot &nbsp;<img
                         src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
                         title="Jita prices were used to calculate loot value"></h5>
-                <table class="table-hover table-sm">
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th>Name</th>
-                        <th class="text-right">Count</th>
-                        <th class="text-right">Sell price/piece</th>
-                        <th class="text-right">Buy price/piece</th>
-                        <th class="text-right">Sell price/all</th>
-                        <th class="text-right">Buy price/all</th>
-                    </tr>
-                    @foreach($loot_table as $loot_item)
+                @if(count($loot_table) > 0)
+                    <table class="table-hover table-sm">
                         <tr>
-                            <td><img src="https://images.evetech.net/types/{{$loot_item->ITEM_ID}}/icon?size=32" alt=""></td>
-                            <td>
-                                <a
-                                    href="{{route('item_single', ["item_id" => $loot_item->ITEM_ID])}}">
-                                    {{$loot_item->NAME}}
-                                </a>
-                            </td>
-                            <td class="text-right">{{$loot_item->COUNT}}</td>
-                            <td class="text-right">{{number_format($loot_item->PRICE_SELL, 0, ",", " ")}} ISK</td>
-                            <td class="text-right">{{number_format($loot_item->PRICE_BUY, 0, ",", " ")}} ISK</td>
-                            <td class="text-right">{{number_format($loot_item->SELL_PRICE_ALL, 0, ",", " ")}} ISK</td>
-                            <td class="text-right">{{number_format($loot_item->BUY_PRICE_ALL, 0, ",", " ")}} ISK</td>
+                            <th>&nbsp;</th>
+                            <th>Name</th>
+                            <th class="text-right">Count</th>
+                            <th class="text-right">Sell price/piece</th>
+                            <th class="text-right">Buy price/piece</th>
+                            <th class="text-right">Sell price/all</th>
+                            <th class="text-right">Buy price/all</th>
                         </tr>
-                    @endforeach
-                </table>
+                        @foreach($loot_table as $loot_item)
+                            <tr>
+                                <td><img src="https://images.evetech.net/types/{{$loot_item->ITEM_ID}}/icon?size=32"
+                                         alt=""></td>
+                                <td>
+                                    <a data-toggle="tooltip" title="{{$loot_item->GROUP_NAME}}"
+                                       href="{{route('item_single', ["item_id" => $loot_item->ITEM_ID])}}">
+                                        {{$loot_item->NAME}}
+                                    </a>
+                                </td>
+                                <td class="text-right">{{$loot_item->COUNT}}</td>
+                                <td class="text-right">{{number_format($loot_item->PRICE_SELL, 0, ",", " ")}} ISK</td>
+                                <td class="text-right">{{number_format($loot_item->PRICE_BUY, 0, ",", " ")}} ISK</td>
+                                <td class="text-right">{{number_format($loot_item->SELL_PRICE_ALL, 0, ",", " ")}} ISK
+                                </td>
+                                <td class="text-right">{{number_format($loot_item->BUY_PRICE_ALL, 0, ",", " ")}} ISK
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                @else
+                    <p class="m-5 text-center font-italic">Unfortunatelys no loot could be gathered from this run.</p>
+                @endif
             </div>
         </div>
     </div>
