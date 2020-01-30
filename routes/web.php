@@ -20,6 +20,7 @@
 
     Route::post("/new", 'AbyssController@store')->name("store");
     Route::get("/new", 'AbyssController@form_new')->name("new");
+    Route::post("/api/loot_estimate", 'Loot\AjaxLootController@getSum')->name("estimate_loot");
 
     Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
     Route::get("/runs/{order_by?}/{order_type?}", 'AbyssController@get_all')->name("runs");

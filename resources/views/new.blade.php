@@ -106,12 +106,16 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label for="">How much loot did you return with? <a href="/how-to-loot.gif" target="_blank">How to use?</a> <img
+                                    <label for="">How much loot did you return with? <a href="/how-to-loot.gif"
+                                                                                        target="_blank">How to use?</a>
+                                        <img
                                             src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
                                             title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language."></label>
                                     {{--                        <input type="text" class="form-control" id="loot" name="LOOT_ISK" required>--}}
-                                    <textarea name="LOOT_DETAILED" id="" rows="4" class="form-control"></textarea>
-                                    <p class="text-right">Total value is approximately <strong>000 000 000</strong> ISK
+                                    <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4"
+                                              class="form-control"></textarea>
+                                    <p class="text-right">Total value is approximately <strong
+                                            id="loot_value">0</strong> ISK
                                     </p>
                                 </div>
                             </div>
@@ -135,7 +139,7 @@
                             <div class="col-sm-4 proving">
                                 <div class="form-group">
                                     <label for="">Did the Proving Conduit spawn?</label>
-                                    <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch" >
+                                    <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
                                         <option value="null">I don't remember</option>
                                         <option value="1">Yes, it spawned</option>
                                         <option value="0">No, it did not</option>
@@ -145,7 +149,7 @@
                             <div class="col-sm-4 proving">
                                 <div class="form-group">
                                     <label for="">Did you go into the PVP room?</label>
-                                    <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch" >
+                                    <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
                                         <option value="null">I don't remember</option>
                                         <option value="1">Yes, I went into the PVP room</option>
                                         <option value="0">No, it did not go into the PVP room</option>
@@ -174,7 +178,8 @@
                                     <option value="PILOTING_MISTAKE">I made a grave piloting mistake</option>
                                     <option value="PVP_DEATH">I went into the PVP room and lost</option>
                                     <option value="OVERHEAT_FAILURE">I overheated a critical module too much</option>
-                                    <option value="EXPERIMENTAL_FIT">I tried an experimental fit and it didn't work</option>
+                                    <option value="EXPERIMENTAL_FIT">I tried an experimental fit and it didn't work
+                                    </option>
                                     <option value="OTHER">Something else</option>
                                 </select>
                             </div>
@@ -209,7 +214,7 @@
         function setProvingConduit() {
             var tier = $("#TIER").val();
             var $proving = $(".proving");
-            switch(tier) {
+            switch (tier) {
                 case '3':
                 case '4':
                 case '5':
@@ -224,7 +229,7 @@
         function setDeathReason() {
             var death = $("#SURVIVED").val();
             var dth = $(".death");
-            switch(death) {
+            switch (death) {
                 case '0':
                     dth.show();
                     break;
@@ -235,6 +240,22 @@
 
         }
 
+        $("#LOOT_DETAILED").change(function () {
+            $("#loot_value").html("...");
+            $.ajax({
+                method: "POST",
+                url: "{{route("estimate_loot")}}",
+                data: {
+                    "_token": "{{csrf_token()}}",
+                    "LOOT_DETAILED": $("#LOOT_DETAILED").val()
+                }
+            }).done(function (msg) {
+                console.log(msg);
+                sum = JSON.parse(msg);
+                $("#loot_value").html(sum.formatted);
+            });
+
+        });
         // When ready.
         $(function () {
             setProvingConduit();

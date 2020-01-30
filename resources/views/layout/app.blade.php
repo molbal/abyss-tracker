@@ -125,15 +125,17 @@
                     website, nor can it be liable for any damage arising from the use of this website. The website uses
                     cookies for Google Analytics reporting.
                     Some icons were provided by <a href="https://icons8.com" rel="nofollow"
-                                                   target="_blank">Icons8</a></small>
+                                                   target="_blank">Icons8</a>
+                    Thank you <a href="http://evepraisal.com" rel="follow" target="_blank">EVEpraisal</a> for loot estimation and market data
+                </small>
             </p>
         </div>
     </div>
 </footer>
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>

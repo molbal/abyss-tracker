@@ -13,6 +13,7 @@
     use App\Charts\RunBetter;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
+    use App\Http\Controllers\Loot\LootValueEstimator;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -123,12 +124,15 @@
                 'TIER' => 'required',
                 'SURVIVED' => 'required',
                 'PUBLIC' => 'required',
-                'LOOT_ISK' => 'required|numeric',
+//                'LOOT_ISK' => 'required|numeric',
                 'RUN_DATE' => 'required|date',
             ])->validate();
 
 
-            Log::info("Here!");
+            $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED"));
+            dd($lootEstimator->getItems(),
+            $lootEstimator->getTotalPrice());
+
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID' => session()->get("login_id"),
                 'PUBLIC' => $request->get("PUBLIC"),
