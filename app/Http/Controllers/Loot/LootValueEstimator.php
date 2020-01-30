@@ -97,6 +97,7 @@
 
                 DB::table("item_prices")->insert([
                    "ITEM_ID" => $item->getItemId(),
+                   "NAME" => $item->getItemName(),
                    "PRICE_BUY"  => $item->getBuyValue(),
                    "PRICE_SELL"  => $item->getSellValue(),
                    "DESCRIPTION"  => $data->description,

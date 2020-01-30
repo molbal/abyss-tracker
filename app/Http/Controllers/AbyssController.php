@@ -201,7 +201,15 @@
             $otherCharts->displayAxes(true);
             $otherCharts->displayLegend(true);
 
-            return view("run", ["id" => $id, "run" => $data, "survival" => $explodeCharts, "other" => $otherCharts]);
+            $loot = DB::table("v_loot_details")->where("RUN_ID", $id)->get();
+
+            return view("run", [
+                "id" => $id,
+                "run" => $data,
+                "survival" => $explodeCharts,
+                "other" => $otherCharts,
+                "loot_table" => $loot
+            ]);
         }
 
         public function get_all($order_by = "", $order_type = "") {

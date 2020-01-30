@@ -53,6 +53,7 @@ class ExtendRunsInfo extends Migration
             $t->longText("DESCRIPTION");
             $t->unsignedBigInteger("GROUP_ID");
             $t->string("GROUP_NAME", 64);
+            $t->string("NAME", 64);
         });
     }
 

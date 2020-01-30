@@ -1,7 +1,8 @@
 @extends("layout.app")
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
-        <h4 class="font-weight-bold">Recorded abyssal run by {!! $run->PUBLIC ? $run->NAME : "<em>Anonymus</em>" !!} - {{$run->RUN_DATE}}</h4>
+        <h4 class="font-weight-bold">Recorded abyssal run by {!! $run->PUBLIC ? $run->NAME : "<em>Anonymus</em>" !!}
+            - {{$run->RUN_DATE}}</h4>
     </div>
     <div class="row">
         <div class="col-md-3 col-sm-6">
@@ -40,7 +41,8 @@
         <div class="col-md-3 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
-                    <img src="https://image.eveonline.com/Type/{{!$run->SURVIVED ? "37885" : "34432"}}_64.png" class="pull-left ml-2">
+                    <img src="https://image.eveonline.com/Type/{{!$run->SURVIVED ? "37885" : "34432"}}_64.png"
+                         class="pull-left ml-2">
                     <div class="col">
                         <h2 class="font-weight-bold mb-0 {{!$run->SURVIVED ? "text-danger" : ""}}">{{$run->SURVIVED ? "Survived" : "Exploded"}}</h2>
                         <small class="text-muted font-weight-bold">Survival</small>
@@ -49,7 +51,38 @@
             </div>
         </div>
     </div>
+    <div class="row mt-3">
+        <div class="col-md-12">
 
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold">Exact loot &nbsp;<img
+                        src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
+                        title="Jita prices were used to calculate loot value"></h5>
+                <table class="table-hover table-sm">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Name</th>
+                        <th class="text-right">Count</th>
+                        <th class="text-right">Sell price/piece</th>
+                        <th class="text-right">Buy price/piece</th>
+                        <th class="text-right">Sell price/all</th>
+                        <th class="text-right">Buy price/all</th>
+                    </tr>
+                    @foreach($loot_table as $loot_item)
+                        <tr>
+                            <td><img src="https://images.evetech.net/types/{{$loot_item->ITEM_ID}}/icon?size=32" alt=""></td>
+                            <td>{{$loot_item->NAME}}</td>
+                            <td class="text-right">{{$loot_item->COUNT}}</td>
+                            <td class="text-right">{{number_format($loot_item->PRICE_SELL, 0, ",", " ")}} ISK</td>
+                            <td class="text-right">{{number_format($loot_item->PRICE_BUY, 0, ",", " ")}} ISK</td>
+                            <td class="text-right">{{number_format($loot_item->SELL_PRICE_ALL, 0, ",", " ")}} ISK</td>
+                            <td class="text-right">{{number_format($loot_item->BUY_PRICE_ALL, 0, ",", " ")}} ISK</td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+        </div>
+    </div>
     <div class="row mt-3">
         <div class="col-md-6 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
@@ -68,6 +101,6 @@
 @endsection
 
 @section("scripts")
-{!! $survival->script(); !!}
-{!! $other->script(); !!}
+    {!! $survival->script(); !!}
+    {!! $other->script(); !!}
 @endsection
