@@ -71,7 +71,12 @@
                     @foreach($loot_table as $loot_item)
                         <tr>
                             <td><img src="https://images.evetech.net/types/{{$loot_item->ITEM_ID}}/icon?size=32" alt=""></td>
-                            <td>{{$loot_item->NAME}}</td>
+                            <td>
+                                <a
+                                    href="{{route('item_single', ["item_id" => $loot_item->ITEM_ID])}}">
+                                    {{$loot_item->NAME}}
+                                </a>
+                            </td>
                             <td class="text-right">{{$loot_item->COUNT}}</td>
                             <td class="text-right">{{number_format($loot_item->PRICE_SELL, 0, ",", " ")}} ISK</td>
                             <td class="text-right">{{number_format($loot_item->PRICE_BUY, 0, ",", " ")}} ISK</td>

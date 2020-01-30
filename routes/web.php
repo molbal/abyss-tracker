@@ -27,6 +27,10 @@
     Route::get("/runs_mine/{order_by?}/{order_type?}", 'AbyssController@get_mine')->name("runs_mine");
     Route::get("/runs/{charID}/{order_by?}/{order_type?}", 'AbyssController@get_char')->name("runs_char");
 
+    /**
+     * Item check
+     */
+    Route::get("/loot/item/{item_id}/", 'ItemController@get_single')->name("item_single");
 
     /**
      *
