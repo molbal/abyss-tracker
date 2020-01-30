@@ -113,7 +113,7 @@
                                             title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language."></label>
                                     {{--                        <input type="text" class="form-control" id="loot" name="LOOT_ISK" required>--}}
                                     <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4"
-                                              class="form-control" required></textarea>
+                                              class="form-control" ></textarea>
                                     <p class="text-right">Total value is approximately <strong
                                             id="loot_value">0</strong> ISK
                                     </p>

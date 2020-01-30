@@ -75,7 +75,7 @@
             $my_runs = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->count();
             $my_avg_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->avg('LOOT_ISK');
             $my_sum_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->sum('LOOT_ISK');
-            $my_survival_ratio = (DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->where("SURVIVED", '=', true)->count())/max(1,$my_runs)*100;
+            $my_survival_ratio = (DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->where("SURVIVED", '=', true)->count()) / max(1, $my_runs) * 100;
             $id = session()->get("login_id");
             $data = DB::table("runs")
                 ->where("CHAR_ID", '=', $id)
@@ -124,14 +124,20 @@
                 'TIER' => 'required',
                 'SURVIVED' => 'required',
                 'PUBLIC' => 'required',
-                'LOOT_DETAILED' => 'required',
                 'RUN_DATE' => 'required|date',
-            ],[
+            ], [
                 'required' => "Please fill :attribute before saving your request"
             ])->validate();
 
+            if ($request->get("SURVIVED") == "1") {
+                Validator::make($request->all(), [
+                    'LOOT_DETAILED' => 'required',
+                ], [
+                    'required' => "Please fill :attribute before saving your request"
+                ])->validate();
+            }
 
-            $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED"));
+            $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
 
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID' => session()->get("login_id"),
@@ -153,9 +159,9 @@
             foreach ($lootEstimator->getItems() as $item) {
                 LootValueEstimator::setItemPrice($item);
                 DB::table("detailed_loot")->insert([
-                   "RUN_ID" => $id,
-                   "ITEM_ID" => $item->getItemId(),
-                   "COUNT" => $item->getCount()
+                    "RUN_ID" => $id,
+                    "ITEM_ID" => $item->getItemId(),
+                    "COUNT" => $item->getCount()
                 ]);
 
 
@@ -184,8 +190,8 @@
             $explodeCharts = new AbyssSurvivalType();
             $explodeCharts->labels(["Failures", "Successes"]);
             $explodeCharts->dataset(sprintf("%s tier %s survival ratio", $data->TYPE, $data->TIER), 'pie', [
-                DB::table("runs")->where("TIER",$data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", false)->count(),
-                DB::table("runs")->where("TIER",$data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->count()]);
+                DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", false)->count(),
+                DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->count()]);
             $explodeCharts->theme('light');
             $explodeCharts->displayAxes(false);
             $explodeCharts->displayLegend(false);
@@ -194,9 +200,9 @@
             $averageLootForTierType = DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->avg("LOOT_ISK");
 
             $averageLootForTier = DB::table("runs")->where("TIER", $data->TIER)->where("SURVIVED", true)->avg("LOOT_ISK");
-            $otherCharts->dataset(sprintf("Average loot for %s tier %s  (M ISK)", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType/1000000, 2)]);
-            $otherCharts->dataset(sprintf("Average loot for tier %s  (M ISK)", $data->TIER), 'bar', [round($averageLootForTier/1000000, 2)]);
-            $otherCharts->dataset(sprintf("This run's loot (M ISK)"), 'bar', [round($data->LOOT_ISK/1000000, 2)]);
+            $otherCharts->dataset(sprintf("Average loot for %s tier %s  (M ISK)", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);
+            $otherCharts->dataset(sprintf("Average loot for tier %s  (M ISK)", $data->TIER), 'bar', [round($averageLootForTier / 1000000, 2)]);
+            $otherCharts->dataset(sprintf("This run's loot (M ISK)"), 'bar', [round($data->LOOT_ISK / 1000000, 2)]);
             $otherCharts->theme('light');
             $otherCharts->displayAxes(true);
             $otherCharts->displayLegend(true);
