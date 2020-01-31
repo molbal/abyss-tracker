@@ -208,7 +208,7 @@
                 $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
                 return view("new", ["ships" => $ships]);
             } else {
-                return view("error", ["error" => "Please log in to add a new run"]);
+                return view("error", ["error" => "Please sign in first to add a new run"]);
             }
         }
 

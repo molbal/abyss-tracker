@@ -26,6 +26,7 @@
     Route::get("/runs/{order_by?}/{order_type?}", 'AbyssController@get_all')->name("runs");
     Route::get("/runs_mine/{order_by?}/{order_type?}", 'AbyssController@get_mine')->name("runs_mine");
     Route::get("/runs/{charID}/{order_by?}/{order_type?}", 'AbyssController@get_char')->name("runs_char");
+    Route::get("/filter/{type}/{tier}", 'FilteredController@get_list')->name("filtered_list");
 
     /**
      * Item check
@@ -35,7 +36,7 @@
     Route::view("/changelog", "changelog")->name("changelog");
 
     /**
-     *
+     * Chart APIs
      */
     Route::get("/api/chart/home/types", 'GraphHelper@homeType')->name("chart.home.type");
     Route::get("/api/chart/home/tiers", 'GraphHelper@homeTier')->name("chart.home.tier");

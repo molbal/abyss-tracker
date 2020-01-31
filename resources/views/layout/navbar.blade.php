@@ -11,20 +11,45 @@
                 <a class="nav-link {{"home" == Route::currentRouteName() ? "active" : ""}}" href="{{route("home")}}">Stats</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{"home_mine" == Route::currentRouteName() ? "active" : ""}}" href="{{route("home_mine")}}">My stats</a>
+                <a class="nav-link {{"home_mine" == Route::currentRouteName() ? "active" : ""}}"
+                   href="{{route("home_mine")}}">My stats</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{"runs" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs")}}">All runs</a>
+                <a class="nav-link {{"runs" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs")}}">All
+                    runs</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{"runs_mine" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs_mine")}}">My runs</a>
+                <a class="nav-link {{"runs_mine" == Route::currentRouteName() ? "active" : ""}}"
+                   href="{{route("runs_mine")}}">My runs</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"new" == Route::currentRouteName() ? "active" : ""}}" href="{{route("new")}}">Add
                     run</a>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Filtered runs
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    @foreach(['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma'] as $type)
+                        <span href="#" class="dropdown-item">
+                            <span>{{$type}}</span>
+                            <span class=" d-flex justify-content-between">
+                                @for($i=1;$i<=5;$i++)
+                                    <a href="{{route("filtered_list", [
+                                    "type" => $type,
+                                    "tier" => $i
+                                    ])}}" class="btn-link text-dark">{{$i}}</a>
+                                @endfor
+                            </span>
+                    </span>
+                    @endforeach
+                </div>
+            </li>
             <li class="nav-item">
-                <a class="nav-link {{"changelog" == Route::currentRouteName() ? "active" : ""}}" href="{{route("changelog")}}">Changelog</a>
+                <a class="nav-link {{"changelog" == Route::currentRouteName() ? "active" : ""}}"
+                   href="{{route("changelog")}}">Changelog</a>
             </li>
         </ul>
         <form class="ml-auto">
@@ -32,7 +57,7 @@
                 <a href="{{route("logout")}}" class="btn btn-outline-danger my-2 my-sm-0">Log out
                     <strong>{{session()->get("login_name")}}</strong></a>
             @else
-                <a href="{{route("auth-start")}}" class="btn btn-outline-success my-2 my-sm-0">SSO Login</a>
+                <a href="{{route("auth-start")}}" class="my-sm-0"><img src="https://eve-nt.uk/img/sso_small.png" alt=""></a>
             @endif
         </form>
     </div>
