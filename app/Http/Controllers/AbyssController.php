@@ -156,8 +156,10 @@
                 'SURVIVED' => 'required',
                 'PUBLIC' => 'required',
                 'RUN_DATE' => 'required|date',
+                'KILLMAIL' => 'nullable|regex:/https?:\/\/zkillboard\.com\/kill\/\d+\/?/m'
             ], [
-                'required' => "Please fill :attribute before saving your request"
+                'required' => "Please fill :attribute before saving your request",
+                'regex' => "Please link a valid zKillboard link like this: https://zkillboard.com/kill/81359022/"
             ])->validate();
 
             if ($request->get("SURVIVED") == "1") {
@@ -211,6 +213,7 @@
         }
 
         public function get_single($id) {
+
             $builder = DB::table("v_runall")->where("ID", $id);
             if (!$builder->exists()) {
                 return view("error", ["error" => "Sorry, we could not find an Abyss run with this ID"]);
@@ -229,8 +232,9 @@
 
             $otherCharts = new RunBetter();
             $averageLootForTierType = DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->avg("LOOT_ISK");
-
             $averageLootForTier = DB::table("runs")->where("TIER", $data->TIER)->where("SURVIVED", true)->avg("LOOT_ISK");
+
+
             $otherCharts->dataset(sprintf("Average loot for %s tier %s  (M ISK)", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);
             $otherCharts->dataset(sprintf("Average loot for tier %s  (M ISK)", $data->TIER), 'bar', [round($averageLootForTier / 1000000, 2)]);
             $otherCharts->dataset(sprintf("This run's loot (M ISK)"), 'bar', [round($data->LOOT_ISK / 1000000, 2)]);
@@ -238,15 +242,102 @@
             $otherCharts->displayAxes(true);
             $otherCharts->displayLegend(true);
 
+            $all_data = DB::table("runs")->where("ID", $id)->get()->get(0);
             $loot = DB::table("v_loot_details")->where("RUN_ID", $id)->get();
 
+            if ($data->LOOT_ISK >0) {
+                $percent = ($data->LOOT_ISK / $averageLootForTier) * 100;
+            }
+            else {
+                $percent = -100;
+            }
+            if ($percent == -100) {
+                $run_summary = "a catastrophic";
+            }
+            else if ($percent < 50) {
+                $run_summary = "a poor";
+            }
+            else if ($percent < 75) {
+                $run_summary = "an unsatisfactory";
+            }
+            else if ($percent < 90) {
+                $run_summary = "a slightly below average";
+            }
+            else if ($percent < 110) {
+                $run_summary = "a decent";
+            }
+            else if ($percent < 125) {
+                $run_summary = "a satisfactory";
+            }
+            else if ($percent < 150) {
+                $run_summary = "an excellent";
+            }
+            else if($percent < 333) {
+                $run_summary = "an exceptional";
+            }
+            else {
+                $run_summary = "a jackpot-hitting";
+            }
+
+            switch ($all_data->DEATH_REASON) {
+                case 'TIMEOUT':
+                    $death_reason = "Timer ran out";
+                    break;
+                case 'TANK_FAILED':
+                    $death_reason = "My tank could not handle the DPS";
+                    break;
+                case 'CONNECTION_DROP':
+                    $death_reason = "Connection dropped";
+                    break;
+                case 'PILOTING_MISTAKE':
+                    $death_reason = "I made a grave piloting mistake";
+                    break;
+                case 'PVP_DEATH':
+                    $death_reason = "I went into the PVP room and lost";
+                    break;
+                case 'OVERHEAT_FAILURE':
+                    $death_reason = "I overheated a critical module too much accidentally";
+                    break;
+                case 'EXPERIMENTAL_FIT':
+                    $death_reason = "I tried an experimental fit and it didn't work";
+                    break;
+                case 'OTHER':
+                    $death_reason = "There was something else";
+                    break;
+                default:
+                    $death_reason = "Not specified / secret";
+            }
+
+            switch ($all_data->LOOT_TYPE) {
+                case 'BIOADAPTIVE_ONLY':
+                    $looting = "Looted the bioadaptive caches only";
+                    break;
+                case 'BIOADAPTIVE_PLUS_SOME_CANS':
+                    $looting = "Looted the bioadaptive caches + some cans";
+                    break;
+                case 'BIOADAPTIVE_PLUS_MOST_CANS':
+                    $looting = "Looted the bioadaptive caches + most cans";
+                    break;
+                case 'BIOADAPTIVE_PLUS_ALL_CANS':
+                    $looting = "Looted the bioadaptive caches + all the cans";
+                    break;
+                default:
+                    $looting = "It's unclear if only the cache or the cans were looted too";
+                    break;
+            }
             return view("run", [
                 "id" => $id,
                 "run" => $data,
                 "survival" => $explodeCharts,
                 "other" => $otherCharts,
-                "loot_table" => $loot
+                "loot_table" => $loot,
+                "all_data" => $all_data,
+                "percent" => ($percent),
+                "run_summary" => $run_summary,
+                "death_reason" => $death_reason,
+                "loot_type" => $looting
             ]);
+
         }
 
         public function get_all($order_by = "", $order_type = "") {

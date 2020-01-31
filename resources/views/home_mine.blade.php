@@ -128,5 +128,5 @@
     </script>
     {!! $personal_chart_loot->script(); !!}
     {!! $personal_isk_per_hour->script(); !!}
-    {!! $daily_add_chart->script(); !!}
+{{--    {!! $daily_add_chart->script(); !!}--}}
 @endsection

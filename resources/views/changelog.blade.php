@@ -4,7 +4,26 @@
         <div class="col-sm-6">
             <div class="card card-body border-danger shadow-sm">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
-                <h4 class="mb-0 pb-0"><strong>1.0.9</strong> Partian feature extension release</h4>
+                <h4 class="mb-0 pb-0"><strong>1.1</strong> Feature extension release</h4>
+                <small class="mt-0">2020 january 31</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>zKillboard link</li>
+                    <li>Loot type</li>
+                    <li>Updated run screen</li>
+                </ul>
+                And prepares the database for the next update:
+                <ul>
+                    <li>Filament prices</li>
+                    <li>Item drop rates</li>
+                </ul>
+                </p>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card card-body border-0 shadow-sm">
+                <h4 class="mb-0 pb-0"><strong>1.0.9</strong> Partial feature extension release</h4>
                 <small class="mt-0">2020 january 30</small>
                 <p>
                     This release adds:

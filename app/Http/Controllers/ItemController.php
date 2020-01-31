@@ -4,11 +4,36 @@
     namespace App\Http\Controllers;
 
 
+    use Illuminate\Support\Facades\DB;
+
     class ItemController extends Controller {
 
         public function get_single(int $item_id) {
+            $item = DB::table("item_prices")->where("ITEM_ID", $item_id);
+            if (!$item->exists()) {
+                return view('error', [
+                    "error" => "Sorry, we do not have info of this item yet."
+                ]);
+            }
+            else {
+                $item = $item->get()->get(0);
+            }
+
+            $builder = DB::table("detailed_loot")->where("ITEM_ID", $item_id);
+            $count = $builder->count();
+
+
+
+            return view("item", [
+               "item" => $item,
+               "count" => $count,
+            ]);
+        }
+
+        public function get_group(int $group_id)
+        {
             return view('error', [
-                "error" => "This page will contain the details, prices, and drop rates of this item. It is not ready yet."
+                "error" => "Sorry, item groups are not yet finished."
             ]);
         }
     }

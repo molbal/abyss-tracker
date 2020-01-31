@@ -178,8 +178,7 @@
                                     <option value="PILOTING_MISTAKE">I made a grave piloting mistake</option>
                                     <option value="PVP_DEATH">I went into the PVP room and lost</option>
                                     <option value="OVERHEAT_FAILURE">I overheated a critical module too much</option>
-                                    <option value="EXPERIMENTAL_FIT">I tried an experimental fit and it didn't work
-                                    </option>
+                                    <option value="EXPERIMENTAL_FIT">I tried an experimental fit and it didn't work</option>
                                     <option value="OTHER">Something else</option>
                                 </select>
                             </div>
