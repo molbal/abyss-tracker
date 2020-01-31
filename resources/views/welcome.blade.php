@@ -2,7 +2,7 @@
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
         <h4 class="font-weight-bold">Welcome to Veetor's Abyss Loot Tracker</h4>
-        <p>Home of Abyss loot tracking.</p>
+        <p>Home of {{$abyss_num}} saved runs</p>
     </div>
     <div class="row">
         <div class="col-md-4 col-sm-12">
@@ -33,9 +33,15 @@
         </div>
         <div class="col-md-6 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Abyss activity</h5>
+                {!! $daily_add_chart->container(); !!}
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 mt-3">
+            <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">What is this site?</h5>
                 <p class="text-justify">Welcome,<br>
-                This is a website to track and compare your Abyss runs, how much loot ISK you looted, what kind of filaments are popular.
+                This is a website to track and compare your Abyss runs, how much your loot is worth, and what kind of filaments are popular.
                     <br>
                 If you also add your Abyssal deadspace runs we will have a better idea on how much loot spawns in Abyssal sites (which is really hectic).</p>
                 <p>Cheers, <br>
@@ -52,6 +58,7 @@
     {!! $tier_levels_chart->script(); !!}
     {!! $survival_chart->script(); !!}
     {!! $loot_tier_chart->script(); !!}
+    {!! $daily_add_chart->script(); !!}
     <script type="text/javascript">
     </script>
 @endsection

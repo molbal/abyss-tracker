@@ -1,14 +1,13 @@
 @extends("layout.app")
 @section("content")
     <div class="row mt-5">
-        <div class="card card-body border-danger border-0 shadow-sm">
-            <h4>The website could not handle your request</h4>
+        <div class="col-sm-12 col-md-8 offset-md-2">
+            <h4 class="font-weight-bold"><img src="https://img.icons8.com/cotton/64/000000/cancel--v1.png"> The capacitor is empty</h4>
             @if(isset($error))
-                <div class="alert alert-danger">
-                      {{ $error }}
+                <div class="card card-body border-danger border-danger shadow-sm">
+                    {{ $error }}
                 </div>
             @endif
-
         </div>
     </div>
 @endsection
@@ -54,7 +53,7 @@
                 });
             });
 
-            $form.submit( function(e) {
+            $form.submit(function (e) {
                 $input.val($input.val().split(',').join(''));
 
             });

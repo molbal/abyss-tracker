@@ -72,8 +72,8 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="btn-group col-md-4">
-                <a href="{{route("runs_mine")}}" class="btn btn-secondary">My runs</a>
-                <a href="{{route("new")}}" class="btn btn-secondary">Add new run</a>
+                <a href="{{route("runs_mine")}}" class="btn btn-outline-secondary">My runs</a>
+                <a href="{{route("new")}}" class="btn btn-outline-secondary">Add new run</a>
             </div>
         </div>
     </div>
@@ -128,4 +128,5 @@
     </script>
     {!! $personal_chart_loot->script(); !!}
     {!! $personal_isk_per_hour->script(); !!}
+    {!! $daily_add_chart->script(); !!}
 @endsection

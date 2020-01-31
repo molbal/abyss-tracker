@@ -5,6 +5,7 @@
 
 
     use App\Charts\AbyssSurvivalType;
+    use App\Charts\DailyAdds;
     use App\Charts\IskPerHourChart;
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
@@ -57,11 +58,41 @@
             $loot_tier_chart->theme("light");
             $loot_tier_chart->displayLegend(false);
 
+            $adds = DB::table("runs")
+                ->selectRaw("count(ID) as CNT")
+//                ->selectRaw("sum(LOOT_ISK) as LOOT")
+                ->selectRaw('RUN_DATE')
+                ->whereRaw("RUN_DATE > NOW() - INTERVAL 2 WEEK")
+                ->orderBy("RUN_DATE", "ASC")
+                ->groupBy("RUN_DATE")->get();
+//            dd($adds);
+//            $labels = [];
+            $count = [];
+            $run_date = [];
+            foreach ($adds as $add) {
+                $run_date[]= date("m. d", strtotime($add->RUN_DATE));
+                $count[]= $add->CNT;
+            }
+            $daily_add_chart = new DailyAdds();
+            $daily_add_chart
+                ->displayAxes(true)
+                ->export(true)
+                ->height(400)
+                ->labels($run_date)
+                ->dataset("Daily abyss run count", "bar", $count);
+            $daily_add_chart->theme('light');
+            $daily_add_chart->displayLegend(false);
+
+
+
+            $count = DB::table("runs")->count();
             return view("welcome", [
                 'loot_types_chart' => $lootTypesChart,
                 'tier_levels_chart' => $tierLevelsChart,
                 'survival_chart' => $survival_chart,
                 'loot_tier_chart' => $loot_tier_chart,
+                'abyss_num' => $count,
+                'daily_add_chart' => $daily_add_chart
             ]);
         }
 
@@ -182,7 +213,7 @@
         public function get_single($id) {
             $builder = DB::table("v_runall")->where("ID", $id);
             if (!$builder->exists()) {
-                return view("error", ["error" => "Can't find this run"]);
+                return view("error", ["error" => "Sorry, we could not find an Abyss run with this ID"]);
             }
 
             $data = DB::table("v_runall")->where("ID", $id)->get()->get(0);
