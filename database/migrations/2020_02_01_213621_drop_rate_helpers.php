@@ -20,7 +20,7 @@ class DropRateHelpers extends Migration
             $t->integer("TIER");
         });
         Schema::create("type", function (Blueprint $t) {
-            $t->string("TIER", 16);
+            $t->string("TYPE", 16);
         });
         DB::table("tier")->insert([["TIER" => 1],["TIER" => 2],["TIER" => 3],["TIER" => 4],["TIER" => 5]]);
         DB::table("type")->insert([["TYPE" => 'Electrical'], ["TYPE" => 'Dark'], ["TYPE" => 'Exotic'], ["TYPE" => 'Firestorm'], ["TYPE" => 'Gamma']]);
