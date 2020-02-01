@@ -182,6 +182,18 @@
             </div>
         </div>
     </div>
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <div class="btn-group col-md-4">
+                    <a href="{{route("filtered_list", [
+        "tier" => $all_data->TIER,
+        "type" => $all_data->TYPE
+        ])}}" class="btn btn-outline-secondary">Show all Tier {{$all_data->TIER}} {{$all_data->TYPE}} runs ({{$count_same_type_tier}})</a>
+                </div>
+            </div>
+        </div>
+
+
 
 @endsection
 

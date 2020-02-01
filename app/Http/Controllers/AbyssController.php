@@ -325,6 +325,8 @@
                     $looting = "It's unclear if only the cache or the cans were looted too";
                     break;
             }
+
+            $count_same_type_tier = DB::table("runs")->where("TYPE", $all_data->TYPE)->where("TIER", $all_data->TIER)->count();
             return view("run", [
                 "id" => $id,
                 "run" => $data,
@@ -335,7 +337,8 @@
                 "percent" => ($percent),
                 "run_summary" => $run_summary,
                 "death_reason" => $death_reason,
-                "loot_type" => $looting
+                "loot_type" => $looting,
+                "count_same_type_tier" => $count_same_type_tier
             ]);
 
         }
