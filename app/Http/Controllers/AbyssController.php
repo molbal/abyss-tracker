@@ -206,7 +206,17 @@
         public function form_new() {
             if (session()->has("login_id")) {
                 $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
-                return view("new", ["ships" => $ships]);
+                $prev = DB::table("runs")
+                    ->where("CHAR_ID", session()->get("login_id"))
+                    ->orderBy("CREATED_AT", "DESC")
+                    ->orderBy("RUN_DATE", "DESC")
+                    ->limit(1)
+                    ->get()->get(0);
+//                dd($prev);
+                return view("new", [
+                    "ships" => $ships,
+                    "prev" => $prev
+                ]);
             } else {
                 return view("error", ["error" => "Please sign in first to add a new run"]);
             }

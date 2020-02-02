@@ -36,11 +36,11 @@
                                 <div class="form-group">
                                     <label for="">Abyss Type</label>
                                     <select name="TYPE" class="form-control select2-default">
-                                        <option value="Electrical">Electrical</option>
-                                        <option value="Dark">Dark</option>
-                                        <option value="Exotic">Exotic</option>
-                                        <option value="Firestorm">Firestorm</option>
-                                        <option value="Gamma">Gamma</option>
+                                        <option {{($prev->TYPE ?? null)== "Electrical" ? "selected" : ""}} value="Electrical">Electrical</option>
+                                        <option {{($prev->TYPE ?? null)== "Dark" ? "selected" : ""}} value="Dark">Dark</option>
+                                        <option {{($prev->TYPE ?? null)== "Exotic" ? "selected" : ""}} value="Exotic">Exotic</option>
+                                        <option {{($prev->TYPE ?? null)== "Firestorm" ? "selected" : ""}} value="Firestorm">Firestorm</option>
+                                        <option {{($prev->TYPE ?? null)== "Gamma" ? "selected" : ""}} value="Gamma">Gamma</option>
                                     </select>
                                 </div>
                             </div>
@@ -48,11 +48,11 @@
                                 <div class="form-group">
                                     <label for="">Abyss Tier</label>
                                     <select name="TIER" id="TIER" class="form-control select2-default">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
+                                        <option {{($prev->TIER ?? null) == 1 ? "selected" : ""}}>1</option>
+                                        <option {{($prev->TIER ?? null) == 2 ? "selected" : ""}}>2</option>
+                                        <option {{($prev->TIER ?? null) == 3 ? "selected" : ""}}>3</option>
+                                        <option {{($prev->TIER ?? null) == 4 ? "selected" : ""}}>4</option>
+                                        <option {{($prev->TIER ?? null) == 5 ? "selected" : ""}}>5</option>
                                     </select>
                                 </div>
                             </div>
@@ -71,8 +71,8 @@
                                 <div class="form-group">
                                     <label for="">Submit with your name or anonymus?</label>
                                     <select name="PUBLIC" class="form-control select2-default">
-                                        <option value="0" selected>Submit as anonymus</option>
-                                        <option value="1">Submit with my name</option>
+                                        <option value="0" {{($prev->PUBLIC ?? 0) == 0 ? "selected" : ""}}>Submit as anonymus</option>
+                                        <option value="1" {{($prev->PUBLIC ?? 0) == 1 ? "selected" : ""}}>Submit with my name</option>
                                     </select>
                                 </div>
                             </div>
@@ -86,11 +86,10 @@
                                 <div class="form-group">
                                     <label for="">What ship did you fly?</label>
                                     <select name="SHIP_ID" class="form-control select2-default">
-                                        <option value="">I don't remember / secret</option>
+                                        <option {{($prev->SHIP_ID ?? "") == "" ? "selected" : ""}} value="">I don't remember / secret</option>
                                         @foreach($ships as $ship)
-                                            <option value="{{$ship->ID}}">{{$ship->NAME}}
-                                                ({{$ship->GROUP}})
-                                            </option>
+                                            <!--  {{$prev->SHIP_ID ?? "undefined"}} vs {{$ship->ID}} -->
+                                            <option value="{{$ship->ID}}" {!! ($prev->SHIP_ID ?? 0) == $ship->ID ? "selected='selected'" : ""!!}>{{$ship->NAME}} ({{$ship->GROUP}})</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -123,14 +122,15 @@
                                 <div class="form-group">
                                     <label for="">How much did you loot?</label>
                                     <select name="LOOT_TYPE" id="" class="form-control select2-nosearch">
-                                        <option value="BIOADAPTIVE_ONLY">Just the bioadaptive cache</option>
-                                        <option value="BIOADAPTIVE_PLUS_SOME_CANS">Bioadaptive cache + some extraction
+                                        <option {{($prev->LOOT_TYPE ?? "") == "" ? "selected" : ""}} value="">I don't remember / secret</option>
+                                        <option {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_ONLY" ? "selected" : ""}} value="BIOADAPTIVE_ONLY">Just the bioadaptive cache</option>
+                                        <option {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_SOME_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_SOME_CANS">Bioadaptive cache + some extraction
                                             nodes
                                         </option>
-                                        <option value="BIOADAPTIVE_PLUS_MOST_CANS">Bioadaptive cache + most extraction
+                                        <option {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_MOST_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_MOST_CANS">Bioadaptive cache + most extraction
                                             nodes
                                         </option>
-                                        <option value="BIOADAPTIVE_PLUS_ALL_CANS">Bioadaptive cache + all extraction
+                                        <option {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_ALL_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_ALL_CANS">Bioadaptive cache + all extraction
                                             nodes
                                         </option>
                                     </select>
