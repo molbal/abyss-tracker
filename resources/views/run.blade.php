@@ -117,6 +117,7 @@
                             <th class="text-right">Buy price/piece</th>
                             <th class="text-right">Sell price/all</th>
                             <th class="text-right">Buy price/all</th>
+                            <th class="text-right">Drop rate</th>
                         </tr>
                         @foreach($loot_table as $loot_item)
                             <tr>
@@ -141,6 +142,8 @@
                                     <td class="text-right">{{number_format($loot_item->SELL_PRICE_ALL, 0, ",", " ")}}&nbsp;ISK
                                     </td>
                                     <td class="text-right">{{number_format($loot_item->BUY_PRICE_ALL, 0, ",", " ")}}&nbsp;ISK
+                                    </td>
+                                    <td class="text-right" data-toggle="tooltip" title="{{$loot_item->TOOLTIP}}">{{number_format($loot_item->DROP_PERCENT*100, 1, ",", " ")}}&nbsp;%
                                     </td>
                                 @endif
                             </tr>
