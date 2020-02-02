@@ -35,6 +35,7 @@
     Route::get("/loot/group/{group_id}/", 'ItemController@get_group')->name("item_group");
     Route::view("/changelog", "changelog")->name("changelog");
     Route::get("/loot/all", 'ItemController@get_all')->name("item_all");
+    Route::get("/api/search/items", 'ItemController@search_items')->name("search_items");
 
     /**
      * Chart APIs

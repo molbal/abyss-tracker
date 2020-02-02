@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
@@ -59,9 +60,30 @@
         function get_all() {
             $items = DB::table("item_prices")->orderBy("NAME", "ASC")->paginate(25);
             $cnt = DB::table("detailed_loot")->groupBy("RUN_ID")->count();
+            $items_select = DB::table("item_prices")->orderBy("NAME", "ASC")->select(["ITEM_ID", "NAME", "GROUP_NAME"])->get();
             return view("all_items", [
                 "cnt" => $cnt,
-               "items" => $items
+               "items" => $items,
+                "items_select" => $items_select
             ]);
+        }
+
+        function search_items(Request $request) {
+            $q = $request->get("q");
+            $items = DB::table("item_prices")->where("NAME", "LIKE", "%".$q."%")->get();
+
+            $q = [
+                "results" => [],
+                "pagination" => false
+            ];
+            foreach ($items as $item) {
+                $q["results"][] = [
+                  "id" => $item->ITEM_ID,
+                  "text" => sprintf("%s (%s)", $item->NAME, $item->GROUP_NAME),
+                    "html" => ""
+                ];
+            }
+
+            return json_encode($q);
         }
     }
