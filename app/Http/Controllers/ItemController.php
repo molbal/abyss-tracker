@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
     class ItemController extends Controller {
@@ -22,11 +23,29 @@
             $builder = DB::table("detailed_loot")->where("ITEM_ID", $item_id);
             $count = $builder->count();
 
+            $max_runs = 1;
+            $drop_rate_overall = 0;
+
+            $drop_rates = Cache::remember("dropsrate-".$item_id, 90, function() use ($item_id) {
+              return DB::table("v_drop_rates")
+                  ->where("ITEM_ID", $item_id)
+                  ->orderBy("TYPE", "ASC")
+                  ->orderBy("TIER", "ASC")
+                  ->get();
+            });
+
+            foreach ($drop_rates as $dropRate) {
+                $max_runs += $dropRate->MAX_RUNS;
+                $drop_rate_overall += $dropRate->DROP_RATE;
+            }
 
 
             return view("item", [
                "item" => $item,
                "count" => $count,
+                "drops" => $drop_rates,
+                "max_runs" => $max_runs,
+                "drop_rate" => $drop_rate_overall
             ]);
         }
 
