@@ -4,6 +4,7 @@
     namespace App\Http\Controllers\Loot;
 
 
+    use Carbon\Carbon;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
@@ -103,6 +104,11 @@
                 $data = json_decode(@file_get_contents("https://esi.evetech.net/latest/universe/types/" . $item->getItemId() . "/?datasource=tranquility&language=en-us"));
                 $group_data = json_decode(@file_get_contents("https://esi.evetech.net/latest/universe/groups/" . $data->group_id . "/?datasource=tranquility&language=en-us"));
 
+                if (stripos($item->getItemName().$group_data->name, "blueprint") !== false) {
+                    $item->setBuyValue(0);
+                    $item->setSellValue(0);
+                }
+
                 DB::table("item_prices")->insert([
                     "ITEM_ID" => $item->getItemId(),
                     "NAME" => $item->getItemName(),
@@ -113,11 +119,19 @@
                     "GROUP_NAME" => $group_data->name
                 ]);
             } else {
-                if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->whereRaw("PRICE_LAST_UPDATED > NOW() - INTERVAL 24 HOURS")) {
+                if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->whereRaw("PRICE_LAST_UPDATED > NOW() - INTERVAL 24 HOURS")->exists()) {
                     Log::info("Updating " . $item->getItemName());
+
+
+                    if (stripos($item->getItemName(), "blueprint") !== false) {
+                        $item->setBuyValue(0);
+                        $item->setSellValue(0);
+                    }
+
                     DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->update([
                         "PRICE_BUY" => $item->getBuyValue(),
-                        "PRICE_SELL" => $item->getSellValue()
+                        "PRICE_SELL" => $item->getSellValue(),
+                        "PRICE_LAST_UPDATED" => Carbon::now()
                     ]);
                 } else {
                     Log::info("Not updating item " . $item->getItemName());

@@ -1,4 +1,5 @@
 @extends("layout.app")
+@section("browser-title", "Run #".$run->ID." details")
 @section("content")
         <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
             <h4 class="font-weight-bold">Showing the details of <span data-toggle="tooltip" title="Loot value compared to average loot of this tier: {{round($percent)}}%">{{$run_summary}}</span> Abyssal run</h4>

@@ -55,4 +55,13 @@
                 "error" => "Sorry, item groups are not yet finished."
             ]);
         }
+
+        function get_all() {
+            $items = DB::table("item_prices")->orderBy("NAME", "ASC")->paginate(25);
+            $cnt = DB::table("detailed_loot")->groupBy("RUN_ID")->count();
+            return view("all_items", [
+                "cnt" => $cnt,
+               "items" => $items
+            ]);
+        }
     }

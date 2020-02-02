@@ -1,4 +1,5 @@
 @extends("layout.app")
+@section("browser-title", "My runs (".session()->get("login_name").")")
 @section("content")
 
     <div class="d-flex justify-content-between align-items-start mb-4 mt-5">

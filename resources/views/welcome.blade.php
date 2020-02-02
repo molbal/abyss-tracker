@@ -1,4 +1,5 @@
 @extends("layout.app")
+@section("browser-title", "Home")
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
         <h4 class="font-weight-bold">Welcome to Veetor's Abyss Loot Tracker</h4>

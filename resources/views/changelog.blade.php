@@ -1,4 +1,5 @@
 @extends("layout.app")
+@section("browser-title", "Changes")
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-6 mb-3">

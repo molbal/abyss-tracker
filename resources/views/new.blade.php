@@ -1,4 +1,5 @@
 @extends("layout.app")
+@section("browser-title", "Add a new run")
 @section("content")
 
     <form action="{{route("store")}}" method="post">
