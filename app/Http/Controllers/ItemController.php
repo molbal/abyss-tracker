@@ -52,8 +52,11 @@
 
         public function get_group(int $group_id)
         {
-            return view('error', [
-                "error" => "Sorry, item groups are not yet finished."
+            $items = DB::table("item_prices")->where("GROUP_ID", $group_id)->orderBy("NAME", "ASC")->paginate(25);
+            $name = DB::table("item_prices")->where("GROUP_ID", $group_id)->exists() ? DB::table("item_prices")->where("GROUP_ID", $group_id)->limit(1)->get()->get(0)->GROUP_NAME : "Unknown group";
+            return view("group_items", [
+                "group_name" => $name,
+                "items" => $items,
             ]);
         }
 

@@ -48,6 +48,10 @@
                 </div>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{"item_all" == Route::currentRouteName() ? "active" : ""}}"
+                   href="{{route("item_all")}}">Loot table</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{"changelog" == Route::currentRouteName() ? "active" : ""}}"
                    href="{{route("changelog")}}">Changelog</a>
             </li>
