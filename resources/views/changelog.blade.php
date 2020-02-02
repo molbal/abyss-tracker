@@ -4,7 +4,7 @@
         <div class="col-sm-6">
             <div class="card card-body border-danger shadow-sm">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
-                <h4 class="mb-0 pb-0"><strong>1.1.1</strong> Drops release</h4>
+                <h4 class="mb-0 pb-0"><strong>1.1.1</strong> Drops rate release</h4>
                 <small class="mt-0">2020 february 2</small>
                 <p>
                     This release adds:
