@@ -119,7 +119,7 @@
                     "GROUP_NAME" => $group_data->name
                 ]);
             } else {
-                if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->whereRaw("PRICE_LAST_UPDATED > NOW() - INTERVAL 24 HOURS")->exists()) {
+                if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->whereRaw("PRICE_LAST_UPDATED < NOW() - INTERVAL 24 HOUR")->exists()) {
                     Log::info("Updating " . $item->getItemName());
 
 
