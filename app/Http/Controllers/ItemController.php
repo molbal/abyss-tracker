@@ -62,7 +62,7 @@
 
         function get_all() {
             $items = DB::table("item_prices")->orderBy("NAME", "ASC")->paginate(25);
-            $cnt = DB::table("detailed_loot")->groupBy("RUN_ID")->count();
+            $cnt = DB::table("detailed_loot")->count();
             $items_select = DB::table("item_prices")->orderBy("NAME", "ASC")->select(["ITEM_ID", "NAME", "GROUP_NAME"])->get();
             return view("all_items", [
                 "cnt" => $cnt,

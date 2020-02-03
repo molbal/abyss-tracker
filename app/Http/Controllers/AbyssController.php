@@ -31,7 +31,7 @@
             $lootTypesChart->displayLegend(false);
             $lootTypesChart->export(true, "Download");
             $lootTypesChart->height("400");
-            $lootTypesChart->theme("light");
+            $lootTypesChart->theme(ThemeController::getChartTheme());
 
             $tierLevelsChart = new TierLevelsChart();
             $tierLevelsChart->load(route("chart.home.tier"));
@@ -39,14 +39,14 @@
             $tierLevelsChart->displayLegend(false);
             $tierLevelsChart->export(true, "Download");
             $tierLevelsChart->height("400");
-            $tierLevelsChart->theme("light");
+            $tierLevelsChart->theme(ThemeController::getChartTheme());
 
             $survival_chart = new SurvivalLevelChart();
             $survival_chart->load(route("chart.home.survival"));
             $survival_chart->export(true, "Download");
             $survival_chart->displayAxes(false);
             $survival_chart->height(400);
-            $survival_chart->theme("light");
+            $survival_chart->theme(ThemeController::getChartTheme());
             $survival_chart->displayLegend(false);
 
             $loot_tier_chart = new LootTierChart();
@@ -55,7 +55,7 @@
             $loot_tier_chart->displayAxes(true);
             $loot_tier_chart->height(400);
             $loot_tier_chart->labels(["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5"]);
-            $loot_tier_chart->theme("light");
+            $loot_tier_chart->theme(ThemeController::getChartTheme());
             $loot_tier_chart->displayLegend(false);
 
             $adds = DB::table("runs")
@@ -80,7 +80,7 @@
                 ->height(400)
                 ->labels($run_date)
                 ->dataset("Daily abyss run count", "bar", $count);
-            $daily_add_chart->theme('light');
+            $daily_add_chart->theme(ThemeController::getChartTheme());
             $daily_add_chart->displayLegend(false);
 
 
@@ -126,7 +126,7 @@
             $personalDaily->displayLegend(true);
             $personalDaily->export(true, "Download");
             $personalDaily->height("400");
-            $personalDaily->theme("light");
+            $personalDaily->theme(ThemeController::getChartTheme());
             $personalDaily->labels($labels);
 
             $iskPerHour = new IskPerHourChart();
@@ -135,7 +135,7 @@
             $iskPerHour->displayLegend(true);
             $iskPerHour->export(true, "Download");
             $iskPerHour->height("400");
-            $iskPerHour->theme("light");
+            $iskPerHour->theme(ThemeController::getChartTheme());
             $iskPerHour->labels($labels);
 
             return view("home_mine", [
@@ -236,7 +236,7 @@
             $explodeCharts->dataset(sprintf("%s tier %s survival ratio", $data->TYPE, $data->TIER), 'pie', [
                 DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", false)->count(),
                 DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->count()]);
-            $explodeCharts->theme('light');
+            $explodeCharts->theme(ThemeController::getChartTheme());
             $explodeCharts->displayAxes(false);
             $explodeCharts->displayLegend(false);
 
@@ -248,7 +248,7 @@
             $otherCharts->dataset(sprintf("Average loot for %s tier %s  (M ISK)", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);
             $otherCharts->dataset(sprintf("Average loot for tier %s  (M ISK)", $data->TIER), 'bar', [round($averageLootForTier / 1000000, 2)]);
             $otherCharts->dataset(sprintf("This run's loot (M ISK)"), 'bar', [round($data->LOOT_ISK / 1000000, 2)]);
-            $otherCharts->theme('light');
+            $otherCharts->theme(ThemeController::getChartTheme());
             $otherCharts->displayAxes(true);
             $otherCharts->displayLegend(true);
 
@@ -384,8 +384,11 @@
             $builder = DB::table("v_runall")->where("CHAR_ID", session()->get('login_id'));
             list($order_by, $order_by_text, $order_type_text, $order_type) = $this->getSort($order_by, $order_type);
 
-            $items = $builder->orderBy($order_by, $order_type)->paginate(25);
-            return view("my_runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items]);
+            $items = $builder->orderBy($order_by, $order_type);
+            if ($order_by == "RUN_DATE") {
+                $items->orderBy("CREATED_AT", $order_type);
+            }
+            return view("my_runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items->paginate(25)]);
         }
 
         /**

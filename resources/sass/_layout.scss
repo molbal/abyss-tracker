@@ -33,30 +33,22 @@ body {
     padding-left: 1rem;
     padding-right: 1rem;
 
+
     &:hover {
       color: $red;
     }
 
     &.active {
       color: $red;
-      //background-color: $light-grey-1;
         border: 0 solid $red;
         border-width: 2px 0 0 0;
     }
   }
 }
 
-.body-fullscreen {
-  min-height: 100vh;
-  background: url('/storage/bg.jpg') #29004e no-repeat fixed;
-}
 
 .text-small {
   font-size: 0.8rem;
-}
-
-.text-teal {
-  color: $teal !important;
 }
 
 .text-normal {
@@ -72,36 +64,4 @@ a.text-normal {
 
 .bg-muted {
   background-color: $light-grey-1 !important;
-}
-
-.bg-info-pastel {
-  background-color: $pastel-blue-lighter !important;
-}
-
-.text-info-pastel {
-  color: $pastel-blue !important;
-}
-
-.bg-danger-pastel {
-  background-color: $pastel-red-lighter !important;
-}
-
-.text-danger-pastel {
-  color: $pastel-red !important;
-}
-
-.bg-success-pastel {
-  background-color: $pastel-green-lighter !important;
-}
-
-.text-success-pastel {
-  color: $pastel-green !important;
-}
-
-.bg-warning-pastel {
-  background-color: $pastel-orange-lighter !important;
-}
-
-.text-warning-pastel {
-  color: $pastel-orange !important;
 }

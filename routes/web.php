@@ -56,6 +56,10 @@
     Route::get("/logout", 'Auth\AuthController@logout')->name("logout");
     Route::get("/eve/auth/callback", 'Auth\AuthController@handleProviderCallback');
 
+    /**
+     * Dark theme
+     */
+    Route::get("/customize/dark-theme/{isDark}",'ThemeController@setTheme')->name("customize_set_dark");
 
     /**
      * Runs database migrations

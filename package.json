@@ -21,5 +21,8 @@
         "sass": "^1.15.2",
         "sass-loader": "^8.0.0",
         "vue-template-compiler": "^2.6.11"
+    },
+    "dependencies": {
+        "@forevolve/bootstrap-dark": "^1.0.0-alpha.899"
     }
 }

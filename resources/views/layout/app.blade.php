@@ -7,7 +7,13 @@
     <base href="{{config("app.url")}}">
 
 
-    <link rel="stylesheet" href="css/app.css"/>
+    @if(App\Http\Controllers\ThemeController::isDarkTheme())
+        <link rel="stylesheet" href="css/app-dark.css"/>
+    @else
+        <link rel="stylesheet" href="css/app.css"/>
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap4-select2-theme@1.0.3/src/css/bootstrap4-select2-theme.css">
+    @endif
 
     <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -19,9 +25,11 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
           integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U=" crossorigin="anonymous"/>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" integrity="sha256-nbyata2PJRjImhByQzik2ot6gSHSU4Cqdz5bNYL2zcU=" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap4-select2-theme@1.0.3/src/css/bootstrap4-select2-theme.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"
+          integrity="sha256-nbyata2PJRjImhByQzik2ot6gSHSU4Cqdz5bNYL2zcU=" crossorigin="anonymous"/>
 
     <title>@yield('browser-title', config('app.name')) | {{ config('app.name') }}</title>
     <style>
@@ -34,7 +42,7 @@
             top: -2px
         }
 
-        tr,td {
+        tr, td {
             vertical-align: middle !important;
         }
 
@@ -91,8 +99,8 @@
 
         option {
             font-family: 'Shentox 13';
-
         }
+
     </style>
     @yield('styles')
 </head>
@@ -107,7 +115,9 @@
             <p class="mt-5 text-center">Abyss Tracker v1.1.3 is an open source application created by <a
                     href="https://twitter.com/veetor_in_eve">Veetor Nara</a> - <a
                     href="https://github.com/molbal/abyss-tracker"><img
-                        src="https://img.icons8.com/small/16/000000/github.png"> source code here</a></p>
+                        src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/github.png">
+                    source code here</a> - Set <a href="{{route("customize_set_dark", true)}}">dark theme</a> or <a
+                    href="{{route("customize_set_dark", 0)}}">bright theme</a></p>
             <p class="text-justify mt-3 text-small text-black-50"><small>
                     All images are material are property of CCP Games: EVE Online and the EVE logo are the registered
                     trademarks
@@ -130,7 +140,8 @@
                     cookies for Google Analytics reporting.
                     Some icons were provided by <a href="https://icons8.com" rel="nofollow"
                                                    target="_blank">Icons8</a>
-                    Thank you <a href="http://evepraisal.com" rel="follow" target="_blank">EVEpraisal</a> for loot estimation and market data
+                    Thank you <a href="http://evepraisal.com" rel="follow" target="_blank">EVEpraisal</a> for loot
+                    estimation and market data
                 </small>
             </p>
         </div>
@@ -138,8 +149,8 @@
 </footer>
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-    crossorigin="anonymous"></script>
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
@@ -155,7 +166,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts-en.min.js" charset="utf-8"></script>
 
 {{--<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js" integrity="sha256-vucLmrjdfi9YwjGY/3CQ7HnccFSS/XRS1M/3k/FDXJw=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js"
+        integrity="sha256-vucLmrjdfi9YwjGY/3CQ7HnccFSS/XRS1M/3k/FDXJw=" crossorigin="anonymous"></script>
 @yield('scripts')
 <script>
     $(function () {

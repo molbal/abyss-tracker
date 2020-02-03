@@ -13,10 +13,10 @@
                     <tr>
                         <th>&nbsp;</th>
                         <th>Ship name</th>
-                        <th>Abyss type <a href="{{route("runs", ["order_by" => 'TYPE', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'TYPE', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
-                        <th>Abyss tier <a href="{{route("runs", ["order_by" => 'TIER', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'TIER', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
-                        <th class="text-right">Loot value <a href="{{route("runs", ["order_by" => 'LOOT_ISK', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'LOOT_ISK', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
-                        <th>Run at <a href="{{route("runs", ["order_by" => 'RUN_DATE', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'RUN_DATE', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/000000/sort-up.png"></a> </th>
+                        <th>Abyss type <a href="{{route("runs", ["order_by" => 'TYPE', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'TYPE', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
+                        <th>Abyss tier <a href="{{route("runs", ["order_by" => 'TIER', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'TIER', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
+                        <th class="text-right">Loot value <a href="{{route("runs", ["order_by" => 'LOOT_ISK', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'LOOT_ISK', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
+                        <th>Run at <a href="{{route("runs", ["order_by" => 'RUN_DATE', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs", ["order_by" => 'RUN_DATE', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
                         <th>&nbsp;</th>
                     </tr>
                     @foreach($items as $item)
@@ -30,7 +30,7 @@
                             <td>{{$item->TIER}}</td>
                             <td class="text-right">{{number_format($item->LOOT_ISK, 0, " ",",")}} ISK</td>
                             <td>{{$item->RUN_DATE}}</td>
-                            <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}" title="Open"><img src="https://img.icons8.com/small/16/000000/view-file.png"></a></td>
+                            <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}" title="Open"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/view-file.png"></a></td>
                         </tr>
                     @endforeach
                 </table>
