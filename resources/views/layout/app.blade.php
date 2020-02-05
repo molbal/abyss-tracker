@@ -100,16 +100,16 @@
         option {
             font-family: 'Shentox 13';
         }
-
+        img.pull-left.ml-2 {
+            height: 64px;
+            width: 64px;
+        }
     </style>
     @yield('styles')
 </head>
 <body>
 @component("layout.navbar")@endcomponent
 <div class="container">
-    <div class="alert alert-info border-0 shadow-sm mt-3">
-        Drop rates are currently hidden, because the database is being reorganized. All submissions are recorded, just not displayed. Thank you for your patience!
-    </div>
     @if(\Illuminate\Support\Facades\Cache::has("recalc-notice"))
     <div class="alert alert-warning border-0 shadow-sm mt-3">
         {{\Illuminate\Support\Facades\Cache::get("recalc-notice")}} <br>

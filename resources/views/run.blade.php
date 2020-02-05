@@ -11,10 +11,10 @@
                     <div class="row">
                         @if($run->PUBLIC)
                             <img src="https://images.evetech.net/characters/{{$run->CHAR_ID}}/portrait?size=64"
-                                 class="pull-left ml-2 rounded-circle">
+                                 class="pull-left ml-2 rounded-circle shadow-sm">
                         @else
                             <img src="https://images.evetech.net/characters/1/portrait?size=64"
-                                 class="pull-left ml-2 rounded-circle">
+                                 class="pull-left ml-2 rounded-circle shadow-sm">
                         @endif
                         <div class="col">
                             <h2 class="font-weight-bold mb-0">{{$run->PUBLIC ? $run->NAME : "Private"}}</h2>
@@ -28,10 +28,10 @@
                     <div class="row">
                         @if($all_data->SHIP_ID)
                             <img src="https://images.evetech.net/types/{{$all_data->SHIP_ID}}/render?size=64"
-                                 class="pull-left ml-2 rounded-circle">
+                                 class="pull-left ml-2 rounded-circle shadow-sm">
                         @else
                             <img src="https://imageserver.eveonline.com/Type/34436_64.png"
-                                 class="pull-left ml-2 rounded-circle">
+                                 class="pull-left ml-2 rounded-circle shadow-sm">
                         @endif
                         <div class="col">
                             <h2 class="font-weight-bold mb-0">{{$run->SHIP_NAME ?? "Unknown"}}</h2>
@@ -134,6 +134,8 @@
                                 @if(stripos($loot_item->NAME, "Blueprint") !== false)
                                     <td class="text-center font-italic" colspan="4">We currently can't estimate
                                         blueprint values
+                                    </td>
+                                    <td class="text-right" data-toggle="tooltip" title="{{$loot_item->TOOLTIP}}">{{number_format($loot_item->DROP_PERCENT*100, 1, ",", " ")}}&nbsp;%
                                     </td>
                                 @else
                                     <td class="text-right">{{number_format($loot_item->PRICE_SELL, 0, ",", " ")}}&nbsp;ISK

@@ -4,11 +4,54 @@
     namespace App\Http\Controllers;
 
 
+    use App\Http\Controllers\Loot\LootCacheController;
+    use DateTime;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
     class ItemController extends Controller {
+
+        /** @var LootCacheController */
+        private $lootCacheController;
+
+        /**
+         * ItemController constructor.
+         *
+         * @param LootCacheController $lootCacheController
+         */
+        public function __construct(LootCacheController $lootCacheController) {
+            $this->lootCacheController = $lootCacheController;
+        }
+
+        private function time_elapsed_string($datetime, $full = false) {
+            $now = new DateTime;
+            $ago = new DateTime($datetime);
+            $diff = $now->diff($ago);
+
+            $diff->w = floor($diff->d / 7);
+            $diff->d -= $diff->w * 7;
+
+            $string = array(
+                'y' => 'year',
+                'm' => 'month',
+                'w' => 'week',
+                'd' => 'day',
+                'h' => 'hour',
+                'i' => 'minute',
+                's' => 'second',
+            );
+            foreach ($string as $k => &$v) {
+                if ($diff->$k) {
+                    $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+                } else {
+                    unset($string[$k]);
+                }
+            }
+
+            if (!$full) $string = array_slice($string, 0, 1);
+            return $string ? implode(', ', $string) . ' ago' : 'just now';
+        }
 
         public function get_single(int $item_id) {
             $item = DB::table("item_prices")->where("ITEM_ID", $item_id);
@@ -40,13 +83,17 @@
                 $drop_rate_overall += $dropRate->DROP_RATE;
             }
 */
+            $drop_rates = $this->lootCacheController->getAllItemStats($item_id);
+
 
             return view("item", [
                "item" => $item,
                "count" => $count,
-               // "drops" => $drop_rates,
+                "drops" => $drop_rates,
                 "max_runs" => $max_runs,
-                "drop_rate" => $drop_rate_overall
+                "drop_rate" => $drop_rate_overall,
+                "ago_drop" => $this->time_elapsed_string($drop_rates["Dark"]["1"]->UPDATED_AT),
+                "ago_price" => $this->time_elapsed_string($item->PRICE_LAST_UPDATED)
             ]);
         }
 

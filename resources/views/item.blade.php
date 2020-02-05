@@ -34,10 +34,10 @@
         <div class="col-md-4 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
-                    <img src="https://img.icons8.com/dotty/64/000000/time.png" class="pull-left ml-2">
+                    <img src="https://img.icons8.com/cotton/64/000000/percentage--v1.png" class="pull-left ml-2">
                     <div class="col">
-                        <h5 class="font-weight-bold mb-0">{{$item->PRICE_LAST_UPDATED}}</h5>
-                        <small class="text-muted font-weight-bold">Price updated</small>
+                        <h5 class="font-weight-bold mb-0">{{round($drops["sum"]->DROPPED_COUNT_SUM/max(1,$drops["sum"]->RUNS_COUNT_SUM)*100, 2)}} %</h5>
+                        <small class="text-muted font-weight-bold"> {{$drops["sum"]->DROPPED_COUNT_SUM}} / {{$drops["sum"]->RUNS_COUNT_SUM}} drop rate</small>
                     </div>
                 </div>
             </div>
@@ -53,46 +53,57 @@
             </div>
         </div>
     @endif
-{{--    <div class="row mt-3">--}}
-{{--        <div class="col-sm-12">--}}
-{{--            <div class="alert alert-info mb-3 border-0 shadow-sm">--}}
-{{--                <img src="https://img.icons8.com/android/16/000000/info.png"> Where we work with less than 10 runs the data is displayed in grey instead of black. This data is refreshed once in 90 minutes, because it takes a lot of time to calculate it.--}}
-{{--            </div>--}}
-{{--            <div class="card card-body border-info shadow-sm">--}}
-{{--                <h5 class="font-weight-bold">Drops {{round($drop_rate/$max_runs*100, 2)}}% of the time ({{$drop_rate}} out of {{$max_runs}})</h5>--}}
-{{--                <table class="table table-sm table-striped">--}}
-{{--                    <thead>--}}
-{{--                    <tr>--}}
-{{--                        <th>&nbsp;</th>--}}
-{{--                        @for($t=1;$t<=5;$t++)--}}
-{{--                        <th class="text-center"><img src="/tiers/{{$t}}.png" style="height: 16px;width: 16px;" alt=""> Tier {{$t}}</th>--}}
-{{--                            @endfor--}}
-{{--                    </tr>--}}
-{{--                    </thead>--}}
-{{--                    <tbody>--}}
-{{--                        @for($i=0;$i<5;$i++)--}}
-{{--                            <tr>--}}
-{{--                                <td class="font-weight-bold"><img src="/types/{{$drops->get($i*5)->TYPE}}.png" style="height: 32px;width: 32px;" alt=""> {{$drops->get($i*5)->TYPE}}</td>--}}
-{{--                                @for($j=0;$j<5;$j++)--}}
-{{--                                <td class="text-center {{$drops->get($i*5+$j)->MAX_RUNS < 10 ? 'text-black-50' : ''}}">--}}
-{{--                                    @if($drops->get($i*5+$j)->MAX_RUNS == 0)--}}
-{{--                                        <span class="text-black-50">?</span>--}}
-{{--                                        <br>--}}
-{{--                                        <span class="text-small">0 / 0</span>--}}
-{{--                                        @else--}}
-{{--                                        <span class="estimate-confident">{{round($drops->get($i*5+$j)->DROP_RATE/$drops->get($i*5+$j)->MAX_RUNS*100, 2)}}% </span>--}}
-{{--                                        <br>--}}
-{{--                                        <span class="text-small">{{$drops->get($i*5+$j)->DROP_RATE}} / {{$drops->get($i*5+$j)->MAX_RUNS}}</span>--}}
-{{--                                    @endif--}}
-{{--                                </td>--}}
-{{--                                @endfor--}}
-{{--                            </tr>--}}
-{{--                        @endfor--}}
-{{--                    </tbody>--}}
-{{--                </table>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="alert alert-info mb-3 border-0 shadow-sm">
+                <img src="https://img.icons8.com/android/16/000000/info.png"> Where we work with less than 10 runs the data is displayed in grey instead of black. This data is refreshed once in 90 minutes, because it takes a lot of time to calculate it.
+            </div>
+            <div class="card card-body border-info shadow-sm">
+                <h5 class="font-weight-bold">Drops rates</h5>
+                <table class="table table-sm table-striped">
+                    <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        @for($t=1;$t<=5;$t++)
+                        <th class="text-center"><img src="/tiers/{{$t}}.png" style="height: 16px;width: 16px;" alt=""> Tier {{$t}}</th>
+                            @endfor
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(['Electrical','Dark','Exotic','Firestorm','Gamma','All'] as $type)
+                            <tr>
+                                @if($type != "All")
+                                    <td class="font-weight-bold"><img src="/types/{{$type}}.png" style="height: 32px;width: 32px;" alt=""> {{$type}}</td>
+                                @else
+                                    <td class="font-weight-bold"><img src="https://image.eveonline.com/Type/33011_32.png" style="height: 32px;width: 32px;" alt=""> All types</td>
+                                @endif
+                                @for($tier=1;$tier<=5;$tier++)
+                                <td class="text-center {{$drops[$type][$tier]->RUNS_COUNT < 10 ? 'text-black-50' : ''}}">
+                                    @if($drops[$type][$tier]->RUNS_COUNT == 0)
+                                        <span class="text-black-50">?</span>
+                                        <br>
+                                        <span class="text-small">0 / 0</span>
+                                    @else
+                                        <span class="estimate-confident">{{round($drops[$type][$tier]->DROPPED_COUNT/$drops[$type][$tier]->RUNS_COUNT*100, 2)}}% </span>
+                                        <br>
+                                        <span class="text-small">{{$drops[$type][$tier]->DROPPED_COUNT}} / {{$drops[$type][$tier]->RUNS_COUNT}}</span>
+                                    @endif
+                                </td>
+                                @endfor
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <p>
+                Prices last updated at {{($ago_price)}} with Jita prices. Drop rates last updated at {{$ago_drop}} with local data. Every run submission triggers a price update for its loot items older than 24 hours. Drop rates are updated every day around downtime.
+            </p>
+        </div>
+    </div>
 
 @endsection
 

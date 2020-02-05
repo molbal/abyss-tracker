@@ -14,6 +14,7 @@
     use App\Charts\RunBetter;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
+    use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
@@ -22,6 +23,18 @@
     use Illuminate\Support\Facades\Validator;
 
     class AbyssController extends Controller {
+
+        /** @var LootCacheController */
+        private $lootCacheController;
+
+        /**
+         * ItemController constructor.
+         *
+         * @param LootCacheController $lootCacheController
+         */
+        public function __construct(LootCacheController $lootCacheController) {
+            $this->lootCacheController = $lootCacheController;
+        }
 
         public function home() {
 
@@ -340,17 +353,9 @@
 
 
             foreach ($loot as $lt) {
-                $item_id = $lt->ITEM_ID;
-                $drop_rates = Cache::remember("dropsrate-tier".$all_data->TIER."-type".$all_data->TYPE."-itemid".$item_id, 0, function() use ($item_id, $all_data) {
-                    return json_decode(json_encode(["DROP_RATE" => 0, "MAX_RUNS" => 1, "RUNS" => 1])); /*return DB::table("v_drop_rates")
-                        ->where("ITEM_ID", $item_id)
-                        ->where("TIER", $all_data->TIER)
-                        ->where("TYPE", $all_data->TYPE)
-                        ->get()->get(0);*/
-                });
-                $lt->DROP_PERCENT = round($drop_rates->DROP_RATE/$drop_rates->MAX_RUNS, 2);
-                $lt->TOOLTIP = sprintf("%d / %d runs", $drop_rates->DROP_RATE, $drop_rates->MAX_RUNS);
-
+                $loot_stats = $this->lootCacheController->getItemStatsForTierType($lt->ITEM_ID, $all_data->TYPE, $all_data->TIER);
+                $lt->DROP_PERCENT = round($loot_stats[$all_data->TYPE][$all_data->TIER]->DROPPED_COUNT/max(1,$loot_stats[$all_data->TYPE][$all_data->TIER]->RUNS_COUNT), 2);
+                $lt->TOOLTIP = sprintf("%d / %d runs", $loot_stats[$all_data->TYPE][$all_data->TIER]->DROPPED_COUNT, $loot_stats[$all_data->TYPE][$all_data->TIER]->RUNS_COUNT);
             }
 
             return view("run", [
