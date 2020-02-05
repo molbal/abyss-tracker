@@ -20,6 +20,7 @@ class CrateDropRateViews extends Migration
         $pdo = DB::connection()->getPdo();
         $pdo->exec("
         START TRANSACTION;
+DROP VIEW IF EXISTS v_tier_type;
         create  view v_tier_type as
 select `abyss`.`tier`.`TIER` AS `TIER`, `abyss`.`type`.`TYPE` AS `TYPE`
 from (`abyss`.`tier` join `abyss`.`type`);
@@ -29,7 +30,7 @@ drop function if exists getDropRate;
 DELIMITER //
 create function getDropRate(tier enum ('1', '2', '3', '4', '5'),
                             type enum ('Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma'),
-                            item_id bigint) returns int
+                            item_id bigint) returns int READS SQL DATA
 BEGIN
 
     DECLARE max INT;

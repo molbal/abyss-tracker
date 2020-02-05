@@ -17,7 +17,7 @@ class DropratesCache extends Migration
         Schema::create('droprates_cache', function (Blueprint $t) {
             $t->unsignedBigInteger("ITEM_ID");
             $t->enum("TIER", ['1', '2', '3', '4', '5'])->nullable();
-            $t->enum("TYPE", ['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma'])->nullable();
+            $t->enum("TYPE", ['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma', 'All'])->nullable();
             $t->unsignedInteger("DROPPED_COUNT");
             $t->unsignedInteger("RUNS_COUNT");
             $t->timestamp("UPDATED_AT")->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

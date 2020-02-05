@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+class RecalculateDroprates extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'abyss:recalc';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Recalculates drop rates';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        try {
+            $items = DB::table("item_prices")->select("ITEM_ID", "NAME")->get();
+            $types = ["Electrical", "Dark", "Exotic", "Firestorm", "Gamma"];
+            Log::info("Starting item drop rate calculation.");
+
+            Cache::put("recalc-notice", "We are currently updating drop rates. The site might be less responsive than usual.", 100);
+            Cache::put("recalc-current", 0, 100);
+            Cache::put("recalc-all", $items->count(),  100);
+            foreach ($items as $item) {
+                set_time_limit(3600);
+                $item_id = $item->ITEM_ID;
+                Log::info(" - Starting item drop calculation: " . $item->NAME);
+                $type_drp = 0;
+                $type_ran = 0;
+                Cache::increment("recalc-current");
+
+                for ($tier = 1; $tier <= 5; $tier++) {
+                    Log::info("  - Starting tier $tier");
+                    $tier_ran = 0;
+                    $tier_drp = 0;
+                    foreach ($types as $type) {
+                        Log::info("   - Starting type $type / $tier");
+                        $stats = DB::table("v_drop_rates")
+                            ->where("TIER", $tier)
+                            ->where("TYPE", $type)
+                            ->where("ITEM_ID", $item_id)->get()->get(0);
+
+                        $tier_ran += $stats->MAX_RUNS;
+                        $tier_drp += $stats->DROP_RATE;
+
+                        DB::beginTransaction();
+                        DB::table("droprates_cache")
+                            ->where("TIER", $tier)
+                            ->where("TYPE", $type)
+                            ->where("ITEM_ID", $item_id)->delete();
+                        DB::table("droprates_cache")->insert([
+                                "ITEM_ID" => $item_id,
+                                "TIER" => $tier,
+                                "TYPE" => $type,
+                                'DROPPED_COUNT' => $stats->DROP_RATE,
+                                'RUNS_COUNT' => $stats->MAX_RUNS
+                            ]);
+                        DB::commit();
+                    }
+
+                    DB::beginTransaction();
+                    DB::table("droprates_cache")
+                        ->where("TIER", $tier)
+                        ->where("TYPE", "All")
+                        ->where("ITEM_ID", $item_id)->delete();
+                    DB::table("droprates_cache")->insert([
+                        "ITEM_ID" => $item_id,
+                        "TIER" => $tier,
+                        "TYPE" => "All",
+                        'DROPPED_COUNT' => $tier_drp,
+                        'RUNS_COUNT' => $tier_ran
+                    ]);
+                    DB::commit();
+                }
+            }
+            Log::info("Finished recalc.");
+            Cache::forget("recalc-notice");
+            Cache::forget("recalc-current");
+            Cache::forget("recalc-all");
+        }
+        catch (\Exception $e) {
+            Log::error($e);
+        } finally {
+            Cache::forget("notice");
+        }
+
+    }
+}

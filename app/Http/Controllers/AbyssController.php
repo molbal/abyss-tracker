@@ -341,12 +341,12 @@
 
             foreach ($loot as $lt) {
                 $item_id = $lt->ITEM_ID;
-                $drop_rates = Cache::remember("dropsrate-tier".$all_data->TIER."-type".$all_data->TYPE."-itemid".$item_id, 30, function() use ($item_id, $all_data) {
-                    return DB::table("v_drop_rates")
+                $drop_rates = Cache::remember("dropsrate-tier".$all_data->TIER."-type".$all_data->TYPE."-itemid".$item_id, 0, function() use ($item_id, $all_data) {
+                    return json_decode(json_encode(["DROP_RATE" => 0, "MAX_RUNS" => 1, "RUNS" => 1])); /*return DB::table("v_drop_rates")
                         ->where("ITEM_ID", $item_id)
                         ->where("TIER", $all_data->TIER)
                         ->where("TYPE", $all_data->TYPE)
-                        ->get()->get(0);
+                        ->get()->get(0);*/
                 });
                 $lt->DROP_PERCENT = round($drop_rates->DROP_RATE/$drop_rates->MAX_RUNS, 2);
                 $lt->TOOLTIP = sprintf("%d / %d runs", $drop_rates->DROP_RATE, $drop_rates->MAX_RUNS);
