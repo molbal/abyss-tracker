@@ -101,10 +101,9 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-12">
-
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Exact loot &nbsp;<img
-                        src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
+                        src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" data-toggle="tooltip"
                         title="Jita prices were used to calculate loot value">
                     <small class="float-right">{{$loot_type}}</small>
                 </h5>
@@ -161,15 +160,67 @@
             </div>
         </div>
     </div>
+
+    @if(count($lost_table) > 0)
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card card-body border-0 shadow-sm">
+                    <h5 class="font-weight-bold">Items consumed or lost &nbsp;<img
+                            src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" data-toggle="tooltip"
+                            title="Jita prices were used to calculate loot value">
+                    </h5>
+                    <table class="table table-hover table-sm">
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>Name</th>
+                            <th class="text-right">Count</th>
+                            <th class="text-right">Sell price/piece</th>
+                            <th class="text-right">Buy price/piece</th>
+                            <th class="text-right">Sell price/all</th>
+                            <th class="text-right">Buy price/all</th>
+                        </tr>
+                        @foreach($lost_table as $loot_item)
+                            <tr>
+                                <td><img src="https://imageserver.eveonline.com/Type/{{$loot_item->ITEM_ID}}_32.png"
+                                         alt=""></td>
+                                <td>
+                                    <a data-toggle="tooltip" title="{{$loot_item->GROUP_NAME}}"
+                                       href="{{route('item_single', ["item_id" => $loot_item->ITEM_ID])}}">
+                                        {{$loot_item->NAME}}
+                                    </a>
+                                </td>
+                                <td class="text-right">{{$loot_item->COUNT}}</td>
+                                @if(stripos($loot_item->NAME, "Blueprint") !== false)
+                                    <td class="text-center font-italic" colspan="4">We currently can't estimate
+                                        blueprint values (How did you lose one in the abyss???)
+                                    </td>
+                                    <td class="text-right" data-toggle="tooltip" title="{{$loot_item->TOOLTIP}}">{{number_format($loot_item->DROP_PERCENT*100, 1, ",", " ")}}&nbsp;%
+                                    </td>
+                                @else
+                                    <td class="text-right">{{number_format($loot_item->PRICE_SELL, 0, ",", " ")}}&nbsp;ISK
+                                    </td>
+                                    <td class="text-right">{{number_format($loot_item->PRICE_BUY, 0, ",", " ")}}&nbsp;ISK
+                                    </td>
+                                    <td class="text-right">{{number_format($loot_item->SELL_PRICE_ALL, 0, ",", " ")}}&nbsp;ISK
+                                    </td>
+                                    <td class="text-right">{{number_format($loot_item->BUY_PRICE_ALL, 0, ",", " ")}}&nbsp;ISK
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endif
     @if(!$run->SURVIVED && $all_data->DEATH_REASON)
     <div class="row mt-3">
-        <div class="col-md-6 col-sm-12">
+        <div class="col-md-12 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Death details</h5>
-                <ul>
-                    <li><strong>Death reason: </strong>{{$death_reason}}</li>
-                    @if($all_data->KILLMAIL)<li><strong>Killmail: </strong> <a target="_blank" href="{{$all_data->KILLMAIL}}">zKillmail link</a></li>@endif
-                </ul>
+                <p class=" mb-0">{{$death_reason}}
+                @if($all_data->KILLMAIL)<br><a target="_blank" class="btn btn-outline-secondary mt-2" href="{{$all_data->KILLMAIL}}">Lossmail on zKillboard</a>@endif
+                </p>
             </div>
         </div>
     </div>

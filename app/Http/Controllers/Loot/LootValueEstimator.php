@@ -41,6 +41,75 @@
             return $this->totalPrice;
         }
 
+        /**
+         * Gets the difference between two loot strings.
+         *
+         * @param string $new
+         * @param string $old
+         * @return array
+         */
+        public static function difference(string $new, string $old): array {
+            $newItems = (new LootValueEstimator($new))->getItems();
+            $oldItems = (new LootValueEstimator($old))->getItems();
+
+            $lostItems = [];
+            $gainedItems = [];
+
+            foreach ($oldItems as $oldItem) {
+                $exists = false;
+                foreach ($newItems as $newItem) {
+                    if ($oldItem->getItemId() == $newItem->getItemId()) {
+                        $exists = true;
+                        if ($oldItem->getCount() > $newItem->getCount()) {
+                            $lostItem = new EveItem();
+                            $lostItem
+                                ->setItemId($oldItem->getItemId())
+                                ->setCount($oldItem->getCount() - $newItem->getCount())
+                                ->setBuyValue($oldItem->getBuyValue())
+                                ->setSellValue($oldItem->getSellValue())
+                                ->setItemName($oldItem->getItemName());
+                            $lostItems[] = $lostItem;
+                        }
+                    }
+                }
+                if (!$exists) {
+                    $lostItems[] = $oldItem;
+                }
+            }
+
+            foreach ($newItems as $newItem) {
+                $exists = false;
+                foreach ($oldItems as $oldItem) {
+                    if ($oldItem->getItemId() == $newItem->getItemId()) {
+                        $exists = true;
+                        if ($oldItem->getCount() < $newItem->getCount()) {
+                            $gainedItem = new EveItem();
+                            $gainedItem
+                                ->setItemId($newItem->getItemId())
+                                ->setCount($newItem->getCount() - $oldItem->getCount())
+                                ->setBuyValue($newItem->getBuyValue())
+                                ->setSellValue($newItem->getSellValue())
+                                ->setItemName($newItem->getItemName());
+                            $gainedItems[] = $gainedItem;
+                        }
+                    }
+                }
+                if (!$exists) {
+                    $gainedItems[] = $newItem;
+                }
+            }
+
+            $total_price = 0;
+            foreach ($gainedItems as $gainedItem) {
+                $total_price += $gainedItem->getCount()*(($gainedItem->getSellValue()+$gainedItem->getBuyValue())/2);
+            }
+
+            return [
+                "gainedItems" => $gainedItems,
+                "lostItems" => $lostItems,
+                "totalPrice" => round($total_price)
+            ];
+        }
 
         private function process() {
             try {
@@ -50,20 +119,31 @@
                 $this->totalPrice = round(($data->totals->buy + $data->totals->sell) / 2);
 
                 foreach ($data->items as $item) {
-                    $eveItem = new EveItem();
-                    $eveItem
-                        ->setItemName($item->name)
-                        ->setItemId($item->typeID)
-                        ->setBuyValue($item->prices->buy->max)
-                        ->setSellValue($item->prices->sell->min)
-                        ->setCount($item->quantity);
-                    $this->items[] = $eveItem;
+                    $ex = false;
+                    foreach ($this->items as $eitem) {
+                        if ($eitem->getItemId() == $item->typeID) {
+                            $ex = true;
+                            $eitem->setCount($eitem->getCount()+$item->quantity);
+                        }
+                    }
+                    if (!$ex) {
+                        $eveItem = new EveItem();
+                        $eveItem
+                            ->setItemName($item->name)
+                            ->setItemId($item->typeID)
+                            ->setBuyValue($item->prices->buy->max)
+                            ->setSellValue($item->prices->sell->min)
+                            ->setCount($item->quantity);
+                        $this->items[] = $eveItem;
+                    }
                 }
             } catch (\Exception $e) {
                 Log::warning($e);
                 $this->totalPrice = 0;
                 $this->items = [];
             }
+
+
 
         }
 
@@ -100,7 +180,6 @@
 
         public static function setItemPrice(EveItem $item) {
             if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->doesntExist()) {
-                Log::info("Inserting " . $item->getItemName());
                 $data = json_decode(@file_get_contents("https://esi.evetech.net/latest/universe/types/" . $item->getItemId() . "/?datasource=tranquility&language=en-us"));
                 $group_data = json_decode(@file_get_contents("https://esi.evetech.net/latest/universe/groups/" . $data->group_id . "/?datasource=tranquility&language=en-us"));
 
@@ -120,9 +199,6 @@
                 ]);
             } else {
                 if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->whereRaw("PRICE_LAST_UPDATED < NOW() - INTERVAL 24 HOUR")->exists()) {
-                    Log::info("Updating " . $item->getItemName());
-
-
                     if (stripos($item->getItemName(), "blueprint") !== false) {
                         $item->setBuyValue(0);
                         $item->setSellValue(0);
@@ -133,8 +209,6 @@
                         "PRICE_SELL" => $item->getSellValue(),
                         "PRICE_LAST_UPDATED" => Carbon::now()
                     ]);
-                } else {
-//                    Log::info("Not updating item " . $item->getItemName());
                 }
             }
         }

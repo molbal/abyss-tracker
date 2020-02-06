@@ -96,10 +96,14 @@
                     </tbody>
                 </table>
             </div>
-                @else
+                @elseif(DB::table("detailed_loot")->where("ITEM_ID", $item->ITEM_ID)->exists())
 
                 <div class="alert alert-warning mb-3 border-0 shadow-sm">
                     <img src="https://img.icons8.com/cotton/32/000000/under-construction--v2.png"> Drop rates for this item will be calculated during the next downtime.
+                </div>
+                @else
+                <div class="alert mb-3 border-danger shadow-sm">
+                    <img src="https://img.icons8.com/cotton/32/000000/delete-message.png"> Drop rates for this item will not be calculated, because this is not an item that drops from the Abyss.
                 </div>
             @endif
         </div>

@@ -140,8 +140,16 @@
                 Validator::make($request->all(), ['LOOT_DETAILED' => 'required'], ['required' => "Please fill :attribute before saving your request"])->validate();
             }
 
+            if (trim($request->get("LOOT_DETAILED_BEFORE")) != "") {
+
+                $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
+                $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
+            }
+            else {
+
             $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
             $id = $this->runsController->storeNewRun($request, $lootEstimator);
+            }
 
             return redirect(route("view_single", ["id" => $id]));
         }
@@ -186,6 +194,18 @@
             // Get all data and all loot
             $all_data = DB::table("runs")->where("ID", $id)->get()->get(0);
             $loot = DB::table("v_loot_details")->where("RUN_ID", $id)->get();
+            $lost = DB::select("select `dl`.`ITEM_ID`                   AS `ITEM_ID`,
+       `dl`.`RUN_ID`                    AS `RUN_ID`,
+       `dl`.`COUNT`                     AS `COUNT`,
+       `ip`.`NAME`                      AS `NAME`,
+       `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
+       `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
+       `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
+       `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
+       `ip`.`PRICE_BUY` * `dl`.`COUNT`  AS `BUY_PRICE_ALL`,
+       `ip`.`PRICE_SELL` * `dl`.`COUNT` AS `SELL_PRICE_ALL`
+from (`abyss`.`lost_items` `dl`
+         join `abyss`.`item_prices` `ip` on (`dl`.`ITEM_ID` = `ip`.`ITEM_ID`)) where dl.`RUN_ID`=?;", [intval($id)]);
 
             // Get customization options
             list($percent, $run_summary) = $this->barkController->getRunSummaryBark($data, $averageLootForTier);
@@ -205,6 +225,7 @@
                 "survival"             => $explodeCharts,
                 "other"                => $otherCharts,
                 "loot_table"           => $loot,
+                "lost_table"           => $lost,
                 "all_data"             => $all_data,
                 "percent"              => ($percent),
                 "run_summary"          => $run_summary,

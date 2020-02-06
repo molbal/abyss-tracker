@@ -37,11 +37,22 @@
                                 <div class="form-group">
                                     <label for="">Abyss Type</label>
                                     <select name="TYPE" class="form-control select2-default">
-                                        <option {{($prev->TYPE ?? null)== "Electrical" ? "selected" : ""}} value="Electrical">Electrical</option>
-                                        <option {{($prev->TYPE ?? null)== "Dark" ? "selected" : ""}} value="Dark">Dark</option>
-                                        <option {{($prev->TYPE ?? null)== "Exotic" ? "selected" : ""}} value="Exotic">Exotic</option>
-                                        <option {{($prev->TYPE ?? null)== "Firestorm" ? "selected" : ""}} value="Firestorm">Firestorm</option>
-                                        <option {{($prev->TYPE ?? null)== "Gamma" ? "selected" : ""}} value="Gamma">Gamma</option>
+                                        <option
+                                            {{($prev->TYPE ?? null)== "Electrical" ? "selected" : ""}} value="Electrical">
+                                            Electrical
+                                        </option>
+                                        <option {{($prev->TYPE ?? null)== "Dark" ? "selected" : ""}} value="Dark">Dark
+                                        </option>
+                                        <option {{($prev->TYPE ?? null)== "Exotic" ? "selected" : ""}} value="Exotic">
+                                            Exotic
+                                        </option>
+                                        <option
+                                            {{($prev->TYPE ?? null)== "Firestorm" ? "selected" : ""}} value="Firestorm">
+                                            Firestorm
+                                        </option>
+                                        <option {{($prev->TYPE ?? null)== "Gamma" ? "selected" : ""}} value="Gamma">
+                                            Gamma
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -72,8 +83,12 @@
                                 <div class="form-group">
                                     <label for="">Submit with your name or anonymus?</label>
                                     <select name="PUBLIC" class="form-control select2-default">
-                                        <option value="0" {{($prev->PUBLIC ?? 0) == 0 ? "selected" : ""}}>Submit as anonymus</option>
-                                        <option value="1" {{($prev->PUBLIC ?? 0) == 1 ? "selected" : ""}}>Submit with my name</option>
+                                        <option value="0" {{($prev->PUBLIC ?? 0) == 0 ? "selected" : ""}}>Submit as
+                                            anonymus
+                                        </option>
+                                        <option value="1" {{($prev->PUBLIC ?? 0) == 1 ? "selected" : ""}}>Submit with my
+                                            name
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -87,10 +102,15 @@
                                 <div class="form-group">
                                     <label for="">What ship did you fly?</label>
                                     <select name="SHIP_ID" class="form-control select2-default">
-                                        <option {{($prev->SHIP_ID ?? "") == "" ? "selected" : ""}} value="">I don't remember / secret</option>
-                                        @foreach($ships as $ship)
-                                            <!--  {{$prev->SHIP_ID ?? "undefined"}} vs {{$ship->ID}} -->
-                                            <option value="{{$ship->ID}}" {!! ($prev->SHIP_ID ?? 0) == $ship->ID ? "selected='selected'" : ""!!}>{{$ship->NAME}} ({{$ship->GROUP}})</option>
+                                        <option {{($prev->SHIP_ID ?? "") == "" ? "selected" : ""}} value="">I don't
+                                            remember / secret
+                                        </option>
+                                    @foreach($ships as $ship)
+                                        <!--  {{$prev->SHIP_ID ?? "undefined"}} vs {{$ship->ID}} -->
+                                            <option
+                                                value="{{$ship->ID}}" {!! ($prev->SHIP_ID ?? 0) == $ship->ID ? "selected='selected'" : ""!!}>
+                                                {{$ship->NAME}} ({{$ship->GROUP}})
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -106,14 +126,28 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label for="">How much loot did you return with? <a href="/how-to-loot.gif"
-                                                                                        target="_blank">How to use?</a>
+                                    <label for="" class="d-flex justify-content-between">
+                                        <span>How much loot did you return with? <a href="javascript:void(0)"
+                                                                                    id="advanced-loot-view">My cargo
+                                            is not empty!</a>
+                                            </span>
+                                        <span>
+                                            <a href="/how-to-loot.gif" target="_blank">How to use?</a>
                                         <img
-                                            src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" data-toggle="tooltip"
-                                            title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language."></label>
-                                    {{--                        <input type="text" class="form-control" id="loot" name="LOOT_ISK" required>--}}
-                                    <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4"
-                                              class="form-control" ></textarea>
+                                            src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png"
+                                            data-toggle="tooltip"
+                                            title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language.">
+                                        </span></label>
+                                    <div class="alert alert-info border-0 shadow-sm adv">
+                                        Please copy and paste your cargohold contents before and after running the filament. The site will compare the two to get which items you looted and which items you used up/lost.
+                                    </div>
+                                    <div class="text-muted">
+                                        Please only copy items here that you looted from the Abyss. If you went into the Proving conduit and destroyed another player's ship, do not paste his loot here!
+                                    </div>
+                                    <strong class="mt-2 adv">Before cargo:</strong>
+                                    <textarea name="LOOT_DETAILED_BEFORE" id="LOOT_DETAILED_BEFORE" rows="4" class="form-control adv"></textarea>
+                                    <strong class="mt-2 adv">After cargo:</strong>
+                                    <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4" class="form-control"></textarea>
                                     <p class="text-right">Total value is approximately <strong
                                             id="loot_value">0</strong> ISK
                                     </p>
@@ -123,15 +157,26 @@
                                 <div class="form-group">
                                     <label for="">How much did you loot?</label>
                                     <select name="LOOT_TYPE" id="" class="form-control select2-nosearch">
-                                        <option {{($prev->LOOT_TYPE ?? "") == "" ? "selected" : ""}} value="">I don't remember / secret</option>
-                                        <option {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_ONLY" ? "selected" : ""}} value="BIOADAPTIVE_ONLY">Just the bioadaptive cache</option>
-                                        <option {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_SOME_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_SOME_CANS">Bioadaptive cache + some extraction
+                                        <option {{($prev->LOOT_TYPE ?? "") == "" ? "selected" : ""}} value="">I don't
+                                            remember / secret
+                                        </option>
+                                        <option
+                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_ONLY" ? "selected" : ""}} value="BIOADAPTIVE_ONLY">
+                                            Just the bioadaptive cache
+                                        </option>
+                                        <option
+                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_SOME_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_SOME_CANS">
+                                            Bioadaptive cache + some extraction
                                             nodes
                                         </option>
-                                        <option {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_MOST_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_MOST_CANS">Bioadaptive cache + most extraction
+                                        <option
+                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_MOST_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_MOST_CANS">
+                                            Bioadaptive cache + most extraction
                                             nodes
                                         </option>
-                                        <option {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_ALL_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_ALL_CANS">Bioadaptive cache + all extraction
+                                        <option
+                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_ALL_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_ALL_CANS">
+                                            Bioadaptive cache + all extraction
                                             nodes
                                         </option>
                                     </select>
@@ -179,7 +224,8 @@
                                     <option value="PILOTING_MISTAKE">I made a grave piloting mistake</option>
                                     <option value="PVP_DEATH">I went into the PVP room and lost</option>
                                     <option value="OVERHEAT_FAILURE">I overheated a critical module too much</option>
-                                    <option value="EXPERIMENTAL_FIT">I tried an experimental fit and it didn't work</option>
+                                    <option value="EXPERIMENTAL_FIT">I tried an experimental fit and it didn't work
+                                    </option>
                                     <option value="OTHER">Something else</option>
                                 </select>
                             </div>
@@ -256,12 +302,19 @@
             });
 
         });
+
+        function advancedView() {
+            $("#advanced-loot-view").hide();
+            $(".adv").slideDown(230);
+        }
+
         // When ready.
         $(function () {
             setProvingConduit();
             setDeathReason();
             $("#TIER").change(setProvingConduit);
             $("#SURVIVED").change(setDeathReason);
+            $("#advanced-loot-view").click(advancedView);
 
             var $form = $("form");
             $form.submit(function (e) {
@@ -269,3 +322,11 @@
         });
     </script>
 @endsection
+
+@section("styles")
+    <style type="text/css">
+        .adv {
+            display: none;
+        }
+    </style>
+    @endsection
