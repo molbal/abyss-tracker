@@ -4,9 +4,13 @@
     namespace App\Http\Controllers;
 
 
+    use App\Charts\AbyssSurvivalType;
     use App\Charts\DailyAdds;
+    use App\Charts\IskPerHourChart;
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
+    use App\Charts\PersonalDaily;
+    use App\Charts\RunBetter;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use Illuminate\Support\Facades\DB;
@@ -98,5 +102,60 @@
             $daily_add_chart->displayLegend(false);
 
             return [$count, $daily_add_chart];
+        }
+
+
+        /**
+         * Returns charts for the Personal Stats screen
+         * @param array $labels
+         * @return array
+         */
+        public function getPersonalStatsCharts(array $labels): array {
+            $personalDaily = new PersonalDaily();
+            $personalDaily->load(route("chart.personal.loot"));
+            $personalDaily->displayAxes(true);
+            $personalDaily->displayLegend(true);
+            $personalDaily->export(true, "Download");
+            $personalDaily->height("400");
+            $personalDaily->theme(ThemeController::getChartTheme());
+            $personalDaily->labels($labels);
+
+            $iskPerHour = new IskPerHourChart();
+            $iskPerHour->load(route("chart.personal.ihp"));
+            $iskPerHour->displayAxes(true);
+            $iskPerHour->displayLegend(true);
+            $iskPerHour->export(true, "Download");
+            $iskPerHour->height("400");
+            $iskPerHour->theme(ThemeController::getChartTheme());
+            $iskPerHour->labels($labels);
+            return [$personalDaily, $iskPerHour];
+        }
+
+
+        /**
+         * Gets single run graphs
+         * @param $data
+         * @return array
+         */
+        public function getRunGraphs($data): array {
+            $explodeCharts = new AbyssSurvivalType();
+            $explodeCharts->labels(["Failures", "Successes"]);
+            $explodeCharts->dataset(sprintf("%s tier %s survival ratio", $data->TYPE, $data->TIER), 'pie', [
+                DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", false)->count(),
+                DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->count()]);
+            $explodeCharts->theme(ThemeController::getChartTheme());
+            $explodeCharts->displayAxes(false);
+            $explodeCharts->displayLegend(false);
+
+            $otherCharts = new RunBetter();
+            $averageLootForTierType = DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->avg("LOOT_ISK");
+            $averageLootForTier = DB::table("runs")->where("TIER", $data->TIER)->where("SURVIVED", true)->avg("LOOT_ISK");
+            $otherCharts->dataset(sprintf("%s tier %s avg. loot (" . round($averageLootForTierType / 1000000, 2) . "M ISK)", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);
+            $otherCharts->dataset(sprintf("Tier %s avg. loot (" . round($averageLootForTier / 1000000, 2) . "M ISK)", $data->TIER), 'bar', [round($averageLootForTier / 1000000, 2)]);
+            $otherCharts->dataset(sprintf("This run's loot (" . round($data->LOOT_ISK / 1000000, 2) . "M ISK)"), 'bar', [round($data->LOOT_ISK / 1000000, 2)]);
+            $otherCharts->theme(ThemeController::getChartTheme());
+            $otherCharts->displayAxes(true);
+            $otherCharts->displayLegend(true);
+            return [$explodeCharts, $otherCharts, $averageLootForTier];
         }
     }

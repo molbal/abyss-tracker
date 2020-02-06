@@ -41,4 +41,23 @@ ORDER BY 6 DESC LIMIT 10;
 
             return $drops;
         }
+
+
+        /**
+         * @return array
+         */
+        public function getPersonalStats(): array {
+            $my_runs = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->count();
+            $my_avg_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->avg('LOOT_ISK');
+            $my_sum_loot = DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->sum('LOOT_ISK');
+            $my_survival_ratio = (DB::table("runs")->where("CHAR_ID", session()->get("login_id"))->where("SURVIVED", '=', true)->count()) / max(1, $my_runs) * 100;
+            $id = session()->get("login_id");
+            $data = DB::table("runs")
+                ->where("CHAR_ID", '=', $id)
+                ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
+                ->select("RUN_DATE")
+                ->groupBy("RUN_DATE")
+                ->get();
+            return [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio, $data];
+        }
     }

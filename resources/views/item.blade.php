@@ -107,7 +107,7 @@
     <div class="row mt-3">
         <div class="col-sm-12">
             <p>
-                Prices were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates were last updated <strong>{{$ago_drop}}</strong> with data from the run loot data. Every run submission triggers a price update for its loot items older than 24 hours. Drop rates are updated every day around downtime.
+                Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates were last updated <strong>{{$ago_drop}}</strong> with data from the run loot data. Every run submission triggers a price update for its loot items older than 24 hours. Drop rates are updated every day around downtime.
             </p>
         </div>
     </div>
