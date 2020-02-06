@@ -27,98 +27,39 @@
         /** @var LootCacheController */
         private $lootCacheController;
 
+        /** @var GraphContainerController */
+        private $graphContainerController;
+
+        /** @var HomeQueriesController */
+        private $homeQueriesController;
+
         /**
-         * ItemController constructor.
+         * AbyssController constructor.
          *
-         * @param LootCacheController $lootCacheController
+         * @param LootCacheController      $lootCacheController
+         * @param GraphContainerController $graphContainerController
+         * @param HomeQueriesController    $homeQueriesController
          */
-        public function __construct(LootCacheController $lootCacheController) {
+        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController)
+        {
             $this->lootCacheController = $lootCacheController;
+            $this->graphContainerController = $graphContainerController;
+            $this->homeQueriesController = $homeQueriesController;
         }
 
+
         public function home() {
-
-            $lootTypesChart = new LootTypesChart();
-            $lootTypesChart->load(route("chart.home.type"));
-            $lootTypesChart->displayAxes(false);
-            $lootTypesChart->displayLegend(false);
-            $lootTypesChart->export(true, "Download");
-            $lootTypesChart->height("400");
-            $lootTypesChart->theme(ThemeController::getChartTheme());
-
-            $tierLevelsChart = new TierLevelsChart();
-            $tierLevelsChart->load(route("chart.home.tier"));
-            $tierLevelsChart->displayAxes(false);
-            $tierLevelsChart->displayLegend(false);
-            $tierLevelsChart->export(true, "Download");
-            $tierLevelsChart->height("400");
-            $tierLevelsChart->theme(ThemeController::getChartTheme());
-
-            $survival_chart = new SurvivalLevelChart();
-            $survival_chart->load(route("chart.home.survival"));
-            $survival_chart->export(true, "Download");
-            $survival_chart->displayAxes(false);
-            $survival_chart->height(400);
-            $survival_chart->theme(ThemeController::getChartTheme());
-            $survival_chart->displayLegend(false);
-
-            $loot_tier_chart = new LootTierChart();
-            $loot_tier_chart->load(route("chart.home.tier_averages"));
-            $loot_tier_chart->export(true, "Download");
-            $loot_tier_chart->displayAxes(true);
-            $loot_tier_chart->height(400);
-            $loot_tier_chart->labels(["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5"]);
-            $loot_tier_chart->theme(ThemeController::getChartTheme());
-            $loot_tier_chart->displayLegend(false);
-
-            $last_runs = DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->limit(20)->get();
-
-
-
-            $adds = DB::table("runs")
-                ->selectRaw("count(ID) as CNT")
-                ->selectRaw('RUN_DATE')
-                ->whereRaw("RUN_DATE > NOW() - INTERVAL 2 WEEK")
-                ->orderBy("RUN_DATE", "ASC")
-                ->groupBy("RUN_DATE")->get();
-
-           $drops = DB::select("
-           SELECT          ip.ITEM_ID,
-                MAX(ip.PRICE_BUY) as PRICE_BUY,
-                MAX(ip.PRICE_SELL) as PRICE_SELL,
-                MAX(ip.NAME) as NAME,
-                MAX(ip.GROUP_NAME) as GROUP_NAME,
-  (SELECT SUM(drci.DROPPED_COUNT)/SUM(drci.RUNS_COUNT)
-   FROM droprates_cache drci
-   WHERE drci.ITEM_ID=ip.ITEM_ID
-     AND drci.TYPE='All') DROP_CHANCE
-FROM item_prices ip
-LEFT JOIN droprates_cache drc ON ip.ITEM_ID=drc.ITEM_ID
-WHERE drc.TYPE='ALL'
-GROUP BY ip.ITEM_ID
-ORDER BY 6 DESC LIMIT 10;
-
-");
-
-            $count = [];
-            $run_date = [];
-            foreach ($adds as $add) {
-                $run_date[]= date("m. d", strtotime($add->RUN_DATE));
-                $count[]= $add->CNT;
-            }
-            $daily_add_chart = new DailyAdds();
-            $daily_add_chart
-                ->displayAxes(true)
-                ->export(true)
-                ->height(400)
-                ->labels($run_date)
-                ->dataset("Daily abyss run count", "bar", $count);
-            $daily_add_chart->theme(ThemeController::getChartTheme());
-            $daily_add_chart->displayLegend(false);
-
+            $lootTypesChart = $this->graphContainerController->getHomeLootTypesChart();
+            $tierLevelsChart = $this->graphContainerController->getHomeLootTierLevels();
+            $survival_chart = $this->graphContainerController->getHomeSurvivalLevels();
+            $loot_tier_chart = $this->graphContainerController->getHomeLootAverages();
+            $last_runs = $this->homeQueriesController->getLastRuns();
+            $drops = $this->homeQueriesController->getCommonDrops();
+            [$count, $daily_add_chart] = $this->graphContainerController->getHomeDailyRunCounts();
 
             $today_num = DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();
             $count = DB::table("runs")->count();
+
             return view("welcome", [
                 'loot_types_chart' => $lootTypesChart,
                 'tier_levels_chart' => $tierLevelsChart,
@@ -403,7 +344,7 @@ ORDER BY 6 DESC LIMIT 10;
 
         public function get_all($order_by = "", $order_type = "") {
             $builder = DB::table("v_runall");
-            list($order_by, $order_by_text, $order_type_text, $order_type) = $this->getSort($order_by, $order_type);
+            [$order_by, $order_by_text, $order_type_text, $order_type] = $this->getSort($order_by, $order_type);
 
             $items = $builder->orderBy($order_by, $order_type)->paginate(25);
             return view("runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items]);
@@ -414,7 +355,7 @@ ORDER BY 6 DESC LIMIT 10;
                 return view("error", ["error" => "Please log in to list your runs"]);
             }
             $builder = DB::table("v_runall")->where("CHAR_ID", session()->get('login_id'));
-            list($order_by, $order_by_text, $order_type_text, $order_type) = $this->getSort($order_by, $order_type);
+            [$order_by, $order_by_text, $order_type_text, $order_type] = $this->getSort($order_by, $order_type);
 
             $items = $builder->orderBy($order_by, $order_type);
             if ($order_by == "RUN_DATE") {
