@@ -209,8 +209,6 @@
                     "ITEM_ID" => $item->getItemId(),
                     "COUNT" => $item->getCount()
                 ]);
-
-
             }
 
             return redirect(route("view_single", ["id" => $id]));
@@ -354,8 +352,15 @@
 
             foreach ($loot as $lt) {
                 $loot_stats = $this->lootCacheController->getItemStatsForTierType($lt->ITEM_ID, $all_data->TYPE, $all_data->TIER);
+                try {
+
                 $lt->DROP_PERCENT = round($loot_stats[$all_data->TYPE][$all_data->TIER]->DROPPED_COUNT/max(1,$loot_stats[$all_data->TYPE][$all_data->TIER]->RUNS_COUNT), 2);
                 $lt->TOOLTIP = sprintf("%d / %d runs", $loot_stats[$all_data->TYPE][$all_data->TIER]->DROPPED_COUNT, $loot_stats[$all_data->TYPE][$all_data->TIER]->RUNS_COUNT);
+                }
+                catch (\Exception $e) {
+                    $lt->DROP_PERCENT = 0;
+                    $lt->TOOLTIP = "Unknown drop rate!";
+                }
             }
 
             return view("run", [
@@ -371,7 +376,6 @@
                 "loot_type" => $looting,
                 "count_same_type_tier" => $count_same_type_tier
             ]);
-
         }
 
         public function get_all($order_by = "", $order_type = "") {

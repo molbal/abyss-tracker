@@ -9,6 +9,7 @@
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
 
     class ItemController extends Controller {
 
@@ -25,6 +26,7 @@
         }
 
         private function time_elapsed_string($datetime, $full = false) {
+            if ($datetime == "never") return "never";
             $now = new DateTime;
             $ago = new DateTime($datetime);
             $diff = $now->diff($ago);
@@ -70,20 +72,12 @@
             $max_runs = 1;
             $drop_rate_overall = 0;
 
-            /*$drop_rates = Cache::remember("dropsrate-".$item_id, 90, function() use ($item_id) {
-              return DB::table("v_drop_rates")
-                  ->where("ITEM_ID", $item_id)
-                  ->orderBy("TYPE", "ASC")
-                  ->orderBy("TIER", "ASC")
-                  ->get();
-            });
+            try {
 
-            foreach ($drop_rates as $dropRate) {
-                $max_runs += $dropRate->MAX_RUNS;
-                $drop_rate_overall += $dropRate->DROP_RATE;
-            }
-*/
             $drop_rates = $this->lootCacheController->getAllItemStats($item_id);
+            }catch (\Exception $e) {
+                Log::warning("Unable to get drop rates: " . $e->getMessage());
+            }
 
 
             return view("item", [
@@ -92,7 +86,7 @@
                 "drops" => $drop_rates,
                 "max_runs" => $max_runs,
                 "drop_rate" => $drop_rate_overall,
-                "ago_drop" => $this->time_elapsed_string($drop_rates["Dark"]["1"]->UPDATED_AT),
+                "ago_drop" => $this->time_elapsed_string($drop_rates["Dark"]["1"]->UPDATED_AT ?? "never"),
                 "ago_price" => $this->time_elapsed_string($item->PRICE_LAST_UPDATED)
             ]);
         }

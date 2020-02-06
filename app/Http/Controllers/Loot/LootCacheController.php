@@ -6,6 +6,7 @@
 
     use App\Http\Controllers\Controller;
     use Illuminate\Support\Facades\DB;
+    use stdClass;
 
     class LootCacheController extends Controller {
 
@@ -54,10 +55,10 @@
 
             $ret = [];
             foreach ($stats as $stat) {
-                if (!isset($stat->TYPE)) {
-                    $ret[$stat->TYPE] = [];
+                if (!isset($type)) {
+                    $ret[$type] = [];
                 }
-                $ret[$stat->TYPE][$stat->TIER] = $stat;
+                $ret[$type][$tier] = $stat;
             }
             $ret["sum"] = $all;
             return $ret;
