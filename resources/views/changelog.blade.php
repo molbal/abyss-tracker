@@ -5,6 +5,29 @@
         <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
             <div class="card card-body border-danger shadow-sm">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.2.1</strong> 'Acumen' release</h4>
+                <small class="mt-0">2020 february 6</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>More interesting homescreen</li>
+                    <li>Loot drop rate display in items list</li>
+                </ul>
+                </p>
+                <p>
+                    This release improves:
+                <ul>
+                    <li>Site performance when opening runs or opening item</li>
+                </ul>
+                </p>
+                <p>This release fixes:
+                <ul>
+                    <li>In some cases when the loot contains a previously unknown item, the tracker failed to calculate a drop rate for it and showed a nasty error. Not any more!</li>
+                </ul></p>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
+            <div class="card card-body border-0 shadow-sm">
                 <h4 class="mb-0 pb-0"><strong>1.2</strong> 'Nocturnal' release</h4>
                 <small class="mt-0">2020 february 4</small>
                 <p>
