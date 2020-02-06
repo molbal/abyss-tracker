@@ -48,6 +48,10 @@
         }
 
 
+        /**
+         * Handles homepage view
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
         public function home() {
             $lootTypesChart = $this->graphContainerController->getHomeLootTypesChart();
             $tierLevelsChart = $this->graphContainerController->getHomeLootTierLevels();

@@ -93,7 +93,11 @@
 
         public function get_group(int $group_id)
         {
-            $items = DB::table("item_prices")->where("GROUP_ID", $group_id)->orderBy("NAME", "ASC")->paginate(25);
+            $items = DB::select("select ip.ITEM_ID, ip.NAME, ip.GROUP_NAME, ip.GROUP_ID, ip.PRICE_SELL, ip.PRICE_BUY, (
+    select SUM(drp.DROPPED_COUNT)/SUM(GREATEST(1,drp.RUNS_COUNT)) from droprates_cache drp where drp.ITEM_ID=ip.ITEM_ID and drp.TYPE='All'
+    ) DROP_RATE from item_prices ip where ip.GROUP_ID=?
+order by 2 ASC;", [intval($group_id)]);
+//            $items = DB::table("item_prices")->where("GROUP_ID", $group_id)->orderBy("NAME", "ASC")->paginate(25);
             $name = DB::table("item_prices")->where("GROUP_ID", $group_id)->exists() ? DB::table("item_prices")->where("GROUP_ID", $group_id)->limit(1)->get()->get(0)->GROUP_NAME : "Unknown group";
             return view("group_items", [
                 "group_name" => $name,
@@ -102,8 +106,12 @@
         }
 
         function get_all() {
-            $items = DB::table("item_prices")->orderBy("NAME", "ASC")->paginate(25);
+            $items = DB::select("select ip.ITEM_ID, ip.NAME, ip.GROUP_NAME, ip.GROUP_ID, ip.PRICE_SELL, ip.PRICE_BUY, (
+    select SUM(drp.DROPPED_COUNT)/SUM(GREATEST(1,drp.RUNS_COUNT)) from droprates_cache drp where drp.ITEM_ID=ip.ITEM_ID and drp.TYPE='All'
+    ) DROP_RATE from item_prices ip
+order by 7 DESC;");
             $cnt = DB::table("detailed_loot")->count();
+
             $items_select = DB::table("item_prices")->orderBy("NAME", "ASC")->select(["ITEM_ID", "NAME", "GROUP_NAME"])->get();
             return view("all_items", [
                 "cnt" => $cnt,
