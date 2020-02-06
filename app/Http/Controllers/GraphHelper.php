@@ -79,43 +79,6 @@
             return $chart->api();
 
         }
-/*
-        public function homeLootLevels() {
-            if (Cache::has("home.levels")) {
-                $data = Cache::get("home.levels");
-            } else {
-                $data = DB::table("v_all_loot_stats")->get()->get(0);
-                Cache::put("home.levels", $data, 15);
-            }
-
-            $chart = new LootAveragesChart();
-
-            $chart->labels([
-                "0-2.5M",
-                "2.5-5M",
-                "5-10M",
-                "10-15M",
-                "15-25M",
-                "25-35M",
-                "35-50M",
-                "50-65M",
-                "65-100M",
-                "100+M",
-            ]);
-            $chart->dataset("Run loot counts", 'bars', [
-                $data->A,
-                $data->B,
-                $data->C,
-                $data->D,
-                $data->E,
-                $data->F,
-                $data->G,
-                $data->H,
-                $data->I,
-                $data->J
-            ]);
-            return $chart->api();
-        }*/
 
         public function tierAverages() {
 
