@@ -79,7 +79,7 @@
             return $chart->api();
 
         }
-
+/*
         public function homeLootLevels() {
             if (Cache::has("home.levels")) {
                 $data = Cache::get("home.levels");
@@ -115,7 +115,7 @@
                 $data->J
             ]);
             return $chart->api();
-        }
+        }*/
 
         public function tierAverages() {
 

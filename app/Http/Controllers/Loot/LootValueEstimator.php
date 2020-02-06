@@ -134,7 +134,7 @@
                         "PRICE_LAST_UPDATED" => Carbon::now()
                     ]);
                 } else {
-                    Log::info("Not updating item " . $item->getItemName());
+//                    Log::info("Not updating item " . $item->getItemName());
                 }
             }
         }

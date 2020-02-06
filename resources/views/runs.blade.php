@@ -26,8 +26,8 @@
                                 {!! $item->SURVIVED ? '' : '<img src="/dead.png" data-toggle="tooltip" title="Run railed, ship and capsule lost"/>' !!}
                             </td>
                             <td>{!! $item->SHIP_NAME ?? '<em class="text-black-50">Unknown</em>' !!}</td>
-                            <td>{{$item->TYPE}}</td>
-                            <td>{{$item->TIER}}</td>
+                            <td><img src="types/{{$item->TYPE}}.png" style="width:16px;height:16px;" alt=""> {{$item->TYPE}}</td>
+                            <td><img src="tiers/{{$item->TIER}}.png" style="width:16px;height:16px;" alt=""> {{$item->TIER}}</td>
                             <td class="text-right">{{number_format($item->LOOT_ISK, 0, " ",",")}} ISK</td>
                             <td>{{$item->RUN_DATE}}</td>
                             <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}" title="Open"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/view-file.png"></a></td>

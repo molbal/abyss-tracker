@@ -41,17 +41,20 @@ class RecalculateDroprates extends Command
     public function handle()
     {
         try {
+            ini_set('max_execution_time', 0);
+            set_time_limit(0);
+
             $items = DB::table("item_prices")->select("ITEM_ID", "NAME")->get();
             $types = ["Electrical", "Dark", "Exotic", "Firestorm", "Gamma"];
             Log::info("Starting item drop rate calculation.");
 
-            Cache::put("recalc-notice", "We are currently updating drop rates. The site might be less responsive than usual.", 100);
+            Cache::put("recalc-notice", "We are currently updating drop rates.", 100);
             Cache::put("recalc-current", 0, 100);
             Cache::put("recalc-all", $items->count(),  100);
+            $k = 0;
             foreach ($items as $item) {
-                set_time_limit(3600);
                 $item_id = $item->ITEM_ID;
-                Log::info(" - Starting item drop calculation: " . $item->NAME);
+                Log::info(" - Starting item drop calculation: " . $item->NAME. " ".$k++."/".$items->count());
                 $type_drp = 0;
                 $type_ran = 0;
                 Cache::increment("recalc-current");
@@ -61,7 +64,6 @@ class RecalculateDroprates extends Command
                     $tier_ran = 0;
                     $tier_drp = 0;
                     foreach ($types as $type) {
-                        Log::info("   - Starting type $type / $tier");
                         $stats = DB::table("v_drop_rates")
                             ->where("TIER", $tier)
                             ->where("TYPE", $type)
@@ -70,40 +72,51 @@ class RecalculateDroprates extends Command
                         $tier_ran += $stats->MAX_RUNS;
                         $tier_drp += $stats->DROP_RATE;
 
+                        try {
+                            DB::beginTransaction();
+                            DB::table("droprates_cache")
+                                ->where("TIER", $tier)
+                                ->where("TYPE", $type)
+                                ->where("ITEM_ID", $item_id)->delete();
+                            DB::table("droprates_cache")->insert([
+                                    "ITEM_ID" => $item_id,
+                                    "TIER" => $tier,
+                                    "TYPE" => $type,
+                                    'DROPPED_COUNT' => $stats->DROP_RATE,
+                                    'RUNS_COUNT' => $stats->MAX_RUNS
+                                ]);
+                            DB::commit();
+                        }
+                        catch (\Exception $e) {
+                            Log::warning("Error while processing $item_id / $type / $tier " . $e->getMessage() ." ".$e->getFile(). " ".$e->getLine());
+                        }
+                    }
+
+                    try {
                         DB::beginTransaction();
                         DB::table("droprates_cache")
                             ->where("TIER", $tier)
-                            ->where("TYPE", $type)
+                            ->where("TYPE", "All")
                             ->where("ITEM_ID", $item_id)->delete();
                         DB::table("droprates_cache")->insert([
-                                "ITEM_ID" => $item_id,
-                                "TIER" => $tier,
-                                "TYPE" => $type,
-                                'DROPPED_COUNT' => $stats->DROP_RATE,
-                                'RUNS_COUNT' => $stats->MAX_RUNS
-                            ]);
+                            "ITEM_ID" => $item_id,
+                            "TIER" => $tier,
+                            "TYPE" => "All",
+                            'DROPPED_COUNT' => $tier_drp,
+                            'RUNS_COUNT' => $tier_ran
+                        ]);
                         DB::commit();
                     }
-
-                    DB::beginTransaction();
-                    DB::table("droprates_cache")
-                        ->where("TIER", $tier)
-                        ->where("TYPE", "All")
-                        ->where("ITEM_ID", $item_id)->delete();
-                    DB::table("droprates_cache")->insert([
-                        "ITEM_ID" => $item_id,
-                        "TIER" => $tier,
-                        "TYPE" => "All",
-                        'DROPPED_COUNT' => $tier_drp,
-                        'RUNS_COUNT' => $tier_ran
-                    ]);
-                    DB::commit();
+                    catch (\Exception $e) {
+                        Log::warning("Error while processing $item_id / All / $tier " . $e->getMessage() ." ".$e->getFile(). " ".$e->getLine());
+                    }
                 }
             }
             Log::info("Finished recalc.");
             Cache::forget("recalc-notice");
             Cache::forget("recalc-current");
             Cache::forget("recalc-all");
+            Log::info("Finished processing ".$items->count()." items");
         }
         catch (\Exception $e) {
             Log::error($e);
