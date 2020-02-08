@@ -11,6 +11,7 @@
     use Illuminate\Support\Facades\Session;
     use Laravel\Socialite\Facades\Socialite;
     use Laravel\Socialite\Two\User;
+    use PHPUnit\Exception;
 
     class AuthController extends Controller {
 
@@ -31,6 +32,8 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function handleProviderCallback() {
+            try {
+
             /** @var User $user */
             $user = Socialite::driver('eveonline')->user();
 
@@ -43,6 +46,10 @@
             \session()->put("login_id", $id);
             \session()->put("login_name", $name);
             return redirect(route("home_mine"));
+            }
+            catch (Exception $e) {
+                return view('error', ["error" => "The EVE API had an error: ".($e->getMessage() ?? 'No error message provided by ESI')." - if you try logging in again it will probably work."]);
+            }
         }
 
         public function logout() {
