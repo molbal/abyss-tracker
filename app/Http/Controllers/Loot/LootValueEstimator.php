@@ -112,6 +112,11 @@
         }
 
         private function process() {
+            if ($this->rawData == "") {
+                $this->totalPrice = 0;
+                $this->items = [];
+                return;
+            }
             try {
 
                 $data = $this->sendToEvePraisal();
@@ -142,9 +147,6 @@
                 $this->totalPrice = 0;
                 $this->items = [];
             }
-
-
-
         }
 
         /**

@@ -53,8 +53,12 @@
      * EVE Authentication routes
      */
     Route::get("/eve/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-start");
-    Route::get("/logout", 'Auth\AuthController@logout')->name("logout");
     Route::get("/eve/auth/callback", 'Auth\AuthController@handleProviderCallback');
+
+    Route::get("/eve/scoped/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-scoped-start");
+    Route::get("/eve/scoped/auth/callback", 'Auth\AuthController@handleProviderCallback');
+
+    Route::get("/logout", 'Auth\AuthController@logout')->name("logout");
 
     /**
      * Dark theme

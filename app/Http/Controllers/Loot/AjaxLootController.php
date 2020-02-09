@@ -10,7 +10,7 @@
     class AjaxLootController extends Controller {
 
         public function getSum(Request $request): string {
-            $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED"));
+            $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
 
             $int = $lootEstimator->getTotalPrice();
             return json_encode([

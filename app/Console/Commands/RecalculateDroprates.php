@@ -54,13 +54,13 @@ class RecalculateDroprates extends Command
             $k = 0;
             foreach ($items as $item) {
                 $item_id = $item->ITEM_ID;
-                Log::info(" - Starting item drop calculation: " . $item->NAME. " ".$k++."/".$items->count());
+                //Log::info(" - Starting item drop calculation: " . $item->NAME. " ".$k++."/".$items->count());
                 $type_drp = 0;
                 $type_ran = 0;
                 Cache::increment("recalc-current");
 
                 for ($tier = 1; $tier <= 5; $tier++) {
-                    Log::info("  - Starting tier $tier");
+                    //Log::info("  - Starting tier $tier");
                     $tier_ran = 0;
                     $tier_drp = 0;
                     foreach ($types as $type) {
