@@ -55,8 +55,8 @@
     Route::get("/eve/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-start");
     Route::get("/eve/auth/callback", 'Auth\AuthController@handleProviderCallback');
 
-    Route::get("/eve/scoped/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-scoped-start");
-    Route::get("/eve/scoped/auth/callback", 'Auth\AuthController@handleProviderCallback');
+    Route::get("/eve/scoped/auth/start", 'Auth\AuthController@redirectToScopedProvider')->name("auth-scoped-start");
+    Route::get("/eve/scoped/auth/callback", 'Auth\AuthController@handleScopedProviderCallback');
 
     Route::get("/logout", 'Auth\AuthController@logout')->name("logout");
 

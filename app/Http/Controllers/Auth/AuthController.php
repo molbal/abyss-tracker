@@ -81,6 +81,8 @@
                     'redirect'      => env('EVEONLINE_SCOPED_REDIRECT'),
                 ]]);
 
+//                dd(config("services.eveonline"));
+
                 /** @var User $user */
                 $user = Socialite::driver('eveonline')->user();
 
