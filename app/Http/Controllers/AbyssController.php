@@ -161,10 +161,15 @@
         public function form_new() {
             if (session()->has("login_id")) {
                 $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
+
+                $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", session()->get("login_id"))->whereNotNull("REFRESH_TOKEN")->exists();
+
+
                 $prev = $this->runsController->getPreviousRun();
                 return view("new", [
                     "ships" => $ships,
-                    "prev"  => $prev
+                    "prev"  => $prev,
+                    "stopwatch" => $stopwatch_enabled
                 ]);
             }
             else {

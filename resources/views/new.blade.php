@@ -121,6 +121,31 @@
             </div>
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3">
+                    <h5 class="font-weight-bold">Timing</h5>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group" id="timer_manual">
+                                    <label for="">How long did it take to return from Abyssal deadspace?</label>
+                                    <select name="RUN_LENGTH" class="select2-default form-control">
+                                        <option value="">I don't remember / secret</option>
+                                        @for($sec = 0; $sec <= 1200; $sec += 10)
+                                            <option value="{{$sec}}">{{intval($sec/60)}}m {{$sec%60}}s</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="card card-body border-0 shadow-sm mt-3">
                     <h5 class="font-weight-bold">Loot questions</h5>
                     <div class="container">
                         <div class="row">
