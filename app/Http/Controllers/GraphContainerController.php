@@ -13,6 +13,7 @@
     use App\Charts\RunBetter;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
     class GraphContainerController
@@ -77,7 +78,7 @@
             $loot_tier_chart->height(400);
             $loot_tier_chart->labels(["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5"]);
             $loot_tier_chart->theme(ThemeController::getChartTheme());
-            $loot_tier_chart->displayLegend(false);
+            $loot_tier_chart->displayLegend(true);
 
             return $loot_tier_chart;
         }
@@ -85,23 +86,53 @@
         /**
          * @return array
          */
-        public function getHomeDailyRunCounts() : array
+        public function getHomeDailyRunCounts() : object
         {
-            $adds = DB::table("runs")->selectRaw("count(ID) as CNT")->selectRaw('RUN_DATE')->whereRaw("RUN_DATE > NOW() - INTERVAL 2 WEEK")->orderBy("RUN_DATE", "ASC")->groupBy("RUN_DATE")->get();
 
+            [$run_date, $count_unknown, $count_cruiser, $count_frigate] = Cache::remember("chart.daily_run_counts", 15, function () {
 
-            $count = [];
             $run_date = [];
-            foreach ($adds as $add) {
-                $run_date[] = date("m. d", strtotime($add->RUN_DATE));
-                $count[] = $add->CNT;
-            }
-            $daily_add_chart = new DailyAdds();
-            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Daily abyss run count", "bar", $count);
-            $daily_add_chart->theme(ThemeController::getChartTheme());
-            $daily_add_chart->displayLegend(false);
+            $count_unknown = [];
+            $count_cruiser = [];
+            $count_frigate = [];
+            for ($days = -10; $days<=0; $days++) {
 
-            return [$count, $daily_add_chart];
+                $timestamp = strtotime("now $days days");
+                $run_date[] = date("m. y.", $timestamp);
+                $count_unknown[] = DB::table("runs")
+                    ->whereNull("SHIP_ID")
+                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                    ->groupBy("RUN_DATE")
+                    ->count();
+
+                $count_cruiser[] = DB::table("runs")
+                    ->whereNotNull("runs.SHIP_ID")
+                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                    ->where("ship_lookup.IS_CRUISER", "1")
+                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                    ->groupBy("RUN_DATE")
+                    ->count();
+
+                $count_frigate[] = DB::table("runs")
+                    ->whereNotNull("runs.SHIP_ID")
+                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                    ->where("ship_lookup.IS_CRUISER", "0")
+                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                    ->groupBy("RUN_DATE")
+                    ->count();
+            }
+
+            return [$run_date, $count_unknown, $count_cruiser, $count_frigate];
+            });
+
+            $daily_add_chart = new DailyAdds();
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Unknown runs", "bar", $count_unknown)->options(["stack" => "1"]);
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Cruiser runs", "bar", $count_cruiser)->options(["stack" => "1"]);
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Frigate runs", "bar", $count_frigate)->options(["stack" => "1"]);
+            $daily_add_chart->theme(ThemeController::getChartTheme());
+            $daily_add_chart->displayLegend(true);
+
+            return $daily_add_chart;
         }
 
 

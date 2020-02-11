@@ -61,14 +61,11 @@
         }
 
         public function homeSurvival() {
-            if (Cache::has("home.survival")) {
-                $data = Cache::get("home.survival");
-            } else {
-                $data = [
+            $data = Cache::remember("home.survival", 15, function () {
+                return [
                     "survived" => DB::table("runs")->where("SURVIVED", '=', true)->count(),
                     "died" => DB::table("runs")->where("SURVIVED", '=', false)->count()];
-                Cache::put("home.survival", $data, 15);
-            }
+            });
 
             $dataset = ["Survived", "Died"];
             $values = [$data["survived"], $data["died"]];
@@ -133,9 +130,9 @@
             }
 
             $chart->labels($dataset);
-            $chart->dataset('Avg. total loot value/site for all (M ISK)', 'bar', $values);
-            $chart->dataset('Avg. total loot value/site for cruisers (M ISK)', 'bar', $values_cruiser);
-            $chart->dataset('Avg. total loot value/site for frigates (M ISK)', 'bar', $values_frigate);
+            $chart->dataset('All runs (M ISK)', 'bar', $values);
+            $chart->dataset('Cruiser runs (M ISK)', 'bar', $values_cruiser);
+            $chart->dataset('Frigate runs (M ISK)', 'bar', $values_frigate);
             return $chart->api();
         }
 

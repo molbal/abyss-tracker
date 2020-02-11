@@ -69,7 +69,7 @@
             $loot_tier_chart = $this->graphContainerController->getHomeLootAverages();
             $last_runs = $this->homeQueriesController->getLastRuns();
             $drops = $this->homeQueriesController->getCommonDrops();
-            [$count, $daily_add_chart] = $this->graphContainerController->getHomeDailyRunCounts();
+            $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
             $today_num = DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();
             $count = DB::table("runs")->count();
 
