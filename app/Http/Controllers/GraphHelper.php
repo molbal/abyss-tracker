@@ -82,18 +82,38 @@
 
         public function tierAverages() {
 
-            if (Cache::has("home.tier_averages")) {
-                $data = Cache::get("home.tier_averages");
-            } else {
-                $data = DB::table("runs")
-
+            $data = Cache::remember("home.tier_averages", 15, function () {
+                return DB::table("runs")
                     ->select("TIER")
                     ->selectRaw("AVG(LOOT_ISK) as AVG")
                     ->groupBy("TIER")
                     ->orderBy("TIER", "ASC")
                     ->get();
-                Cache::put("home.tier_averages", $data, 15);
-            }
+            });
+
+            $data_cruiser = Cache::remember("home.tier_averages_cruiser", 15, function () {
+                return DB::table("runs")
+                    ->select("runs.TIER")
+                    ->selectRaw("AVG(runs.LOOT_ISK) as AVG")
+                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                    ->whereNotNull("runs.SHIP_ID")
+                    ->where("ship_lookup.IS_CRUISER", "1")
+                    ->groupBy("runs.TIER")
+                    ->orderBy("runs.TIER", "ASC")
+                    ->get();
+            });
+
+            $data_frigate = Cache::remember("home.tier_averages_frigate", 15, function () {
+                return DB::table("runs")
+                    ->select("runs.TIER")
+                    ->selectRaw("AVG(runs.LOOT_ISK) as AVG")
+                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                    ->whereNotNull("runs.SHIP_ID")
+                    ->where("ship_lookup.IS_CRUISER", "0")
+                    ->groupBy("runs.TIER")
+                    ->orderBy("runs.TIER", "ASC")
+                    ->get();
+            });
 
             $chart = new LootTierChart();
 
@@ -103,9 +123,19 @@
                 $dataset[] = "Tier ".$type->TIER;
                 $values[] = round($type->AVG/1000000, 2);
             }
+            $values_cruiser = [];
+            foreach ($data_cruiser as $type) {
+                $values_cruiser[] = round($type->AVG/1000000, 2);
+            }
+            $values_frigate = [];
+            foreach ($data_frigate as $type) {
+                $values_frigate[] = round($type->AVG/1000000, 2);
+            }
 
             $chart->labels($dataset);
-            $chart->dataset('Average loot value/tier (Million ISK)', 'bar', $values);
+            $chart->dataset('Avg. total loot value/site for all (M ISK)', 'bar', $values);
+            $chart->dataset('Avg. total loot value/site for cruisers (M ISK)', 'bar', $values_cruiser);
+            $chart->dataset('Avg. total loot value/site for frigates (M ISK)', 'bar', $values_frigate);
             return $chart->api();
         }
 
