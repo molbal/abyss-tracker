@@ -29,6 +29,11 @@
     Route::get("/filter/{type}/{tier}", 'FilteredController@get_list')->name("filtered_list");
 
     /**
+     * Most used ships
+     */
+    Route::get("/ships/", 'ShipsController@get_all')->name("ships_all");
+
+    /**
      * Item check
      */
     Route::get("/loot/item/{item_id}/", 'ItemController@get_single')->name("item_single");

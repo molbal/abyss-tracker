@@ -33,7 +33,9 @@
             $chart = new LootAveragesChart();
 
             $chart->labels($dataset);
-            $chart->dataset('Filament types', 'pie', $values);
+            $chart->dataset('Filament types', 'pie', $values)->options([
+                "radius" => [50, 120]
+            ]);
             return $chart->api();
         }
 
@@ -55,45 +57,66 @@
             $chart = new TierLevelsChart();
 
             $chart->labels($dataset);
-            $chart->dataset('Tier levels', 'pie', $values);
+            $chart->dataset('Tier levels', 'pie', $values)->options([
+                "radius" => [50, 120]
+            ]);
             return $chart->api();
 
         }
 
         public function homeSurvival() {
-            if (Cache::has("home.survival")) {
-                $data = Cache::get("home.survival");
-            } else {
-                $data = [
+            $data = Cache::remember("home.survival", 15, function () {
+                return [
                     "survived" => DB::table("runs")->where("SURVIVED", '=', true)->count(),
                     "died" => DB::table("runs")->where("SURVIVED", '=', false)->count()];
-                Cache::put("home.survival", $data, 15);
-            }
+            });
 
             $dataset = ["Survived", "Died"];
             $values = [$data["survived"], $data["died"]];
             $chart = new SurvivalLevelChart();
 
             $chart->labels($dataset);
-            $chart->dataset('Survival', 'pie', $values);
+            $chart->dataset('Survival', 'pie', $values)->options([
+                "radius" => [50, 120]
+            ]);
             return $chart->api();
 
         }
 
         public function tierAverages() {
 
-            if (Cache::has("home.tier_averages")) {
-                $data = Cache::get("home.tier_averages");
-            } else {
-                $data = DB::table("runs")
-
+            $data = Cache::remember("home.tier_averages", 15, function () {
+                return DB::table("runs")
                     ->select("TIER")
                     ->selectRaw("AVG(LOOT_ISK) as AVG")
                     ->groupBy("TIER")
                     ->orderBy("TIER", "ASC")
                     ->get();
-                Cache::put("home.tier_averages", $data, 15);
-            }
+            });
+
+            $data_cruiser = Cache::remember("home.tier_averages_cruiser", 15, function () {
+                return DB::table("runs")
+                    ->select("runs.TIER")
+                    ->selectRaw("AVG(runs.LOOT_ISK) as AVG")
+                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                    ->whereNotNull("runs.SHIP_ID")
+                    ->where("ship_lookup.IS_CRUISER", "1")
+                    ->groupBy("runs.TIER")
+                    ->orderBy("runs.TIER", "ASC")
+                    ->get();
+            });
+
+            $data_frigate = Cache::remember("home.tier_averages_frigate", 15, function () {
+                return DB::table("runs")
+                    ->select("runs.TIER")
+                    ->selectRaw("AVG(runs.LOOT_ISK) as AVG")
+                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                    ->whereNotNull("runs.SHIP_ID")
+                    ->where("ship_lookup.IS_CRUISER", "0")
+                    ->groupBy("runs.TIER")
+                    ->orderBy("runs.TIER", "ASC")
+                    ->get();
+            });
 
             $chart = new LootTierChart();
 
@@ -103,9 +126,19 @@
                 $dataset[] = "Tier ".$type->TIER;
                 $values[] = round($type->AVG/1000000, 2);
             }
+            $values_cruiser = [];
+            foreach ($data_cruiser as $type) {
+                $values_cruiser[] = round($type->AVG/1000000, 2);
+            }
+            $values_frigate = [];
+            foreach ($data_frigate as $type) {
+                $values_frigate[] = round($type->AVG/1000000, 2);
+            }
 
             $chart->labels($dataset);
-            $chart->dataset('Average loot value/tier (Million ISK)', 'bar', $values);
+            $chart->dataset('All runs (M ISK)', 'bar', $values);
+            $chart->dataset('Cruiser runs (M ISK)', 'bar', $values_cruiser);
+            $chart->dataset('Frigate runs (M ISK)', 'bar', $values_frigate);
             return $chart->api();
         }
 

@@ -9,7 +9,7 @@
         </div>
         <div class="col-sm-12">
             <div class="card card-body border-0 shadow-sm p-0">
-                <table class="table table-striped table-sm m-0 table-hover">
+                <table class="table table-striped table-sm m-0 table-hover table-responsive-sm">
                     <tr>
                         <th>&nbsp;</th>
                         <th>Ship name</th>

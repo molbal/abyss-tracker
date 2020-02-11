@@ -5,6 +5,27 @@
         <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
             <div class="card card-body border-danger shadow-sm">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.2.3</strong> 'Agility' release</h4>
+                <small class="mt-0">2020 february 11</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>Added side-scroll to tables for easier mobile display</li>
+                    <li>Separation of frigate and cruiser runs for average tier loot calculation</li>
+                    <li>Separation of frigate and cruiser runs for abyssal activity calculation</li>
+                    <li>Added most common ships view</li>
+                </ul>
+                </p>
+                <p>
+                    This release prepares:
+                <ul>
+                    <li>Automated stopwatch based on ESI data to measure how much time you spent in the Abyss</li>
+                </ul>
+                </p>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
+            <div class="card card-body border-0 shadow-sm">
                 <h4 class="mb-0 pb-0"><strong>1.2.2</strong> 'Declutter' release</h4>
                 <small class="mt-0">2020 february 7</small>
                 <p>
