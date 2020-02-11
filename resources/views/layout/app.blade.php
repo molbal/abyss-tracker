@@ -30,7 +30,8 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"
           integrity="sha256-nbyata2PJRjImhByQzik2ot6gSHSU4Cqdz5bNYL2zcU=" crossorigin="anonymous"/>
-
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.css"/>
     <title>@yield('browser-title', config('app.name')) | {{ config('app.name') }}</title>
     <style>
         .navbar-brand > img {
@@ -100,9 +101,14 @@
         option {
             font-family: 'Shentox 13';
         }
+
         img.pull-left.ml-2 {
             height: 64px;
             width: 64px;
+        }
+
+        table {
+            border-collapse: collapse;
         }
     </style>
     @yield('styles')
@@ -111,10 +117,11 @@
 @component("layout.navbar")@endcomponent
 <div class="container">
     @if(\Illuminate\Support\Facades\Cache::has("recalc-notice"))
-    <div class="alert alert-warning border-0 shadow-sm mt-3">
-        {{\Illuminate\Support\Facades\Cache::get("recalc-notice")}} <br>
-        We are currently processing task #{{\Illuminate\Support\Facades\Cache::get("recalc-current")}} out of {{\Illuminate\Support\Facades\Cache::get("recalc-all")}}
-    </div>
+        <div class="alert alert-warning border-0 shadow-sm mt-3">
+            {{\Illuminate\Support\Facades\Cache::get("recalc-notice")}} <br>
+            We are currently processing task #{{\Illuminate\Support\Facades\Cache::get("recalc-current")}} out
+            of {{\Illuminate\Support\Facades\Cache::get("recalc-all")}}
+        </div>
     @endif
 
     @yield('content')
@@ -178,6 +185,8 @@
 {{--<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js"
         integrity="sha256-vucLmrjdfi9YwjGY/3CQ7HnccFSS/XRS1M/3k/FDXJw=" crossorigin="anonymous"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.js"></script>
 @yield('scripts')
 <script>
     $(function () {
@@ -192,6 +201,9 @@
             theme: 'bootstrap',
             minimumResultsForSearch: -1,
             width: '100%'
+        });
+        $('.datatable').DataTable({
+            paginate: false
         });
     });
 
