@@ -33,7 +33,9 @@
             $chart = new LootAveragesChart();
 
             $chart->labels($dataset);
-            $chart->dataset('Filament types', 'pie', $values);
+            $chart->dataset('Filament types', 'pie', $values)->options([
+                "radius" => [50, 120]
+            ]);
             return $chart->api();
         }
 
@@ -55,7 +57,9 @@
             $chart = new TierLevelsChart();
 
             $chart->labels($dataset);
-            $chart->dataset('Tier levels', 'pie', $values);
+            $chart->dataset('Tier levels', 'pie', $values)->options([
+                "radius" => [50, 120]
+            ]);
             return $chart->api();
 
         }
@@ -72,7 +76,9 @@
             $chart = new SurvivalLevelChart();
 
             $chart->labels($dataset);
-            $chart->dataset('Survival', 'pie', $values);
+            $chart->dataset('Survival', 'pie', $values)->options([
+                "radius" => [50, 120]
+            ]);
             return $chart->api();
 
         }

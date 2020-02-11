@@ -8,7 +8,7 @@
     <div class="row mt-3">
         <div class="col-md-6 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Average loot per tiers</h5>
+                <h5 class="font-weight-bold mb-2">Average loot per tier</h5>
                 {!! $loot_tier_chart->container(); !!}
             </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="col-xs-12 col-sm-8">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Last submitted runs</h5>
-                <table class="table table-striped table-sm m-0 table-hover">
+                <table class="table table-striped table-sm m-0 table-hover table-responsive-sm">
                     <tr>
                         <th>&nbsp;</th>
                         <th>Ship name</th>
