@@ -29,6 +29,12 @@
     Route::get("/filter/{type}/{tier}", 'FilteredController@get_list')->name("filtered_list");
 
     /**
+     * Stopwatch
+     */
+    Route::post("/stopwatch/start/{charId}", 'StopwatchController@addChecks')->name("stopwatch_start");
+    Route::get("/stopwatch/get/{charId}", 'StopwatchController@getAbyssState')->name("stopwatch_get");
+
+    /**
      * Most used ships
      */
     Route::get("/ships/", 'ShipsController@get_all')->name("ships_all");

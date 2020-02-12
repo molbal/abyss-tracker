@@ -21,9 +21,9 @@
         public function __construct(LootCacheController $lootCacheController) { $this->lootCacheController = $lootCacheController; }
 
 
-
         /**
          * Gets the previous run of the logged in char
+         *
          * @return mixed
          */
         public function getPreviousRun() {
@@ -39,34 +39,43 @@
 
         /**
          * Handles the DB persisting of the new run
+         *
          * @param Request            $request
          * @param LootValueEstimator $lootEstimator
          * @return int
          */
         public function storeNewRun(Request $request, LootValueEstimator $lootEstimator): int {
+            if ($request->get("RUN_LENGTH_M")) {
+                $runtime = (intval($request->get("RUN_LENGTH_M")) * 60) + intval($request->get("RUN_LENGTH_S"));
+            }
+            else {
+                $runtime = null;
+            }
+
             $id = DB::table("runs")->insertGetId([
-                'CHAR_ID' => session()->get("login_id"),
-                'PUBLIC' => $request->get("PUBLIC"),
-                'TIER' => $request->get("TIER"),
-                'TYPE' => $request->get("TYPE"),
-                'LOOT_ISK' => $request->get("SURVIVED") ? $lootEstimator->getTotalPrice() : 0,
-                'SURVIVED' => $request->get("SURVIVED"),
-                'RUN_DATE' => $request->get("RUN_DATE"),
-                'SHIP_ID' => $request->get('SHIP_ID'),
-                'DEATH_REASON' => $request->get('DEATH_REASON'),
-                'PVP_CONDUIT_USED' => $request->get('PVP_CONDUIT_USED'),
+                'CHAR_ID'           => session()->get("login_id"),
+                'PUBLIC'            => $request->get("PUBLIC"),
+                'TIER'              => $request->get("TIER"),
+                'TYPE'              => $request->get("TYPE"),
+                'LOOT_ISK'          => $request->get("SURVIVED") ? $lootEstimator->getTotalPrice() : 0,
+                'SURVIVED'          => $request->get("SURVIVED"),
+                'RUN_DATE'          => $request->get("RUN_DATE"),
+                'SHIP_ID'           => $request->get('SHIP_ID'),
+                'DEATH_REASON'      => $request->get('DEATH_REASON'),
+                'PVP_CONDUIT_USED'  => $request->get('PVP_CONDUIT_USED'),
                 'PVP_CONDUIT_SPAWN' => $request->get('PVP_CONDUIT_SPAWN'),
-                'FILAMENT_PRICE' => $request->get('FILAMENT_PRICE'),
-                'LOOT_TYPE' => $request->get('LOOT_TYPE'),
-                'KILLMAIL' => $request->get('KILLMAIL'),
+                'FILAMENT_PRICE'    => $request->get('FILAMENT_PRICE'),
+                'LOOT_TYPE'         => $request->get('LOOT_TYPE'),
+                'KILLMAIL'          => $request->get('KILLMAIL'),
+                'RUNTIME_SECONDS'   => $runtime
             ]);
 
             foreach ($lootEstimator->getItems() as $item) {
                 LootValueEstimator::setItemPrice($item);
                 DB::table("detailed_loot")->insert([
-                    "RUN_ID" => $id,
+                    "RUN_ID"  => $id,
                     "ITEM_ID" => $item->getItemId(),
-                    "COUNT" => $item->getCount()
+                    "COUNT"   => $item->getCount()
                 ]);
             }
             return $id;
@@ -81,43 +90,41 @@
          */
         public function storeNewRunWithAdvancedLoot(Request $request, array $lootDifference): int {
             $id = DB::table("runs")->insertGetId([
-                'CHAR_ID' => session()->get("login_id"),
-                'PUBLIC' => $request->get("PUBLIC"),
-                'TIER' => $request->get("TIER"),
-                'TYPE' => $request->get("TYPE"),
-                'LOOT_ISK' => $request->get("SURVIVED") ? $lootDifference['totalPrice'] : 0,
-                'SURVIVED' => $request->get("SURVIVED"),
-                'RUN_DATE' => $request->get("RUN_DATE"),
-                'SHIP_ID' => $request->get('SHIP_ID'),
-                'DEATH_REASON' => $request->get('DEATH_REASON'),
-                'PVP_CONDUIT_USED' => $request->get('PVP_CONDUIT_USED'),
+                'CHAR_ID'           => session()->get("login_id"),
+                'PUBLIC'            => $request->get("PUBLIC"),
+                'TIER'              => $request->get("TIER"),
+                'TYPE'              => $request->get("TYPE"),
+                'LOOT_ISK'          => $request->get("SURVIVED") ? $lootDifference['totalPrice'] : 0,
+                'SURVIVED'          => $request->get("SURVIVED"),
+                'RUN_DATE'          => $request->get("RUN_DATE"),
+                'SHIP_ID'           => $request->get('SHIP_ID'),
+                'DEATH_REASON'      => $request->get('DEATH_REASON'),
+                'PVP_CONDUIT_USED'  => $request->get('PVP_CONDUIT_USED'),
                 'PVP_CONDUIT_SPAWN' => $request->get('PVP_CONDUIT_SPAWN'),
-                'FILAMENT_PRICE' => $request->get('FILAMENT_PRICE'),
-                'LOOT_TYPE' => $request->get('LOOT_TYPE'),
-                'KILLMAIL' => $request->get('KILLMAIL'),
+                'FILAMENT_PRICE'    => $request->get('FILAMENT_PRICE'),
+                'LOOT_TYPE'         => $request->get('LOOT_TYPE'),
+                'KILLMAIL'          => $request->get('KILLMAIL'),
             ]);
 
             foreach ($lootDifference['gainedItems'] as $item) {
                 LootValueEstimator::setItemPrice($item);
                 DB::table("detailed_loot")->insert([
-                    "RUN_ID" => $id,
+                    "RUN_ID"  => $id,
                     "ITEM_ID" => $item->getItemId(),
-                    "COUNT" => $item->getCount()
+                    "COUNT"   => $item->getCount()
                 ]);
             }
 
             foreach ($lootDifference['lostItems'] as $item) {
                 LootValueEstimator::setItemPrice($item);
                 DB::table("lost_items")->insert([
-                    "RUN_ID" => $id,
+                    "RUN_ID"  => $id,
                     "ITEM_ID" => $item->getItemId(),
-                    "COUNT" => $item->getCount()
+                    "COUNT"   => $item->getCount()
                 ]);
             }
             return $id;
         }
-
-
 
 
         /**

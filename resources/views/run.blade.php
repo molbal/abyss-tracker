@@ -3,6 +3,9 @@
 @section("content")
         <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
             <h4 class="font-weight-bold">Showing the details of <span data-toggle="tooltip" title="Loot value compared to average loot of this tier: {{round($percent)}}%">{{$run_summary}}</span> Abyssal run</h4>
+            <p class="text-right font-italic text-sm mb-0 pb-0">
+                Saved at: {{$run->CREATED_AT ?? $run->RUN_DATE}}
+            </p>
         </div>
         <div class="row">
 
@@ -43,10 +46,14 @@
             <div class="col-md-4 col-sm-6">
                 <div class="card card-body shadow-sm border-0">
                     <div class="row">
-                        <img src="https://image.eveonline.com/Type/33024_64.png" class="pull-left ml-2 rounded-circle">
-                        <div class="col">
-                            <h2 class="font-weight-bold mb-0">{{$run->RUN_DATE}}</h2>
-                            <small class="text-muted font-weight-bold">Day of run</small>
+                        <img src="https://image.eveonline.com/Type/434_64.png" class="pull-left ml-2 rounded-circle">
+                        <div class="col"><h2 class="font-weight-bold mb-0">
+                            @if($all_data->RUNTIME_SECONDS == 0)
+                                <span class="">Unknown</span>
+                                @else
+                                    {{sprintf("%02d", $all_data->RUNTIME_SECONDS/60)}}:{{sprintf("%02d", $all_data->RUNTIME_SECONDS%60)}}
+                            @endif</h2>
+                            <small class="text-muted font-weight-bold">Run duration</small>
                         </div>
                     </div>
                 </div>

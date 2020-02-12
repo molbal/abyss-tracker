@@ -4,8 +4,8 @@
 	namespace App\Connector\EveAPI;
 
 
-	use App\Connector\ESITokenController;
-	use Illuminate\Support\Facades\DB;
+    use App\Http\Controllers\ESITokenController;
+    use Illuminate\Support\Facades\DB;
 
 	abstract class EveAPICore
 	{

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\StopwatchController;
 use Illuminate\Console\Command;
 
 class CheckSystems extends Command
@@ -11,14 +12,14 @@ class CheckSystems extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'abyss:checksys';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Checks which pilots are in the Abyss';
 
     /**
      * Create a new command instance.
@@ -37,6 +38,21 @@ class CheckSystems extends Command
      */
     public function handle()
     {
-        //
+        /** @var StopwatchController $stopwatch */
+        $stopwatch = resolve("App\Http\Controllers\StopwatchController");
+        $allstart = time();
+        $this->info("Starting update at $allstart");
+        do {
+            $this->info("Starting update - ".time());
+            $bf = time();
+            $stopwatch->updateEsi();
+            $af = time();
+            $runtime = ceil($af - $bf);
+            $this->info("Single run took $runtime seconds.");
+            $wait = 10 - min(10, max(0, $runtime));
+            $this->info("Waiting for $wait seconds.");
+            sleep($wait);
+        } while(time()-$allstart < 60-($wait+1));
+        $this->info("Finished update at $allstart");
     }
 }

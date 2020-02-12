@@ -244,8 +244,8 @@
                     ->where("SURVIVED", true)
                     ->where("CHAR_ID", $data->CHAR_ID)
                     ->avg("LOOT_ISK");
-                $otherCharts->dataset(sprintf("%s tier %s (%s)", $data->TYPE, $data->TIER, $data->NAME), 'bar', [round($averageLootForTierTypeShip / 1000000, 2)]);
-                $otherCharts->dataset(sprintf("Tier %s (%s)", $data->TIER, $data->NAME), 'bar', [round($averageLootForTierShip / 1000000, 2)]);
+                $otherCharts->dataset(sprintf("%s tier %s (%s)", $data->TYPE, $data->TIER, $data->NAME), 'bar', [round($averageLootForTierTypeChar / 1000000, 2)]);
+                $otherCharts->dataset(sprintf("Tier %s (%s)", $data->TIER, $data->NAME), 'bar', [round($averageLootForTierChar / 1000000, 2)]);
             }
 
             $otherCharts->dataset(sprintf("%s tier %s all", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);

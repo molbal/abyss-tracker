@@ -97,9 +97,9 @@
          */
         public function getRefreshToken() {
 
-            $refreshToken = DB::table('characters')
+            $refreshToken = DB::table('chars')
                 ->select('REFRESH_TOKEN')
-                ->where('ID', '=', $this->charId);
+                ->where('CHAR_ID', '=', $this->charId);
             if (!$refreshToken->exists()) {
                 throw new Exception("The user ID " . $this->charId. " has no refresh token stored");
             }

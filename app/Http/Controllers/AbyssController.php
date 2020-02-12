@@ -147,7 +147,9 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 'SURVIVED' => 'required',
                 'PUBLIC'   => 'required',
                 'RUN_DATE' => 'required|date',
-                'KILLMAIL' => 'nullable|regex:/https?:\/\/zkillboard\.com\/kill\/\d+\/?/m'
+                'KILLMAIL' => 'nullable|regex:/https?:\/\/zkillboard\.com\/kill\/\d+\/?/m',
+                'RUN_LENGTH_M' => 'nullable|numeric|min:0|max:20',
+                'RUN_LENGTH_S' => 'nullable|numeric|min:0|max:59',
             ], [
                 'required' => "Please fill :attribute before saving your request",
                 'regex'    => "Please link a valid zKillboard link like this: https://zkillboard.com/kill/81359022/"
@@ -168,6 +170,7 @@ where CHAR_ID=? and RUN_DATE=?" ,[
             $id = $this->runsController->storeNewRun($request, $lootEstimator);
             }
 
+            DB::table("stopwatch")->where("CHAR_ID", session()->get("login_id"))->delete();
             return redirect(route("view_single", ["id" => $id]));
         }
 

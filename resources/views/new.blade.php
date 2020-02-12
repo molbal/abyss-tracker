@@ -105,8 +105,7 @@
                                         <option {{($prev->SHIP_ID ?? "") == "" ? "selected" : ""}} value="">I don't
                                             remember / secret
                                         </option>
-                                    @foreach($ships as $ship)
-                                        <!--  {{$prev->SHIP_ID ?? "undefined"}} vs {{$ship->ID}} -->
+                                        @foreach($ships as $ship)
                                             <option
                                                 value="{{$ship->ID}}" {!! ($prev->SHIP_ID ?? 0) == $ship->ID ? "selected='selected'" : ""!!}>
                                                 {{$ship->NAME}} ({{$ship->GROUP}})
@@ -126,19 +125,42 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-6">
                                 <div class="form-group" id="timer_manual">
-                                    <label for="">How long did it take to return from Abyssal deadspace?</label>
-                                    <select name="RUN_LENGTH" class="select2-default form-control">
-                                        <option value="">I don't remember / secret</option>
-                                        @for($sec = 0; $sec <= 1200; $sec += 10)
-                                            <option value="{{$sec}}">{{intval($sec/60)}}m {{$sec%60}}s</option>
-                                        @endfor
-                                    </select>
+                                    <label for="">How long did it take to return from Abyssal deadspace? <br><small>If you don't remember, or its opsec, just leave the fields empty.</small></label>
+
+                                    <div class="input-group">
+                                        <input name="RUN_LENGTH_M" id="run_length_minute" class="form-control" />
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="">minute </span>
+                                        </div>
+                                        <input name="RUN_LENGTH_S" id="run_length_second" class="form-control" />
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="">second</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="timer_auto">
+                                    <small class="text-capitalize font-weight-bold text-danger pt-0">OFF</small>
+                                    <p class="h1">00:00</p>
+                                    <a href="javascript:void(0)" class="font-italic">Switch to manual entry</a>
                                 </div>
                             </div>
-                            <div class="col-xs-6">
-                                <div class="form-group">
-
-                                </div>
+                            <div class="col-md-6">
+                                @if($stopwatch)
+                                    <p class="mb-1">Stopwatch is enabled for your account. To start measuring, press the
+                                        start button <strong>before</strong> you go into the Abyss.</p>
+                                    <a href="javascript:void(0)" id="start_sw" class="btn btn-outline-primary mb-1">Start
+                                        stopwatch</a>
+                                @else
+                                    <p class="mb-1">To automatically measure how much time a run takes please enable the
+                                        API access so we can check your location. (Your location will never be
+                                        saved)</p>
+                                    <a href="{{route("auth-scoped-start")}}" class="btn btn-outline-primary mb-1">Enable
+                                        stopwatch</a>
+                                @endif
+                                <p class="font-italic text-small text-justify">The EVE Api can return which system you are in. If you start the
+                                    stopwatch the site will look up your location every 10 seconds. This way we will
+                                    know the last time you were outside Abyss space, and also the first time when you
+                                    return.</p>
                             </div>
                         </div>
                     </div>
@@ -164,15 +186,20 @@
                                             title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language.">
                                         </span></label>
                                     <div class="alert alert-info border-0 shadow-sm adv">
-                                        Please copy and paste your cargohold contents before and after running the filament. The site will compare the two to get which items you looted and which items you used up/lost.
+                                        Please copy and paste your cargohold contents before and after running the
+                                        filament. The site will compare the two to get which items you looted and which
+                                        items you used up/lost.
                                     </div>
                                     <div class="text-muted">
-                                        Please only copy items here that you looted from the Abyss. If you went into the Proving conduit and destroyed another player's ship, do not paste his loot here!
+                                        Please only copy items here that you looted from the Abyss. If you went into the
+                                        Proving conduit and destroyed another player's ship, do not paste his loot here!
                                     </div>
                                     <strong class="mt-2 adv">Before cargo:</strong>
-                                    <textarea name="LOOT_DETAILED_BEFORE" id="LOOT_DETAILED_BEFORE" rows="4" class="form-control adv"></textarea>
+                                    <textarea name="LOOT_DETAILED_BEFORE" id="LOOT_DETAILED_BEFORE" rows="4"
+                                              class="form-control adv"></textarea>
                                     <strong class="mt-2 adv">After cargo:</strong>
-                                    <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4" class="form-control"></textarea>
+                                    <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4"
+                                              class="form-control"></textarea>
                                     <p class="text-right">Total value is approximately <strong
                                             id="loot_value">0</strong> ISK
                                     </p>
@@ -333,6 +360,56 @@
             $(".adv").slideDown(230);
         }
 
+        function switch_to_manual() {
+            $("#timer_auto").hide();
+            $("#timer_manual").show();
+        }
+
+        function switch_to_auto() {
+            $("#timer_auto").show();
+            $("#timer_manual").hide();
+        }
+
+        function start_stopwatch() {
+            switch_to_auto();
+            $("#start_sw").hide();
+            window.date1 = new Date();
+            $("#timer_auto small").html("PREPARING...");
+
+            $.ajax({
+                method: "POST",
+                url: "{{route("stopwatch_start", ["charId" => session()->get("login_id")])}}",
+                data: {
+                    "_token": "{{csrf_token()}}"
+                }
+            }).done(function (msg) {
+                check_status();
+                setInterval(check_status, 3000);
+            });
+
+        }
+
+
+        function check_status() {
+            $.ajax({
+                method: "GET",
+                url: "{{route("stopwatch_get", ["charId" => session()->get("login_id")])}}",
+                data: {
+                    "_token": "{{csrf_token()}}"
+                }
+            }).done(function (msg) {
+                console.log(msg);
+                $("#timer_auto small").html(msg.status);
+                var m = Math.floor(msg.seconds/60);
+                var s = (msg.seconds%60);
+                $("#timer_auto p").html((m < 10 ? "0" : "")+m+":"+(s<10 ? "0" : "") + s);
+                $('#run_length_minute').val(m);
+                s = Math.round(s/10)*10;
+                $('#run_length_second').val(s);
+            });
+        }
+
+
         // When ready.
         $(function () {
             setProvingConduit();
@@ -340,7 +417,8 @@
             $("#TIER").change(setProvingConduit);
             $("#SURVIVED").change(setDeathReason);
             $("#advanced-loot-view").click(advancedView);
-
+            switch_to_manual();
+            $("#start_sw").click(start_stopwatch);
             var $form = $("form");
             $form.submit(function (e) {
             });
@@ -354,4 +432,4 @@
             display: none;
         }
     </style>
-    @endsection
+@endsection
