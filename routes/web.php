@@ -32,6 +32,7 @@
      * Most used ships
      */
     Route::get("/ships/", 'ShipsController@get_all')->name("ships_all");
+    Route::get("/ship/{id}", 'ShipsController@get_single')->name("ship_single");
 
     /**
      * Item check

@@ -7,19 +7,9 @@
             <p class="text-small">This information is gathered compiled from <strong>{{$cnt}}</strong> loot submissions
             </p>
         </div>
-        <div class="col-md-4 col-sm-12">
-            <div class="form-group">
-                <label for="">Quick find an item</label>
-                <select id="quickfind" class="form-control select2-default">
-                    @foreach($items_select as $s)
-                        <option value="{{$s->ITEM_ID}}">{{$s->NAME}} ({{$s->GROUP_NAME}})</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
         <div class="col-sm-12">
             <div class="card card-body border-0 shadow-sm p-0">
-                <table class="table table-striped table-sm m-0 table-hover  table-responsive-sm datatable">
+                <table class="table table-striped table-sm m-0 table-hover  table-responsive-sm datatable" cellpadding="0" cellspacing="0">
                     <thead>
                     <tr>
                         <th colspan="2">Name</th>
@@ -53,7 +43,11 @@
         </div>
     </div>
 @endsection
+@section("styles")
+    <style>
 
+    </style>
+    @endsection
 @section("scripts")
     <script type="text/javascript">
         $(function () {

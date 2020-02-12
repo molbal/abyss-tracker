@@ -107,4 +107,9 @@
                 "query_frigate" => $query_frig,
             ]);
         }
+
+
+        function get_single(int $id) {
+            return view("error", ["error" => "Sorry, this view is not developed yet."]);
+        }
     }

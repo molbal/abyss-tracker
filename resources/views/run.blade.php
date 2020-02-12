@@ -108,7 +108,7 @@
                     <small class="float-right">{{$loot_type}}</small>
                 </h5>
                 @if(count($loot_table) > 0)
-                    <table class="table table-hover table-sm">
+                    <table class="table table-hover table-sm table-responsive-sm">
                         <tr>
                             <th>&nbsp;</th>
                             <th>Name</th>
@@ -226,35 +226,30 @@
     </div>
     @endif
     <div class="row mt-3">
-        <div class="col-md-6 col-sm-12">
+        <div class="col-md-12 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
-                <h4 class="font-weight-bold">Survival of {{$run->TYPE}} tier {{$run->TIER}}</h4>
-                {!! $survival->container(); !!}
-            </div>
-        </div>
-        <div class="col-md-6 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h4 class="font-weight-bold">Loot value comparision</h4>
+                <h4 class="font-weight-bold">Average loot values</h4>
                 {!! $other->container(); !!}
             </div>
         </div>
     </div>
         <div class="row mt-3">
             <div class="col-sm-12">
-                <div class="btn-group col-md-4">
+                <div class="btn-group">
                     <a href="{{route("filtered_list", [
         "tier" => $all_data->TIER,
         "type" => $all_data->TYPE
         ])}}" class="btn btn-outline-secondary">Show all Tier {{$all_data->TIER}} {{$all_data->TYPE}} runs ({{$count_same_type_tier}})</a>
+                    @if($all_data->SHIP_ID)
+                        <a href="{{route("ship_single", [
+        "id" => $count_same_ship
+        ])}}" class="btn btn-outline-secondary">Show all runs with {{$run->SHIP_NAME}} ({{$count_same_ship}})</a>
+                    @endif
                 </div>
             </div>
         </div>
-
-
-
 @endsection
 
 @section("scripts")
-    {!! $survival->script(); !!}
     {!! $other->script(); !!}
 @endsection

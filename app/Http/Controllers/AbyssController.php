@@ -106,6 +106,22 @@
             }
             list($personalDaily, $iskPerHour) = $this->graphContainerController->getPersonalStatsCharts($labels);
 
+            $table = [];
+            for($i=0;$i>-31;$i--) {
+                $date = date("Y-m-d", strtotime("now $i days"));
+                $val = DB::select("select
+    COUNT(*) as COUNT,
+    AVG(LOOT_ISK) as AVG,
+    SUM(LOOT_ISK) as SUM,
+    '$date' as RUN_DATE
+       from runs
+where CHAR_ID=? and RUN_DATE=?" ,[
+                    session()->get("login_id"), $date
+                ]);
+                $table[]= $val;
+            }
+
+
             return view("home_mine", [
                 'my_runs'               => $my_runs,
                 'my_avg_loot'           => $my_avg_loot,
@@ -113,6 +129,7 @@
                 'my_survival_ratio'     => $my_survival_ratio,
                 'personal_chart_loot'   => $personalDaily,
                 'personal_isk_per_hour' => $iskPerHour,
+                'activity_daily' => $table
             ]);
         }
 
@@ -194,7 +211,7 @@
             $data = DB::table("v_runall")->where("ID", $id)->get()->get(0);
 
             // Get graphs
-            list($explodeCharts, $otherCharts, $averageLootForTier) = $this->graphContainerController->getRunGraphs($data);
+            list($otherCharts, $averageLootForTier) = $this->graphContainerController->getRunGraphs($data);
 
             // Get all data and all loot
             $all_data = DB::table("runs")->where("ID", $id)->get()->get(0);
@@ -227,7 +244,6 @@ from (`abyss`.`lost_items` `dl`
             return view("run", [
                 "id"                   => $id,
                 "run"                  => $data,
-                "survival"             => $explodeCharts,
                 "other"                => $otherCharts,
                 "loot_table"           => $loot,
                 "lost_table"           => $lost,
@@ -236,7 +252,8 @@ from (`abyss`.`lost_items` `dl`
                 "run_summary"          => $run_summary,
                 "death_reason"         => $death_reason,
                 "loot_type"            => $looting,
-                "count_same_type_tier" => $count_same_type_tier
+                "count_same_type_tier" => $count_same_type_tier,
+                "count_same_ship" => $count_same_ship
             ]);
         }
 

@@ -7,6 +7,9 @@
             <p class="text-small">That drop in the Abyssal Deadspace
             </p>
         </div>
+        <div class="col-md-4">
+            <a href="{{route("item_all")}}" class="btn float-right btn-outline-secondary group_link">All items</a>
+        </div>
         <div class="col-sm-12">
             <div class="card card-body border-0 shadow-sm p-0">
                 <table class="table table-striped table-sm m-0 table-hover table-responsive-sm">
@@ -31,4 +34,14 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section("styles")
+    <style>
+        a.group_link {
+            position: relative;
+            top: 8px;
+        }
+
+    </style>
 @endsection

@@ -70,6 +70,37 @@
             </div>
         </div>
     </div>
+    <div class="row mt-2">
+        <div class="col-sm-6">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold">Last 30 days</h5>
+                <table class="table table-responsive-sm table-sm">
+                    <tr>
+                        <th>Day</th>
+                        <th class="text-right">Runs #</th>
+                        <th class="text-right">Avg loot</th>
+                        <th class="text-right">All loot</th>
+                    </tr>
+                    @forelse($activity_daily as $data)
+                        <tr>
+                            <td>{{$data[0]->RUN_DATE}}</td>
+                            <td class="text-right">{{$data[0]->COUNT}}</td>
+                            <td class="text-right">{{round($data[0]->AVG/1000000 ?? 0, 2)}}{{$data[0]->AVG ? 'M' : ''}}
+                                ISK
+                            </td>
+                            <td class="text-right">{{round($data[0]->SUM/1000000 ?? 0, 2)}}{{$data[0]->AVG ? 'M' : ''}}
+                                ISK
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center">No data yet</td>
+                        </tr>
+                    @endforelse
+                </table>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="btn-group col-md-4">
@@ -81,53 +112,6 @@
 @endsection
 
 @section("scripts")
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            startDate: '-0d'
-        });
-
-        // When ready.
-        $(function () {
-
-            var $form = $("form");
-            var $input = $form.find("input#loot");
-
-            $input.on("keyup", function (event) {
-
-                // When user select text in the document, also abort.
-                var selection = window.getSelection().toString();
-                if (selection !== '') {
-                    return;
-                }
-
-                // When the arrow keys are pressed, abort.
-                if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
-                    return;
-                }
-
-
-                var $this = $(this);
-
-                // Get the value.
-                var input = $this.val();
-
-                var input = input.replace(/[\D\s\._\-]+/g, "");
-                input = input ? parseInt(input, 10) : 0;
-
-                $this.val(function () {
-                    return (input === 0) ? "" : input.toLocaleString("en-US");
-                });
-            });
-
-            $form.submit(function (e) {
-                $input.val($input.val().split(',').join(''));
-
-            });
-        });
-    </script>
     {!! $personal_chart_loot->script(); !!}
     {!! $personal_isk_per_hour->script(); !!}
-{{--    {!! $daily_add_chart->script(); !!}--}}
 @endsection

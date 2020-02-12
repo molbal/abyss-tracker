@@ -110,13 +110,10 @@ order by 2 ASC;", [intval($group_id)]);
     select SUM(drp.DROPPED_COUNT)/SUM(GREATEST(1,drp.RUNS_COUNT)) from droprates_cache drp where drp.ITEM_ID=ip.ITEM_ID and drp.TYPE='All'
     ) DROP_RATE from item_prices ip
 order by 7 DESC;");
-            $cnt = DB::table("detailed_loot")->count();
-
-            $items_select = DB::table("item_prices")->orderBy("NAME", "ASC")->select(["ITEM_ID", "NAME", "GROUP_NAME"])->get();
+            $cnt = DB::select("select count(*) as c from (select 1 from `detailed_loot` group by `RUN_ID`) a")[0]->c;
             return view("all_items", [
                 "cnt" => $cnt,
-               "items" => $items,
-                "items_select" => $items_select
+               "items" => $items
             ]);
         }
 

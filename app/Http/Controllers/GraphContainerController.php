@@ -169,24 +169,96 @@
          * @return array
          */
         public function getRunGraphs($data): array {
-            $explodeCharts = new AbyssSurvivalType();
-            $explodeCharts->labels(["Failures", "Successes"]);
-            $explodeCharts->dataset(sprintf("%s tier %s survival ratio", $data->TYPE, $data->TIER), 'pie', [
-                DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", false)->count(),
-                DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->count()]);
-            $explodeCharts->theme(ThemeController::getChartTheme());
-            $explodeCharts->displayAxes(false);
-            $explodeCharts->displayLegend(false);
-
             $otherCharts = new RunBetter();
-            $averageLootForTierType = DB::table("runs")->where("TIER", $data->TIER)->where("TYPE", $data->TYPE)->where("SURVIVED", true)->avg("LOOT_ISK");
-            $averageLootForTier = DB::table("runs")->where("TIER", $data->TIER)->where("SURVIVED", true)->avg("LOOT_ISK");
-            $otherCharts->dataset(sprintf("%s tier %s avg. loot (" . round($averageLootForTierType / 1000000, 2) . "M ISK)", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);
-            $otherCharts->dataset(sprintf("Tier %s avg. loot (" . round($averageLootForTier / 1000000, 2) . "M ISK)", $data->TIER), 'bar', [round($averageLootForTier / 1000000, 2)]);
-            $otherCharts->dataset(sprintf("This run's loot (" . round($data->LOOT_ISK / 1000000, 2) . "M ISK)"), 'bar', [round($data->LOOT_ISK / 1000000, 2)]);
+            $averageLootForTierType = DB::table("runs")
+                ->where("TIER", $data->TIER)
+                ->where("TYPE", $data->TYPE)
+                ->where("SURVIVED", true)
+                ->avg("LOOT_ISK");
+            $averageLootForTier = DB::table("runs")
+                ->where("TIER", $data->TIER)
+                ->where("SURVIVED", true)
+                ->avg("LOOT_ISK");
+
+            $averageLootForTierTypeCruiser = DB::table("runs")
+                ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                ->whereNotNull("runs.SHIP_ID")
+                ->where("ship_lookup.IS_CRUISER", "1")
+                ->where("runs.TIER", $data->TIER)
+                ->where("runs.TYPE", $data->TYPE)
+                ->where("runs.SURVIVED", true)
+                ->avg("LOOT_ISK");
+
+
+            $averageLootForTierTypeFrigate = DB::table("runs")
+                ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                ->whereNotNull("runs.SHIP_ID")
+                ->where("ship_lookup.IS_CRUISER", "0")
+                ->where("runs.TIER", $data->TIER)
+                ->where("runs.TYPE", $data->TYPE)
+                ->where("runs.SURVIVED", true)
+                ->avg("LOOT_ISK");
+
+            $averageLootForTierCruiser = DB::table("runs")
+                ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                ->whereNotNull("runs.SHIP_ID")
+                ->where("ship_lookup.IS_CRUISER", "1")
+                ->where("runs.TIER", $data->TIER)
+                ->where("runs.SURVIVED", true)
+                ->avg("LOOT_ISK");
+
+
+            $averageLootForTierFrigate = DB::table("runs")
+                ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                ->whereNotNull("runs.SHIP_ID")
+                ->where("ship_lookup.IS_CRUISER", "0")
+                ->where("runs.TIER", $data->TIER)
+                ->where("runs.SURVIVED", true)
+                ->avg("LOOT_ISK");
+
+            if ($data->SHIP_NAME) {
+                $averageLootForTierTypeShip = DB::table("v_runall")
+                    ->where("TIER", $data->TIER)
+                    ->where("TYPE", $data->TYPE)
+                    ->where("SURVIVED", true)
+                    ->where("SHIP_NAME", $data->SHIP_NAME)
+                    ->avg("LOOT_ISK");
+                $averageLootForTierShip = DB::table("v_runall")
+                    ->where("TIER", $data->TIER)
+                    ->where("SURVIVED", true)
+                    ->where("SHIP_NAME", $data->SHIP_NAME)
+                    ->avg("LOOT_ISK");
+                $otherCharts->dataset(sprintf("%s tier %s ".$data->SHIP_NAME, $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierTypeShip / 1000000, 2)]);
+                $otherCharts->dataset(sprintf("Tier %s ".$data->SHIP_NAME, $data->TIER), 'bar', [round($averageLootForTierShip / 1000000, 2)]);
+            }
+
+            if ($data->PUBLIC) {
+                $averageLootForTierTypeChar = DB::table("v_runall")
+                    ->where("TIER", $data->TIER)
+                    ->where("TYPE", $data->TYPE)
+                    ->where("SURVIVED", true)
+                    ->where("CHAR_ID", $data->CHAR_ID)
+                    ->avg("LOOT_ISK");
+                $averageLootForTierChar = DB::table("v_runall")
+                    ->where("TIER", $data->TIER)
+                    ->where("SURVIVED", true)
+                    ->where("CHAR_ID", $data->CHAR_ID)
+                    ->avg("LOOT_ISK");
+                $otherCharts->dataset(sprintf("%s tier %s (%s)", $data->TYPE, $data->TIER, $data->NAME), 'bar', [round($averageLootForTierTypeShip / 1000000, 2)]);
+                $otherCharts->dataset(sprintf("Tier %s (%s)", $data->TIER, $data->NAME), 'bar', [round($averageLootForTierShip / 1000000, 2)]);
+            }
+
+            $otherCharts->dataset(sprintf("%s tier %s all", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);
+            $otherCharts->dataset(sprintf("%s tier %s cruiser", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierTypeCruiser/ 1000000, 2)]);
+            $otherCharts->dataset(sprintf("%s tier %s frigates", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierTypeFrigate/ 1000000, 2)]);
+            $otherCharts->dataset(sprintf("%s tier cruiser",  $data->TIER), 'bar', [round($averageLootForTierCruiser/ 1000000, 2)]);
+            $otherCharts->dataset(sprintf("%s tier frigates",  $data->TIER), 'bar', [round($averageLootForTierFrigate/ 1000000, 2)]);
+            $otherCharts->dataset(sprintf("Tier %s all", $data->TIER), 'bar', [round($averageLootForTier / 1000000, 2)]);
+            $otherCharts->dataset(sprintf("This run"), 'bar', [round($data->LOOT_ISK / 1000000, 2)]);
             $otherCharts->theme(ThemeController::getChartTheme());
             $otherCharts->displayAxes(true);
             $otherCharts->displayLegend(true);
-            return [$explodeCharts, $otherCharts, $averageLootForTier];
+            $otherCharts->export(true, "Download");
+            return [$otherCharts, $averageLootForTier];
         }
     }

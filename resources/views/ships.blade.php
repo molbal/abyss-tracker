@@ -17,11 +17,11 @@
                         <th colspan="2">Ship name</th>
                         <th class="text-right">Use count</th>
                     </tr>
-                    @foreach($query_cruiser as $cruiser)
+                    @foreach($query_cruiser as $ship)
                         <tr>
-                            <td><img src="https://imageserver.eveonline.com/Type/{{$cruiser->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" alt=""></td>
-                            <td>{{$cruiser->NAME}}</td>
-                            <td class="text-right">{{$cruiser->RUNS}}</td>
+                            <td><img src="https://imageserver.eveonline.com/Type/{{$ship->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" alt=""></td>
+                            <td><a href="{{route("ship_single", ["id" => $ship->SHIP_ID])}}">{{$ship->NAME}}</a></td>
+                            <td class="text-right">{{$ship->RUNS}}</td>
                         </tr>
                     @endforeach
                 </table>
@@ -39,11 +39,11 @@
                         <th colspan="2">Ship name</th>
                         <th class="text-right">Use count</th>
                     </tr>
-                    @foreach($query_frigate as $cruiser)
+                    @foreach($query_frigate as $ship)
                         <tr>
-                            <td><img src="https://imageserver.eveonline.com/Type/{{$cruiser->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" alt=""></td>
-                            <td>{{$cruiser->NAME}}</td>
-                            <td class="text-right">{{$cruiser->RUNS}}</td>
+                            <td><img src="https://imageserver.eveonline.com/Type/{{$ship->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" alt=""></td>
+                            <td><a href="{{route("ship_single", ["id" => $ship->SHIP_ID])}}">{{$ship->NAME}}</a></td>
+                            <td class="text-right">{{$ship->RUNS}}</td>
                         </tr>
                     @endforeach
                 </table>
