@@ -89,6 +89,12 @@
          * @return int
          */
         public function storeNewRunWithAdvancedLoot(Request $request, array $lootDifference): int {
+            if ($request->get("RUN_LENGTH_M")) {
+                $runtime = (intval($request->get("RUN_LENGTH_M")) * 60) + intval($request->get("RUN_LENGTH_S"));
+            }
+            else {
+                $runtime = null;
+            }
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID'           => session()->get("login_id"),
                 'PUBLIC'            => $request->get("PUBLIC"),
@@ -104,6 +110,7 @@
                 'FILAMENT_PRICE'    => $request->get('FILAMENT_PRICE'),
                 'LOOT_TYPE'         => $request->get('LOOT_TYPE'),
                 'KILLMAIL'          => $request->get('KILLMAIL'),
+                'RUNTIME_SECONDS'   => $runtime
             ]);
 
             foreach ($lootDifference['gainedItems'] as $item) {

@@ -23,7 +23,7 @@
             DB::beginTransaction();
             if (DB::table("stopwatch")->where("CHAR_ID", $charId)->exists()) {
                 DB::commit();
-                throw new \Exception("There is already a stopwatch entry for this character!");
+                return["error" =>"There is already a stopwatch entry for this character!"];
             }
 
             DB::table("stopwatch")->insert([
@@ -46,18 +46,21 @@
                 if ($var->IN_ABYSS) {
                     $state = [
                         'status' => "RUNNING",
+                        'infodiv' => "running",
                         'seconds' => (strtotime(date("Y-m-d H:i:s")) - strtotime($var->ENTERED_ABYSS))
                     ];
                 }
                 elseif ($var->EXITED_ABYSS) {
                     $state = [
                         'status' => "FINISHED",
+                        'infodiv' => "finished",
                         'seconds' => (strtotime($var->EXITED_ABYSS) - strtotime($var->ENTERED_ABYSS))
                     ];
                 }
                 else {
                     $state = [
                         'status' => 'WAITING TO ENTER THE ABYSS',
+                        'infodiv' => "starting",
                         'seconds' => 0
                     ];
                 }

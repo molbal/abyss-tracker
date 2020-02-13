@@ -120,7 +120,14 @@
             </div>
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3">
-                    <h5 class="font-weight-bold">Timing</h5>
+                    <h5 class="font-weight-bold">Timing
+                        <img
+                            class="float-right"
+                            src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" data-toggle="tooltip"
+                            title="The EVE Api can return which system you are in. If you start the
+                                    stopwatch the site will look up your location every 10 seconds. This way we will
+                                    know the last time you were outside Abyss space, and also the first time when you
+                                    return."></h5>
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12 col-md-6">
@@ -141,15 +148,27 @@
                                 <div class="form-group" id="timer_auto">
                                     <small class="text-capitalize font-weight-bold text-danger pt-0">OFF</small>
                                     <p class="h1">00:00</p>
-                                    <a href="javascript:void(0)" class="font-italic">Switch to manual entry</a>
+                                    <a href="javascript:void(0)" class="font-italic" id="stop_stopwatch">Stop stopwatch and switch to manual entry</a>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 @if($stopwatch)
-                                    <p class="mb-1">Stopwatch is enabled for your account. To start measuring, press the
+                                    <p class="mb-1 sw_status" id="stopwatch_enabled">Stopwatch is enabled for your account. To start measuring, press the
                                         start button <strong>before</strong> you go into the Abyss.</p>
                                     <a href="javascript:void(0)" id="start_sw" class="btn btn-outline-primary mb-1">Start
                                         stopwatch</a>
+                                    <p class="starting sw_status">
+                                        The stopwatch is currently on standby, waiting for you to enter the Abyss. <br>
+                                        <small>The stopwatch and timer is updated every 3 to 10 seconds.</small>
+                                    </p>
+                                    <p class="running sw_status">
+                                        Good luck in the Abyss. The timer is ticking and it will automatically stop when you exit.<br>
+                                        <small>The stopwatch and timer is updated every 3 to 10 seconds.</small>
+                                    </p>
+                                    <p class="finished sw_status">
+                                        You have exited the Abyss, the run is over, the timer is stopped.<br>
+                                        <small>Congratulations!</small>
+                                    </p>
                                 @else
                                     <p class="mb-1">To automatically measure how much time a run takes please enable the
                                         API access so we can check your location. (Your location will never be
@@ -157,10 +176,7 @@
                                     <a href="{{route("auth-scoped-start")}}" class="btn btn-outline-primary mb-1">Enable
                                         stopwatch</a>
                                 @endif
-                                <p class="font-italic text-small text-justify">The EVE Api can return which system you are in. If you start the
-                                    stopwatch the site will look up your location every 10 seconds. This way we will
-                                    know the last time you were outside Abyss space, and also the first time when you
-                                    return.</p>
+
                             </div>
                         </div>
                     </div>
@@ -168,7 +184,13 @@
             </div>
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3">
-                    <h5 class="font-weight-bold">Loot questions</h5>
+                    <h5 class="font-weight-bold">Loot questions <span class="float-right text-small">
+                                            <a href="/how-to-loot.gif" target="_blank">How to use?</a>
+                                        <img
+                                            src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png"
+                                            data-toggle="tooltip"
+                                            title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language.">
+                                        </span></h5>
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12">
@@ -178,13 +200,7 @@
                                                                                     id="advanced-loot-view">My cargo
                                             is not empty!</a>
                                             </span>
-                                        <span>
-                                            <a href="/how-to-loot.gif" target="_blank">How to use?</a>
-                                        <img
-                                            src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png"
-                                            data-toggle="tooltip"
-                                            title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language.">
-                                        </span></label>
+                                        </label>
                                     <div class="alert alert-info border-0 shadow-sm adv">
                                         Please copy and paste your cargohold contents before and after running the
                                         filament. The site will compare the two to get which items you looted and which
@@ -250,7 +266,7 @@
                                     <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
                                         <option value="">I don't remember</option>
                                         <option value="1">Yes, I went into the PVP room</option>
-                                        <option value="0">No, I did not go into the PVP room</option>
+                                        <option value="0" selected>No, I did not go into the PVP room</option>
                                     </select>
                                 </div>
                             </div>
@@ -384,7 +400,9 @@
                 }
             }).done(function (msg) {
                 check_status();
-                setInterval(check_status, 3000);
+                window.stopwatch_interval = setInterval(check_status, 3000);
+            }).fail(function (msg) {
+                alert(msg.error)
             });
 
         }
@@ -404,11 +422,24 @@
                 var s = (msg.seconds%60);
                 $("#timer_auto p").html((m < 10 ? "0" : "")+m+":"+(s<10 ? "0" : "") + s);
                 $('#run_length_minute').val(m);
-                s = Math.round(s/10)*10;
                 $('#run_length_second').val(s);
+
+                $(".sw_status").hide();
+                $("."+msg.infodiv).show();
             });
         }
 
+
+        function stop_stopwatch() {
+            switch_to_manual();
+            $("#start_sw").show();
+            try {
+                clearInterval(window.stopwatch_interval);
+            }
+            catch (ignored) {
+
+            }
+        }
 
         // When ready.
         $(function () {
@@ -418,10 +449,12 @@
             $("#SURVIVED").change(setDeathReason);
             $("#advanced-loot-view").click(advancedView);
             switch_to_manual();
+            $("#stop_stopwatch").click(stop_stopwatch);
             $("#start_sw").click(start_stopwatch);
             var $form = $("form");
-            $form.submit(function (e) {
-            });
+            $form.submit(function (e) {});
+            $(".sw_status").hide();
+            $("#stopwatch_enabled").show();
         });
     </script>
 @endsection
