@@ -455,6 +455,11 @@
             $form.submit(function (e) {});
             $(".sw_status").hide();
             $("#stopwatch_enabled").show();
+
+
+            @if($stopwatch)
+                start_stopwatch();
+            @endif
         });
     </script>
 @endsection

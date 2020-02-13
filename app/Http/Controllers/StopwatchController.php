@@ -22,8 +22,7 @@
         public function addChecks(int $charId) {
             DB::beginTransaction();
             if (DB::table("stopwatch")->where("CHAR_ID", $charId)->exists()) {
-                DB::commit();
-                return["error" =>"There is already a stopwatch entry for this character!"];
+                DB::table("stopwatch")->where("CHAR_ID", $charId)->delete();
             }
 
             DB::table("stopwatch")->insert([
@@ -52,14 +51,14 @@
                 }
                 elseif ($var->EXITED_ABYSS) {
                     $state = [
-                        'status' => "FINISHED",
+                        'status' => "<span class=\"text-success\">WAITING TO ENTER THE ABYSS</span>",
                         'infodiv' => "finished",
                         'seconds' => (strtotime($var->EXITED_ABYSS) - strtotime($var->ENTERED_ABYSS))
                     ];
                 }
                 else {
                     $state = [
-                        'status' => 'WAITING TO ENTER THE ABYSS',
+                        'status' => '<span class="text-warning">WAITING TO ENTER THE ABYSS</span>',
                         'infodiv' => "starting",
                         'seconds' => 0
                     ];

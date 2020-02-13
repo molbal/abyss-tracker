@@ -182,7 +182,7 @@ where CHAR_ID=? and RUN_DATE=?" ,[
             if (session()->has("login_id")) {
                 $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
 
-                $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", session()->get("login_id"))->whereNotNull("REFRESH_TOKEN")->exists();
+                $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", session()->get("login_id"))->get()->get(0)->REFRESH_TOKEN;
 
 
                 $prev = $this->runsController->getPreviousRun();
