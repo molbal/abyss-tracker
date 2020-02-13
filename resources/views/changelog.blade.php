@@ -3,8 +3,19 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-danger shadow-sm">
+            <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.3</strong> 'Epoch' release</h4>
+                <small class="mt-0">2020 february 12</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>Stopwatch for runs with ESI</li>
+                    <li>Run's length display</li>
+                </ul>
+                </p>
+            </div>
+            <div class="card card-body border-0 shadow-sm">
                 <h4 class="mb-0 pb-0"><strong>1.2.3</strong> 'Agility' release</h4>
                 <small class="mt-0">2020 february 11</small>
                 <p>
@@ -31,7 +42,9 @@
                 <p>
                     This release adds:
                 <ul>
-                    <li>Advanced cargo analyser: You now have the option to add before and after cargo - the site will calculate which items you used up and what items you looted.</li>
+                    <li>Advanced cargo analyser: You now have the option to add before and after cargo - the site will
+                        calculate which items you used up and what items you looted.
+                    </li>
                     <li>Canon death reason (auto generated)</li>
                 </ul>
                 </p>
@@ -56,8 +69,11 @@
                 </p>
                 <p>This release fixes:
                 <ul>
-                    <li>In some cases when the loot contains a previously unknown item, the tracker failed to calculate a drop rate for it and showed a nasty error. Not any more!</li>
-                </ul></p>
+                    <li>In some cases when the loot contains a previously unknown item, the tracker failed to calculate
+                        a drop rate for it and showed a nasty error. Not any more!
+                    </li>
+                </ul>
+                </p>
             </div>
         </div>
         <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
