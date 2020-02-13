@@ -259,6 +259,22 @@
             $otherCharts->displayAxes(true);
             $otherCharts->displayLegend(true);
             $otherCharts->export(true, "Download");
+
+
+            if ($data->SHIP_NAME) {
+                $group = DB::table("ship_lookup")->where("NAME", $data->SHIP_NAME)->value("IS_CRUISER");
+                switch ($group) {
+                    case 1:
+                        $averageLootForTier = $averageLootForTierCruiser;
+                        break;
+                    case 0:
+                        $averageLootForTier = $averageLootForTierFrigate;
+                        break;
+
+                }
+            }
+
             return [$otherCharts, $averageLootForTier];
+
         }
     }
