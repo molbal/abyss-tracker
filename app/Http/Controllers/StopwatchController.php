@@ -51,7 +51,7 @@
                 }
                 elseif ($var->EXITED_ABYSS) {
                     $state = [
-                        'status' => "<span class=\"text-success\">WAITING TO ENTER THE ABYSS</span>",
+                        'status' => "<span class=\"text-success\">FINISHED</span>",
                         'infodiv' => "finished",
                         'seconds' => (strtotime($var->EXITED_ABYSS) - strtotime($var->ENTERED_ABYSS))
                     ];
