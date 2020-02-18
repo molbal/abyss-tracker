@@ -5,6 +5,7 @@
 
 
     use App\Charts\LootTierChart;
+    use App\Charts\PersonalDaily;
     use App\Charts\ShipCruiserChart;
     use App\Charts\ShipFrigateChart;
     use App\Http\Controllers\Loot\LootCacheController;
@@ -13,6 +14,7 @@
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use function Psy\debug;
 
     class ShipsController extends Controller {
 
@@ -110,6 +112,48 @@
 
 
         function get_single(int $id) {
-            return view("error", ["error" => "Sorry, this view is not developed yet."]);
+
+            $name = DB::table("ship_lookup")->where("ID", $id)->value("NAME");
+
+            list($dates, $values) = Cache::remember("ship.popularity.$id", 180, function() use ($id) {
+                $dates = [];
+                $values= [];
+                for ($i=-90; $i<=0; $i++) {
+                    $date = strtotime("now $i days");
+                    $val = DB::select("select (select count(ID) from runs where RUN_DATE=?) as 'ALL', (select count(ID) from runs where RUN_DATE=? and SHIP_ID=?) as 'SHIP';",
+                        [
+                            date('Y-m-d', $date),
+                            date('Y-m-d', $date),
+                            $id
+                        ]);
+                    $dates[] = date("M.d.", $date);
+                    if ($val[0]->ALL == 0) {
+                        $values[] = 0.0;
+                    }
+                    else {
+                        $values[] = round(($val[0]->SHIP/$val[0]->ALL)*100, 2);
+                    }
+                }
+                return [$dates, $values];
+            });
+
+            $pop = new PersonalDaily();
+            $pop->displayAxes(true);
+            $pop->export(true, "Download");
+            $pop->height(400);
+            $pop->theme(ThemeController::getChartTheme());
+            $pop->displayLegend(false);
+            $pop->labels($dates);
+            $pop->dataset("Popularity", "line", $values)->options([
+                'smooth' => true,
+                'symbolSize' => 0,
+                'smoothMonotone' => 'x'
+            ]);
+
+
+            return view("ship", [
+                "name" => $name,
+                "pop_chart" => $pop
+            ]);
         }
     }
