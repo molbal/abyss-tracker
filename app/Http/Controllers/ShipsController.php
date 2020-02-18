@@ -115,26 +115,34 @@
 
             $name = DB::table("ship_lookup")->where("ID", $id)->value("NAME");
 
-            list($dates, $values) = Cache::remember("ship.popularity.$id", 180, function() use ($id) {
+            list($dates, $values, $dead) = Cache::remember("ship.popularity.$id", 0.001, function() use ($id, $name) {
                 $dates = [];
                 $values= [];
+                $dead = [];
                 for ($i=-90; $i<=0; $i++) {
                     $date = strtotime("now $i days");
-                    $val = DB::select("select (select count(ID) from runs where RUN_DATE=?) as 'ALL', (select count(ID) from runs where RUN_DATE=? and SHIP_ID=?) as 'SHIP';",
+                    $val = DB::select("select
+                            (select count(ID) from runs where RUN_DATE=?) as 'ALL',
+                            (select count(ID) from runs where RUN_DATE=? and SHIP_ID=?) as 'SHIP',
+                            (select count(ID) from runs where RUN_DATE=? and SHIP_ID=? and SURVIVED=0) as 'DEAD';",
                         [
                             date('Y-m-d', $date),
+                            date('Y-m-d', $date),
+                            $id,
                             date('Y-m-d', $date),
                             $id
                         ]);
                     $dates[] = date("M.d.", $date);
                     if ($val[0]->ALL == 0) {
                         $values[] = 0.0;
+                        $dead[] = 0.0;
                     }
                     else {
                         $values[] = round(($val[0]->SHIP/$val[0]->ALL)*100, 2);
+                        $dead[] = round(($val[0]->DEAD/($val[0]->SHIP > 0 ? $val[0]->SHIP : 1))*100, 2);
                     }
                 }
-                return [$dates, $values];
+                return [$dates, $values, $dead];
             });
 
             $pop = new PersonalDaily();
@@ -142,18 +150,55 @@
             $pop->export(true, "Download");
             $pop->height(400);
             $pop->theme(ThemeController::getChartTheme());
-            $pop->displayLegend(false);
+            $pop->displayLegend(true);
             $pop->labels($dates);
-            $pop->dataset("Popularity", "line", $values)->options([
+            $pop->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $pop->dataset("Popularity of $name (Percentage of all runs)", "line", $values)->options([
                 'smooth' => true,
                 'symbolSize' => 0,
-                'smoothMonotone' => 'x'
+                'smoothMonotone' => 'x',
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
             ]);
+            $pop->dataset("Failure ratio of $name (Percentage of failed runs)", "line", $dead)->options([
+                'smooth' => true,
+                'symbolSize' => 0,
+                'smoothMonotone'=> 'x',
+                'color' => 'red',
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
+            ]);
+
+
+            $all_runs = DB::table("runs")
+                ->where("SHIP_ID", $id)
+                ->count();
+
+            $all_survived = DB::table("runs")
+                ->where("SHIP_ID", $id)
+                ->where("SURVIVED", true)
+                ->count();
+
+            $all_dead = DB::table("runs")
+                ->where("SHIP_ID", $id)
+                ->where("SURVIVED", false)
+                ->count();
+
+
 
 
             return view("ship", [
                 "name" => $name,
-                "pop_chart" => $pop
+                "pop_chart" => $pop,
+                "all_runs" => $all_runs,
+                "all_survived" => $all_survived,
+                "all_dead" => $all_dead,
             ]);
         }
     }

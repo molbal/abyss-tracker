@@ -1,5 +1,5 @@
 @extends("layout.app")
-@section("browser-title", "Most used ships")
+@section("browser-title", "$name")
 @section("content")
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">{{$name}} overview</h4>
