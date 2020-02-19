@@ -2,7 +2,9 @@
 @section("browser-title", "$name")
 @section("content")
     <div class="d-flex justify-content-between align-items-start mt-5">
-        <h4 class="font-weight-bold">{{$name}} overview</h4>
+        <h4 class="font-weight-bold">
+            <img src="https://images.evetech.net/types/{{$id}}/render?size=64"
+                 class="pull-left ml-2 rounded-circle shadow-sm"> {{$name}} overview</h4>
     </div>
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">

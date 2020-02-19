@@ -37,7 +37,11 @@
                                  class="pull-left ml-2 rounded-circle shadow-sm">
                         @endif
                         <div class="col">
-                            <h2 class="font-weight-bold mb-0">{{$run->SHIP_NAME ?? "Unknown"}}</h2>
+                            @if($all_data->SHIP_ID)
+                                <h2 class="font-weight-bold mb-0"><a href="{{route("ship_single", ["id" => $all_data->SHIP_ID])}}">{{$run->SHIP_NAME}}</a></h2>
+                            @else
+                                <h2 class="font-weight-bold mb-0">Unknown</h2>
+                            @endif
                             <small class="text-muted font-weight-bold">Ship type</small>
                         </div>
                     </div>
@@ -247,11 +251,6 @@
         "tier" => $all_data->TIER,
         "type" => $all_data->TYPE
         ])}}" class="btn btn-outline-secondary">Show all Tier {{$all_data->TIER}} {{$all_data->TYPE}} runs ({{$count_same_type_tier}})</a>
-                    @if($all_data->SHIP_ID)
-                        <a href="{{route("ship_single", [
-        "id" => $count_same_ship
-        ])}}" class="btn btn-outline-secondary">Show all runs with {{$run->SHIP_NAME}} ({{$count_same_ship}})</a>
-                    @endif
                 </div>
             </div>
         </div>

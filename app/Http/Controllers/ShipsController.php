@@ -194,6 +194,7 @@
 
 
             return view("ship", [
+                "id" => $id,
                 "name" => $name,
                 "pop_chart" => $pop,
                 "all_runs" => $all_runs,

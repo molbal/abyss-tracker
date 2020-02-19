@@ -106,9 +106,11 @@ order by 2 ASC;", [intval($group_id)]);
         }
 
         function get_all() {
+            // TODO get whitelisted group ids out of here
             $items = DB::select("select ip.ITEM_ID, ip.NAME, ip.GROUP_NAME, ip.GROUP_ID, ip.PRICE_SELL, ip.PRICE_BUY, (
     select SUM(drp.DROPPED_COUNT)/SUM(GREATEST(1,drp.RUNS_COUNT)) from droprates_cache drp where drp.ITEM_ID=ip.ITEM_ID and drp.TYPE='All'
     ) DROP_RATE from item_prices ip
+    where GROUP_ID in (1992,1993,105,255,2019,1964,1088,1990,257,1995,1977,1979,1996,489,107,106,487)
 order by 7 DESC;");
             $cnt = DB::select("select count(*) as c from (select 1 from `detailed_loot` group by `RUN_ID`) a")[0]->c;
             return view("all_items", [
@@ -117,22 +119,22 @@ order by 7 DESC;");
             ]);
         }
 
-        function search_items(Request $request) {
-            $q = $request->get("q");
-            $items = DB::table("item_prices")->where("NAME", "LIKE", "%".$q."%")->get();
-
-            $q = [
-                "results" => [],
-                "pagination" => false
-            ];
-            foreach ($items as $item) {
-                $q["results"][] = [
-                  "id" => $item->ITEM_ID,
-                  "text" => sprintf("%s (%s)", $item->NAME, $item->GROUP_NAME),
-                    "html" => ""
-                ];
-            }
-
-            return json_encode($q);
-        }
+//        function search_items(Request $request) {
+//            $q = $request->get("q");
+//            $items = DB::table("item_prices")->where("NAME", "LIKE", "%".$q."%")->get();
+//
+//            $q = [
+//                "results" => [],
+//                "pagination" => false
+//            ];
+//            foreach ($items as $item) {
+//                $q["results"][] = [
+//                  "id" => $item->ITEM_ID,
+//                  "text" => sprintf("%s (%s)", $item->NAME, $item->GROUP_NAME),
+//                    "html" => ""
+//                ];
+//            }
+//
+//            return json_encode($q);
+//        }
     }
