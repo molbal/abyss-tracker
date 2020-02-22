@@ -35,10 +35,11 @@
          * Handles the all ships view
          * TODO: Move chart renders to its respectible controllers
          * TODO: Make ship list types
+         *
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         function get_all() {
-            $query_cruiser = Cache::remember("ships.cruisers", 20, function () {
+            $query_cruiser = Cache::remember("ships.cruisers", 20, function() {
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=1
@@ -63,13 +64,13 @@
             $shipCruiserChart->theme(ThemeController::getChartTheme());
             $shipCruiserChart->labels($dataset);
             $shipCruiserChart->dataset("Cruisers", "pie", $values)->options([
-                "radius" => [70, 170],
+                "radius"   => [70, 170],
                 "roseType" => "radius"
             ]);
             $shipCruiserChart->displayLegend(false);
 
 
-            $query_frig = Cache::remember("ships.frigates", 20, function () {
+            $query_frig = Cache::remember("ships.frigates", 20, function() {
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=0
@@ -95,11 +96,10 @@
             $shipFrigateChart->theme(ThemeController::getChartTheme());
             $shipFrigateChart->labels($dataset);
             $shipFrigateChart->dataset("Cruisers", "pie", $values)->options([
-                "radius" => [70, 170],
+                "radius"   => [70, 170],
                 "roseType" => "radius"
             ]);
             $shipFrigateChart->displayLegend(false);
-
 
 
             return view("ships", [
@@ -117,9 +117,9 @@
 
             list($dates, $values, $dead) = Cache::remember("ship.popularity.$id", 0.001, function() use ($id, $name) {
                 $dates = [];
-                $values= [];
+                $values = [];
                 $dead = [];
-                for ($i=-90; $i<=0; $i++) {
+                for ($i = -90; $i <= 0; $i++) {
                     $date = strtotime("now $i days");
                     $val = DB::select("select
                             (select count(ID) from runs where RUN_DATE=?) as 'ALL',
@@ -138,8 +138,8 @@
                         $dead[] = 0.0;
                     }
                     else {
-                        $values[] = round(($val[0]->SHIP/$val[0]->ALL)*100, 2);
-                        $dead[] = round(($val[0]->DEAD/($val[0]->SHIP > 0 ? $val[0]->SHIP : 1))*100, 2);
+                        $values[] = round(($val[0]->SHIP / $val[0]->ALL) * 100, 2);
+                        $dead[] = round(($val[0]->DEAD / ($val[0]->SHIP > 0 ? $val[0]->SHIP : 1)) * 100, 2);
                     }
                 }
                 return [$dates, $values, $dead];
@@ -158,19 +158,19 @@
                 ]
             ]);
             $pop->dataset("Popularity of $name (Percentage of all runs)", "line", $values)->options([
-                'smooth' => true,
-                'symbolSize' => 0,
+                'smooth'         => true,
+                'symbolSize'     => 0,
                 'smoothMonotone' => 'x',
-                'tooltip' => [
+                'tooltip'        => [
                     'trigger' => "axis"
                 ]
             ]);
             $pop->dataset("Failure ratio of $name (Percentage of failed runs)", "line", $dead)->options([
-                'smooth' => true,
-                'symbolSize' => 0,
-                'smoothMonotone'=> 'x',
-                'color' => 'red',
-                'tooltip' => [
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'color'          => 'red',
+                'tooltip'        => [
                     'trigger' => "axis"
                 ]
             ]);
@@ -191,15 +191,135 @@
                 ->count();
 
 
+            $chart_tiers = new LootTierChart();
+            $chart_tiers->displayLegend(false);
+            $chart_tiers->displayAxes(false);
+            $chart_tiers->export(true, "Download");
+            $chart_tiers->height(400);
+            $chart_tiers->theme(ThemeController::getChartTheme());
+            $chart_tiers->labels([$name, "Other"]);
 
+
+            $series = [];
+
+            for ($i = 1; $i <= 5; $i++) {
+                $all_ship_runs = DB::table("v_ship_run_percent")
+                    ->where("SHIP_ID", $id)
+                    ->where("TIER", $i)
+                    ->sum("SHIP_RUNS");
+                $all_runs = DB::table("v_tt_run_count")
+                    ->where("TIER", $i)
+                    ->sum("RUNS");
+                $percent = round($all_ship_runs / $all_runs * 100, 2);
+                $chart_tiers->dataset("Tier $i", "line", [$percent, 100 - $percent])->options([
+                    "stack"    => $i,
+                    "roseType" => 'area'
+                ]);
+                $series[$i - 1] = [
+                    'name'     => "Tier $i",
+                    'type'     => "pie",
+                    'radius'   => [0 => 20, 1 => 60],
+                    'center'   => [0 => (($i - 1) * 20 + 10) . "%", 1 => '50%'],
+                    'roseType' => 'rose',
+                    'label'    => ['show' => true],
+                    'emphasis' => ['label' => ['show' => true, 'alignTo' => "labelLine"]],
+                    'data'     => [
+                        0 => [
+                            'value' => $percent,
+                            'name'  => $name
+                        ],
+                        1 => [
+                            'value' => 100 - $percent,
+                            'name'  => 'Other'
+                        ]
+                    ]
+                ];
+            }
+            $chart_tiers->dataset("", "pie", []);
+            $chart_tiers->options([
+                'title'   => [
+                    [
+                        'text' => 'Ship usage',
+                        'left' => 'center',
+                    ],
+                    [
+                        'subtext'   => 'Tier 1',
+                        'left'      => '10%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Tier 2',
+                        'left'      => '30%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Tier 3',
+                        'left'      => '50%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Tier 4',
+                        'left'      => '70%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Tier 5',
+                        'left'      => '90%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ]
+                ],
+                'tooltip' =>
+                    [
+                        'trigger'   => 'item',
+                        'formatter' => '{a} <br/>{b} usage: {c}%',
+                    ],
+                'legend'  =>
+                    [
+                        'left' => 'center',
+                        'top'  => 'bottom',
+                        'data' =>
+                            [
+                                0 => $name,
+                                1 => 'Other',
+                            ],
+                    ],
+                'toolbox' =>
+                    [
+                        'show'    => true,
+                        'feature' =>
+                            [
+                                'mark'      =>
+                                    [
+                                        'show' => true,
+                                    ],
+                                'magicType' =>
+                                    [
+                                        'show' => true,
+                                        'type' =>
+                                            [
+                                                0 => 'funnel',
+                                                1 => 'funnel',
+                                            ],
+                                    ]
+                            ],
+                    ],
+                'series'  =>
+                    $series, 3
+            ]);
 
             return view("ship", [
-                "id" => $id,
-                "name" => $name,
-                "pop_chart" => $pop,
-                "all_runs" => $all_runs,
+                "id"           => $id,
+                "name"         => $name,
+                "pop_chart"    => $pop,
+                "all_runs"     => $all_runs,
                 "all_survived" => $all_survived,
-                "all_dead" => $all_dead,
+                "all_dead"     => $all_dead,
+                "pop_tiers"    => $chart_tiers
             ]);
         }
     }

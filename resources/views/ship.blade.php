@@ -11,6 +11,7 @@
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Popularity over the last 3 months <small class="float-right">This graph shows the percentage of Abyss runs using/day using a {{$name}}</small></h5>
                 {!! $pop_chart->container() !!}
+                {!! $pop_tiers->container() !!}
             </div>
         </div>
     </div>
@@ -18,4 +19,5 @@
 
 @section("scripts")
     {!! $pop_chart->script() !!}
+    {!! $pop_tiers->script() !!}
 @endsection
