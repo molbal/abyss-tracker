@@ -45,6 +45,41 @@
         }
 
         /**
+         * Gets the death reason. It is a long and chatty text
+         * @param $all_data object must have DEATH_REASON property
+         * @return string
+         */
+        public function getDeathReasonQQuickBark($all_data): string {
+            switch ($all_data) {
+                case 'TIMEOUT':
+                    $death_reason = "Timeout";
+                    break;
+                case 'TANK_FAILED':
+                    $death_reason = "Inadequate tank";
+                    break;
+                case 'CONNECTION_DROP':
+                    $death_reason = "Connection drop";
+                    break;
+                case 'PILOTING_MISTAKE':
+                    $death_reason = "Piloting mistake";
+                    break;
+                case 'PVP_DEATH':
+                    $death_reason = "PVP loss";
+                    break;
+                case 'OVERHEAT_FAILURE':
+                    $death_reason = "Overheat failure";
+                    break;
+                case 'EXPERIMENTAL_FIT':
+                    $death_reason = "Experimental fit";
+                    break;
+                case 'OTHER':
+                default:
+                    $death_reason = "Other reason";
+            }
+            return $death_reason;
+        }
+
+        /**
          * Gets the loot strategy description from all_data.
          * @param $all_data object must have LOOT_TYPE property
          * @return string
