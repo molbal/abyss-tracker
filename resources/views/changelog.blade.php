@@ -5,6 +5,17 @@
         <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.3.2</strong> 'Vessel' release</h4>
+                <small class="mt-0">2020 february 22</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>Changed server configuration to prevent memory and swap related service disruptions</li>
+                    <li>Added ship's info panel</li>
+                </ul>
+                </p>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.3</strong> 'Epoch' release</h4>
                 <small class="mt-0">2020 february 12</small>
                 <p>

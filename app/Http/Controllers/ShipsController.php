@@ -4,7 +4,10 @@
     namespace App\Http\Controllers;
 
 
+    use App\Charts\AbyssSurvivalType;
+    use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
+    use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
     use App\Charts\ShipCruiserChart;
     use App\Charts\ShipFrigateChart;
@@ -21,13 +24,18 @@
         /** @var LootCacheController */
         private $lootCacheController;
 
+        /** @var BarkController */
+        private $barkController;
+
         /**
-         * ItemController constructor.
+         * ShipsController constructor.
          *
          * @param LootCacheController $lootCacheController
+         * @param BarkController      $barkController
          */
-        public function __construct(LootCacheController $lootCacheController) {
+        public function __construct(LootCacheController $lootCacheController, BarkController $barkController) {
             $this->lootCacheController = $lootCacheController;
+            $this->barkController = $barkController;
         }
 
 
@@ -35,41 +43,387 @@
          * Handles the all ships view
          * TODO: Move chart renders to its respectible controllers
          * TODO: Make ship list types
+         *
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         function get_all() {
-            $query_cruiser = Cache::remember("ships.cruisers", 20, function () {
-                return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID
-                    from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
-                    where l.IS_CRUISER=1
-                    group by r.SHIP_ID, l.NAME, l.ID
-                    order by 1 desc
-                    limit 15");
+
+            list($query_cruiser, $shipCruiserChart) = $this->getAllShipsCruiersChart();
+            list($query_frig, $shipFrigateChart) = $this->getAllShipsFrigatesChart();
+
+            return view("ships", [
+                "cruiser_chart" => $shipCruiserChart,
+                "frigate_chart" => $shipFrigateChart,
+                "query_cruiser" => $query_cruiser,
+                "query_frigate" => $query_frig,
+            ]);
+        }
+
+
+        function get_single(int $id) {
+
+            $name = DB::table("ship_lookup")->where("ID", $id)->value("NAME");
+            $pop = $this->getShipPopularityChart($id, $name);
+
+            $all_runs = DB::table("runs")
+                ->where("SHIP_ID", $id)
+                ->count();
+
+            $all_survived = DB::table("runs")
+                ->where("SHIP_ID", $id)
+                ->where("SURVIVED", true)
+                ->count();
+
+            $all_dead = DB::table("runs")
+                ->where("SHIP_ID", $id)
+                ->where("SURVIVED", false)
+                ->count();
+
+            list($chart_tiers, $i, $all_ship_runs, $all_runs, $percent) = $this->getShipTierChart($id, $name);
+            list($chart_types, $all_runs) = $this->getShipTypeChart($id, $name);
+
+            $items = DB::table("runs")
+                ->where("SHIP_ID", $id)
+                ->orderBy("CREATED_AT", 'DESC')
+                ->paginate(25);
+
+            list($death_reasons, $labels, $data, $reason, $death_reason) = $this->getShipDeathReasons($id);
+            $loot_chart = $this->getShipLootStrategyChart($id);
+
+
+            return view("ship", [
+                "id"           => $id,
+                "name"         => $name,
+                "pop_chart"    => $pop,
+                "all_runs"     => $all_runs,
+                "all_survived" => $all_survived,
+                "all_dead"     => $all_dead,
+                "pop_tiers"    => $chart_tiers,
+                "pop_types"    => $chart_types,
+                "items" => $items,
+                "death_chart" => $death_reason,
+                "loot_chart" => $loot_chart,
+            ]);
+        }
+
+        /**
+         * @param int $id
+         * @param     $name
+         * @return PersonalDaily
+         */
+        public function getShipPopularityChart(int $id, $name): PersonalDaily {
+            list($dates, $values, $dead) = Cache::remember("ship.popularity.$id", 0.001, function() use ($id, $name) {
+                $dates = [];
+                $values = [];
+                $dead = [];
+                for ($i = -90; $i <= 0; $i++) {
+                    $date = strtotime("now $i days");
+                    $val = DB::select("select
+                            (select count(ID) from runs where RUN_DATE=?) as 'ALL',
+                            (select count(ID) from runs where RUN_DATE=? and SHIP_ID=?) as 'SHIP',
+                            (select count(ID) from runs where RUN_DATE=? and SHIP_ID=? and SURVIVED=0) as 'DEAD';",
+                        [
+                            date('Y-m-d', $date),
+                            date('Y-m-d', $date),
+                            $id,
+                            date('Y-m-d', $date),
+                            $id
+                        ]);
+                    $dates[] = date("M.d.", $date);
+                    if ($val[0]->ALL == 0) {
+                        $values[] = 0.0;
+                        $dead[] = 0.0;
+                    }
+                    else {
+                        $values[] = round(($val[0]->SHIP / $val[0]->ALL) * 100, 2);
+                        $dead[] = round(($val[0]->DEAD / ($val[0]->SHIP > 0 ? $val[0]->SHIP : 1)) * 100, 2);
+                    }
+                }
+                return [$dates, $values, $dead];
             });
 
-            $dataset = [];
-            $values = [];
-            $i = 7;
-            foreach ($query_cruiser as $type) {
-                if ($i-- == 0) break;
-                $dataset[] = $type->NAME;
-                $values[] = $type->RUNS;
-            }
-
-            $shipCruiserChart = new ShipCruiserChart();
-            $shipCruiserChart->export(true, "Download");
-            $shipCruiserChart->displayAxes(false);
-            $shipCruiserChart->height(400);
-            $shipCruiserChart->theme(ThemeController::getChartTheme());
-            $shipCruiserChart->labels($dataset);
-            $shipCruiserChart->dataset("Cruisers", "pie", $values)->options([
-                "radius" => [70, 170],
-                "roseType" => "radius"
+            $pop = new PersonalDaily();
+            $pop->displayAxes(true);
+            $pop->export(true, "Download");
+            $pop->height(200);
+            $pop->theme(ThemeController::getChartTheme());
+            $pop->displayLegend(true);
+            $pop->labels($dates);
+            $pop->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
             ]);
-            $shipCruiserChart->displayLegend(false);
+            $pop->dataset("Popularity of $name (Percentage of all runs)", "line", $values)->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $pop->dataset("Failure ratio of $name (Percentage of failed runs)", "line", $dead)->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'color'          => 'red',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            return $pop;
+        }
+
+        /**
+         * @param int $id
+         * @param     $name
+         * @return array
+         */
+        public function getShipTierChart(int $id, $name): array {
+            $chart_tiers = new LootTierChart();
+            $chart_tiers->displayLegend(false);
+            $chart_tiers->displayAxes(false);
+            $chart_tiers->export(true, "Download");
+            $chart_tiers->height(270);
+            $chart_tiers->theme(ThemeController::getChartTheme());
+            $chart_tiers->labels([$name, "Other"]);
 
 
-            $query_frig = Cache::remember("ships.frigates", 20, function () {
+            $series = [];
+            for ($i = 1; $i <= 5; $i++) {
+                $all_ship_runs = DB::table("v_ship_run_percent")
+                    ->where("SHIP_ID", $id)
+                    ->where("TIER", $i)
+                    ->sum("SHIP_RUNS");
+                $all_runs = DB::table("v_tt_run_count")
+                    ->where("TIER", $i)
+                    ->sum("RUNS");
+                $percent = round($all_ship_runs / $all_runs * 100, 2);
+                $chart_tiers->dataset("Tier $i", "line", [$percent, 100 - $percent])->options([
+                    "stack"    => $i,
+                    "roseType" => 'area'
+                ]);
+                $series[$i - 1] = [
+                    'name'     => "Tier $i",
+                    'type'     => "pie",
+                    'radius'   => [0 => 20, 1 => 60],
+                    'center'   => [0 => (($i - 1) * 20 + 10) . "%", 1 => '50%'],
+                    'roseType' => 'rose',
+                    'label'    => ['show' => true],
+                    'emphasis' => ['label' => ['show' => true, 'alignTo' => "labelLine"]],
+                    'data'     => [
+                        0 => [
+                            'value' => $percent,
+                            'name'  => $name
+                        ],
+                        1 => [
+                            'value' => round(100 - $percent, 2),
+                            'name'  => 'Other'
+                        ]
+                    ]
+                ];
+            }
+            $chart_tiers->dataset("", "pie", []);
+            $chart_tiers->options([
+                'title'   => [
+                    [
+                        'subtext'   => 'Tier 1 (Calm)',
+                        'left'      => '10%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Tier 2 (Agitated)',
+                        'left'      => '30%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Tier 3 (Fierce)',
+                        'left'      => '50%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Tier 4 (Raging)',
+                        'left'      => '70%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Tier 5 (Chaotic)',
+                        'left'      => '90%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ]
+                ],
+                'tooltip' =>
+                    [
+                        'trigger'   => 'item',
+                        'formatter' => '{a} <br/>{b} usage: {c}%',
+                    ],
+                'legend'  =>
+                    [
+                        'left' => 'center',
+                        'top'  => 'bottom',
+                        'data' =>
+                            [
+                                0 => $name,
+                                1 => 'Other',
+                            ],
+                    ],
+                'toolbox' =>
+                    [
+                        'show'    => true,
+                        'feature' =>
+                            [
+                                'mark'      =>
+                                    [
+                                        'show' => true,
+                                    ],
+                                'magicType' =>
+                                    [
+                                        'show' => true,
+                                        'type' =>
+                                            [
+                                                0 => 'funnel',
+                                                1 => 'funnel',
+                                            ],
+                                    ]
+                            ],
+                    ],
+                'series'  =>
+                    $series, 3
+            ]);
+            return [$chart_tiers, $i, $all_ship_runs, $all_runs, $percent];
+        }
+
+        /**
+         * @param int $id
+         * @param     $name
+         * @return array
+         */
+        public function getShipTypeChart(int $id, $name): array {
+            $chart_types = new LootTypesChart();
+            $chart_types->displayLegend(false);
+            $chart_types->displayAxes(false);
+            $chart_types->export(true, "Download");
+            $chart_types->height(270);
+            $chart_types->theme(ThemeController::getChartTheme());
+            $chart_types->labels([$name, "Other"]);
+
+            $series_t = [];
+            $c = 0;
+            foreach (['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma'] as $i) {
+                $all_ship_runs = DB::table("v_ship_run_percent")
+                    ->where("SHIP_ID", $id)
+                    ->where("TYPE", $i)
+                    ->sum("SHIP_RUNS");
+                $all_runs = DB::table("v_tt_run_count")
+                    ->where("TYPE", $i)
+                    ->sum("RUNS");
+                $percent = round($all_ship_runs / max(1, $all_runs) * 100, 2);
+                $series_t[$c] = [
+                    'name'     => "$i",
+                    'type'     => "pie",
+                    'radius'   => [0 => 20, 1 => 60],
+                    'center'   => [0 => (($c) * 20 + 10) . "%", 1 => '50%'],
+                    'roseType' => 'rose',
+                    'label'    => ['show' => true],
+                    'emphasis' => ['label' => ['show' => true, 'alignTo' => "labelLine"]],
+                    'data'     => [
+                        0 => [
+                            'value' => $percent,
+                            'name'  => $name
+                        ],
+                        1 => [
+                            'value' => round(100 - $percent, 2),
+                            'name'  => 'Other'
+                        ]
+                    ]
+                ];
+                $c++;
+            }
+            $chart_types->dataset("", "pie", []);
+            $chart_types->options([
+                'title'   => [
+                    [
+                        'subtext'   => 'Electrical',
+                        'left'      => '10%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Dark',
+                        'left'      => '30%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Exotic',
+                        'left'      => '50%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Firestorm',
+                        'left'      => '70%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => 'Gamma',
+                        'left'      => '90%',
+                        'top'       => '15%',
+                        'textAlign' => 'center'
+                    ]
+                ],
+                'tooltip' =>
+                    [
+                        'trigger'   => 'item',
+                        'formatter' => '{a} <br/>{b} usage: {c}%',
+                    ],
+                'legend'  =>
+                    [
+                        'left' => 'center',
+                        'top'  => 'bottom',
+                        'data' =>
+                            [
+                                0 => $name,
+                                1 => 'Other',
+                            ],
+                    ],
+                'toolbox' =>
+                    [
+                        'show'    => true,
+                        'feature' =>
+                            [
+                                'mark'      =>
+                                    [
+                                        'show' => true,
+                                    ],
+                                'magicType' =>
+                                    [
+                                        'show' => true,
+                                        'type' =>
+                                            [
+                                                0 => 'funnel',
+                                                1 => 'funnel',
+                                            ],
+                                    ]
+                            ],
+                    ],
+                'series'  =>
+                    $series_t, 3
+            ]);
+            return [$chart_types, $all_runs];
+        }
+
+        /**
+         * @return array
+         */
+        public function getAllShipsFrigatesChart(): array {
+            $query_frig = Cache::remember("ships.frigates", 20, function() {
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=0
@@ -95,111 +449,106 @@
             $shipFrigateChart->theme(ThemeController::getChartTheme());
             $shipFrigateChart->labels($dataset);
             $shipFrigateChart->dataset("Cruisers", "pie", $values)->options([
-                "radius" => [70, 170],
+                "radius"   => [70, 170],
                 "roseType" => "radius"
             ]);
             $shipFrigateChart->displayLegend(false);
-
-
-
-            return view("ships", [
-                "cruiser_chart" => $shipCruiserChart,
-                "frigate_chart" => $shipFrigateChart,
-                "query_cruiser" => $query_cruiser,
-                "query_frigate" => $query_frig,
-            ]);
+            return [$query_frig, $shipFrigateChart];
         }
 
-
-        function get_single(int $id) {
-
-            $name = DB::table("ship_lookup")->where("ID", $id)->value("NAME");
-
-            list($dates, $values, $dead) = Cache::remember("ship.popularity.$id", 0.001, function() use ($id, $name) {
-                $dates = [];
-                $values= [];
-                $dead = [];
-                for ($i=-90; $i<=0; $i++) {
-                    $date = strtotime("now $i days");
-                    $val = DB::select("select
-                            (select count(ID) from runs where RUN_DATE=?) as 'ALL',
-                            (select count(ID) from runs where RUN_DATE=? and SHIP_ID=?) as 'SHIP',
-                            (select count(ID) from runs where RUN_DATE=? and SHIP_ID=? and SURVIVED=0) as 'DEAD';",
-                        [
-                            date('Y-m-d', $date),
-                            date('Y-m-d', $date),
-                            $id,
-                            date('Y-m-d', $date),
-                            $id
-                        ]);
-                    $dates[] = date("M.d.", $date);
-                    if ($val[0]->ALL == 0) {
-                        $values[] = 0.0;
-                        $dead[] = 0.0;
-                    }
-                    else {
-                        $values[] = round(($val[0]->SHIP/$val[0]->ALL)*100, 2);
-                        $dead[] = round(($val[0]->DEAD/($val[0]->SHIP > 0 ? $val[0]->SHIP : 1))*100, 2);
-                    }
-                }
-                return [$dates, $values, $dead];
+        /**
+         * @return array
+         */
+        public function getAllShipsCruiersChart(): array {
+            $query_cruiser = Cache::remember("ships.cruisers", 20, function() {
+                return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID
+                    from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
+                    where l.IS_CRUISER=1
+                    group by r.SHIP_ID, l.NAME, l.ID
+                    order by 1 desc
+                    limit 15");
             });
 
-            $pop = new PersonalDaily();
-            $pop->displayAxes(true);
-            $pop->export(true, "Download");
-            $pop->height(400);
-            $pop->theme(ThemeController::getChartTheme());
-            $pop->displayLegend(true);
-            $pop->labels($dates);
-            $pop->options([
-                'tooltip' => [
-                    'trigger' => "axis"
-                ]
+            $dataset = [];
+            $values = [];
+            $i = 7;
+            foreach ($query_cruiser as $type) {
+                if ($i-- == 0) break;
+                $dataset[] = $type->NAME;
+                $values[] = $type->RUNS;
+            }
+
+            $shipCruiserChart = new ShipCruiserChart();
+            $shipCruiserChart->export(true, "Download");
+            $shipCruiserChart->displayAxes(false);
+            $shipCruiserChart->height(400);
+            $shipCruiserChart->theme(ThemeController::getChartTheme());
+            $shipCruiserChart->labels($dataset);
+            $shipCruiserChart->dataset("Cruisers", "pie", $values)->options([
+                "radius"   => [70, 170],
+                "roseType" => "radius"
             ]);
-            $pop->dataset("Popularity of $name (Percentage of all runs)", "line", $values)->options([
-                'smooth' => true,
-                'symbolSize' => 0,
-                'smoothMonotone' => 'x',
-                'tooltip' => [
-                    'trigger' => "axis"
-                ]
-            ]);
-            $pop->dataset("Failure ratio of $name (Percentage of failed runs)", "line", $dead)->options([
-                'smooth' => true,
-                'symbolSize' => 0,
-                'smoothMonotone'=> 'x',
-                'color' => 'red',
-                'tooltip' => [
-                    'trigger' => "axis"
-                ]
-            ]);
+            $shipCruiserChart->displayLegend(false);
+            return [$query_cruiser, $shipCruiserChart];
+        }
 
-
-            $all_runs = DB::table("runs")
+        /**
+         * @param int $id
+         * @return array
+         */
+        public function getShipDeathReasons(int $id): array {
+            $death_reasons = DB::table("runs")
                 ->where("SHIP_ID", $id)
-                ->count();
-
-            $all_survived = DB::table("runs")
-                ->where("SHIP_ID", $id)
-                ->where("SURVIVED", true)
-                ->count();
-
-            $all_dead = DB::table("runs")
-                ->where("SHIP_ID", $id)
+                ->whereNotNull("DEATH_REASON")
                 ->where("SURVIVED", false)
-                ->count();
+                ->selectRaw("count(ID) as CNT, DEATH_REASON")
+                ->groupBy("DEATH_REASON")
+                ->get();
+            $labels = [];
+            $data = [];
+            foreach ($death_reasons as $reason) {
+                $labels[] = $this->barkController->getDeathReasonQQuickBark($reason->DEATH_REASON);
+                $data[] = $reason->CNT;
+            }
 
+            $death_reason = new AbyssSurvivalType();
+            $death_reason->displayAxes(false);
+            $death_reason->export(true, "Download");
+            $death_reason->height(400);
+            $death_reason->theme(ThemeController::getChartTheme());
+            $death_reason->displayLegend(true);
+            $death_reason->labels($labels);
+            $death_reason->dataset("Death reason", "pie", $data);
+            return [$death_reasons, $labels, $data, $reason ?? null, $death_reason];
+        }
 
+        /**
+         * @param int $id
+         * @return LootAveragesChart
+         */
+        public function getShipLootStrategyChart(int $id): LootAveragesChart {
+            $loot_strategy = DB::table("runs")
+                ->where("SHIP_ID", $id)
+                ->whereNotNull("LOOT_TYPE")
+                ->where("SURVIVED", true)
+                ->selectRaw("count(ID) as CNT, LOOT_TYPE")
+                ->groupBy("LOOT_TYPE")
+                ->get();
 
-
-            return view("ship", [
-                "id" => $id,
-                "name" => $name,
-                "pop_chart" => $pop,
-                "all_runs" => $all_runs,
-                "all_survived" => $all_survived,
-                "all_dead" => $all_dead,
-            ]);
+            $labels = [];
+            $data = [];
+            foreach ($loot_strategy as $reason) {
+                $labels[] = ucfirst(trim(str_ireplace("Looted the", "", $this->barkController->getLootStrategyDescription($reason))));
+                $data[] = $reason->CNT;
+            }
+            $loot_chart = new LootAveragesChart();
+            $loot_chart->displayAxes(false);
+            $loot_chart->export(true, "Download");
+            $loot_chart->height(400);
+            $loot_chart->theme(ThemeController::getChartTheme());
+            $loot_chart->displayLegend(true);
+            $loot_chart->labels($labels);
+            $loot_chart->dataset("Looting strategy", "pie", $data);
+            return $loot_chart;
         }
     }
