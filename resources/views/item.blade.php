@@ -56,9 +56,6 @@
     <div class="row mt-3">
         <div class="col-sm-12">
             @if(isset($drops["Dark"]))
-                <div class="alert alert-info mb-3 border-0 shadow-sm">
-                    <img src="https://img.icons8.com/android/16/000000/info.png"> Where we work with less than 10 runs the data is displayed in grey instead of black. This data is refreshed once in 90 minutes, because it takes a lot of time to calculate it.
-                </div>
             <div class="card card-body border-info shadow-sm">
                 <h5 class="font-weight-bold">Drops rates</h5>
                 <table class="table table-sm table-striped">
@@ -111,7 +108,7 @@
     <div class="row mt-3">
         <div class="col-sm-12">
             <p>
-                Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates were last updated <strong>{{$ago_drop}}</strong> with data from the run loot data. Every run submission triggers a price update for its loot items older than 24 hours. Drop rates are updated every day around downtime.
+                Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates were last updated <strong>{{$ago_drop}}</strong> with data from the run loot data. Every run submission triggers a price update for its loot items older than 24 hours. Drop rates are updated every 3 hours.
             </p>
         </div>
     </div>

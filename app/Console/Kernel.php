@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('abyss:checksys')->everyMinute()->withoutOverlapping();
+        $schedule->command('abyss:recalc')->cron('0 */3 * * *')->withoutOverlapping();
     }
 
     /**

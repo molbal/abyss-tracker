@@ -85,6 +85,7 @@
                     Log::warning(sprintf("Could not check ESI for char %d: %s %s@%d",$char->CHAR_ID, $e->getMessage(), $e->getFile(), $e->getLine()));
                 }
             }
+            unset($chars);
         }
 
         /**
@@ -104,7 +105,7 @@
             $loc = Cache::remember(sprintf("location.cache.%d", $charId), 1/6, function() use ($locationService, $charId){
                return $locationService->getCurrentLocation($charId);
             });
-
+            unset($locationService);
             $preAbyss = $var->IN_ABYSS ? true : false;
             $nowAbyss = $this->isAbyssSystem($loc->solar_system_name);
 
