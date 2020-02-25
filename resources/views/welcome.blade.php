@@ -8,8 +8,11 @@
     <div class="row mt-3">
         <div class="col-sm-12">
             <div class="card card-body border-info shadow-sm">
-                <p class="m-0 p-0 text-center">
-                    If you have any feedback, bugs, ideas or suggestions now is the best time to let me know here: <a target="_blank" href="https://t.co/vgpdmRXk9U">survey link</a>
+                    <small class="text-capitalize font-weight-bold text-danger pt-0">OUTAGE STATUS</small><br>
+                Today we ran out of AWS resources which resulted in severe performance issues. I have increased available resources to prevent this from happening again.
+                <hr>
+                <p class="m-0 p-0 text-left">
+                    Please tell me what to improve on this application by <a target="_blank" href="https://t.co/vgpdmRXk9U">filling this short survey</a>
                 </p>
             </div>
         </div>

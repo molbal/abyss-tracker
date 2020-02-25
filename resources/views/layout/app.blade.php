@@ -123,9 +123,6 @@
             of {{\Illuminate\Support\Facades\Cache::get("recalc-all")}}
         </div>
     @endif
-    <div class="card border-danger card-body shadow-sm mt-3">
-        <p class="mb-0"><img src="https://img.icons8.com/cotton/64/000000/error--v1.png"> The server has severe performance issues momentarily. I am working to resolve them. Sorry for the inconvenience and thank you for your patience.</p>
-    </div>
     @yield('content')
 </div>
 <footer class="footer mt-auto py-3 mt-5">
