@@ -100,6 +100,7 @@
             }
 
             $total_price = 0;
+
             foreach ($gainedItems as $gainedItem) {
                 $total_price += $gainedItem->getCount()*(($gainedItem->getSellValue()+$gainedItem->getBuyValue())/2);
             }
@@ -139,6 +140,10 @@
                             ->setBuyValue($item->prices->buy->max)
                             ->setSellValue($item->prices->sell->min)
                             ->setCount($item->quantity);
+
+                        if (stripos($eveItem->getItemName(), "blueprint") !== false) {
+                            $eveItem->setSellValue(0)->setBuyValue(0);
+                        }
                         $this->items[] = $eveItem;
                     }
                 }
