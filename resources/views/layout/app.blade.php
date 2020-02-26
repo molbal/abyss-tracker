@@ -123,7 +123,6 @@
             of {{\Illuminate\Support\Facades\Cache::get("recalc-all")}}
         </div>
     @endif
-
     @yield('content')
 </div>
 <footer class="footer mt-auto py-3 mt-5">

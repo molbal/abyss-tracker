@@ -6,6 +6,18 @@
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
     <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="card card-body border-info shadow-sm">
+                    <small class="text-capitalize font-weight-bold text-danger pt-0">OUTAGE STATUS</small><br>
+                Today we ran out of AWS resources which resulted in severe performance issues. I have increased available resources to prevent this from happening again.
+                <hr>
+                <p class="m-0 p-0 text-left">
+                    Please tell me what to improve on this application by <a target="_blank" href="https://t.co/vgpdmRXk9U">filling this short survey</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
         <div class="col-md-6 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Average loot per tier</h5>
@@ -62,10 +74,13 @@
                 <h5 class="font-weight-bold mb-2">Most frequent drops</h5>
                 @foreach($drops as $drop)
                     <div class="d-flex justify-content-start">
-                        <img src="https://imageserver.eveonline.com/Type/{{$drop->ITEM_ID}}_32.png" style="width: 32px;height: 32px;" class="mr-2" alt="">
+                        <img src="https://imageserver.eveonline.com/Type/{{$drop->ITEM_ID}}_32.png"
+                             style="width: 32px;height: 32px;" class="mr-2" alt="">
                         <div class="text-left">
-                            <span class="font-weight-bold"><a href="{{route("item_single", ["item_id" => $drop->ITEM_ID])}}">{{$drop->NAME}}</a></span><br>
-                            <small>{{number_format($drop->PRICE_BUY, 0, ",", " ")}} ISK - {{number_format($drop->PRICE_SELL, 0, ",", " ")}} ISK</small><br>
+                            <span class="font-weight-bold"><a
+                                    href="{{route("item_single", ["item_id" => $drop->ITEM_ID])}}">{{$drop->NAME}}</a></span><br>
+                            <small>{{number_format($drop->PRICE_BUY, 0, ",", " ")}} ISK
+                                - {{number_format($drop->PRICE_SELL, 0, ",", " ")}} ISK</small><br>
                             <small>{{round($drop->DROP_CHANCE*100,2)}}% drop chance</small><br>
                         </div>
                     </div>

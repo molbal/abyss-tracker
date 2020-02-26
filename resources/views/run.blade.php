@@ -145,7 +145,7 @@
                                     <td class="text-center font-italic" colspan="4">We currently can't estimate
                                         blueprint values
                                     </td>
-                                    <td class="text-right" data-toggle="tooltip" title="{{$loot_item->TOOLTIP}}">{{number_format($loot_item->DROP_PERCENT*100, 1, ",", " ")}}&nbsp;%
+                                    <td class="text-right" data-toggle="tooltip" title="{{$loot_item->TOOLTIP}}">{{number_format($loot_item->DROP_PERCENT*100, 2, ",", " ")}}&nbsp;%
                                     </td>
                                 @else
                                     <td class="text-right">{{number_format($loot_item->PRICE_SELL, 0, ",", " ")}}&nbsp;ISK
@@ -156,7 +156,7 @@
                                     </td>
                                     <td class="text-right">{{number_format($loot_item->BUY_PRICE_ALL, 0, ",", " ")}}&nbsp;ISK
                                     </td>
-                                    <td class="text-right" data-toggle="tooltip" title="{{$loot_item->TOOLTIP}}">{{number_format($loot_item->DROP_PERCENT*100, 1, ",", " ")}}&nbsp;%
+                                    <td class="text-right" data-toggle="tooltip" title="{{$loot_item->TOOLTIP}}">{{number_format($loot_item->DROP_PERCENT*100, 2, ",", " ")}}&nbsp;%
                                     </td>
                                 @endif
                             </tr>

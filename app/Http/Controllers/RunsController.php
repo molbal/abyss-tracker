@@ -143,7 +143,7 @@
                 $loot_stats = $this->lootCacheController->getItemStatsForTierType($lt->ITEM_ID, $all_data->TYPE, $all_data->TIER);
                 try {
 
-                    $lt->DROP_PERCENT = round($loot_stats[$all_data->TYPE][$all_data->TIER]->DROPPED_COUNT / max(1, $loot_stats[$all_data->TYPE][$all_data->TIER]->RUNS_COUNT), 2);
+                    $lt->DROP_PERCENT = $loot_stats[$all_data->TYPE][$all_data->TIER]->DROPPED_COUNT / max(1, $loot_stats[$all_data->TYPE][$all_data->TIER]->RUNS_COUNT);
                     $lt->TOOLTIP = sprintf("%d / %d runs", $loot_stats[$all_data->TYPE][$all_data->TIER]->DROPPED_COUNT, $loot_stats[$all_data->TYPE][$all_data->TIER]->RUNS_COUNT);
                 }
                 catch (\Exception $e) {
