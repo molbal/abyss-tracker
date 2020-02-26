@@ -57,7 +57,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"changelog" == Route::currentRouteName() ? "active" : ""}}"
-                   href="{{route("changelog")}}">Changelog</a>
+                   href="{{route("changelog")}}">Changelog <sup>(1.3.2)</sup></a>
             </li>
         </ul>
         <form class="ml-auto">

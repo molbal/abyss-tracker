@@ -3,6 +3,22 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
+            <div class="card card-body border-warning shadow-sm mb-3">
+                <small class="text-capitalize font-weight-bold text-dark pt-0">IN DEVELOPMENT / PLANNED</small>
+                <h4 class="mb-0 pb-0">Future releases</h4>
+                <p>
+                    The following features are planned (in no particular order or grouping).
+                <ul>
+                    <li>Flag system for other capsuleers' presumably incorrect runs</li>
+                    <li>Delete your own broken runs</li>
+                    <li>Public profile of capsuleers</li>
+                    <li>Blueprint price estimation</li>
+                    <li>Reworking the filtereded run list with frigate/cruiser separation and some stats</li>
+                    <li>Adjusting the before/after cargo to better show the differences and calculate profit</li>
+                    <li>Finding and fixing a bug in loot isk calculation</li>
+                </ul>
+                </p>
+            </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                 <h4 class="mb-0 pb-0"><strong>1.3.2</strong> 'Vessel' release</h4>
