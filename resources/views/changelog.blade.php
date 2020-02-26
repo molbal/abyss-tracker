@@ -9,18 +9,29 @@
                 <p>
                     The following features are planned (in no particular order or grouping).
                 <ul>
-                    <li>Flag system for other capsuleers' presumably incorrect runs</li>
-                    <li>Delete your own broken runs</li>
                     <li>Public profile of capsuleers</li>
                     <li>Blueprint price estimation</li>
                     <li>Reworking the filtereded run list with frigate/cruiser separation and some stats</li>
-                    <li>Adjusting the before/after cargo to better show the differences and calculate profit</li>
                     <li>Finding and fixing a bug in loot isk calculation</li>
                 </ul>
                 </p>
             </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.3.3</strong> 'Carapace' release</h4>
+                <small class="mt-0">2020 february 26</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>More detailed run income/expenses/profit table</li>
+                    <li>Consistent calculation of used filaments in the consumed items table</li>
+                    <li>Server configuration changes for trying to achieve a more stable operation</li>
+                    <li>Delete your own runs</li>
+                    <li>Flagging of other capsuleer's runs <strong class="text-danger"> - not working yet, but work started.</strong></li>
+                </ul>
+                </p>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.3.2</strong> 'Vessel' release</h4>
                 <small class="mt-0">2020 february 22</small>
                 <p>

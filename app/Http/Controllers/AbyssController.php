@@ -98,13 +98,13 @@
                 return view("error", ["error" => "Please log in to access this page"]);
             }
 
-            list($my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio, $data) = $this->homeQueriesController->getPersonalStats();
+            [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio, $data] = $this->homeQueriesController->getPersonalStats();
 
             $labels = [];
             foreach ($data as $type) {
                 $labels[] = date("m.d", strtotime($type->RUN_DATE));
             }
-            list($personalDaily, $iskPerHour) = $this->graphContainerController->getPersonalStatsCharts($labels);
+            [$personalDaily, $iskPerHour] = $this->graphContainerController->getPersonalStatsCharts($labels);
 
             $table = [];
             for($i=0;$i>-31;$i--) {
@@ -214,7 +214,7 @@ where CHAR_ID=? and RUN_DATE=?" ,[
             $data = DB::table("v_runall")->where("ID", $id)->get()->get(0);
 
             // Get graphs
-            list($otherCharts, $averageLootForTier) = $this->graphContainerController->getRunGraphs($data);
+            [$otherCharts, $averageLootForTier] = $this->graphContainerController->getRunGraphs($data);
 
             // Get all data and all loot
             $all_data = DB::table("runs")->where("ID", $id)->get()->get(0);
@@ -232,8 +232,54 @@ where CHAR_ID=? and RUN_DATE=?" ,[
 from (`abyss`.`lost_items` `dl`
          join `abyss`.`item_prices` `ip` on (`dl`.`ITEM_ID` = `ip`.`ITEM_ID`)) where dl.`RUN_ID`=?;", [intval($id)]);
 
+            // Get which filament shall be used now
+            $filament_id = DB::table("filament_types")->where("TIER", $all_data->TIER)->where("TYPE", $all_data->TYPE)->value("ITEM_ID");
+
+            // Check if we there is anything here
+            if (count($lost) == 0) {
+                // Add the missing filament
+                $lost = DB::select("select
+                    `ip`.`ITEM_ID`                   AS `ITEM_ID`,
+                    1                 AS `COUNT`,
+                    `ip`.`NAME`                      AS `NAME`,
+                    `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
+                    `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
+                    `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
+                    `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
+                    `ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
+                    `ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
+from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]);
+            }
+            else {
+                // If it doesnt exist in the list probably it was both looted and used
+                $lost_has_filament = false;
+                foreach ($lost as $item) {
+                    if ($item->ITEM_ID == $filament_id) {
+                        $lost_has_filament = true;
+                        break;
+                    }
+                }
+
+                if (!$lost_has_filament) {
+                    $item = DB::select("select
+                    `ip`.`ITEM_ID`                   AS `ITEM_ID`,
+                    ".intval($id)." AS `RUN_ID`,
+                    1                 AS `COUNT`,
+                    `ip`.`NAME`                      AS `NAME`,
+                    `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
+                    `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
+                    `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
+                    `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
+                    `ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
+                    `ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
+from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)])[0];
+                    $loot->add($item);
+                    $lost[] = $item;
+                }
+            }
+
             // Get customization options
-            list($percent, $run_summary) = $this->barkController->getRunSummaryBark($data, $averageLootForTier);
+            [$percent, $run_summary] = $this->barkController->getRunSummaryBark($data, $averageLootForTier);
             $death_reason = $this->barkController->getDeathReasonBark($all_data);
             $looting = $this->barkController->getLootStrategyDescription($all_data);
 
@@ -242,6 +288,7 @@ from (`abyss`.`lost_items` `dl`
             $count_same_ship = DB::table("runs")->where("SHIP_ID", $all_data->SHIP_ID)->count();
 
             // Get drop rates
+//            dd($loot, $all_data);
             $this->runsController->extendDropListWithRates($loot, $all_data);
 
             return view("run", [
@@ -330,5 +377,56 @@ from (`abyss`.`lost_items` `dl`
         }
 
 
+        public function flag(Request $request)
+        {
+            Validator::make($request->all(), ['id' => 'int|required', 'message' => 'required|max'])->validate();
+
+            $id = $request->get('id');
+            $message = $request->get('message');
+
+            $run_owner = DB::table("runs")->where("ID", $id)->value("CHAR_ID");
+
+            if ($run_owner == session()->get('login_id')) {
+                return view('error', ['error' => 'You can not flag your own run. Please delete it instead.']);
+            } else {
+                if (DB::table("run_report")->where("RUN_ID", $id)->exists()) {
+                    return view('sp_message', ['title' => 'Run already flagged', 'message' => "This run was already flagged by someone else."]);
+                }
+
+                DB::table("run_report")->insert([
+                    'REPORTER_CHAR_ID' => session()->get("login_id"),
+                    'RUN_ID' => $id,
+                    'MESSAGE' => $message,
+                    'PROCESSED' => false
+                ]);
+
+                return view('sp_message', ['title' => 'Run flagged', 'message' => "You have flagged this run! It will be manually reviewed soon."]);
+            }
+
+        }
+
+        /**
+         * Handles the deletion of a run
+         * @param int $id
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function delete(int $id) {
+
+            $run_owner = DB::table("runs")
+                ->where("ID", $id)
+                ->value("CHAR_ID");
+
+            if ($run_owner == session()->get('login_id')) {
+                DB::table("runs")->where("ID", $id)->where("CHAR_ID", session()->get('login_id'))->delete();
+                DB::table("detailed_loot")->where("RUN_ID", $id)->delete();
+                DB::table("lost_items")->where("RUN_ID", $id)->delete();
+                return view('sp_message', ['title' => 'Run deleted', 'message' => "Run #$id successfully deleted."]);
+            }
+            else {
+                return view('error', ['error' => 'Please log in to delete your run.']);
+            }
+
+        }
 
     }

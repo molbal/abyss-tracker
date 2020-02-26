@@ -29,6 +29,12 @@
     Route::get("/filter/{type}/{tier}", 'FilteredController@get_list')->name("filtered_list");
 
     /**
+     * Runs
+     */
+    Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
+    Route::get("/run/delete/{id}", 'AbyssController@delete')->name("run_delete");
+
+    /**
      * Stopwatch
      */
     Route::post("/stopwatch/start/{charId}", 'StopwatchController@addChecks')->name("stopwatch_start");

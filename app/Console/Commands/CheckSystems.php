@@ -41,19 +41,17 @@ class CheckSystems extends Command
         /** @var StopwatchController $stopwatch */
         $stopwatch = resolve("App\Http\Controllers\StopwatchController");
         $allstart = time();
-//        $this->info("Starting update at $allstart");
         do {
-//            $this->info("Starting update - ".time());
             $bf = time();
             $stopwatch->updateEsi();
             $af = time();
             $runtime = ceil($af - $bf);
-//            $this->info("Single run took $runtime seconds.");
             $wait = 10 - min(10, max(0, $runtime));
-//            $this->info("Waiting for $wait seconds.");
             sleep($wait);
+            if (time()-$allstart >= 60) {
+                break;
+            }
         } while(time()-$allstart < 60-($wait+1));
-//        $this->info("Finished update at $allstart");
         unset($stopwatch);
         gc_collect_cycles();
     }

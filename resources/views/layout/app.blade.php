@@ -128,7 +128,7 @@
 <footer class="footer mt-auto py-3 mt-5">
     <div class="container mt-5">
         <div class="col-sm-12 mt-5">
-            <p class="mt-5 text-center">Abyss Tracker v1.3.2 is an open source application created by <a
+            <p class="mt-5 text-center">Abyss Tracker v1.3.3 is an open source application created by <a
                     href="https://twitter.com/veetor_in_eve">Veetor Nara</a> - <a
                     href="https://github.com/molbal/abyss-tracker"><img
                         src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/github.png">
