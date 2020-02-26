@@ -79,7 +79,7 @@
             foreach ($chars as $char) {
                 try {
                     $this->getAbyssFromESI($char->CHAR_ID);
-                    Log::debug(sprintf("Updated location from ESI for %d", $char->CHAR_ID));
+                    //Log::debug(sprintf("Updated location from ESI for %d", $char->CHAR_ID));
                 }
                 catch (\Exception $e) {
                     Log::warning(sprintf("Could not check ESI for char %d: %s %s@%d",$char->CHAR_ID, $e->getMessage(), $e->getFile(), $e->getLine()));
@@ -109,7 +109,7 @@
             $preAbyss = $var->IN_ABYSS ? true : false;
             $nowAbyss = $this->isAbyssSystem($loc->solar_system_name);
 
-            Log::info(sprintf("Comparsion for %s pre: %s now: %s", $charId, $preAbyss ? "in" : "out", $nowAbyss ? "in" : "out"));
+            //Log::info(sprintf("Comparsion for %s pre: %s now: %s", $charId, $preAbyss ? "in" : "out", $nowAbyss ? "in" : "out"));
 
             if ($preAbyss != $nowAbyss) {
                 if ($preAbyss) {
@@ -130,7 +130,7 @@
             }
 
             if (time() > strtotime($var->EXPIRE)) {
-                Log::info("Expired! Removing $charId from stopwatch.");
+                //Log::info("Expired! Removing $charId from stopwatch.");
                 DB::table("stopwatch")->where("CHAR_ID", $charId)->delete();
             }
         }
@@ -143,7 +143,7 @@
         private function isAbyssSystem(string $systemName):bool {
             $regex = '/^AD[0-9]{3}$/';
             $pregMatch = preg_match($regex, $systemName) == 1;
-            Log::debug("System $systemName is ".($pregMatch ? "an" : "not an")." Abyss system.");
+            //Log::debug("System $systemName is ".($pregMatch ? "an" : "not an")." Abyss system.");
             return $pregMatch;
         }
 

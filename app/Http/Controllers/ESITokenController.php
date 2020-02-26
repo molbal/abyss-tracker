@@ -41,7 +41,7 @@
          * @throws Exception
          */
         public function getAndCacheNewAccessToken(): string {
-            Log::info("Requesting new access token (CharID: ".$this->charId.";Refresh token:".$this->getRefreshToken().")");
+            //Log::info("Requesting new access token (CharID: ".$this->charId.";Refresh token:".$this->getRefreshToken().")");
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL,"https://login.eveonline.com/oauth/token");
@@ -60,7 +60,7 @@
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
             $esiResponse = curl_exec($ch);
-            Log::debug("Received access token (CharID: ".$this->charId."; response code: ".$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)."): ". $esiResponse);
+            //Log::debug("Received access token (CharID: ".$this->charId."; response code: ".$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)."): ". $esiResponse);
             /**
              {
                 "access_token":"MXP...tg2",
@@ -83,9 +83,9 @@
             /** @var string $newAccessToken */
             $newAccessToken = $esiResponseDecoded["access_token"];
 
-            Log::info("Stored new access token ($newAccessToken) for $expiresInMinutes minutes in cache.");
+            //Log::info("Stored new access token ($newAccessToken) for $expiresInMinutes minutes in cache.");
             Cache::put("AccessToken-".$this->charId, $newAccessToken, $expiresInMinutes);
-            Log::info("Request token ($newAccessToken) live for $expiresInMinutes minutes");
+            //Log::info("Request token ($newAccessToken) live for $expiresInMinutes minutes");
             return $newAccessToken;
         }
 
