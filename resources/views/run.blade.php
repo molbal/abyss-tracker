@@ -1,6 +1,7 @@
 @extends("layout.app")
 @section("browser-title", "Run #".$run->ID." details")
 @section("content")
+
     <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
         <h4 class="font-weight-bold">Showing the details of <span data-toggle="tooltip"
                                                                   title="Loot value compared to average loot of this tier with the same ship size: {{round($percent)}}%">{{$run_summary}}</span>
@@ -11,6 +12,23 @@
     </div>
     <div class="row">
 
+        @if(isset($errors))
+            @if ($errors->any())
+                <div class="col-sm-12">
+
+                <div class="alert alert-danger border-0 shadow-sm d-flex justify-content-between">
+                    <img src="https://img.icons8.com/cotton/64/000000/cancel-2--v1.png">
+                    <div style="width: 100%">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                </div>
+            @endif
+        @endif
         <div class="col-md-4 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
@@ -329,16 +347,32 @@ $lost_buy = 0;
             @if(session()->get('login_id') == $all_data->CHAR_ID)
                 <a href="{{route('run_delete', ['id' => $id])}}" class="text-danger"><img
                         src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a>
-            @else
-                <a href="{{route('run_delete', ['id' => $id])}}" class="text-danger"><img
+            @elseif(!$reported)
+                <a href="javascript:void(0)" id="flag" class="text-danger"><img
                         src="https://img.icons8.com/officexs/16/000000/filled-flag2.png"> Flag for review</a>
+                @elseif($reported_message)
+                <p><img src="https://img.icons8.com/officexs/16/000000/filled-flag2.png"> This run was flagged for manual review with the following reason: <em>{{$reported_message}}</em>. It will be reviewed soon.</p>
             @endif
         </div>
     </div>
+
 @endsection
 
 @section("scripts")
+
+    @component("components.flag_modal", ["id" => $id])
+    @endcomponent
     {!! $other->script(); !!}
+
+    <script type="text/javascript">
+        function flag() {
+            $("#flag_modal").modal({});
+        }
+
+        $(function () {
+            $("#flag").click(flag);
+        });
+    </script>
 @endsection
 @section("styles")
     <style>
@@ -346,4 +380,4 @@ $lost_buy = 0;
             border:0!important;
         }
     </style>
-    @endsection
+@endsection

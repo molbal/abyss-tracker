@@ -16,10 +16,12 @@
     use App\Charts\TierLevelsChart;
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
+    use App\Mail\RunFlagged;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Facades\Mail;
     use Illuminate\Support\Facades\Validator;
 
     class AbyssController extends Controller {
@@ -231,52 +233,7 @@ where CHAR_ID=? and RUN_DATE=?" ,[
        `ip`.`PRICE_SELL` * `dl`.`COUNT` AS `SELL_PRICE_ALL`
 from (`abyss`.`lost_items` `dl`
          join `abyss`.`item_prices` `ip` on (`dl`.`ITEM_ID` = `ip`.`ITEM_ID`)) where dl.`RUN_ID`=?;", [intval($id)]);
-
-            // Get which filament shall be used now
-            $filament_id = DB::table("filament_types")->where("TIER", $all_data->TIER)->where("TYPE", $all_data->TYPE)->value("ITEM_ID");
-
-            // Check if we there is anything here
-            if (count($lost) == 0) {
-                // Add the missing filament
-                $lost = DB::select("select
-                    `ip`.`ITEM_ID`                   AS `ITEM_ID`,
-                    1                 AS `COUNT`,
-                    `ip`.`NAME`                      AS `NAME`,
-                    `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
-                    `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
-                    `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
-                    `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
-                    `ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
-                    `ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
-from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]);
-            }
-            else {
-                // If it doesnt exist in the list probably it was both looted and used
-                $lost_has_filament = false;
-                foreach ($lost as $item) {
-                    if ($item->ITEM_ID == $filament_id) {
-                        $lost_has_filament = true;
-                        break;
-                    }
-                }
-
-                if (!$lost_has_filament) {
-                    $item = DB::select("select
-                    `ip`.`ITEM_ID`                   AS `ITEM_ID`,
-                    ".intval($id)." AS `RUN_ID`,
-                    1                 AS `COUNT`,
-                    `ip`.`NAME`                      AS `NAME`,
-                    `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
-                    `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
-                    `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
-                    `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
-                    `ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
-                    `ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
-from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)])[0];
-                    $loot->add($item);
-                    $lost[] = $item;
-                }
-            }
+            $lost = $this->normalizeLootAndLost($id, $all_data, $lost, $loot);
 
             // Get customization options
             [$percent, $run_summary] = $this->barkController->getRunSummaryBark($data, $averageLootForTier);
@@ -291,6 +248,9 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
 //            dd($loot, $all_data);
             $this->runsController->extendDropListWithRates($loot, $all_data);
 
+            $reported = DB::table("run_report")->where("RUN_ID", $id)->exists();
+            $reported_message = DB::table("run_report")->where("RUN_ID", $id)->value("MESSAGE");
+
             return view("run", [
                 "id"                   => $id,
                 "run"                  => $data,
@@ -303,7 +263,9 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
                 "death_reason"         => $death_reason,
                 "loot_type"            => $looting,
                 "count_same_type_tier" => $count_same_type_tier,
-                "count_same_ship" => $count_same_ship
+                "count_same_ship" => $count_same_ship,
+                "reported" => $reported,
+                "reported_message" => $reported_message
             ]);
         }
 
@@ -315,6 +277,14 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
             return view("runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items]);
         }
 
+
+        /**
+         * Gets the logged in user's runs
+         * @param string $order_by
+         * @param string $order_type
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
         public function get_mine($order_by = "", $order_type = "") {
             if (!session()->has("login_id")) {
                 return view("error", ["error" => "Please log in to list your runs"]);
@@ -328,6 +298,48 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
             }
             return view("my_runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items->paginate(25)]);
         }
+
+        /**
+         * Flags a run for review
+         * @param Request $request
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function flag(Request $request)
+        {
+            Validator::make($request->all(), ['id' => 'int|required', 'message' => 'required|min:5|max:1000'])->validate();
+
+            $id = $request->get('id');
+            $message = $request->get('message');
+
+            $run_owner = DB::table("runs")->where("ID", $id)->value("CHAR_ID");
+
+            if ($run_owner == session()->get('login_id')) {
+                return view('error', ['error' => 'You can not flag your own run. Please delete it instead.']);
+            } else {
+                if (DB::table("run_report")->where("RUN_ID", $id)->exists()) {
+                    return view('sp_message', ['title' => 'Run already flagged', 'message' => "This run was already flagged by someone else."]);
+                }
+
+
+
+
+                DB::table("run_report")->insert([
+                    'REPORTER_CHAR_ID' => session()->get("login_id"),
+                    'RUN_ID' => $id,
+                    'MESSAGE' => $message,
+                    'PROCESSED' => false
+                ]);
+
+                $text = "Run number $id was flagged by ".session()->get("login_name")." at ".date("Y-m-d H:i:s"). " because ".htmlentities($message);
+
+                Mail::to(env("FLAG_ADDRESS"))->send(new RunFlagged($id, $message));
+
+                return view('sp_message', ['title' => 'Run flagged', 'message' => "You have flagged this run! It will be manually reviewed soon."]);
+            }
+
+        }
+
 
         /**
          * @param $order_by
@@ -377,33 +389,6 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
         }
 
 
-        public function flag(Request $request)
-        {
-            Validator::make($request->all(), ['id' => 'int|required', 'message' => 'required|max'])->validate();
-
-            $id = $request->get('id');
-            $message = $request->get('message');
-
-            $run_owner = DB::table("runs")->where("ID", $id)->value("CHAR_ID");
-
-            if ($run_owner == session()->get('login_id')) {
-                return view('error', ['error' => 'You can not flag your own run. Please delete it instead.']);
-            } else {
-                if (DB::table("run_report")->where("RUN_ID", $id)->exists()) {
-                    return view('sp_message', ['title' => 'Run already flagged', 'message' => "This run was already flagged by someone else."]);
-                }
-
-                DB::table("run_report")->insert([
-                    'REPORTER_CHAR_ID' => session()->get("login_id"),
-                    'RUN_ID' => $id,
-                    'MESSAGE' => $message,
-                    'PROCESSED' => false
-                ]);
-
-                return view('sp_message', ['title' => 'Run flagged', 'message' => "You have flagged this run! It will be manually reviewed soon."]);
-            }
-
-        }
 
         /**
          * Handles the deletion of a run
@@ -427,6 +412,64 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
                 return view('error', ['error' => 'Please log in to delete your run.']);
             }
 
+        }
+
+        /**
+         * @param                                $id
+         * @param                                $all_data
+         * @param array                          $lost
+         * @param \Illuminate\Support\Collection $loot
+         *
+         * @return array
+         */
+        private function normalizeLootAndLost($id, $all_data, array $lost, \Illuminate\Support\Collection $loot) : array
+        {
+// Get which filament shall be used now
+            $filament_id = DB::table("filament_types")->where("TIER", $all_data->TIER)->where("TYPE", $all_data->TYPE)->value("ITEM_ID");
+
+            // Check if we there is anything here
+            if (count($lost) == 0) {
+                // Add the missing filament
+                $lost = DB::select("select
+                    `ip`.`ITEM_ID`                   AS `ITEM_ID`,
+                    1                 AS `COUNT`,
+                    `ip`.`NAME`                      AS `NAME`,
+                    `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
+                    `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
+                    `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
+                    `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
+                    `ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
+                    `ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
+from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]);
+            } else {
+                // If it doesnt exist in the list probably it was both looted and used
+                $lost_has_filament = false;
+                foreach ($lost as $item) {
+                    if ($item->ITEM_ID == $filament_id) {
+                        $lost_has_filament = true;
+                        break;
+                    }
+                }
+
+                if (!$lost_has_filament) {
+                    $item = DB::select("select
+                    `ip`.`ITEM_ID`                   AS `ITEM_ID`,
+                    " . intval($id) . " AS `RUN_ID`,
+                    1                 AS `COUNT`,
+                    `ip`.`NAME`                      AS `NAME`,
+                    `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
+                    `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
+                    `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
+                    `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
+                    `ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
+                    `ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
+from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)])[0];
+                    $loot->add($item);
+                    $lost[] = $item;
+                }
+            }
+
+            return $lost;
         }
 
     }

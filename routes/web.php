@@ -12,6 +12,7 @@
     */
 
     use Illuminate\Support\Facades\Artisan;
+    use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Route;
 
     Route::get("/",'AbyssController@home')->name("home");
@@ -33,6 +34,7 @@
      */
     Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
     Route::get("/run/delete/{id}", 'AbyssController@delete')->name("run_delete");
+    Route::post("/run/flag", 'AbyssController@flag')->name("run_flag");
 
     /**
      * Stopwatch
@@ -78,6 +80,16 @@
 
     Route::get("/logout", 'Auth\AuthController@logout')->name("logout");
 
+
+    Route::get("/maintenance/flagged/{secret}", function($secret) {
+        if ($secret != env("MAINTENANCE_TOKEN")) {
+            abort(403, "Invalid maintenance token.");
+        }
+       $flags = DB::table("run_report")->where("PROCESSED", false)->orderBy("CREATED_AT", "DESC")->get();
+
+       return view("sp_message", ["title" => "Flagged runs", "message" => print_r($flags, true)]);
+    });
+
     /**
      * Dark theme
      */
@@ -106,8 +118,4 @@
         session()->put("login_id", $login_id);
         session()->put("login_name", "TEST LOGIN $login_id");
         return redirect(\route("home_mine"));
-    });
-
-    Route::get("/debug/routes/{secret}", function() {
-
     });
