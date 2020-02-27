@@ -152,7 +152,7 @@
                 $stationName = json_decode($ret)->name;
             }
             catch (\Exception $e) {
-                Log::error("Could not get structure name for $structureId - ESI Rsponse: ".$ret);
+                //Log::error("Could not get structure name for $structureId - ESI Rsponse: ".$ret);
                 $stationName = "Unknown structure";
             }
             return $stationName;
