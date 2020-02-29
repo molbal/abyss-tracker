@@ -229,31 +229,61 @@
                     [
                         'subtext'   => 'Tier 1 (Calm)',
                         'left'      => '10%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series[0]['data']['0']['value']."%",
+                        'left'      => '10%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ],
                     [
                         'subtext'   => 'Tier 2 (Agitated)',
                         'left'      => '30%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series[1]['data']['0']['value']."%",
+                        'left'      => '30%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ],
                     [
                         'subtext'   => 'Tier 3 (Fierce)',
                         'left'      => '50%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series[2]['data']['0']['value']."%",
+                        'left'      => '50%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ],
                     [
                         'subtext'   => 'Tier 4 (Raging)',
                         'left'      => '70%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series[3]['data']['0']['value']."%",
+                        'left'      => '70%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ],
                     [
                         'subtext'   => 'Tier 5 (Chaotic)',
                         'left'      => '90%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series[4]['data']['0']['value']."%",
+                        'left'      => '90%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ]
                 ],
@@ -350,31 +380,61 @@
                     [
                         'subtext'   => 'Electrical',
                         'left'      => '10%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series_t[0]['data']['0']['value']."%",
+                        'left'      => '10%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ],
                     [
                         'subtext'   => 'Dark',
                         'left'      => '30%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series_t[1]['data']['0']['value']."%",
+                        'left'      => '30%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ],
                     [
                         'subtext'   => 'Exotic',
                         'left'      => '50%',
-                        'top'       => '15%',
+                        'top'       => '1',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series_t[2]['data']['0']['value']."%",
+                        'left'      => '50%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ],
                     [
                         'subtext'   => 'Firestorm',
                         'left'      => '70%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series_t[3]['data']['0']['value']."%",
+                        'left'      => '70%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ],
                     [
                         'subtext'   => 'Gamma',
                         'left'      => '90%',
-                        'top'       => '15%',
+                        'top'       => '1%',
+                        'textAlign' => 'center'
+                    ],
+                    [
+                        'subtext'   => $series_t[4]['data']['0']['value']."%",
+                        'left'      => '90%',
+                        'top'       => '10%',
                         'textAlign' => 'center'
                     ]
                 ],
@@ -448,7 +508,7 @@
             $shipFrigateChart->height(400);
             $shipFrigateChart->theme(ThemeController::getChartTheme());
             $shipFrigateChart->labels($dataset);
-            $shipFrigateChart->dataset("Cruisers", "pie", $values)->options([
+            $shipFrigateChart->dataset("Frigates", "pie", $values)->options([
                 "radius"   => [70, 170],
                 "roseType" => "radius"
             ]);

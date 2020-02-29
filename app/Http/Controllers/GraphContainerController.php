@@ -98,7 +98,7 @@
             for ($days = -10; $days<=0; $days++) {
 
                 $timestamp = strtotime("now $days days");
-                $run_date[] = date("m. y.", $timestamp);
+                $run_date[] = date("m. d.", $timestamp);
                 $count_unknown[] = DB::table("runs")
                     ->whereNull("SHIP_ID")
                     ->where("RUN_DATE", date("Y-m-d", $timestamp))
