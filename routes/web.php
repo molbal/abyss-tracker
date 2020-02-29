@@ -85,9 +85,23 @@
         if ($secret != env("MAINTENANCE_TOKEN")) {
             abort(403, "Invalid maintenance token.");
         }
-       $flags = DB::table("run_report")->where("PROCESSED", false)->orderBy("CREATED_AT", "DESC")->get();
+        $flags = DB::table("run_report")->where("PROCESSED", false)->orderBy("CREATED_AT", "DESC")->get();
 
-       return view("sp_message", ["title" => "Flagged runs", "message" => print_r($flags, true)]);
+        return view("sp_message", ["title" => "Flagged runs", "message" => print_r($flags, true)]);
+    });
+
+    Route::get("/maintenance/flagged/delete/{id}/{secret}", function($id, $secret) {
+        if ($secret != env("MAINTENANCE_TOKEN")) {
+            abort(403, "Invalid maintenance token.");
+        }
+
+        DB::table("runs")->where("ID", $id)->delete();
+        DB::table("detailed_loot")->where("RUN_ID", $id)->delete();
+        DB::table("lost_items")->where("RUN_ID", $id)->delete();
+        DB::table("run_report")->where("RUN_ID", $id)->update(["PROCESSED" => true]);
+
+
+        return view("sp_message", ["title" => "Flagged runs", "message" => "Run #$id destroyed"]);
     });
 
     /**
