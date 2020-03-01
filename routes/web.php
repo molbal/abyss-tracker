@@ -70,6 +70,11 @@
     Route::get("/api/chart/personal/isk_per_hour", 'GraphHelper@personalIsk')->name("chart.personal.ihp");
 
     /**
+     * Search routes
+     */
+    Route::get("/search", 'SearchController@index')->name("search.index");
+
+    /**
      * EVE Authentication routes
      */
     Route::get("/eve/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-start");
