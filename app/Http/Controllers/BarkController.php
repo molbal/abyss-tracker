@@ -85,7 +85,8 @@
          * @return string
          */
         public function getLootStrategyDescription($all_data): string {
-            switch ($all_data->LOOT_TYPE) {
+            $loot_type = is_string($all_data) ? $all_data : $all_data->LOOT_TYPE;
+            switch ($loot_type) {
                 case 'BIOADAPTIVE_ONLY':
                     $looting = "Looted the bioadaptive caches only";
                     break;
