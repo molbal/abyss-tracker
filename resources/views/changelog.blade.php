@@ -11,12 +11,21 @@
                 <ul>
                     <li>Public profile of capsuleers</li>
                     <li>Blueprint price estimation</li>
-                    <li>Reworking the filtereded run list with frigate/cruiser separation and some stats</li>
                 </ul>
                 </p>
             </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.3.5</strong> 'Perception ' release</h4>
+                <small class="mt-0">2020 march 05</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>Replaced pre-made filters with a flexible search function</li>
+                </ul>
+                </p>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.3.4</strong> 'Discharge' release</h4>
                 <small class="mt-0">2020 february 27</small>
                 <p>

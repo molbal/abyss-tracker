@@ -3,10 +3,10 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-12">
-            <h4 class="font-weight-bold">Search results</h4>
+            <h4 class="font-weight-bold">Search results for the following filters</h4>
 			<p>
 			@foreach($conditions as $condition)
-				{{$condition->getName()}},
+				<span class="badge badge-primary pt-1 mr-1">{{$condition->getName()}}</span>
 			@endforeach
 			</p>
         </div>
@@ -16,7 +16,7 @@
                 <div class="col-sm-12 alert alert-danger border-0 shadow-sm d-flex justify-content-between">
                     <img src="https://img.icons8.com/cotton/48/000000/cancel-2--v1.png" style="width: 48px;height: 48px">
                     <div style="width: 100%">
-                        <span class="ml-3">Please fix the following errors before submittinh your search</span>
+                        <span class="ml-3">Please fix the following errors before submitting your search</span>
                         <ul>
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>

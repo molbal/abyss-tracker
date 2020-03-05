@@ -26,26 +26,30 @@
                 <a class="nav-link {{"new" == Route::currentRouteName() ? "active" : ""}}" href="{{route("new")}}">Add
                     run</a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    Filtered runs
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    @foreach(['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma'] as $type)
-                        <span href="#" class="dropdown-item">
-                            <span>{{$type}}</span>
-                            <span class=" d-flex justify-content-between">
-                                @for($i=1;$i<=5;$i++)
-                                    <a href="{{route("filtered_list", [
-                                    "type" => $type,
-                                    "tier" => $i
-                                    ])}}" class="btn-link text-dark">{{$i}}</a>
-                                @endfor
-                            </span>
-                    </span>
-                    @endforeach
-                </div>
+{{--            <li class="nav-item dropdown">--}}
+{{--                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"--}}
+{{--                   aria-haspopup="true" aria-expanded="false">--}}
+{{--                    Filtered runs--}}
+{{--                </a>--}}
+{{--                <div class="dropdown-menu" aria-labelledby="navbarDropdown">--}}
+{{--                    @foreach(['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma'] as $type)--}}
+{{--                        <span href="#" class="dropdown-item">--}}
+{{--                            <span>{{$type}}</span>--}}
+{{--                            <span class=" d-flex justify-content-between">--}}
+{{--                                @for($i=1;$i<=5;$i++)--}}
+{{--                                    <a href="{{route("filtered_list", [--}}
+{{--                                    "type" => $type,--}}
+{{--                                    "tier" => $i--}}
+{{--                                    ])}}" class="btn-link text-dark">{{$i}}</a>--}}
+{{--                                @endfor--}}
+{{--                            </span>--}}
+{{--                    </span>--}}
+{{--                    @endforeach--}}
+{{--                </div>--}}
+{{--            </li>--}}
+            <li class="nav-item">
+                <a class="nav-link {{"search.index" == Route::currentRouteName() ? "active" : ""}}"
+                   href="{{route("search.index")}}">Search</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"item_all" == Route::currentRouteName() ? "active" : ""}}"
@@ -57,7 +61,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"changelog" == Route::currentRouteName() ? "active" : ""}}"
-                   href="{{route("changelog")}}">Changelog <sup>(1.3.4)</sup></a>
+                   href="{{route("changelog")}}">Changelog <sup>(1.3.5)</sup></a>
             </li>
         </ul>
         <form class="ml-auto">

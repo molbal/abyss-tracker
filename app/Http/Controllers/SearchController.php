@@ -78,11 +78,48 @@ class SearchController extends Controller
         if ($request->get("ship_id")) {
             $scb->addCondition(new SearchCriteria("Ship type: ".DB::table("ship_lookup")->where("ID", $request->get("ship_id"))->value("NAME"), "runs", "SHIP_ID", "=", $request->get("ship_id")));
         }
-        if ($request->get("hull_size")) {
+        if ($request->get("hull_size") !== null) {
             $scb->addCondition(new SearchCriteria(($request->get("hull_size") ? "Cruiser" : "Frigate")." size ships", "ship_lookup", "IS_CRUISER", "=", $request->get("hull_size")));
         }
+        if ($request->get("run_date_start")) {
+            $scb->addCondition(new SearchCriteria("Runs from ".$request->get("run_date_start"), "runs", "RUN_DATE", "<=", $request->get("run_date_start")));
+        }
+        if ($request->get("run_date_start")) {
+            $scb->addCondition(new SearchCriteria("Runs until ".$request->get("run_date_end"), "runs", "RUN_DATE", ">=", $request->get("run_date_end")));
+        }
+        if ($request->get("min_run_length_m")) {
+            $sec = ($request->get("min_run_length_m")*60)+($request->get("min_run_length_s"));
+            $scb->addCondition(new SearchCriteria("Longer than ".$request->get("min_run_length_m").":".$request->get("min_run_length_s"), "runs", "RUNTIME_SECONDS", ">=", $sec));
+        }
+        if ($request->get("max_run_length_m")) {
+            $sec = ($request->get("max_run_length_m")*60)+($request->get("max_run_length_s"));
+            $scb->addCondition(new SearchCriteria("Shorter than ".$request->get("max_run_length_m").":".$request->get("max_run_length_s"), "runs", "RUNTIME_SECONDS", "<=", $sec));
+        }
+        if ($request->get("survived") !== null) {
+            $scb->addCondition(new SearchCriteria(($request->get("survived") ? "Successful" : "Failed")." runs", "runs", "SURVIVED", "=", $request->get("survived")));
+        }
+        if ($request->get("proving_had") !== null) {
+            $scb->addCondition(new SearchCriteria(($request->get("proving_had") ? "Proving conduit spawned" : "Proving conduit didn't spawn"), "runs", "PVP_CONDUIT_SPAWN", "=", $request->get("proving_had")));
+        }
+        if ($request->get("proving_used") !== null) {
+            $scb->addCondition(new SearchCriteria(($request->get("proving_used") ? "Used proving conduit" : "Did not use proving conduit"), "runs", "PVP_CONDUIT_USED", "=", $request->get("proving_used")));
+        }
+        if ($request->get("death_reason")) {
+            $scb->addCondition(new SearchCriteria("Death reason: ".$this->bc->getDeathReasonQQuickBark($request->get("death_reason")), "runs", "DEATH_REASON", "=", $request->get("death_reason")));
+        }
+        if ($request->get("loot_strategy")) {
+            $scb->addCondition(new SearchCriteria("Looting strategy: ".$this->bc->getLootStrategyDescription($request->get("loot_strategy")), "runs", "LOOT_TYPE", "=", $request->get("loot_strategy")));
+        }
+
+        if ($request->get("loot_min") !== null) {
+            $scb->addCondition(new SearchCriteria(number_format($request->get("loot_min"), 0, " ", " ") ." ISK min loot", "runs", "LOOT_ISK", ">=", $request->get("loot_min")));
+        }
+        if ($request->get("loot_max") !== null) {
+            $scb->addCondition(new SearchCriteria(number_format($request->get("loot_max"), 0, " ", " ") ." ISK max loot", "runs", "LOOT_ISK", "<=", $request->get("loot_max")));
+        }
+
 //        DB::enableQueryLog();
-        $query = $scb->getQuery()->get();
+        $query = $scb->getQuery()->limit(250)->get();
 //        dd(DB::getQueryLog(), $query);
         return view("results", [
             'results' => $query,

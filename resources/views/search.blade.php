@@ -7,6 +7,7 @@
     <div class="row mt-5">
         <div class="col-sm-12">
             <h4 class="font-weight-bold">Advanced search</h4>
+            <small>Max 250 results</small>
         </div>
 
         @if(isset($errors))
@@ -14,7 +15,7 @@
                 <div class="col-sm-12 alert alert-danger border-0 shadow-sm d-flex justify-content-between">
                     <img src="https://img.icons8.com/cotton/48/000000/cancel-2--v1.png" style="width: 48px;height: 48px">
                     <div style="width: 100%">
-                        <span class="ml-3">Please fix the following errors before submittinh your search</span>
+                        <span class="ml-3">Please fix the following errors before submitting your search</span>
                         <ul>
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -96,11 +97,11 @@
                             <div class="form-group">
                                 <label for="">Minimum runtime</label>
                                 <div class="input-group">
-                                    <input name="min_run_length_m" id="run_length_minute" class="form-control" value="00"/>
+                                    <input name="min_run_length_m" id="run_length_minute" class="form-control"/>
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="">m</span>
                                     </div>
-                                    <input name="min_run_length_s" id="run_length_second" class="form-control" value="00"/>
+                                    <input name="min_run_length_s" id="run_length_second" class="form-control"/>
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="">s</span>
                                     </div>
@@ -111,11 +112,11 @@
                             <div class="form-group">
                                 <label for="">Maximum runtime</label>
                                 <div class="input-group">
-                                    <input name="max_run_length_m" id="run_length_minute" class="form-control" value="20"/>
+                                    <input name="max_run_length_m" id="run_length_minute" class="form-control"/>
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="">m</span>
                                     </div>
-                                    <input name="max_run_length_s" id="run_length_second" class="form-control" value="00"/>
+                                    <input name="max_run_length_s" id="run_length_second" class="form-control"/>
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="">s</span>
                                     </div>
