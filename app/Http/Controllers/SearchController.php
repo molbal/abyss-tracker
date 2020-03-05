@@ -70,13 +70,23 @@ class SearchController extends Controller
 
         $scb = new SearchQueryBuilder();
         if ($request->get("tier")) {
-            $scb->addCondition(new SearchCriteria("Tier", "runs", "TIER", "=", $request->get("tier")));
+            $scb->addCondition(new SearchCriteria("Tier ".$request->get("tier"), "runs", "TIER", "=", $request->get("tier")));
+        }
+        if ($request->get("type")) {
+            $scb->addCondition(new SearchCriteria($request->get("type")." type", "runs", "TYPE", "=", $request->get("type")));
+        }
+        if ($request->get("ship_id")) {
+            $scb->addCondition(new SearchCriteria("Ship type: ".DB::table("ship_lookup")->where("ID", $request->get("ship_id"))->value("NAME"), "runs", "SHIP_ID", "=", $request->get("ship_id")));
+        }
+        if ($request->get("hull_size")) {
+            $scb->addCondition(new SearchCriteria(($request->get("hull_size") ? "Cruiser" : "Frigate")." size ships", "ship_lookup", "IS_CRUISER", "=", $request->get("hull_size")));
         }
 //        DB::enableQueryLog();
         $query = $scb->getQuery()->get();
 //        dd(DB::getQueryLog(), $query);
         return view("results", [
-            'results' => $query
+            'results' => $query,
+			'conditions' => $scb->getConditions()
         ]);
     }
 

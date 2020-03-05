@@ -4,6 +4,11 @@
     <div class="row mt-5">
         <div class="col-sm-12">
             <h4 class="font-weight-bold">Search results</h4>
+			<p>
+			@foreach($conditions as $condition)
+				{{$condition->getName()}},
+			@endforeach
+			</p>
         </div>
 
         @if(isset($errors))
