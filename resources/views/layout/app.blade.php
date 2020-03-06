@@ -111,6 +111,20 @@
         table {
             border-collapse: collapse;
         }
+
+        a.dropdown-item.active {
+            border: 3px solid #e3342f;
+            border-width: 0 0 0 3px;
+            background-color: transparent;
+            color:#000;
+        }
+        .navbar-light .navbar-nav .nav-link.active {
+            color:#e3342f;
+            border:0;
+            border-width:0 !important;
+            -webkit-box-shadow:inset 0 3px 0 0 #e3342f;
+            box-shadow:inset 0 3px 0 0 #e3342f;
+        }
     </style>
     @yield('styles')
 </head>
@@ -189,6 +203,8 @@
         src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 @yield('scripts')
 <script>
     $(function () {
@@ -204,8 +220,48 @@
             minimumResultsForSearch: -1,
             width: '100%'
         });
+
+        var buttonCommon = {};
+        var buttonExcelCopy = {
+            exportOptions: {
+                format: {
+                    body: function ( data, row, column, node ) {
+                        // Strip $ from salary column to make it numeric
+                        var regex = /^[0-9 ]{1,13} ISK$/;
+                        if (data.match(regex)) {
+                            replaced = data.match(/\d+/g).join("");
+                            console.log("Matched: ", data, " and ", replaced);
+                            return replaced;
+
+                        }
+                        else {
+                            var div = document.createElement("div");
+                            div.innerHTML = data;
+                            var text = div.textContent || div.innerText || "";
+                            return text;
+                        }
+                    }
+                }
+            }
+        };
+
+        $(".datatable").append('<caption style="caption-side: bottom">Result list generated at {{date("Y-m-d H:i:s")}}</caption>');
         $('.datatable').DataTable({
-            paginate: false
+            paginate: false,
+            dom: 'Bfrtip',
+            // buttons: [
+            //     'copy', 'csv', 'excel', 'pdf'
+            // ],
+            buttons: [
+                $.extend( true, {}, buttonCommon, {
+                    extend: 'copyHtml5'
+                } ),
+                $.extend( true, {}, buttonExcelCopy, {
+                    extend: 'excelHtml5'
+                } ),
+                $.extend( true, {}, buttonCommon, {
+                    extend: 'pdfHtml5'
+                } )]
         });
     });
 </script>

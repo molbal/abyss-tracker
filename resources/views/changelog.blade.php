@@ -9,13 +9,33 @@
                 <p>
                     The following features are planned (in no particular order or grouping).
                 <ul>
-                    <li>Public profile of capsuleers</li>
+                    <li>Public profile of capsuleers (optional!)</li>
                     <li>Blueprint price estimation</li>
+                    <li>Dynamically adding and removing search filters</li>
+                    <li>Showing ship fits</li>
+                </ul>
+                The following bugs are known which will get fixed soon:
+                <ul>
+                    <li>Frigate profit calculation should be adjusted to use 3 filaments</li>
+                    <li>Reporting a run while being signed out results in an error</li>
+                    <li>Some search filters are not working properly</li>
                 </ul>
                 </p>
             </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.3.6</strong> 'Insight' release</h4>
+                <small class="mt-0">2020 march 06</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>Improved list displays: Tiers, Types and ship names are clickable, link goes to the general search results</li>
+                    <li>Added export options for the item drop table and search results</li>
+                    <li>Reorganized the menu </li>
+                </ul>
+                </p>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.3.5</strong> 'Perception ' release</h4>
                 <small class="mt-0">2020 march 05</small>
                 <p>

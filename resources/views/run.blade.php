@@ -58,7 +58,7 @@
                     @endif
                     <div class="col">
                         @if($all_data->SHIP_ID)
-                            <h2 class="font-weight-bold mb-0"><a
+                            <h2 class="font-weight-bold mb-0"><a class="text-dark"
                                     href="{{route("ship_single", ["id" => $all_data->SHIP_ID])}}">{{$run->SHIP_NAME}}</a>
                             </h2>
                         @else
@@ -92,7 +92,7 @@
                 <div class="row">
                     <img src="types/{{$run->TYPE}}.png" class="pull-left ml-2">
                     <div class="col">
-                        <h2 class="font-weight-bold mb-0">{{$run->TYPE}}</h2>
+                        <h2 class="font-weight-bold mb-0"><a class="text-dark" href="{{route("search.do", ["type" => $run->TYPE])}}">{{$run->TYPE}}</a></h2>
                         <small class="text-muted font-weight-bold">Filament type</small>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                 <div class="row">
                     <img src="tiers/{{$run->TIER}}.png" class="pull-left ml-2">
                     <div class="col">
-                        <h2 class="font-weight-bold mb-0">Tier {{$run->TIER}}</h2>
+                        <h2 class="font-weight-bold mb-0"><a class="text-dark" href="{{route("search.do", ["tier" => $run->TIER])}}">Tier {{$run->TIER}}</a></h2>
                         <small class="text-muted font-weight-bold">Deadspace tier</small>
                     </div>
                 </div>

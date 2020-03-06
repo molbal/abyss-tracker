@@ -24,6 +24,14 @@
         public static function getThemedIconColor():string {
             return self::isDarkTheme() ? "ffffff" : "000000";
         }
+        public static function getThemedNavBarIconColor(bool $active):string {
+            if ($active) {
+                return self::isDarkTheme() ? "ffffff" : "e3342f";
+            }
+            else {
+                return self::isDarkTheme() ? "eeeeee" : "9ba6b2";
+            }
+        }
 
         public function setTheme(bool $isDark) {
             if ($isDark) {

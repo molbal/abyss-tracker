@@ -25,9 +25,16 @@
                                 {!!$item->SHIP_NAME ? ($item->IS_CRUISER ? '<img src="/overview/cruiser.png" data-toggle="tooltip" title="Cruiser run">' : '<img src="/overview/frigate.png" data-toggle="tooltip" title="Frigate run">') : '' !!}
                                 {!! $item->SURVIVED ? '' : '<img src="/dead.png" data-toggle="tooltip" title="Run railed, ship and capsule lost"/>' !!}
                             </td>
-                            <td>{!! $item->SHIP_NAME ?? '<em class="text-black-50">Unknown</em>' !!}</td>
-                            <td><img src="types/{{$item->TYPE}}.png" style="width:16px;height:16px;" alt=""> {{$item->TYPE}}</td>
-                            <td><img src="tiers/{{$item->TIER}}.png" style="width:16px;height:16px;" alt=""> {{$item->TIER}}</td>
+                            <td>
+                                @if($item->SHIP_ID === null)
+                                    <em class="font-italic text-black-50 ">Unknown</em>
+                                @else
+                                    <img src="https://imageserver.eveonline.com/Type/{{$item->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" height="24px" width="24px" alt="">&nbsp;
+                                    <a class="text-dark" href="{{route("search.do", ["ship_id" => $item->SHIP_ID])}}">{{$item->SHIP_NAME}}</a>
+                                @endif
+                            </td>
+                            <td><img src="types/{{$item->TYPE}}.png" style="width:16px;height:16px;" alt=""> <a class="text-dark" href="{{route("search.do", ["type" => $item->TYPE])}}">{{$item->TYPE}}</a></td>
+                            <td><img src="tiers/{{$item->TIER}}.png" style="width:16px;height:16px;" alt=""> <a class="text-dark" href="{{route("search.do", ["tier" => $item->TIER])}}">{{$item->TIER}}</a></td>
                             <td class="text-right">{{number_format($item->LOOT_ISK, 0, " ",",")}} ISK</td>
                             <td>{{$item->RUN_DATE}}</td>
                             <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}" title="Open"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/view-file.png"></a></td>

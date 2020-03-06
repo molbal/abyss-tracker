@@ -8,60 +8,46 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link {{"home" == Route::currentRouteName() ? "active" : ""}}" href="{{route("home")}}">Stats</a>
+                <a class="nav-link {{"home" == Route::currentRouteName() ? "active" : ""}}" href="{{route("home")}}">
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("home" == Route::currentRouteName())}}/home-page.png"> Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{"home_mine" == Route::currentRouteName() ? "active" : ""}}"
-                   href="{{route("home_mine")}}">My stats</a>
+                <a class="nav-link {{"runs" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs")}}">
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs" == Route::currentRouteName())}}/database.png"> All runs</a>
             </li>
+            @if(session()->has("login_id"))
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/user--v1.png"> My account</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {{"new" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("new")}}">Add run</a>
+                        <a class="dropdown-item {{"runs_mine" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("runs_mine")}}">My runs</a>
+                        <a class="dropdown-item {{"home_mine" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("home_mine")}}">My stats</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{route("logout")}}#">Log out</a>
+                    </div>
+                </li>
+            @endif
             <li class="nav-item">
-                <a class="nav-link {{"runs" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs")}}">All
-                    runs</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{"runs_mine" == Route::currentRouteName() ? "active" : ""}}"
-                   href="{{route("runs_mine")}}">My runs</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{"new" == Route::currentRouteName() ? "active" : ""}}" href="{{route("new")}}">Add
-                    run</a>
-            </li>
-{{--            <li class="nav-item dropdown">--}}
-{{--                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"--}}
-{{--                   aria-haspopup="true" aria-expanded="false">--}}
-{{--                    Filtered runs--}}
-{{--                </a>--}}
-{{--                <div class="dropdown-menu" aria-labelledby="navbarDropdown">--}}
-{{--                    @foreach(['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma'] as $type)--}}
-{{--                        <span href="#" class="dropdown-item">--}}
-{{--                            <span>{{$type}}</span>--}}
-{{--                            <span class=" d-flex justify-content-between">--}}
-{{--                                @for($i=1;$i<=5;$i++)--}}
-{{--                                    <a href="{{route("filtered_list", [--}}
-{{--                                    "type" => $type,--}}
-{{--                                    "tier" => $i--}}
-{{--                                    ])}}" class="btn-link text-dark">{{$i}}</a>--}}
-{{--                                @endfor--}}
-{{--                            </span>--}}
-{{--                    </span>--}}
-{{--                    @endforeach--}}
-{{--                </div>--}}
-{{--            </li>--}}
-            <li class="nav-item">
-                <a class="nav-link {{"search.index" == Route::currentRouteName() ? "active" : ""}}"
-                   href="{{route("search.index")}}">Search</a>
+                <a class="nav-link {{"search.index" == Route::currentRouteName() || "search.do" == Route::currentRouteName() ? "active" : ""}}"
+                   href="{{route("search.index")}}">
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("search.index" == Route::currentRouteName() || "search.do" == Route::currentRouteName())}}/search.png">
+                Search</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"item_all" == Route::currentRouteName() ? "active" : ""}}"
-                   href="{{route("item_all")}}">Loot table</a>
+                   href="{{route("item_all")}}">
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("item_all" == Route::currentRouteName())}}/empty-box.png"> Loot table</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"ships_all" == Route::currentRouteName() ? "active" : ""}}"
-                   href="{{route("ships_all")}}">Ships</a>
+                   href="{{route("ships_all")}}">
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("ships_all" == Route::currentRouteName())}}/rocket.png"> Ships</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"changelog" == Route::currentRouteName() ? "active" : ""}}"
-                   href="{{route("changelog")}}">Changelog <sup>(1.3.5)</sup></a>
+                   href="{{route("changelog")}}">
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Changelog <sup>(1.3.6)</sup></a>
             </li>
         </ul>
         <form class="ml-auto">

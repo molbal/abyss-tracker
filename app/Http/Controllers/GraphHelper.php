@@ -19,7 +19,10 @@
             if (Cache::has("home.types")) {
                 $chart = Cache::get("home.types");
             } else {
-                $chart = DB::table("runs")->groupBy("TYPE")->select("TYPE")->selectRaw("COUNT(type) AS CNT")->get();
+                $chart = DB::table("runs")
+                           ->groupBy("TYPE")
+                           ->select("TYPE")
+                           ->selectRaw("COUNT(type) AS CNT")->get();
                 Cache::put("home.types", $chart, 15);
             }
 
@@ -67,8 +70,8 @@
         public function homeSurvival() {
             $data = Cache::remember("home.survival", 15, function () {
                 return [
-                    "survived" => DB::table("runs")->where("SURVIVED", '=', true)->count(),
-                    "died" => DB::table("runs")->where("SURVIVED", '=', false)->count()];
+                    "survived" => DB::table("runs")->where("SURVIVED", '=', true)->whereRaw("RUN_DATE > NOW() - INTERVAL 90 DAY")->count(),
+                    "died" => DB::table("runs")->where("SURVIVED", '=', false)->whereRaw("RUN_DATE > NOW() - INTERVAL 90 DAY")->count()];
             });
 
             $dataset = ["Survived", "Died"];
@@ -89,6 +92,7 @@
                 return DB::table("runs")
                     ->select("TIER")
                     ->selectRaw("AVG(LOOT_ISK) as AVG")
+                    ->whereRaw("RUN_DATE > NOW() - INTERVAL 90 DAY")
                     ->groupBy("TIER")
                     ->orderBy("TIER", "ASC")
                     ->get();
@@ -99,6 +103,7 @@
                     ->select("runs.TIER")
                     ->selectRaw("AVG(runs.LOOT_ISK) as AVG")
                     ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                    ->whereRaw("RUN_DATE > NOW() - INTERVAL 90 DAY")
                     ->whereNotNull("runs.SHIP_ID")
                     ->where("ship_lookup.IS_CRUISER", "1")
                     ->groupBy("runs.TIER")
@@ -113,6 +118,7 @@
                     ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
                     ->whereNotNull("runs.SHIP_ID")
                     ->where("ship_lookup.IS_CRUISER", "0")
+                    ->whereRaw("RUN_DATE > NOW() - INTERVAL 90 DAY")
                     ->groupBy("runs.TIER")
                     ->orderBy("runs.TIER", "ASC")
                     ->get();

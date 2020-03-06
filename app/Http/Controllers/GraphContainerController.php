@@ -95,7 +95,7 @@
             $count_unknown = [];
             $count_cruiser = [];
             $count_frigate = [];
-            for ($days = -10; $days<=0; $days++) {
+            for ($days = -21; $days<=0; $days++) {
 
                 $timestamp = strtotime("now $days days");
                 $run_date[] = date("m. d.", $timestamp);
