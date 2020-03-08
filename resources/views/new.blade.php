@@ -263,7 +263,7 @@
                             <div class="col-sm-4 proving">
                                 <div class="form-group">
                                     <label for="">Did you go into the PVP room?</label>
-                                    <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
+                                    <select name="PVP_CONDUIT_USED" class="form-control select2-nosearch">
                                         <option value="">I don't remember</option>
                                         <option value="1">Yes, I went into the PVP room</option>
                                         <option value="0" selected>No, I did not go into the PVP room</option>

@@ -10,23 +10,32 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="text-justify text-black-50 text-small mb-3">
-                        Please submit this run review if you think something is wrong with it, such as unrealistic loot
-                        or clearly wrong entry filled. If its your own, please sign in and delete it.
+                @if (session()->exists("login_id"))
+                    <div class="modal-body">
+                        <div class="text-justify text-black-50 text-small mb-3">
+                            Please submit this run review if you think something is wrong with it, such as unrealistic loot
+                            or clearly wrong entry filled. If its your own, please sign in and delete it.
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Reason for flagging</label>
+                            <textarea name="message" id="message" class="form-control" rows="2" required></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="message">Reason for flagging</label>
-                        <textarea name="message" id="message" class="form-control" rows="2" required></textarea>
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <button type="button" role="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancel
+                            </button>
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Submit</button>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="btn-group">
-                        <button type="button" role="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancel
-                        </button>
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Submit</button>
+                @else
+                    <div class="modal-body">
+                        <p class="text-center">
+                            Please sign in before you flag a run <br>
+                            <a href="{{route("auth-start")}}" class="my-sm-0"><img src="https://eve-nt.uk/img/sso_small.png" alt=""></a>
+                        </p>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </form>
