@@ -16,7 +16,7 @@
                 </ul>
                 The following bugs are known which will get fixed soon:
                 <ul>
-                    <li>Frigate profit calculation should be adjusted to use 3 filaments</li>
+                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Frigate profit calculation should be adjusted to use 3 filaments.</span></li>
                     <li>Reporting a run while being signed out results in an error</li>
                     <li>Some search filters are not working properly</li>
                 </ul>
@@ -66,7 +66,7 @@
                     <li>Consistent calculation of used filaments in the consumed items table</li>
                     <li>Server configuration changes for trying to achieve a more stable operation</li>
                     <li>Delete your own runs</li>
-                    <li>Flagging of other capsuleer's runs <strong class="text-danger"> - not working yet, but work started.</strong></li>
+                    <li>Flagging of other capsuleer's runs</li>
                 </ul>
                 </p>
             </div>
