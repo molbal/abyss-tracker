@@ -37,6 +37,11 @@
     Route::post("/run/flag", 'AbyssController@flag')->name("run_flag");
 
     /**
+     * Profile
+     */
+    Route::get('/char/{id}','Profile\ProfileController@index')->name('profile.index');
+
+    /**
      * Stopwatch
      */
     Route::post("/stopwatch/start/{charId}", 'StopwatchController@addChecks')->name("stopwatch_start");
