@@ -1,11 +1,30 @@
 @extends("layout.app")
-@section("browser-title", "Error")
+@section("browser-title", $name)
 @section("content")
     <div class="row mt-3">
         <div class="col-sm-12 col-md-12">
             <div id="banner" class="shadow-sm">
                 <img src="https://images.evetech.net/characters/{{$id}}/portrait?size=128" class="rounded-circle shadow-sm">
                 <h4 class="font-weight-bold ">{{$name}}</h4>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <img src="https://fakeimg.pl/733x400/fff,128/000,255?text=last+runs" alt="">
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <img src="https://fakeimg.pl/366x96/fff,128/000,255?text=activity+calendar" alt="">
+            </div>
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <img src="https://fakeimg.pl/366x96/fff,128/000,255?text=favorite+ships+chart" alt="">
+            </div>
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <img src="https://fakeimg.pl/366x96/fff,128/000,255?text=survivability+chart" alt="">
+            </div>
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <img src="https://fakeimg.pl/366x96/fff,128/000,255?text=achievements" alt="">
             </div>
         </div>
     </div>
@@ -27,6 +46,7 @@
             position: relative;
             top:32px;
             left: 32px;
+            z-index: 50;
         }
 
         #banner > h4 {
