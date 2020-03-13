@@ -259,11 +259,7 @@ $lost_buy = 0;
                             <td class="text-right">{{$loot_item->COUNT}}</td>
                             @if(stripos($loot_item->NAME, "Blueprint") !== false)
                                 <td class="text-center font-italic" colspan="4">We currently can't estimate
-                                    blueprint values (How did you lose one in the abyss???)
-                                </td>
-                                <td class="text-right" data-toggle="tooltip"
-                                    title="{{$loot_item->TOOLTIP}}">{{number_format($loot_item->DROP_PERCENT*100, 1, ",", " ")}}
-                                    &nbsp;%
+                                    blueprint values
                                 </td>
                             @else
                                 <td class="text-right">{{number_format($loot_item->PRICE_SELL, 0, ",", " ")}}&nbsp;ISK
