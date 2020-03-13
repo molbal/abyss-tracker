@@ -16,9 +16,18 @@
 
             $name = DB::table("chars")->where("CHAR_ID", $id)->value("NAME");
 
+            $runs = DB::table("V_runall")
+                ->where("CHAR_ID", $id)
+                ->where("PUBLIC", 1)
+                ->orderBy("CREATED_AT", "DESC")
+                ->limit(10);
+
+
+
             return view('profile', [
                 'id' => $id,
-                'name' =>$name
+                'name' =>$name,
+                'last_runs' => $runs
             ]);
         }
 	}
