@@ -20,6 +20,7 @@
                     <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Reporting a run while being signed out results in an error</span></li>
                     <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Proving conduit spawn and usage was saved incorrectly</span></li>
                     <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Some search filters are not working properly</span></li>
+                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Error screen when viewing a run with a blueprint lost in cargo</span></li>
                 </ul>
                 </p>
             </div>
