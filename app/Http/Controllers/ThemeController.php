@@ -22,10 +22,10 @@
         }
 
         public static function getThemedIconColor():string {
-            return self::isDarkTheme() ? "ffffff" : "000000";
+            return self::isDarkTheme() ? "ffffff" : "191d21";
         }
         public static function getThemedBorderColor():string {
-            return self::isDarkTheme() ? "#000" : "#fff";
+            return self::isDarkTheme() ? "#191d21" : "#fff";
         }
 
         public static function getThemedNavBarIconColor(bool $active):string {
