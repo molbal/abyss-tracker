@@ -36,7 +36,7 @@
 
 
             Schema::table("stopwatch", function (Blueprint $table) {
-                $table->unsignedBigInteger("CHAR_ID")->change();
+                $table->bigInteger("CHAR_ID")->change();
             });
 
 
@@ -63,12 +63,6 @@
             });
 
 
-            Schema::table("stopwatch", function (Blueprint $table) {
-                $table->bigInteger("CHAR_ID")->change();
-            });
-            Schema::table("stopwatch", function (Blueprint $table) {
-                $table->dropForeign("CHAR_ID");
-            });
 
 
         }
