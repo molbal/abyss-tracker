@@ -90,19 +90,21 @@
                 <div class="row">
                     <img src="https://img.icons8.com/dusk/64/000000/web-shield.png" class="pull-left ml-2">
                     <div class="col">
-                        <h2 class="font-weight-bold mb-0">{{sprintf("%1.2f", $my_survival_ratio)}} %</h2>
+                        <h2 class="font-weight-bold mb-0">{{sprintf("%1.2f", $my_survival_ratio)}}%</h2>
                         <small class="text-muted font-weight-bold">Survival ratio</small>
                     </div>
                 </div>
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
-                <img src="https://fakeimg.pl/366x96/fff,128/000,255?text=favorite+ships+chart" alt="">
-            </div>
-            <div class="card card-body border-0 shadow-sm mt-3">
-                <img src="https://fakeimg.pl/366x96/fff,128/000,255?text=survivability+chart" alt="">
+                <h5 class="font-weight-bold mb-2">Favorite ships</h5>
+                {!! $favoriteShipsChart->container(); !!}
             </div>
         </div>
     </div>
+@endsection
+
+@section("scripts")
+    {!! $favoriteShipsChart->script(); !!}
 @endsection
 
 @section("styles")

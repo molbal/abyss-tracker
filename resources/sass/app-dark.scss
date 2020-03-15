@@ -151,3 +151,29 @@ body {
 .select2-selection--multiple .select2-selection__choice__remove:hover {
     color: #243f5b !important;
 }
+
+
+.page-item.disabled .page-link {
+    color: #434343;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #282828;
+    border-color: #333;
+}
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #19466a;
+    border-color: #19466a;
+}
+
+.page-link {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #f0f0f0;
+    background-color: #282828;
+    border: 1px solid #333;
+}
