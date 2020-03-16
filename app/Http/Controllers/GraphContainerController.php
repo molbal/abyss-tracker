@@ -89,15 +89,19 @@
         public function getHomeDailyRunCounts() : object
         {
 
-            [$run_date, $count_unknown, $count_cruiser, $count_frigate] = Cache::remember("chart.daily_run_counts", 15, function () {
+            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", 15, function () {
 
             $run_date = [];
             $count_unknown = [];
             $count_cruiser = [];
             $count_frigate = [];
-            for ($days = -21; $days<=0; $days++) {
+            $rolling_avg_week = [];
+            $rolling_avg_month = [];
+            for ($days = -60; $days<=0; $days++) {
 
                 $timestamp = strtotime("now $days days");
+                $timestamp_week_older = strtotime("now ".($days-7)." days");
+                $timestamp_month_older = strtotime("now ".($days-30)." days");
                 $run_date[] = date("m. d.", $timestamp);
                 $count_unknown[] = DB::table("runs")
                     ->whereNull("SHIP_ID")
@@ -120,17 +124,36 @@
                     ->where("RUN_DATE", date("Y-m-d", $timestamp))
                     ->groupBy("RUN_DATE")
                     ->count();
+
+                $rolling_avg_week[] = round(DB::table("runs")
+                                         ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
+                                         ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_week_older))
+                                         ->count()/7,2);
+                $rolling_avg_month[] = round(DB::table("runs")
+                                         ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
+                                         ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_month_older))
+                                         ->count()/30,2);
             }
 
-            return [$run_date, $count_unknown, $count_cruiser, $count_frigate];
+            return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month];
             });
 
             $daily_add_chart = new DailyAdds();
-            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Unknown runs", "bar", $count_unknown)->options(["stack" => "1"]);
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Unspecified runs", "bar", $count_unknown)->options(["stack" => "1"]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Cruiser runs", "bar", $count_cruiser)->options(["stack" => "1"]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Frigate runs", "bar", $count_frigate)->options(["stack" => "1"]);
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => true]);
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => true]);
             $daily_add_chart->theme(ThemeController::getChartTheme());
             $daily_add_chart->displayLegend(true);
+            $daily_add_chart->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
 
             return $daily_add_chart;
         }

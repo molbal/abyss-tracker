@@ -9,10 +9,11 @@
                 <p>
                     The following features are planned (in no particular order or grouping).
                 <ul>
-                    <li>Public profile of capsuleers (optional!)</li>
+                    <li><span class="badge badge-warning">RELEASES WITH 1.4</span> Public profile of capsuleers (optional!)</li>
                     <li>Blueprint price estimation</li>
                     <li>Dynamically adding and removing search filters</li>
                     <li>Showing ship fits</li>
+                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Adding averages to the homepage chart</span></li>
                 </ul>
                 The following bugs are known which will get fixed soon:
                 <ul>

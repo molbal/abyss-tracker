@@ -15,15 +15,15 @@
         </div>
     </div>
     <div class="row mt-3">
-        <div class="col-md-6 col-sm-12">
+        <div class="col-md-5 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Average loot per tier</h5>
                 {!! $loot_tier_chart->container(); !!}
             </div>
         </div>
-        <div class="col-md-6 col-sm-12">
+        <div class="col-md-7 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Abyss activity</h5>
+                <h5 class="font-weight-bold mb-2">Last 3 months</h5>
                 {!! $daily_add_chart->container(); !!}
             </div>
         </div>
