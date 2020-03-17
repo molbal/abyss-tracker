@@ -44,7 +44,11 @@ class RecalculateDroprates extends Command
             ini_set('max_execution_time', 0);
             set_time_limit(0);
 
-            $items = DB::table("item_prices")->select("ITEM_ID", "NAME")->get();
+            $items = DB::table("item_prices")
+                       ->select("ITEM_ID", "NAME")
+                       ->whereRaw("GROUP_ID in (1992,1993,105,255,2019,1964,1088,1990,257,1995,1977,1979,1996,489,107,106,487)")
+                       ->get();
+
             $types = ["Electrical", "Dark", "Exotic", "Firestorm", "Gamma"];
             Log::info("Starting item drop rate calculation.");
 
@@ -54,7 +58,6 @@ class RecalculateDroprates extends Command
             $k = 0;
             foreach ($items as $item) {
                 $item_id = $item->ITEM_ID;
-                //Log::info(" - Starting item drop calculation: " . $item->NAME. " ".$k++."/".$items->count());
                 $type_drp = 0;
                 $type_ran = 0;
                 Cache::increment("recalc-current");
