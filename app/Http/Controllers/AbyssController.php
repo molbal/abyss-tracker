@@ -143,6 +143,11 @@ where CHAR_ID=? and RUN_DATE=?" ,[
          * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
          */
         public function store(Request $request) {
+
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
+            }
+
             Validator::make($request->all(), [
                 'TYPE'     => 'required',
                 'TIER'     => 'required',

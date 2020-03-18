@@ -10,43 +10,18 @@
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
-    class ProfileController extends Controller {
+    class SettingController extends Controller {
 
 
 
-        public function index(int $id) {
+        public function index() {
 
-            if (!DB::table("chars")->where("CHAR_ID", $id)->exists()) {
-                return view("error", ["error" => "No such user found"]);
+
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
             }
 
-            $name = DB::table("chars")->where("CHAR_ID", $id)->value("NAME");
-
-            $runs = DB::table("V_runall")
-                ->where("CHAR_ID", $id)
-                ->where("PUBLIC", 1)
-                ->orderBy("CREATED_AT", "DESC")
-                ->paginate(15);
-
-            $my_avg_loot = DB::table("runs")->where("CHAR_ID", $id)->where("PUBLIC", 1)->avg('LOOT_ISK');
-            $my_sum_loot = DB::table("runs")->where("CHAR_ID", $id)->where("PUBLIC", 1)->sum('LOOT_ISK');
-            $my_runs_count = DB::table("runs")->where("CHAR_ID", $id)->where("PUBLIC", 1)->count();
-            $my_survival_ratio = (DB::table("runs")->where("CHAR_ID", $id)->where("PUBLIC", 1)->where("SURVIVED", '=', true)->count()) / max(1, $my_runs_count) * 100;
-
-            [$query_ships, $favoriteShipsChart] = $this->getProfileShipsChart($id);
-
-            $access = $this->getAllRights($id);
-            return view('profile', [
-                'id' => $id,
-                'name' =>$name,
-                'last_runs' => $runs,
-                'my_avg_loot' => $my_avg_loot,
-                'my_sum_loot' => $my_sum_loot,
-                'my_runs_count' => $my_runs_count,
-                'my_survival_ratio' => $my_survival_ratio,
-                'query_ships' => $query_ships,
-                'favoriteShipsChart' => $favoriteShipsChart,
-                'access' => $access
+            return view('settings', [
             ]);
         }
 
