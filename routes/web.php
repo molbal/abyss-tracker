@@ -42,6 +42,11 @@
     Route::get('/char/{id}','Profile\ProfileController@index')->name('profile.index');
 
     /**
+     * Settings
+     */
+    Route::get('/settings','Profile\ProfileController@index')->name('settings.index');
+
+    /**
      * Stopwatch
      */
     Route::post("/stopwatch/start/{charId}", 'StopwatchController@addChecks')->name("stopwatch_start");

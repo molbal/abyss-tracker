@@ -15,19 +15,6 @@
                 <a class="nav-link {{"runs" == Route::currentRouteName() ? "active" : ""}}" href="{{route("runs")}}">
                     <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs" == Route::currentRouteName())}}/database.png"> All runs</a>
             </li>
-            @if(session()->has("login_id"))
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/user--v1.png"> My account</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item {{"new" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("new")}}">Add run</a>
-                        <a class="dropdown-item {{"runs_mine" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("runs_mine")}}">My runs</a>
-                        <a class="dropdown-item {{"home_mine" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("home_mine")}}">My stats</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{route("logout")}}#">Log out</a>
-                    </div>
-                </li>
-            @endif
             <li class="nav-item">
                 <a class="nav-link {{"search.index" == Route::currentRouteName() || "search.do" == Route::currentRouteName() ? "active" : ""}}"
                    href="{{route("search.index")}}">
@@ -50,10 +37,21 @@
                     <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Changelog <sup>(DEV)</sup></a>
             </li>
         </ul>
-        <form class="ml-auto">
+            <form class="ml-auto">
             @if(session()->has("login_id"))
-                <a href="{{route("logout")}}" class="btn btn-outline-danger my-2 my-sm-0">Log out
-                    <strong>{{session()->get("login_name")}}</strong></a>
+                <li class="nav-item dropdown" style="list-style: none">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="https://images.evetech.net/characters/{{session()->get("login_id")}}/portrait?size=32" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm"> {{session()->get('login_name')}}</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item pl-2 {{"new" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("new")}}" ><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == Route::currentRouteName())}}/new-by-copy.png" class="mr-1"/> Add run</a>
+                        <a class="dropdown-item pl-2 {{"runs_mine" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("runs_mine")}}" ><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs_mine" == Route::currentRouteName())}}/bulleted-list.png" class="mr-1"/> My runs</a>
+                        <a class="dropdown-item pl-2 {{"home_mine" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("home_mine")}}" ><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("home_mine" == Route::currentRouteName())}}/positive-dynamic.png" class="mr-1"/> My stats</a>
+                        <a class="dropdown-item pl-2 {{"profile.index" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("profile.index", ["id" => session()->get('login_id')])}}" ><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("profile.index" == Route::currentRouteName())}}/head-profile.png" class="mr-1"/> My public profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item pl-2 {{"settings.index" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("settings.index")}}" ><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("settings.index" == Route::currentRouteName())}}/settings.png" class="mr-1"/> Settings</a>
+                        <a class="dropdown-item pl-2" href="{{route("logout")}}#"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/logout-rounded.png" class="mr-1"/> Log out</a>
+                    </div>
+                </li>
             @else
                 <a href="{{route("auth-start")}}" class="my-sm-0"><img src="https://eve-nt.uk/img/sso_small.png" alt=""></a>
             @endif

@@ -125,6 +125,24 @@
             -webkit-box-shadow:inset 0 3px 0 0 #e3342f;
             box-shadow:inset 0 3px 0 0 #e3342f;
         }
+
+        .nav-link img{
+            width: 16px;
+            height: 16px;
+        }
+        .nav-link img.rounded-circle{
+            width: 24px;
+            width: 24px;
+            height: 24px;
+            height: 24px;
+        }
+
+
+
+        .navbar-brand img {
+            width: 32px;
+            height: 32px;
+        }
     </style>
     @yield('styles')
 </head>
