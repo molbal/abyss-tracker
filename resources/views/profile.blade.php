@@ -9,6 +9,7 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-8">
+            @component("components.restricted", ["title" => "Last public runs","public" => $access["LAST_RUNS"], 'icon_size' => 128])
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold mb-2">Public runs</h5>
                 <table class="table table-striped table-sm m-0 table-hover table-responsive-sm">
@@ -53,12 +54,11 @@
             <div class="card-footer">
                 {{$last_runs->links()}}
             </div>
+                @endcomponent
         </div>
         <div class="col-sm-12 col-md-4">
-{{--            <div class="card card-body border-0 shadow-sm mt-3">--}}
-{{--                <img src="https://fakeimg.pl/366x96/fff,128/000,255?text=activity+calendar" alt="">--}}
-{{--            </div>--}}
 
+            @component("components.restricted", ["title" => "Runs count","public" => $access["TOTAL_RUNS"]])
             <div class="card card-body shadow-sm border-0 mt-3">
                 <div class="row">
                     <img src="https://img.icons8.com/dusk/64/000000/counter.png" class="pull-left ml-2">
@@ -68,6 +68,8 @@
                     </div>
                 </div>
             </div>
+            @endcomponent
+            @component("components.restricted", ["title" => "Loot data","public" => $access["TOTAL_LOOT"]])
             <div class="card card-body shadow-sm border-0 mt-3">
                 <div class="row">
                     <img src="https://img.icons8.com/dusk/64/000000/treasure-chest.png" class="pull-left ml-2">
@@ -86,6 +88,8 @@
                     </div>
                 </div>
             </div>
+                @endcomponent
+                @component("components.restricted", ["title" => "Survival ratio","public" => $access["SURVIVAL"]])
             <div class="card card-body shadow-sm border-0 mt-3">
                 <div class="row">
                     <img src="https://img.icons8.com/dusk/64/000000/web-shield.png" class="pull-left ml-2">
@@ -95,10 +99,13 @@
                     </div>
                 </div>
             </div>
+                @endcomponent
+                @component("components.restricted", ["title" => "Most used ships","public" => $access["SHIPS"]])
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold mb-2">Favorite ships</h5>
                 {!! $favoriteShipsChart->container(); !!}
             </div>
+                @endcomponent
         </div>
     </div>
 @endsection
