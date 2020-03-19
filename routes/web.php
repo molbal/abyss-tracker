@@ -45,6 +45,7 @@
      * Settings
      */
     Route::get('/settings','Profile\SettingController@index')->name('settings.index');
+    Route::post('/settings/update','Profile\SettingController@save')->name('settings.save');
 
     /**
      * Stopwatch
