@@ -9,24 +9,35 @@
                 <p>
                     The following features are planned (in no particular order or grouping).
                 <ul>
-                    <li><span class="badge badge-warning">RELEASES WITH 1.4</span> Public profile of capsuleers (optional!)</li>
                     <li>Blueprint price estimation</li>
                     <li>Dynamically adding and removing search filters</li>
                     <li>Showing ship fits</li>
-                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Adding averages to the homepage chart</span></li>
-                </ul>
-                The following bugs are known which will get fixed soon:
-                <ul>
-                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Frigate profit calculation should be adjusted to use 3 filaments.</span></li>
-                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Reporting a run while being signed out results in an error</span></li>
-                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Proving conduit spawn and usage was saved incorrectly</span></li>
-                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Some search filters are not working properly</span></li>
-                    <li><span class="badge badge-success">FIXED</span> <span style="text-decoration: line-through">Error screen when viewing a run with a blueprint lost in cargo</span></li>
                 </ul>
                 </p>
             </div>
+
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.4</strong> 'Personage' release</h4>
+                <small class="mt-0">2020 march 19</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>Public profiles with settings</li>
+                    <li>Adding averages to the homepage chart</li>
+                </ul>
+
+                The following bugs were fixed:
+                <ul>
+                    <li><span class="badge badge-success">FIXED</span> <span>Frigate profit calculation should be adjusted to use 3 filaments.</span></li>
+                    <li><span class="badge badge-success">FIXED</span> <span>Reporting a run while being signed out results in an error</span></li>
+                    <li><span class="badge badge-success">FIXED</span> <span>Proving conduit spawn and usage was saved incorrectly</span></li>
+                    <li><span class="badge badge-success">FIXED</span> <span>Some search filters are not working properly</span></li>
+                    <li><span class="badge badge-success">FIXED</span> <span>Error screen when viewing a run with a blueprint lost in cargo</span></li>
+                </ul>
+                </p>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.3.6</strong> 'Insight' release</h4>
                 <small class="mt-0">2020 march 06</small>
                 <p>

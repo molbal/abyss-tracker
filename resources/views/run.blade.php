@@ -40,7 +40,12 @@
                              class="pull-left ml-2 rounded-circle shadow-sm">
                     @endif
                     <div class="col">
-                        <h2 class="font-weight-bold mb-0">{{$run->PUBLIC ? $run->NAME : "Private"}}</h2>
+
+                        @if($run->PUBLIC)
+                            <h2 class="font-weight-bold mb-0"><a class="text-dark" href="{{route('profile.index', ['id' => $run->CHAR_ID])}}">{{$run->NAME}}</a></h2>
+                        @else
+                            <h2 class="font-weight-bold mb-0">Private</h2>
+                        @endif
                         <small class="text-muted font-weight-bold">Abyss runner</small>
                     </div>
                 </div>
