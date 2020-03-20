@@ -22,7 +22,7 @@
 
             $name = DB::table("chars")->where("CHAR_ID", $id)->value("NAME");
 
-            $runs = DB::table("V_runall")
+            $runs = DB::table("v_runall")
                 ->where("CHAR_ID", $id)
                 ->where("PUBLIC", 1)
                 ->orderBy("CREATED_AT", "DESC")

@@ -9,9 +9,10 @@
                 <p>
                     The following features are planned (in no particular order or grouping).
                 <ul>
+                    <li>Showing ship fits</li>
                     <li>Blueprint price estimation</li>
                     <li>Dynamically adding and removing search filters</li>
-                    <li>Showing ship fits</li>
+                    <li>Leaderboards!</li>
                 </ul>
                 </p>
             </div>
