@@ -14,6 +14,10 @@
                     <li>Dynamically adding and removing search filters</li>
                     <li>Leaderboards!</li>
                 </ul>
+                Little enhanchements:
+                <ul>
+                    <li><span class="badge badge-success">DONE</span> Allows changing run privacy</li>
+                </ul>
                 </p>
             </div>
 

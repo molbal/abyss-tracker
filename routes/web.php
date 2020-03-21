@@ -23,7 +23,6 @@
     Route::get("/new", 'AbyssController@form_new')->name("new");
     Route::post("/api/loot_estimate", 'Loot\AjaxLootController@getSum')->name("estimate_loot");
 
-    Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
     Route::get("/runs/{order_by?}/{order_type?}", 'AbyssController@get_all')->name("runs");
     Route::get("/runs_mine/{order_by?}/{order_type?}", 'AbyssController@get_mine')->name("runs_mine");
     Route::get("/runs/{charID}/{order_by?}/{order_type?}", 'AbyssController@get_char')->name("runs_char");
@@ -33,6 +32,7 @@
      * Runs
      */
     Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
+    Route::get("/run/{id}/privacy/{privacy}", 'AbyssController@change_privacy')->name("run.change_privacy");
     Route::get("/run/delete/{id}", 'AbyssController@delete')->name("run_delete");
     Route::post("/run/flag", 'AbyssController@flag')->name("run_flag");
 

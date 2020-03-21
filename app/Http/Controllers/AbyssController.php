@@ -182,6 +182,31 @@ where CHAR_ID=? and RUN_DATE=?" ,[
         }
 
         /**
+         * Changes privacy
+         * @param int    $id
+         * @param string $privacy
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         */
+        public function change_privacy(int $id, string $privacy) {
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
+            }
+
+            $run = DB::table("runs")->where("ID", $id)->get()->get(0);
+            if ($run->CHAR_ID != session()->get("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
+            }
+
+            DB::table("runs")->where("ID", $id)->update([
+                "PUBLIC" => $privacy == "public" ? 1 : 0
+            ]);
+
+            return redirect(route("view_single", ["id" => $id]));
+
+        }
+
+        /**
          * Handles getting the new run screen
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */

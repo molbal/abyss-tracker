@@ -346,6 +346,8 @@ $lost_buy = 0;
     <div class="row mt-3">
         <div class="col-sm-12 text-right">
             @if(session()->get('login_id') == $all_data->CHAR_ID)
+                <a href="{{route('run.change_privacy', ['id' => $id, 'privacy' => $all_data->PUBLIC ? 'private' : 'public'])}}" class="text-dark"><img
+                        src="https://img.icons8.com/officexs/16/000000/key-security.png"> Make run {{$all_data->PUBLIC ? 'private' : 'public'}}</a>
                 <a href="{{route('run_delete', ['id' => $id])}}" class="text-danger"><img
                         src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a>
             @elseif(!$reported)
