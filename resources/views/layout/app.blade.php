@@ -137,11 +137,18 @@
             height: 24px;
         }
 
-
-
         .navbar-brand img {
             width: 32px;
             height: 32px;
+        }
+
+        .tooltip, .tooltip-inner {
+            width: 360px;
+            max-width: 360px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+       .tooltip-inner {
         }
     </style>
     @yield('styles')

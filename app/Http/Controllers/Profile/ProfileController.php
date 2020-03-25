@@ -13,7 +13,12 @@
     class ProfileController extends Controller {
 
 
-
+        /**
+         * Handles the player profile page
+         * @param int $id
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
         public function index(int $id) {
 
             if (!DB::table("chars")->where("CHAR_ID", $id)->exists()) {
@@ -36,6 +41,25 @@
             [$query_ships, $favoriteShipsChart] = $this->getProfileShipsChart($id);
 
             $access = $this->getAllRights($id);
+
+            $loot = DB::select("
+SELECT ip.ITEM_ID,
+       SUM(dl.COUNT) as COUNT,
+       ip.PRICE_BUY,
+       ip.PRICE_SELL,
+       ip.GROUP_ID,
+       ip.GROUP_NAME,
+       ip.NAME
+FROM detailed_loot dl
+INNER JOIN item_prices ip ON dl.ITEM_ID = ip.ITEM_ID
+WHERE dl.RUN_ID IN
+    (SELECT runs.ID
+     FROM runs
+     WHERE CHAR_ID=?
+       AND RUN_DATE>=NOW() - INTERVAL 70 DAY)
+GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [
+    $id, date('Y-m-d')
+            ]);
             return view('profile', [
                 'id' => $id,
                 'name' =>$name,
@@ -46,7 +70,8 @@
                 'my_survival_ratio' => $my_survival_ratio,
                 'query_ships' => $query_ships,
                 'favoriteShipsChart' => $favoriteShipsChart,
-                'access' => $access
+                'access' => $access,
+                'loot' => $loot
             ]);
         }
 
@@ -65,8 +90,8 @@
                 case 'TOTAL_LOOT':
                 case 'TOTAL_RUNS':
                     return true;
-                case 'LOOT':
                 case 'SHIPS':
+                case 'LOOT':
                 case 'SURVIVAL':
                 default:
                     return false;

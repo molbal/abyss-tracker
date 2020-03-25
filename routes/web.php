@@ -29,6 +29,8 @@
     Route::get("/filter/{type}/{tier}", 'FilteredController@get_list')->name("filtered_list");
 
     /**
+
+    /**
      * Runs
      */
     Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
@@ -40,6 +42,7 @@
      * Profile
      */
     Route::get('/char/{id}','Profile\ProfileController@index')->name('profile.index');
+    Route::get("/char/loot/{from}/{to}", 'Profile\ProfileController@loot')->name('profile.loot');
 
     /**
      * Settings
