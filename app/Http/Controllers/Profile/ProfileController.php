@@ -45,11 +45,11 @@
             $loot = DB::select("
 SELECT ip.ITEM_ID,
        SUM(dl.COUNT) as COUNT,
-       ip.PRICE_BUY,
-       ip.PRICE_SELL,
-       ip.GROUP_ID,
-       ip.GROUP_NAME,
-       ip.NAME
+       MAX(ip.PRICE_BUY) as PRICE_BUY,
+       MAX(ip.PRICE_SELL) as PRICE_SELL,
+       MAX(ip.GROUP_ID) as GROUP_ID,
+       MAX(ip.GROUP_NAME) as GROUP_NAME,
+       MAX(ip.NAME) as NAME
 FROM detailed_loot dl
 INNER JOIN item_prices ip ON dl.ITEM_ID = ip.ITEM_ID
 WHERE dl.RUN_ID IN
@@ -105,11 +105,11 @@ GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [
             $loot = DB::select("
 SELECT ip.ITEM_ID,
        SUM(dl.COUNT) as COUNT,
-       ip.PRICE_BUY,
-       ip.PRICE_SELL,
-       ip.GROUP_ID,
-       ip.GROUP_NAME,
-       ip.NAME
+       MAX(ip.PRICE_BUY) as PRICE_BUY,
+       MAX(ip.PRICE_SELL) as PRICE_SELL,
+       MAX(ip.GROUP_ID) as GROUP_ID,
+       MAX(ip.GROUP_NAME) as GROUP_NAME,
+       MAX(ip.NAME) as NAME
 FROM detailed_loot dl
 INNER JOIN item_prices ip ON dl.ITEM_ID = ip.ITEM_ID
 WHERE dl.RUN_ID IN
