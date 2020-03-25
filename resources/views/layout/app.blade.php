@@ -35,18 +35,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <title>@yield('browser-title', config('app.name')) | {{ config('app.name') }}</title>
     <style>
-        .navbar-brand > img {
-            height: 32px;
-        }
-
-        .navbar ul.navbar-nav li a img {
-            position: relative;
-            top: -2px
-        }
-
-        tr, td {
-            vertical-align: middle !important;
-        }
 
         @-webkit-keyframes rotating /* Safari and Chrome */
         {
@@ -79,76 +67,12 @@
             }
         }
 
-        .rotating {
-            -webkit-animation: rotating 2s linear infinite;
-            -moz-animation: rotating 2s linear infinite;
-            -ms-animation: rotating 2s linear infinite;
-            -o-animation: rotating 2s linear infinite;
-            animation: rotating 2s linear infinite;
-        }
-
         @font-face {
             font-family: 'Shentox 13';
             src: url('fonts/Shentox-Regular2.woff2') format('woff2'),
             url('fonts/Shentox-Regular2.woff') format('woff');
             font-weight: normal;
             font-style: normal;
-        }
-
-        * {
-            font-family: 'Shentox 13';
-        }
-
-        option {
-            font-family: 'Shentox 13';
-        }
-
-        img.pull-left.ml-2 {
-            height: 64px;
-            width: 64px;
-        }
-
-        table {
-            border-collapse: collapse;
-        }
-
-        a.dropdown-item.active {
-            border: 3px solid #e3342f;
-            border-width: 0 0 0 3px;
-            background-color: transparent;
-            color:#000;
-        }
-        .navbar-light .navbar-nav .nav-link.active {
-            color:#e3342f;
-            border:0;
-            border-width:0 !important;
-            -webkit-box-shadow:inset 0 3px 0 0 #e3342f;
-            box-shadow:inset 0 3px 0 0 #e3342f;
-        }
-
-        .nav-link img{
-            width: 16px;
-            height: 16px;
-        }
-        .nav-link img.rounded-circle{
-            width: 24px;
-            width: 24px;
-            height: 24px;
-            height: 24px;
-        }
-
-        .navbar-brand img {
-            width: 32px;
-            height: 32px;
-        }
-
-        .tooltip, .tooltip-inner {
-            width: 360px;
-            max-width: 360px;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-        }
-       .tooltip-inner {
         }
     </style>
     @yield('styles')

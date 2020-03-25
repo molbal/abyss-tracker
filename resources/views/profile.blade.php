@@ -65,15 +65,15 @@
                 <div class="card card-body border-0 shadow-sm mt-3">
                     <h5 class="font-weight-bold mb-2">All loot from the last 7 days</h5>
                     <div>
-                        @php
-                            $ps = 0;
-$pb = 0;
-                        @endphp
+                    @php
+                        $ps = 0;
+                        $pb = 0;
+                    @endphp
                     @forelse($loot as $l)
-                            @php
-                                $ps += $l->PRICE_SELL*$l->COUNT;
-    $pb += $l->PRICE_BUY*$l->COUNT;
-                            @endphp
+                        @php
+                            $ps += $l->PRICE_SELL*$l->COUNT;
+                            $pb += $l->PRICE_BUY*$l->COUNT;
+                        @endphp
                         @component('components.inventory_item', ['item' => $l]) @endcomponent
                     @empty
                         <p class="py-4 text-center"><img src="https://img.icons8.com/cotton/32/000000/empty-box.png" style="position: relative;top:-4px"/> <em>No loot</em></p>
@@ -129,12 +129,21 @@ $pb = 0;
                     </div>
                 </div>
             @endcomponent
-            @component("components.restricted", ["title" => "Most used ships","public" => $access["SHIPS"]])
-                <div class="card card-body border-0 shadow-sm mt-3">
-                    <h5 class="font-weight-bold mb-2">Favorite ships</h5>
-                    {!! $favoriteShipsChart->container(); !!}
-                </div>
-            @endcomponent
+                @component("components.restricted", ["title" => "Most used ships","public" => $access["SHIPS"]])
+                    <div class="card card-body border-0 shadow-sm mt-3">
+                        <h5 class="font-weight-bold mb-2">Favorite ships</h5>
+                        {!! $favoriteShipsChart->container(); !!}
+                    </div>
+                @endcomponent
+                @component("components.restricted", ["title" => "Loot query","public" => $access["LOOT"]])
+                    <div class="card card-body border-0 shadow-sm mt-3">
+                        <h5 class="font-weight-bold mb-2">Detailed loot query</h5>
+                        <form action="">
+                            {{csrf_field()}}
+
+                        </form>
+                    </div>
+                @endcomponent
         </div>
     </div>
 @endsection

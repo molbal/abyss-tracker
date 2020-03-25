@@ -1,9 +1,9 @@
 <div style="display: inline-block; width: 72px; height: 96px; margin-right: 8px; margin-bottom: 8px; text-align: center; overflow: hidden"
      data-toggle="tooltip"
      title='
-     <table class="table table-sm w-100 text-dark">
-    <tr>
-        <td colspan="2" class="text-center font-weight-bold">{{$item->NAME}}</td>
+     <table class="table table-sm w-100 bright-theme-only-white mb-0">
+    <tr class="">
+        <td colspan="2" class="border-0 text-center font-weight-bold">{{$item->NAME}}</td>
 </tr>
 <tr>
     <td colspan="2" class="text-center font-italic">{{$item->GROUP_NAME}}</td>

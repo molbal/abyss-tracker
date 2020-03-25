@@ -1,0 +1,165 @@
+body {
+    color: #fafafa !important;
+}
+
+.text-black-50 {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.bg-white {
+    background: #000 !important;
+}
+
+
+.navbar-brand {
+    color: #fff !important;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.dropdown-menu {
+    color: #fff;
+    background-color: #060606;
+    border: 1px solid rgba(255, 245, 245, 0.15);
+}
+
+.dropdown-item {
+    color: #fff;
+}
+
+
+.text-dark {
+    color: #eee !important;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    color: #fff;
+    background-color: #060606;
+}
+
+
+/**
+ *   Bootstrap 4 theme for Select2.
+ *   https://github.com/nitishrajuprety/bootstrap4-select2-theme
+ *
+ *   Author: Nitish Raj Uprety <uprety.nitish@gmail.com>
+ *   Version: 1.0.0
+ */
+.select2-container--bootstrap .select2-selection {
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    background-color: #000 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px;
+    color: #fff !important;
+}
+.select2-container--bootstrap .select2-selection--single {
+    background-color: #000 !important;
+    border: 1px solid #ccc !important;
+    color: #fff !important;
+}
+.select2-dropdown {
+    border: 1px solid #444 !important;
+    border-radius: 0 !important;
+    color: #999 !important;
+}
+
+.select2-results__option[aria-selected=true] {
+    background-color: #b3d7ff !important;
+}
+
+.select2-results__option--highlighted[aria-selected] {
+    background-color: #243f5b !important;
+}
+
+.select2-selection--single {
+    border-radius: 0 !important;
+    border: 1px solid #444 !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    height: calc(2.25rem + 2px) !important;
+    padding: 0.375rem 1.5rem 0.375rem 0.75rem !important;
+}
+
+.select2-selection--single .select2-selection__rendered {
+    color: #fff !important;
+    padding: 0 0 0 0 !important;
+}
+
+.select2-selection--single .select2-selection__placeholder {
+    color: #444 !important;
+}
+
+.select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+}
+
+.select2-selection--single .select2-selection__arrow b {
+    border-color: #444 transparent transparent transparent !important;
+}
+
+.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-color: transparent transparent #444 transparent !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+    border: 1px solid #444 !important;
+    color: #999 !important;
+}
+
+.select2-selection--multiple {
+    border-radius: 0 !important;
+    border: 1px solid #444 !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    min-height: calc(2.25rem + 2px) !important;
+}
+
+.select2-selection--multiple .select2-selection__choice {
+    background-color: #003a78 !important;
+    border: 1px solid #0062cc !important;
+    border-radius: 0 !important;
+    color: #000 !important;
+    margin-right: 0.375rem !important;
+    margin-top: 0.375rem !important;
+    padding: 0 0.375rem !important;
+}
+
+.select2-selection--multiple .select2-selection__choice__remove {
+    color: #0056b3 !important;
+    margin-right: 0.375rem !important;
+    font-size: 1.5rem;
+    line-height: 0.75;
+}
+
+.select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #243f5b !important;
+}
+
+
+.page-item.disabled .page-link {
+    color: #434343;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #282828;
+    border-color: #333;
+}
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #19466a;
+    border-color: #19466a;
+}
+
+.page-link {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #f0f0f0;
+    background-color: #282828;
+    border: 1px solid #333;
+}
