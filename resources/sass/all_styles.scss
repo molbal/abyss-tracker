@@ -58,8 +58,6 @@ a.dropdown-item.active {
 }
 .nav-link img.rounded-circle{
     width: 24px;
-    width: 24px;
-    height: 24px;
     height: 24px;
 }
 
@@ -71,6 +69,8 @@ a.dropdown-item.active {
 .tooltip, .tooltip-inner {
     width: 360px;
     max-width: 360px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+}
+
+ul.pagination {
+    margin-bottom: 0;
 }

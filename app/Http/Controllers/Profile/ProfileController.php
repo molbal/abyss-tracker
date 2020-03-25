@@ -141,6 +141,11 @@ GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [
          * @return bool
          */
         private function getRight(int $userId, string $panel):bool {
+
+            if (session()->has("login_id") && $userId == session()->get("login_id")) {
+                return true;
+            }
+
             if (DB::table("privacy")
             ->where("CHAR_ID", $userId)
             ->where("PANEL", $panel)

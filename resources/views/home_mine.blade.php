@@ -85,12 +85,8 @@
                         <tr>
                             <td>{{$data[0]->RUN_DATE}}</td>
                             <td class="text-right">{{$data[0]->COUNT}}</td>
-                            <td class="text-right">{{round($data[0]->AVG/1000000 ?? 0, 2)}}{{$data[0]->AVG ? 'M' : ''}}
-                                ISK
-                            </td>
-                            <td class="text-right">{{round($data[0]->SUM/1000000 ?? 0, 2)}}{{$data[0]->AVG ? 'M' : ''}}
-                                ISK
-                            </td>
+                            <td class="text-right">{{round($data[0]->AVG/1000000 ?? 0, 2)}}{{$data[0]->AVG ? 'M' : ''}} ISK</td>
+                            <td class="text-right">{{round($data[0]->SUM/1000000 ?? 0, 2)}}{{$data[0]->AVG ? 'M' : ''}} ISK</td>
                         </tr>
                     @empty
                         <tr>

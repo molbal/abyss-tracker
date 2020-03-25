@@ -42,7 +42,7 @@
      * Profile
      */
     Route::get('/char/{id}','Profile\ProfileController@index')->name('profile.index');
-    Route::get("/char/loot/{from}/{to}", 'Profile\ProfileController@loot')->name('profile.loot');
+    Route::get("/char/{id}/loot/{from}/{to}", 'Profile\ProfileController@loot')->name('profile.loot');
 
     /**
      * Settings

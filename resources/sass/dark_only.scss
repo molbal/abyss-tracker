@@ -163,3 +163,39 @@ body {
     background-color: #282828;
     border: 1px solid #333;
 }
+
+
+.daterangepicker {
+    background-color: rgb(25, 29, 33, 0.9) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+    border-color: #282828;
+}
+.daterangepicker .calendar-table {
+    background-color: rgb(25, 29, 33, 0.9) !important;
+    border:0;
+}
+.daterangepicker td.off, .daterangepicker td.off.in-range, .daterangepicker td.off.start-date, .daterangepicker td.off.end-date {
+    background-color: transparent !important;
+    color: #999;
+}
+.daterangepicker td.in-range {
+    background-color: #357ebd !important;
+    border-color: transparent !important;
+    color: #fff !important;
+    border-radius: 0;
+}
+.daterangepicker .ranges li:hover {
+    background-color: #7979797d !important;
+}
+.daterangepicker .calendar-table .next span, .daterangepicker .calendar-table .prev span {
+    color: #fff !important;
+    border: solid #ffffff !important;
+}
+.daterangepicker.show-ranges.ltr .drp-calendar.left {
+    border-left: 1px solid #282828 !important;
+}
+.daterangepicker .calendar-table {
+    border-width: 0 !important;
+}
