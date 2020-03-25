@@ -14,10 +14,6 @@
                     <li>Dynamically adding and removing search filters</li>
                     <li>Leaderboards!</li>
                 </ul>
-                Little enhanchements:
-                <ul>
-                    <li><span class="badge badge-success">DONE</span> Allows changing run privacy</li>
-                </ul>
 
                 </p>
             </div>
@@ -32,7 +28,10 @@
                     <li>Your public profile will show you everything and display a privacy message if you are signed in - on your own profile only, of course</li>
                     <li>Adds EVE style loot display for your profile page, and a range filter for accumulated profiles</li>
                 </ul>
-
+                Little enhanchements:
+                <ul>
+                    <li><span class="badge badge-success">DONE</span> Allows changing run privacy</li>
+                </ul>
                 The following bugs were fixed:
                 <ul>
                     <li><span class="badge badge-success">FIXED</span> <span>Daterange picker displayed incorrectly with the dark theme</span></li>
