@@ -18,11 +18,28 @@
                 <ul>
                     <li><span class="badge badge-success">DONE</span> Allows changing run privacy</li>
                 </ul>
+
                 </p>
             </div>
 
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.4.1</strong> 'Accumulation' release</h4>
+                <small class="mt-0">2020 march 25</small>
+                <p>
+                    This release adds:
+                <ul>
+                    <li>Your public profile will show you everything and display a privacy message if you are signed in - on your own profile only, of course</li>
+                    <li>Adds EVE style loot display for your profile page, and a range filter for accumulated profiles</li>
+                </ul>
+
+                The following bugs were fixed:
+                <ul>
+                    <li><span class="badge badge-success">FIXED</span> <span>Daterange picker displayed incorrectly with the dark theme</span></li>
+                </ul>
+                </p>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.4</strong> 'Personage' release</h4>
                 <small class="mt-0">2020 march 19</small>
                 <p>

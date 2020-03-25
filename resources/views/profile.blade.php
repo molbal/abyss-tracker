@@ -17,7 +17,7 @@
         <div class="col-sm-12 col-md-12">
             <div id="banner" class="shadow-sm">
                 <img src="https://images.evetech.net/characters/{{$id}}/portrait?size=128" class="rounded-circle shadow-sm">
-                <h4 class="font-weight-bold ">{{$name}}</h4>
+                <h4 class="font-weight-bold ">{{$name}}<small>'s public profile</small></h4>
             </div>
         </div>
         <div class="col-sm-12 col-md-8">
@@ -174,7 +174,10 @@
         $(function () {
 
             $("#loot_show").click(function () {
-                window.location = '/char/{{$id}}/loot/'+$("#datarangestart").val()+"/"+$("#datarangestop").val();
+                var from = $("#datarangestart").val() ? $("#datarangestart").val() : "now";
+                var to = $("#datarangestop").val() ? $("#datarangestop").val() : "now";
+
+                window.location = '/char/{{$id}}/loot/'+from+"/"+to
             });
 
             $(".daterange").daterangepicker({

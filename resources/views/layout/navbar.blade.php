@@ -34,7 +34,7 @@
             <li class="nav-item">
                 <a class="nav-link {{"changelog" == Route::currentRouteName() ? "active" : ""}}"
                    href="{{route("changelog")}}">
-                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Changelog <sup>(1.4)</sup></a>
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Changelog <sup>(1.4.1)</sup></a>
             </li>
         </ul>
             <form class="ml-auto">

@@ -56,7 +56,7 @@ WHERE dl.RUN_ID IN
     (SELECT runs.ID
      FROM runs
      WHERE CHAR_ID=?
-       AND RUN_DATE>=NOW() - INTERVAL 70 DAY)
+       AND RUN_DATE>=NOW() - INTERVAL 7 DAY)
 GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [
     $id, date('Y-m-d')
             ]);
@@ -75,6 +75,63 @@ GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [
             ]);
         }
 
+
+        /**
+         * @param int    $id
+         * @param string $from
+         * @param string $to
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function loot(int $id, string $from = "", string $to = "") {
+
+            if (trim($from) == "" || !strtotime($from)) {
+                $from = date("Y-m-d");
+            }
+            else {
+                $from = date("Y-m-d", strtotime($from));
+            }
+            if (trim($to) == "" || !strtotime($to)) {
+                $to = date("Y-m-d");
+            }
+            else {
+                $to = date("Y-m-d", strtotime($to));
+            }
+
+            if (!DB::table("chars")->where("CHAR_ID", $id)->exists()) {
+                return view("error", ["error" => "No such user found"]);
+            }
+
+            $loot = DB::select("
+SELECT ip.ITEM_ID,
+       SUM(dl.COUNT) as COUNT,
+       ip.PRICE_BUY,
+       ip.PRICE_SELL,
+       ip.GROUP_ID,
+       ip.GROUP_NAME,
+       ip.NAME
+FROM detailed_loot dl
+INNER JOIN item_prices ip ON dl.ITEM_ID = ip.ITEM_ID
+WHERE dl.RUN_ID IN
+    (SELECT runs.ID
+     FROM runs
+     WHERE CHAR_ID=?
+       AND RUN_DATE>=? AND RUN_DATE <=?)
+GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [
+                $id, $from, $to
+            ]);
+
+            $access = $this->getAllRights($id);
+            $name = DB::table("chars")->where("CHAR_ID", $id)->value("NAME");
+            return view('inventory', [
+                'id' => $id,
+                'name' => $name,
+                'from' => $from,
+                'to' => $to,
+                'access' => $access,
+                'loot' => $loot
+            ]);
+        }
 
 
 
