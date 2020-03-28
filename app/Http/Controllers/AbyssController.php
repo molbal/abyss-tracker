@@ -433,9 +433,17 @@ from (`abyss`.`lost_items` `dl`
                 ->value("CHAR_ID");
 
             if ($run_owner == session()->get('login_id')) {
-                DB::table("runs")->where("ID", $id)->where("CHAR_ID", session()->get('login_id'))->delete();
-                DB::table("detailed_loot")->where("RUN_ID", $id)->delete();
-                DB::table("lost_items")->where("RUN_ID", $id)->delete();
+                DB::beginTransaction();
+                try {
+                    DB::table("detailed_loot")->where("RUN_ID", $id)->delete();
+                    DB::table("lost_items")->where("RUN_ID", $id)->delete();
+                    DB::table("runs")->where("ID", $id)->where("CHAR_ID", session()->get('login_id'))->delete();
+                    DB::commit();
+                }
+                catch (\Exception $w) {
+                    DB::rollBack();
+                    return view("error", ['error' => 'Could not delete this run, because we ran into an error: '.$w->getMessage()]);
+                }
                 return view('sp_message', ['title' => 'Run deleted', 'message' => "Run #$id successfully deleted."]);
             }
             else {
