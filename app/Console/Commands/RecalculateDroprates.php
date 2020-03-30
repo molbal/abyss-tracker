@@ -72,8 +72,8 @@ class RecalculateDroprates extends Command
                             ->where("TYPE", $type)
                             ->where("ITEM_ID", $item_id)->get()->get(0);
 
-                        $tier_ran += $stats->MAX_RUNS;
-                        $tier_drp += $stats->DROP_RATE;
+                        $tier_ran += $stats->MAX_RUNS ?? 0;
+                        $tier_drp += $stats->DROP_RATE ?? 0;
 
                         try {
                             DB::beginTransaction();
