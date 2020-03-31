@@ -46,21 +46,28 @@
             @endcomponent
         </div>
         <div class="col-sm-12 col-md-4">
-                @component("components.restricted", ["title" => "Loot query","public" => $access["LOOT"]])
-                    <div class="card card-body border-0 shadow-sm mt-3">
+            @component("components.restricted", ["title" => "Excel export","public" => $access["LOOT"]])
+                <div class="card card-body border-0 shadow-sm mt-3">
+                    <h5 class="font-weight-bold mb-2"><img src="https://img.icons8.com/officexs/24/000000/xls.png"/> Excel export</h5>
+                    <p>You can download this screen in a much more detailed Excel file.</p>
+                    <a href="{{route('profile.export', ['id' => $id, 'from' => $from, 'to' => $to])}}" class="btn btn-outline-primary btn-sm">Export</a>
+                </div>
+            @endcomponent
+            @component("components.restricted", ["title" => "Loot query","public" => $access["LOOT"]])
+                <div class="card card-body border-0 shadow-sm mt-3">
                     <h5 class="font-weight-bold mb-2">Show loot from date</h5>
 
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control daterange">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control daterange">
 
-                            <div class="input-group-append">
-                                <button type="button" id="loot_show" class="btn btn-outline-primary">Show</button>
-                            </div>
+                        <div class="input-group-append">
+                            <button type="button" id="loot_show" class="btn btn-outline-primary">Show</button>
                         </div>
-                        <input type="hidden" id="datarangestart" name="from">
-                        <input type="hidden" id="datarangestop" name="to">
                     </div>
-                @endcomponent
+                    <input type="hidden" id="datarangestart" name="from">
+                    <input type="hidden" id="datarangestop" name="to">
+                </div>
+            @endcomponent
         </div>
     </div>
 @endsection

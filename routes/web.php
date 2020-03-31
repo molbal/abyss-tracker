@@ -43,6 +43,7 @@
      */
     Route::get('/char/{id}','Profile\ProfileController@index')->name('profile.index');
     Route::get("/char/{id}/loot/{from}/{to}", 'Profile\ProfileController@loot')->name('profile.loot');
+    Route::get("/char/{id}/export/{from}/{to}", 'Profile\ProfileController@downloadLoot')->name('profile.export');
 
     /**
      * Settings

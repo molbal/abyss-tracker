@@ -13,6 +13,7 @@
                     <li>Blueprint price estimation</li>
                     <li>Dynamically adding and removing search filters</li>
                     <li>Leaderboards!</li>
+                    <li><span class="badge badge-success">DONE</span> <span>Loot page excel export</span></li>
                 </ul>
 
                 </p>
