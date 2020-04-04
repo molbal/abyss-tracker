@@ -16,6 +16,7 @@
     use App\Charts\TierLevelsChart;
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
+    use App\Http\Controllers\Profile\LeaderboardController;
     use App\Mail\RunFlagged;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
@@ -41,6 +42,9 @@
         /** @var BarkController */
         private $barkController;
 
+        /** @var LeaderboardController */
+        private $leaderboardController;
+
         /**
          * AbyssController constructor.
          *
@@ -49,13 +53,15 @@
          * @param HomeQueriesController    $homeQueriesController
          * @param RunsController           $runsController
          * @param BarkController           $barkController
+         * @param LeaderboardController    $leaderboardController
          */
-        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController) {
+        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController) {
             $this->lootCacheController = $lootCacheController;
             $this->graphContainerController = $graphContainerController;
             $this->homeQueriesController = $homeQueriesController;
             $this->runsController = $runsController;
             $this->barkController = $barkController;
+            $this->leaderboardController = $leaderboardController;
         }
 
 
@@ -75,6 +81,10 @@
             $today_num = DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();
             $count = DB::table("runs")->count();
 
+            $leaderboard_90 = $this->leaderboardController->getLeaderboard("-90 day", "", 10);
+            $leaderboard_30 = $this->leaderboardController->getLeaderboard("-30 day", "", 10);
+            $leaderboard_07 = $this->leaderboardController->getLeaderboard("-7 day", "", 10);
+
             return view("welcome", [
                 'loot_types_chart'  => $lootTypesChart,
                 'tier_levels_chart' => $tierLevelsChart,
@@ -84,7 +94,10 @@
                 'today_num'         => $today_num,
                 'items'             => $last_runs,
                 'drops'             => $drops,
-                'daily_add_chart'   => $daily_add_chart
+                'daily_add_chart'   => $daily_add_chart,
+                'leaderboard_90' => $leaderboard_90,
+                'leaderboard_30' => $leaderboard_30,
+                'leaderboard_07' => $leaderboard_07,
             ]);
         }
 

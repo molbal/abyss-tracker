@@ -36,6 +36,10 @@
                    href="{{route("changelog")}}">
                     <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Changelog <sup>(1.4.1)</sup></a>
             </li>
+            <li class="nav-item">
+                <a href="https://www.patreon.com/veetor" target="_blank" class="nav-link font-weight-bold">
+                    <img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png"> Patreon</a>
+            </li>
         </ul>
             <form class="ml-auto">
             @if(session()->has("login_id"))

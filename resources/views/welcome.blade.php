@@ -6,11 +6,64 @@
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
     <div class="row mt-3">
-        <div class="col-sm-12">
-            <div class="card card-body border-info shadow-sm">
-                <p class="m-0 p-0 text-center">
-                    <strong>Broadcasting for capacitor: </strong><br>I need assistance with the server costs. Please, if you can, <a target="_blank" href="https://patreon.com/veetor">contribute</a>
-                </p>
+        <div class="col-md-4 col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Top 10 (last 90 days)</h5>
+                <table class="table table-sm table-responsive-sm mb-0">
+                    <thead>
+                    <tr>
+                        <th>Character</th>
+                        <th class="text-right">Runs</th>
+                    </tr>
+                    @forelse($leaderboard_90 as $l)
+                        @component("components.leaderboard_char", ['item' => $l])@endcomponent
+                    @empty
+                        <tr>
+                            <td colspan="2"><p class="text-center py-3">Noone here yet!</p></td>
+                        </tr>
+                    @endforelse
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Top 10 (last 30 days)</h5>
+                <table class="table table-sm table-responsive-sm mb-0">
+                    <thead>
+                    <tr>
+                        <th>Character</th>
+                        <th class="text-right">Runs</th>
+                    </tr>
+                    @forelse($leaderboard_30 as $l)
+                        @component("components.leaderboard_char", ['item' => $l])@endcomponent
+                    @empty
+                        <tr>
+                            <td colspan="2"><p class="text-center py-3">Noone here yet!</p></td>
+                        </tr>
+                    @endforelse
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Top 10 (last 7 days)</h5>
+                <table class="table table-sm table-responsive-sm mb-0">
+                    <thead>
+                    <tr>
+                        <th>Character</th>
+                        <th class="text-right">Runs</th>
+                    </tr>
+                    @forelse($leaderboard_07 as $l)
+                        @component("components.leaderboard_char", ['item' => $l])@endcomponent
+                    @empty
+                        <tr>
+                            <td colspan="2"><p class="text-center py-3">Noone here yet!</p></td>
+                        </tr>
+                    @endforelse
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

@@ -30,14 +30,14 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="TOTAL_RUNS">Number of all runs</label>
+                        <label for="TOTAL_RUNS">Number of all runs and visibility in leaderboard</label>
                         <select class="form-control select2-nosearch-narrow w-25" name="TOTAL_RUNS" id="TOTAL_RUNS">
                             <option value="0">Hidden</option>
                             <option value="1" {{$access['TOTAL_RUNS'] == 1 ? 'selected' : ''}}>Visible</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="LOOT">Detailed loot information</label>
+                        <label for="LOOT">Detailed loot information and excel export</label>
                         <select class="form-control select2-nosearch-narrow w-25" name="LOOT" id="LOOT">
                             <option value="0">Hidden</option>
                             <option value="1" {{$access['LOOT'] == 1 ? 'selected' : ''}}>Visible</option>
