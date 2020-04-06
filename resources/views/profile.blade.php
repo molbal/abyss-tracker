@@ -31,7 +31,8 @@
                             <th>Abyss type</th>
                             <th>Abyss tier</th>
                             <th class="text-right">Loot value</th>
-                            <th class="text-right" colspan="2">Submitted</th>
+                            <th class="text-right" colspan="1">Submitted</th>
+                            <th>&nbsp;</th>
                         </tr>
                         @forelse($last_runs as $item)
                             <tr class="action-hover-only">
@@ -54,8 +55,8 @@
                                 <td><img src="tiers/{{$item->TIER}}.png" style="width:16px;height:16px;" alt=""> <a class="text-dark"
                                                                                                                     href="{{route("search.do", ["tier" => $item->TIER])}}">{{$item->TIER}}</a>
                                 </td>
-                                <td class="text-right">{{number_format($item->LOOT_ISK, 0, " ",",")}} ISK</td>
-                                <td class="text-right">{{date("H:i:s", strtotime($item->CREATED_AT))}}</td>
+                                <td class="text-right">{{number_format($item->LOOT_ISK, 0, " "," ")}} ISK</td>
+                                <td class="text-right">{{date("Y-m-d H:i:s", strtotime($item->CREATED_AT))}}</td>
                                 <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}" title="Open" style="width: 16px;height: 16px"><img
                                             src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/view-file.png"></a>
                                 </td>

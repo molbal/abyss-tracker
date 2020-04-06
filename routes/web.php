@@ -46,6 +46,11 @@
     Route::get("/char/{id}/export/{from}/{to}", 'Profile\ProfileController@downloadLoot')->name('profile.export');
 
     /**
+     * Leaderboards
+     */
+    Route::get('/leaderboard','Profile\LeaderboardController@index')->name('leaderboard.index');
+
+    /**
      * Settings
      */
     Route::get('/settings','Profile\SettingController@index')->name('settings.index');
@@ -116,10 +121,10 @@
             abort(403, "Invalid maintenance token.");
         }
 
-        DB::table("runs")->where("ID", $id)->delete();
+        DB::table("run_report")->where("RUN_ID", $id)->update(["PROCESSED" => true]);
         DB::table("detailed_loot")->where("RUN_ID", $id)->delete();
         DB::table("lost_items")->where("RUN_ID", $id)->delete();
-        DB::table("run_report")->where("RUN_ID", $id)->update(["PROCESSED" => true]);
+        DB::table("runs")->where("ID", $id)->delete();
 
 
         return view("sp_message", ["title" => "Flagged runs", "message" => "Run #$id destroyed"]);

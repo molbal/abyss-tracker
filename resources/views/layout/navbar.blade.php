@@ -27,6 +27,11 @@
                     <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("item_all" == Route::currentRouteName())}}/empty-box.png"> Loot table</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{"leaderboard.index" == Route::currentRouteName() ? "active" : ""}}"
+                   href="{{route("leaderboard.index")}}">
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/trophy.png"> Leaderboard</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{"ships_all" == Route::currentRouteName() ? "active" : ""}}"
                    href="{{route("ships_all")}}">
                     <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("ships_all" == Route::currentRouteName())}}/rocket.png"> Ships</a>

@@ -14,6 +14,7 @@
                     <li>Dynamically adding and removing search filters</li>
                     <li>Bonus room for T5s</li>
                     <li>Leaderboard search and custom ranges</li>
+                    <li>Add filtering for loot table drop rates</li>
                     <li><span class="badge badge-success">DONE</span> <span>Loot page excel export</span></li>
                     <li><span class="badge badge-success">DONE</span> <span>Leaderboards</span></li>
                 </ul>
