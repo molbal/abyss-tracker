@@ -6,6 +6,27 @@
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
     <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="border-danger shadow-sm" style="
+            border: 1px solid #e3342f;
+    border-top-color: rgb(227, 52, 47);
+    border-right-color: rgb(227, 52, 47);
+    border-bottom-color: rgb(227, 52, 47);
+    border-left-color: rgb(227, 52, 47);
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+">
+            <div class="card card-body border-0">
+                <p class="h5">King of the Abyss - April 10 to 12</p>
+                <p class="mb-0">Announcement: Torvald Uruz holds a grandiose Abyssal PVP tournament this weekend with 18 500 000 000 ISK in rewards!</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.reddit.com/r/Eve/comments/fvyn80/king_of_the_abyss_pvp_tournament_185b_isk/" class="btn btn-primary" target="_blank">More info here</a>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Top 10 (last 90 days)</h5>

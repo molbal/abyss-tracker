@@ -159,3 +159,4 @@
         session()->put("login_name", "TEST LOGIN $login_id");
         return redirect(\route("home_mine"));
     });
+

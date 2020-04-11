@@ -144,6 +144,11 @@
                         if (stripos($eveItem->getItemName(), "blueprint") !== false) {
                             $eveItem->setSellValue(0)->setBuyValue(0);
                         }
+
+                        // Burnt in value for red loot
+                        if ($eveItem->getItemId() == 48121) {
+                            $eveItem->setBuyValue(100000);
+                        }
                         $this->items[] = $eveItem;
                     }
                 }
