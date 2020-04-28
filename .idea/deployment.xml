@@ -9,21 +9,21 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Abyss AWS">
+      <paths name="Nagyker TST">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Co-pilot PROD">
+      <paths name="Sunday PROD">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Streaming AWS">
+      <paths name="Sunday STAGING">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

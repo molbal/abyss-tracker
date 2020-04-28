@@ -56,7 +56,7 @@
             ]);
 
             curl_setopt($ch,CURLOPT_VERBOSE ,true);
-            curl_setopt($ch,CURLOPT_STDERR ,fopen('./curl-token-'.$this->charId.'.log', 'w+'));
+//            curl_setopt($ch,CURLOPT_STDERR ,fopen('./curl-token-'.$this->charId.'.log', 'w+'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
             $esiResponse = curl_exec($ch);
@@ -83,7 +83,6 @@
             /** @var string $newAccessToken */
             $newAccessToken = $esiResponseDecoded["access_token"];
 
-            //Log::info("Stored new access token ($newAccessToken) for $expiresInMinutes minutes in cache.");
             Cache::put("AccessToken-".$this->charId, $newAccessToken, $expiresInMinutes);
             //Log::info("Request token ($newAccessToken) live for $expiresInMinutes minutes");
             return $newAccessToken;

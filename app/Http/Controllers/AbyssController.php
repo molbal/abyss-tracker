@@ -448,6 +448,19 @@ from (`abyss`.`lost_items` `dl`
             if ($run_owner == session()->get('login_id')) {
                 DB::beginTransaction();
                 try {
+
+                    $run = DB::table("runs")->where("ID", $id)->get()->get(0);
+                    $lootItems = DB::table("detailed_loot")->where("RUN_ID", $id)->get();
+                    foreach ($lootItems as $lootItem) {
+                        DB::table("delete_cleanup")->insert([
+                            "ITEM_ID" => $lootItem->ITEM_ID,
+                            "TYPE" => $run->TYPE,
+                            "TIER" => $run->TIER,
+                            "DELETES_SUM" => $lootItem->COUNT
+                        ]);
+                    }
+
+
                     DB::table("detailed_loot")->where("RUN_ID", $id)->delete();
                     DB::table("lost_items")->where("RUN_ID", $id)->delete();
                     DB::table("runs")->where("ID", $id)->where("CHAR_ID", session()->get('login_id'))->delete();
