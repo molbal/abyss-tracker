@@ -6,9 +6,7 @@
         <div class="col-sm-12 col-md-10">
             <h4 class="font-weight-bold">Settings</h4>
         </div>
-
-        <div class="col-sm-12">
-
+        <div class="col-md-6">
             <form action="{{route('settings.save')}}" method="post">
                 <div class="card card-body border-0 mt-3">
                     <h5 class="font-weight-bold">Privacy</h5>
@@ -63,11 +61,29 @@
                 </div>
             </form>
         </div>
+        <div class="col-md-6">
+            <form action="{{route('settings.remove-esi')}}" method="post">
+                <div class="card card-body border-0 shadow-sm">
+                    {{csrf_field()}}
+                    <h5 class="font-weight-bold">ESI connector</h5>
+                    @if($esi_on)
+                        <p class="my-2">
+                            Stopwatch is enabled. To disable it and remove the ESI integration from your account use the button below. Doing this will disable the stopwatch
+                            function for you.
+                        </p>
+                        <input type="submit" value="Revoke ESI tokens" class="btn btn-outline-danger">
+                    @else
+                        <div class="alert alert-info my-2">To use the stopwatch function, please go to the <a href="{{route('new')}}">new run</a> page and turn it on there</div>
+                    @endif
+
+                </div>
+            </form>
+        </div>
     </div>
 @endsection
 
 @section('scripts')
-    <script >
+    <script>
         $(function () {
 
             $(".select2-nosearch-narrow").select2({
@@ -77,4 +93,4 @@
             });
         });
     </script>
-    @endsection
+@endsection

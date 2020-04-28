@@ -25,8 +25,30 @@
                 return view("error", ["error" => "Please log in to access this page"]);
             }
             $access = $this->getAllRights(session()->get("login_id"));
+            $esi_on = strlen(DB::table("chars")
+                               ->where("CHAR_ID", session()->get("login_id"))
+                               ->value("REFRESH_TOKEN") ?? "") > 0;
 
-            return view('settings', ['access' => $access]);
+            return view('settings', ['access' => $access, 'esi_on' => $esi_on]);
+        }
+
+        public function removeEsi() {
+
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
+            }
+
+            try {
+                DB::table("chars")
+                  ->where("CHAR_ID", session()->get("login_id"))
+                  ->update(["REFRESH_TOKEN" => ""]);
+            } catch (\Exception $e) {
+                Log::error($e->getMessage() . " " . $e->getFile() . "@" . $e->getLine());
+                return view("error", ["error" => "Something went wrong: " . $e->getMessage()]);
+            }
+
+            return view('sp_message', ['title' => 'ESI token revoked', 'message' => 'The ESI token was removed from your account.']);
+
         }
 
         /**
@@ -101,15 +123,22 @@
             DB::beginTransaction();
             try {
 
-                if (DB::table("privacy")->where("CHAR_ID", $userId)->where("PANEL", $panel)->exists()) {
-                    DB::table("privacy")->where("CHAR_ID", $userId)->where("PANEL", $panel)->update(["DISPLAY" => $visible ? "public" : "private"]);
+                if (DB::table("privacy")
+                      ->where("CHAR_ID", $userId)
+                      ->where("PANEL", $panel)
+                      ->exists()) {
+                    DB::table("privacy")
+                      ->where("CHAR_ID", $userId)
+                      ->where("PANEL", $panel)
+                      ->update(["DISPLAY" => $visible ? "public" : "private"]);
                 } else {
-                    DB::table("privacy")->insert(["CHAR_ID" => $userId, "PANEL" => $panel, "DISPLAY" => $visible ? "public" : "private"]);
+                    DB::table("privacy")
+                      ->insert(["CHAR_ID" => $userId, "PANEL" => $panel, "DISPLAY" => $visible ? "public" : "private"]);
                 }
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
-                Log::error("SQL error: ".$e->getMessage()." rolling back transaction.");
+                Log::error("SQL error: " . $e->getMessage() . " rolling back transaction.");
                 throw $e;
             }
         }
@@ -123,8 +152,14 @@
          * @return bool
          */
         private function getRight(int $userId, string $panel) : bool {
-            if (DB::table("privacy")->where("CHAR_ID", $userId)->where("PANEL", $panel)->exists()) {
-                return DB::table("privacy")->where("CHAR_ID", $userId)->where("PANEL", $panel)->value("DISPLAY") == 'public';
+            if (DB::table("privacy")
+                  ->where("CHAR_ID", $userId)
+                  ->where("PANEL", $panel)
+                  ->exists()) {
+                return DB::table("privacy")
+                         ->where("CHAR_ID", $userId)
+                         ->where("PANEL", $panel)
+                         ->value("DISPLAY") == 'public';
             } else {
                 return $this->getDefaultVisibility($panel);
             }
@@ -158,7 +193,8 @@
             $shipCruiserChart->height(400);
             $shipCruiserChart->theme(ThemeController::getChartTheme());
             $shipCruiserChart->labels($dataset);
-            $shipCruiserChart->dataset("Favorite ships", "pie", $values)->options(["radius" => [30, 120], "roseType" => "radius"]);
+            $shipCruiserChart->dataset("Favorite ships", "pie", $values)
+                             ->options(["radius" => [30, 120], "roseType" => "radius"]);
             $shipCruiserChart->displayLegend(false);
 
             return [$query_cruiser, $shipCruiserChart];
