@@ -153,7 +153,8 @@ where CHAR_ID=? and RUN_DATE=?" ,[
          * Handles the storing of a new run
          *
          * @param Request $request
-         * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
          */
         public function store(Request $request) {
 
@@ -189,6 +190,8 @@ where CHAR_ID=? and RUN_DATE=?" ,[
             $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
             $id = $this->runsController->storeNewRun($request, $lootEstimator);
             }
+
+            Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addHour());
 
             DB::table("stopwatch")->where("CHAR_ID", session()->get("login_id"))->delete();
             return redirect(route("view_single", ["id" => $id]));
@@ -228,13 +231,17 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
 
                 $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", session()->get("login_id"))->get()->get(0)->REFRESH_TOKEN;
-
+                $last_loot = Cache::get(sprintf("at.last_dropped.%s", session()->get("login_id")), "");
 
                 $prev = $this->runsController->getPreviousRun();
+                $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
+
                 return view("new", [
                     "ships" => $ships,
                     "prev"  => $prev,
-                    "stopwatch" => $stopwatch_enabled
+                    "stopwatch" => $stopwatch_enabled,
+                    "last_loot" => $last_loot,
+                    "advanced_open" => $advanced_open
                 ]);
             }
             else {

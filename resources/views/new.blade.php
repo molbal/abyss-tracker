@@ -212,7 +212,7 @@
                                     </div>
                                     <strong class="mt-2 adv">Before cargo:</strong>
                                     <textarea name="LOOT_DETAILED_BEFORE" id="LOOT_DETAILED_BEFORE" rows="4"
-                                              class="form-control adv"></textarea>
+                                              class="form-control adv">{{$last_loot}}</textarea>
                                     <strong class="mt-2 adv">After cargo:</strong>
                                     <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4"
                                               class="form-control"></textarea>
@@ -459,6 +459,10 @@
 
             @if($stopwatch)
                 start_stopwatch();
+            @endif
+
+            @if($advanced_open)
+                $("#advanced-loot-view").click();
             @endif
         });
     </script>
