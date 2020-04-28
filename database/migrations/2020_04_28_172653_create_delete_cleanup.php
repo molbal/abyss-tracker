@@ -20,7 +20,7 @@ class CreateDeleteCleanup extends Migration
             $table->integer("DELETES_SUM");
 
             $table->index(["ITEM_ID", "TIER", "TYPE"]);
-            $table->foreign("ITEM_ID")->references("ITEM_ID")->on("ITEM_PRICES");
+            $table->foreign("ITEM_ID")->references("ITEM_ID")->on("item_prices");
         });
     }
 
