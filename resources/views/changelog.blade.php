@@ -15,9 +15,6 @@
                     <li>Bonus room for T5s</li>
                     <li>Leaderboard search and custom ranges</li>
                     <li>Add filtering for loot table drop rates</li>
-                    <li>FIxing drop rate calculation bug</li>
-                    <li><span class="badge badge-success">DONE</span> <span>Loot page excel export</span></li>
-                    <li><span class="badge badge-success">DONE</span> <span>Leaderboards</span></li>
                 </ul>
 
                 </p>
@@ -25,6 +22,23 @@
 
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.4.2</strong> 'Wetu' release</h4>
+                <small class="mt-0">2020 april 28</small>
+                <p class="text-justify">
+                As you can see this project took a 2 weeks pause, that's because I prepared a different project to serve the Abyss Tracker with calculating the fits capabilities. If you are interested you can see that
+                    <a href="https://svcfitstat.eve-nt.uk/" target="_blank">project</a>. During this time some issues were found so this is just a quick bugfix release we'll use as a stepping stone.
+                    <br>
+                Little enhanchements and bugfixes:
+                </p>
+                <ul>
+                    <li>Fixed drop rate calculation bug <a href="https://github.com/molbal/abyss-tracker/issues/10" target="_blank">(Issue 10)</a></li>
+                    <li>Added a way to remove and reset the ESI token in settings <a href="https://github.com/molbal/abyss-tracker/issues/11" target="_blank">(Issue 11)</a></li>
+                    <li>Automatic open of before/after cargo panels <a href="https://github.com/molbal/abyss-tracker/issues/9" target="_blank">(Issue 9)</a></li>
+                    <li>If the last run had an after cargo and it was maximum 60 minutes ago, its after cargo will pre-fill the before-cargo text box<a href="https://github.com/molbal/abyss-tracker/issues/12" target="_blank">(Issue 12)</a></li>
+
+                </ul>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.4.1</strong> 'Accumulation' release</h4>
                 <small class="mt-0">2020 march 25</small>
                 <p>
