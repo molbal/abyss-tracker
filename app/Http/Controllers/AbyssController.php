@@ -233,8 +233,13 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", session()->get("login_id"))->get()->get(0)->REFRESH_TOKEN;
                 $last_loot = Cache::get(sprintf("at.last_dropped.%s", session()->get("login_id")), "");
 
-                $prev = $this->runsController->getPreviousRun();
-                $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
+                try {
+                    $prev = $this->runsController->getPreviousRun();
+                    $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
+                }
+                catch (\Exception $e) {
+                    $advanced_open = false;
+                }
 
                 return view("new", [
                     "ships" => $ships,
