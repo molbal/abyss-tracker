@@ -35,7 +35,6 @@
                     <li>Added a way to remove and reset the ESI token in settings <a href="https://github.com/molbal/abyss-tracker/issues/11" target="_blank">(Issue 11)</a></li>
                     <li>Automatic open of before/after cargo panels <a href="https://github.com/molbal/abyss-tracker/issues/9" target="_blank">(Issue 9)</a></li>
                     <li>If the last run had an after cargo and it was maximum 60 minutes ago, its after cargo will pre-fill the before-cargo text box<a href="https://github.com/molbal/abyss-tracker/issues/12" target="_blank">(Issue 12)</a></li>
-
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">

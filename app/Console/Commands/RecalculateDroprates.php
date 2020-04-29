@@ -59,6 +59,7 @@
                     $type_ran = 0;
                     Cache::increment("recalc-current");
 
+                    Log::info("Doing item ". $item->NAME);
                     for ($tier = 1; $tier <= 5; $tier++) {
                         //Log::info("  - Starting tier $tier");
                         $tier_ran = 0;
@@ -74,12 +75,17 @@
                             $tier_ran += $stats->MAX_RUNS ?? 0;
                             $tier_drp += $stats->DROP_RATE ?? 0;
 
+                            try {
                             $removals = DB::table("delete_cleanup")
                                           ->where("TIER", $tier)
                                           ->where("TYPE", $type)
                                           ->where("ITEM_ID", $item_id)
                                           ->count("DELETES_SUM");
-
+                            }
+                            catch (\Exception $e) {
+                                Log::warning("Error while getting delete list for  $item_id / $type / $tier " . $e->getMessage() . " " . $e->getFile() . " " . $e->getLine());
+                                $removals = 0;
+                            }
                             $tier_drp -= $removals;
                             try {
                                 DB::beginTransaction();
