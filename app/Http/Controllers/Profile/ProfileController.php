@@ -78,7 +78,7 @@ WHERE dl.RUN_ID IN
      FROM runs
      WHERE CHAR_ID=?
        AND RUN_DATE>=NOW() - INTERVAL 7 DAY)
-GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [$id, date('Y-m-d')]);
+GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [$id]);
 
             return view('profile', ['id' => $id, 'name' => $name, 'last_runs' => $runs, 'my_avg_loot' => $my_avg_loot, 'my_sum_loot' => $my_sum_loot, 'my_runs_count' => $my_runs_count, 'my_survival_ratio' => $my_survival_ratio, 'query_ships' => $query_ships, 'favoriteShipsChart' => $favoriteShipsChart, 'access' => $access, 'loot' => $loot]);
         }
