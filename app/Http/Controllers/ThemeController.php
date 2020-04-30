@@ -14,7 +14,7 @@
          * @return bool
          */
         public static function isDarkTheme():bool {
-            return Cookie::has("dark-theme") && Cookie::get("dark-theme") == "true";
+            return !(Cookie::has("bright-theme") && Cookie::get("bright-theme") == "true");
         }
 
         public static function getChartTheme():string {
@@ -39,11 +39,11 @@
 
         public function setTheme(bool $isDark) {
             if ($isDark) {
-                Cookie::queue("dark-theme", "true", time()+60*60*24*60);
+                Cookie::queue("bright-theme", "false", time()+60*60*24*60);
+                Cookie::forget("bright-theme");
             }
             else {
-                Cookie::queue("dark-theme", "bright", time()+60*60*24*60);
-                Cookie::forget("dark-theme");
+                Cookie::queue("bright-theme", "true", time()+60*60*24*60);
             }
             return redirect(route("home"));
         }
