@@ -19,16 +19,25 @@
 
                 </p>
             </div>
-
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.5.0</strong> 'Command' release</h4>
+                <small class="mt-0">2020 </small>
+                <p class="text-justify">
+                    New features
+                </p>
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.4.2</strong> 'Wetu' release</h4>
                 <small class="mt-0">2020 april 28</small>
                 <p class="text-justify">
-                As you can see this project took a 2 weeks pause, that's because I prepared a different project to serve the Abyss Tracker with calculating the fits capabilities. If you are interested you can see that
+                    As you can see this project took a 2 weeks pause, that's because I prepared a different project to serve the Abyss Tracker with calculating the fits capabilities. If you are interested you can see that
                     <a href="https://svcfitstat.eve-nt.uk/" target="_blank">project</a>. During this time some issues were found so this is just a quick bugfix release we'll use as a stepping stone.
                     <br>
-                Little enhanchements and bugfixes:
+                    Little enhanchements and bugfixes:
                 </p>
                 <ul>
                     <li>Fixed drop rate calculation bug <a href="https://github.com/molbal/abyss-tracker/issues/10" target="_blank">(Issue 10)</a></li>
