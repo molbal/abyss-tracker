@@ -28,7 +28,6 @@
     Route::get("/runs/{charID}/{order_by?}/{order_type?}", 'AbyssController@get_char')->name("runs_char");
     Route::get("/filter/{type}/{tier}", 'FilteredController@get_list')->name("filtered_list");
 
-    /**
 
     /**
      * Runs
@@ -64,12 +63,13 @@
     Route::get("/stopwatch/get/{charId}", 'StopwatchController@getAbyssState')->name("stopwatch_get");
 
     /**
-     * Most used ships
+     * Ships and fits routes
      */
     Route::get("/ships/", 'ShipsController@get_all')->name("ships_all");
     Route::get("/ship/{id}", 'ShipsController@get_single')->name("ship_single");
     Route::get("/fits/new", 'FitsController@new')->name("fit_new");
     Route::post("/fits/new/submit", 'FitsController@new_store')->name("fit_new_store");
+    Route::get("/fit/{id}", 'FitsController@get')->name('fit_single');
 
     /**
      * Item check
@@ -88,7 +88,6 @@
     Route::get("/api/chart/home/loot_levels", 'GraphHelper@homeLootLevels')->name("chart.home.loot_levels");
     Route::get("/api/chart/home/survival", 'GraphHelper@homeSurvival')->name("chart.home.survival");
     Route::get("/api/chart/home/tiers/averages", 'GraphHelper@tierAverages')->name("chart.home.tier_averages");
-
     Route::get("/api/chart/personal/loot", 'GraphHelper@personalLoot')->name("chart.personal.loot");
     Route::get("/api/chart/personal/isk_per_hour", 'GraphHelper@personalIsk')->name("chart.personal.ihp");
 
@@ -103,13 +102,18 @@
      */
     Route::get("/eve/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-start");
     Route::get("/eve/auth/callback", 'Auth\AuthController@handleProviderCallback');
-
     Route::get("/eve/scoped/auth/start", 'Auth\AuthController@redirectToScopedProvider')->name("auth-scoped-start");
     Route::get("/eve/scoped/auth/callback", 'Auth\AuthController@handleScopedProviderCallback');
-
     Route::get("/logout", 'Auth\AuthController@logout')->name("logout");
 
+    /**
+     * Theme routes
+     */
+    Route::get("/customize/dark-theme/{isDark}",'ThemeController@setTheme')->name("customize_set_dark");
 
+    /**
+     * Maintenance routes
+     */
     Route::get("/maintenance/flagged/{secret}", function($secret) {
         if ($secret != env("MAINTENANCE_TOKEN")) {
             abort(403, "Invalid maintenance token.");
@@ -133,14 +137,6 @@
         return view("sp_message", ["title" => "Flagged runs", "message" => "Run #$id destroyed"]);
     });
 
-    /**
-     * Dark theme
-     */
-    Route::get("/customize/dark-theme/{isDark}",'ThemeController@setTheme')->name("customize_set_dark");
-
-    /**
-     * Runs database migrations
-     */
     Route::get("/maintenance/db/{secret}", function ($secret) {
         if ($secret != env("MAINTENANCE_TOKEN")) {
             abort(403, "Invalid maintenance token.");
@@ -150,10 +146,6 @@
         echo "DB maintenance Over";
     });
 
-
-    /**
-     * Runs database migrations
-     */
     Route::get("/maintenance/test-login/{login_id}/{secret}", function ($login_id, $secret) {
         if ($secret != env("MAINTENANCE_TOKEN")) {
             abort(403, "Invalid maintenance token.");

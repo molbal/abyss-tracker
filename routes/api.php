@@ -1,6 +1,7 @@
 <?php
 
     use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Route;
 
@@ -33,10 +34,14 @@
         $id = $request->get("id");
         $data = $request->get("result");
 
-        // Print into the log
-        Log::info(sprintf(
-                "Callback received for fit %s: \n%s",
-                $id,
-                print_r($data, 1)
-        ));
+        Log::info("Fit stats received for $id!");
+        $e = DB::table('fits')->where('ID', $id)->update([
+            'STATS' => $data,
+            'STATUS' => 'done'
+        ]);
+        Log::info("Updated ".$e." rows: ".print_r([
+                'STATS' => $data,
+                'STATUS' => 'done'
+            ], 1));
+        return [true];
     });
