@@ -108,12 +108,14 @@
             $ship_name = DB::table('ship_lookup')->where('ID',$fit->SHIP_ID)->value('NAME');
             $char_name = DB::table('chars')->where('CHAR_ID',$fit->CHAR_ID)->value('NAME');
 
+            $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
 
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
                 'char_name' => $char_name,
-                'fit_quicklook' => $this->quickParseEft($fit->RAW_EFT)
+                'fit_quicklook' => $this->quickParseEft($fit->RAW_EFT),
+                'description' => $description
             ]);
 	    }
 
@@ -133,7 +135,8 @@
             curl_setopt($ch, CURLOPT_POST, true);
             $query = http_build_query(['fit' => $eft, 'appId' => env("FIT_SERVICE_APP_ID"), 'appSecret' => env('FIT_SERVICE_APP_SECRET'), 'fitId' => $fitId]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
+            curl_setopt($ch,CURLOPT_STDERR ,fopen('./svcfitstat.log', 'w+'));
             // Receive server response ...
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
@@ -154,6 +157,7 @@
             }
 
             if ($responseData["success"]) {
+                Log::info("Submitted fit to svcfitstat. ".print_r($responseData, 1));
                 return true;
             }
             else {
@@ -261,22 +265,22 @@
                 }
                 else {
                     // Let's get before the comma: strip ammo
+                    $ammo = trim(explode(',', $line, 2)[1] ?? "");
+                    $ammo_id = DB::table("item_prices")->where("NAME", $ammo)->value("ITEM_ID");
                     $line = explode(',', $line, 2)[0];
-                    $ammo = $line[1];
 
                     if (preg_match('/^.+x\d{0,4}$/m', $line)) {
                         $words = explode(' ', $line);
-                        $count = array_pop($words);
+                        $count = intval(str_replace("x", "",array_pop($words)));
                         $line = implode(" ",$words);
-                    }
-                    else {
-                        $count = 1;
                     }
                     ${$current}[] = [
                         'name' => $line,
                         'id' => DB::table("item_prices")->where("NAME", $line)->value("ITEM_ID") ?? null,
                         'ammo' => $ammo,
-                        'count' => $count
+                        'count' => $count ?? 1,
+                        'price' => (DB::table("item_prices")->where("NAME", $line)->value("PRICE_BUY")+ DB::table("item_prices")->where("NAME", $line)->value("PRICE_SELL"))/2,
+                        'ammo_id' => $ammo_id ?? null
                     ];
                 }
             }

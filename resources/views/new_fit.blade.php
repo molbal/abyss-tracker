@@ -31,6 +31,11 @@
                             </p>
                         </div>
                         <div class="col-sm-8">
+                            <div class="alert alert-danger">
+                                <h5 class="font-weight-bold">Important!</h5>
+                                If this fit contains drones, please split them into stacks. After the active drones, please enter 2 empty lines so the rest of the drones will look
+                                like they are in cargo. If this is missed drone DPS might be calculated incorrectly.
+                            </div>
                             <textarea name="eft" id="eft" class="w-100 form-control" rows="10"></textarea>
                         </div>
                         <div class="col-sm-4">

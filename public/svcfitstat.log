@@ -1,0 +1,48 @@
+*   Trying 104.27.144.139:443...
+* TCP_NODELAY set
+* Connected to svcfitstat.eve-nt.uk (104.27.144.139) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*   CAfile: C:\xampp\apache\bin\curl-ca-bundle.crt
+  CApath: none
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: C=US; ST=CA; L=San Francisco; O=Cloudflare, Inc.; CN=sni.cloudflaressl.com
+*  start date: Jan 31 00:00:00 2020 GMT
+*  expire date: Oct  9 12:00:00 2020 GMT
+*  subjectAltName: host "svcfitstat.eve-nt.uk" matched cert's "*.eve-nt.uk"
+*  issuer: C=US; ST=CA; L=San Francisco; O=CloudFlare, Inc.; CN=CloudFlare Inc ECC CA-2
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x136a7751040)
+> POST /api/calculate/async HTTP/2
+Host: svcfitstat.eve-nt.uk
+accept: */*
+content-length: 1083
+content-type: application/x-www-form-urlencoded
+
+* We are completely uploaded and fine
+* old SSL session ID is stale, removing
+* Connection state changed (MAX_CONCURRENT_STREAMS == 256)!
+< HTTP/2 200 
+< date: Sat, 02 May 2020 20:10:23 GMT
+< content-type: application/json
+< set-cookie: __cfduid=d128f2fbaa09bd180e641f71981b6f2201588450223; expires=Mon, 01-Jun-20 20:10:23 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
+< x-powered-by: PHP/7.4.5
+< cache-control: private, must-revalidate
+< pragma: no-cache
+< expires: -1
+< x-ratelimit-limit: 60
+< x-ratelimit-remaining: 58
+< x-powered-by: PleskLin
+< cf-cache-status: DYNAMIC
+< expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+< server: cloudflare
+< cf-ray: 58d462a84e59d6d5-FRA
+< cf-request-id: 02789bfd2b0000d6d5b098d200000001
+< 
+* Connection #0 to host svcfitstat.eve-nt.uk left intact

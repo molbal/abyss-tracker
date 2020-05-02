@@ -1,13 +1,10 @@
-<table class="table table-responsive-sm table-sm w-100 mb-4">
+<tr>
+    <td colspan="3" class="text-left text-uppercase font-weight-bold">{{$section}}</td>
+</tr>
+@forelse($items as $item)
+    @component("components.fitslot", ['item' => $item])@endcomponent
+    @empty
     <tr>
-        <td></td>
-        <td>Item name</td>
+        <td colspan="2"><p class="text-center my-2">Nothing in {{$section}}</p></td>
     </tr>
-    @forelse($items as $item)
-        @component("components.fitslot", ['item' => $item])@endcomponent
-        @empty
-        <tr>
-            <td colspan="2"><p class="text-center my-2">Nothing in {{$section}}</p></td>
-        </tr>
-    @endforelse
-</table>
+@endforelse
