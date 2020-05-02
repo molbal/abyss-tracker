@@ -95,6 +95,17 @@
             if (!DB::table("fits")->where("ID", $id)->exists()) {
                 return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
             }
+
+            $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+            $ship_name = DB::table('ship_lookup')->where('ID',$fit->SHIP_ID)->value('NAME');
+            $char_name = DB::table('chars')->where('CHAR_ID',$fit->CHAR_ID)->value('NAME');
+
+
+            return view('fit', [
+                'fit' => $fit,
+                'ship_name' => $ship_name,
+                'char_name' => $char_name
+            ]);
 	    }
 
         /**
