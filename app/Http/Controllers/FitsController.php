@@ -4,7 +4,8 @@
 	namespace App\Http\Controllers;
 
 
-	use App\Http\Controllers\Loot\LootValueEstimator;
+	use App\Http\Controllers\Loot\EveItem;
+    use App\Http\Controllers\Loot\LootValueEstimator;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -43,11 +44,18 @@
             try {
                 $shipId = $this->getShipIDFromEft($request->get("eft"));
                 $shipName = $this->getFitName($request->get("eft"));
-                DB::beginTransaction();
 
                 // Get price
                 $lootEstimator = new LootValueEstimator($request->get("eft") ?? "");
 
+                // Update each price
+                /** @var EveItem[] $items */
+                $items = $lootEstimator->getItems();
+//                dd($items);
+                foreach ($items as $item) {
+                    LootValueEstimator::setItemPrice($item);
+                }
+                DB::beginTransaction();
                 // Insert
                 $id = DB::table("fits")->insertGetId([
                     'CHAR_ID' => session()->get("login_id"),
@@ -104,7 +112,8 @@
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
-                'char_name' => $char_name
+                'char_name' => $char_name,
+                'fit_quicklook' => $this->quickParseEft($fit->RAW_EFT)
             ]);
 	    }
 
@@ -206,5 +215,79 @@
             }
 
             return $shipId;
+	    }
+
+
+        /**
+         * Quick parses the EFT fit.
+         * @param string $eft
+         *
+         * @return array
+         */
+        private function quickParseEft(string $eft) {
+
+            $lows = [];
+            $mids = [];
+            $highs = [];
+            $rigs = [];
+            $other = [];
+
+            $current = "start";
+            $lines = explode("\n", $eft);
+            array_shift($lines);
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if ($line == "") {
+                    switch ($current) {
+                        case 'lows':
+                            $current = "mids";
+                            break;
+                        case 'mids':
+                            $current = "highs";
+                            break;
+                        case 'highs':
+                            $current = "rigs";
+                            break;
+                        case 'rigs':
+                            $current = "other";
+                            break;
+                        case 'other':
+                            $current = "other";
+                            break;
+                        case 'start':
+                        default:
+                            $current = "lows";
+                    }
+                }
+                else {
+                    // Let's get before the comma: strip ammo
+                    $line = explode(',', $line, 2)[0];
+                    $ammo = $line[1];
+
+                    if (preg_match('/^.+x\d{0,4}$/m', $line)) {
+                        $words = explode(' ', $line);
+                        $count = array_pop($words);
+                        $line = implode(" ",$words);
+                    }
+                    else {
+                        $count = 1;
+                    }
+                    ${$current}[] = [
+                        'name' => $line,
+                        'id' => DB::table("item_prices")->where("NAME", $line)->value("ITEM_ID") ?? null,
+                        'ammo' => $ammo,
+                        'count' => $count
+                    ];
+                }
+            }
+
+            return [
+                'low' => $lows,
+                'mid' => $mids,
+                'high' => $highs,
+                'rig' => $rigs,
+                'other' => $other
+            ];
+
 	    }
 	}

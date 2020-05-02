@@ -4,6 +4,7 @@
     namespace App\Http\Controllers\Loot;
 
 
+    use App\Connector\EveAPI\Universe\ResourceLookupService;
     use Carbon\Carbon;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -130,9 +131,17 @@
                         if ($eitem->getItemId() == $item->typeID) {
                             $ex = true;
                             $eitem->setCount($eitem->getCount()+$item->quantity);
+                            break;
                         }
                     }
                     if (!$ex) {
+                        if ($item->typeID == 0 && $item->name != "") {
+                            /** @var ResourceLookupService $res */
+                            $res = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+                            Log::warning("EvePraisal returned faulty reply for ".$item->name.", attempting to fix it with ESI");
+                            $item->typeID = $res->itemNameToId($item->name);
+                            Log::warning("Fix: ".$item->typeID);
+                        }
                         $eveItem = new EveItem();
                         $eveItem
                             ->setItemName($item->name)
@@ -140,6 +149,7 @@
                             ->setBuyValue($item->prices->buy->max)
                             ->setSellValue($item->prices->sell->min)
                             ->setCount($item->quantity);
+
 
                         if (stripos($eveItem->getItemName(), "blueprint") !== false) {
                             $eveItem->setSellValue(0)->setBuyValue(0);
@@ -190,6 +200,10 @@
         }
 
 
+        /**
+         * Persists item price in the database
+         * @param EveItem $item
+         */
         public static function setItemPrice(EveItem $item) {
             if (DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->doesntExist()) {
                 $data = json_decode(@file_get_contents("https://esi.evetech.net/latest/universe/types/" . $item->getItemId() . "/?datasource=tranquility&language=en-us"));
@@ -219,7 +233,8 @@
                     DB::table("item_prices")->where("ITEM_ID", $item->getItemId())->update([
                         "PRICE_BUY" => $item->getBuyValue(),
                         "PRICE_SELL" => $item->getSellValue(),
-                        "PRICE_LAST_UPDATED" => Carbon::now()
+                        "PRICE_LAST_UPDATED" => Carbon::now(),
+                        'NAME' => $item->getItemName()
                     ]);
                 }
             }

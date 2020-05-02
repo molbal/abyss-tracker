@@ -207,10 +207,34 @@
             if (isset($response->systems[0]->id)) {
                 $systemId = $response->systems[0]->id;
             } else {
-                throw new \InvalidArgumentException("Cannot find the Eve ID number for this structure.");
+                throw new \InvalidArgumentException("Cannot find the Eve ID number for this ID: $fullName.");
             }
             return $systemId;
         }
+
+        /**
+         * Gets the item ID of an inventory name
+         * @param string $fullName
+         *
+         * @return mixed
+         * @throws \Exception
+         */
+        public function itemNameToId(string $fullName) {
+
+            if(DB::table("item_prices")->where("NAME", $fullName)->exists()) {
+                return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
+            }
+
+            $response = $this->simplePost(null, "universe/ids", json_encode([$fullName]));
+
+            if (isset($response->inventory_types[0]->id)) {
+                $systemId = $response->inventory_types[0]->id;
+            } else {
+                throw new \InvalidArgumentException("Cannot find the Eve ID number for this ID: $fullName.");
+            }
+            return $systemId;
+        }
+
         /**
          * General name lookup. Caches and works for ItemIDs and solar systems too
          *

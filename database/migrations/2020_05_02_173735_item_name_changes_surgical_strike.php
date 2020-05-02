@@ -1,0 +1,258 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+    use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Schema;
+
+class ItemNameChangesSurgicalStrike extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        DB::table("item_prices")->where("ITEM_ID",  578)->update(['NAME' => trim("Adaptive Invulnerability Shield Hardener I                   ")]);
+        DB::table("item_prices")->where("ITEM_ID", 1129)->update(['NAME' => trim("Adaptive Invulnerability Shield Hardener I Blueprint         ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2050)->update(['NAME' => trim("Gistum C-Type Adaptive Invulnerability Shield Hardener       ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2281)->update(['NAME' => trim("Adaptive Invulnerability Shield Hardener II                  ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2282)->update(['NAME' => trim("Adaptive Invulnerability Shield Hardener II Blueprint        ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2289)->update(['NAME' => trim("Anti-Explosive Shield Hardener I                             ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2290)->update(['NAME' => trim("Anti-Explosive Shield Hardener I Blueprint                   ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2291)->update(['NAME' => trim("Anti-Kinetic Shield Hardener I                               ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2292)->update(['NAME' => trim("Anti-Kinetic Shield Hardener I Blueprint                     ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2293)->update(['NAME' => trim("Anti-EM Shield Hardener I                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2294)->update(['NAME' => trim("Anti-EM Shield Hardener I Blueprint                          ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2295)->update(['NAME' => trim("Anti-Thermal Shield Hardener I                               ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2296)->update(['NAME' => trim("Anti-Thermal Shield Hardener I Blueprint                     ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2297)->update(['NAME' => trim("Anti-Explosive Shield Hardener II                            ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2298)->update(['NAME' => trim("Anti-Explosive Shield Hardener II Blueprint                  ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2299)->update(['NAME' => trim("Anti-Kinetic Shield Hardener II                              ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2300)->update(['NAME' => trim("Anti-Kinetic Shield Hardener II Blueprint                    ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2301)->update(['NAME' => trim("Anti-EM Shield Hardener II                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2302)->update(['NAME' => trim("Anti-EM Shield Hardener II Blueprint                         ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2303)->update(['NAME' => trim("Anti-Thermal Shield Hardener II                              ")]);
+        DB::table("item_prices")->where("ITEM_ID", 2304)->update(['NAME' => trim("Anti-Thermal Shield Hardener II Blueprint                    ")]);
+        DB::table("item_prices")->where("ITEM_ID", 3069)->update(['NAME' => trim("Sansha Incursion Vanguard System Effects                     ")]);
+        DB::table("item_prices")->where("ITEM_ID", 3493)->update(['NAME' => trim("Sansha Incursion Assault System Effects                      ")]);
+        DB::table("item_prices")->where("ITEM_ID", 3494)->update(['NAME' => trim("Sansha Incursion HQ System Effects                           ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4345)->update(['NAME' => trim("Gistum B-Type Adaptive Invulnerability Shield Hardener       ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4346)->update(['NAME' => trim("Gistum A-Type Adaptive Invulnerability Shield Hardener       ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4347)->update(['NAME' => trim("Pithum A-Type Adaptive Invulnerability Shield Hardener       ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4348)->update(['NAME' => trim("Pithum B-Type Adaptive Invulnerability Shield Hardener       ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4349)->update(['NAME' => trim("Pithum C-Type Adaptive Invulnerability Shield Hardener       ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4529)->update(['NAME' => trim("Small I-a Enduring Armor Repairer                            ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4533)->update(['NAME' => trim("Small ACM Compact Armor Repairer                             ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4569)->update(['NAME' => trim("Medium I-a Enduring Armor Repairer                           ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4573)->update(['NAME' => trim("Medium ACM Compact Armor Repairer                            ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4609)->update(['NAME' => trim("Large I-a Enduring Armor Repairer                            ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4613)->update(['NAME' => trim("Large ACM Compact Armor Repairer                             ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4833)->update(['NAME' => trim("Medium F-RX Compact Capacitor Booster                        ")]);
+        DB::table("item_prices")->where("ITEM_ID", 4959)->update(['NAME' => trim("'Seed' Micro Capacitor Booster I                             ")]);
+        DB::table("item_prices")->where("ITEM_ID", 5011)->update(['NAME' => trim("Small F-RX Compact Capacitor Booster                         ")]);
+        DB::table("item_prices")->where("ITEM_ID", 5051)->update(['NAME' => trim("Heavy F-RX Compact Capacitor Booster                         ")]);
+        DB::table("item_prices")->where("ITEM_ID", 5091)->update(['NAME' => trim("Small Inductive Compact Remote Capacitor Transmitter         ")]);
+        DB::table("item_prices")->where("ITEM_ID", 5093)->update(['NAME' => trim("Small Radiative Scoped Remote Capacitor Transmitter          ")]);
+        DB::table("item_prices")->where("ITEM_ID", 9608)->update(['NAME' => trim("Compact Anti-Kinetic Shield Hardener                         ")]);
+        DB::table("item_prices")->where("ITEM_ID", 9622)->update(['NAME' => trim("Compact Anti-EM Shield Hardener                              ")]);
+        DB::table("item_prices")->where("ITEM_ID", 9632)->update(['NAME' => trim("Compact Adaptive Invulnerability Shield Hardener             ")]);
+        DB::table("item_prices")->where("ITEM_ID", 9646)->update(['NAME' => trim("Compact Anti-Explosive Shield Hardener                       ")]);
+        DB::table("item_prices")->where("ITEM_ID", 9660)->update(['NAME' => trim("Compact Anti-Thermal Shield Hardener                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",13965)->update(['NAME' => trim("Dread Guristas Anti-EM Shield Hardener                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",13966)->update(['NAME' => trim("Dread Guristas Anti-Thermal Shield Hardener                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",13967)->update(['NAME' => trim("Dread Guristas Anti-Explosive Shield Hardener                ")]);
+        DB::table("item_prices")->where("ITEM_ID",13968)->update(['NAME' => trim("Dread Guristas Anti-Kinetic Shield Hardener                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",13969)->update(['NAME' => trim("Dread Guristas Adaptive Invulnerability Shield Hardener      ")]);
+        DB::table("item_prices")->where("ITEM_ID",13994)->update(['NAME' => trim("Domination Anti-EM Shield Hardener                           ")]);
+        DB::table("item_prices")->where("ITEM_ID",13995)->update(['NAME' => trim("Domination Anti-Thermal Shield Hardener                      ")]);
+        DB::table("item_prices")->where("ITEM_ID",13996)->update(['NAME' => trim("Domination Anti-Explosive Shield Hardener                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",13997)->update(['NAME' => trim("Domination Anti-Kinetic Shield Hardener                      ")]);
+        DB::table("item_prices")->where("ITEM_ID",13998)->update(['NAME' => trim("Domination Adaptive Invulnerability Shield Hardener          ")]);
+        DB::table("item_prices")->where("ITEM_ID",14748)->update(['NAME' => trim("Kaikka's Modified Anti-Kinetic Shield Hardener               ")]);
+        DB::table("item_prices")->where("ITEM_ID",14749)->update(['NAME' => trim("Thon's Modified Anti-Kinetic Shield Hardener                 ")]);
+        DB::table("item_prices")->where("ITEM_ID",14750)->update(['NAME' => trim("Vepas's Modified Anti-Kinetic Shield Hardener                ")]);
+        DB::table("item_prices")->where("ITEM_ID",14751)->update(['NAME' => trim("Estamel's Modified Anti-Kinetic Shield Hardener              ")]);
+        DB::table("item_prices")->where("ITEM_ID",14752)->update(['NAME' => trim("Kaikka's Modified Anti-EM Shield Hardener                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",14753)->update(['NAME' => trim("Thon's Modified Anti-EM Shield Hardener                      ")]);
+        DB::table("item_prices")->where("ITEM_ID",14754)->update(['NAME' => trim("Vepas's Modified Anti-EM Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",14755)->update(['NAME' => trim("Estamel's Modified Anti-EM Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",14756)->update(['NAME' => trim("Kaikka's Modified Anti-Explosive Shield Hardener             ")]);
+        DB::table("item_prices")->where("ITEM_ID",14757)->update(['NAME' => trim("Thon's Modified Anti-Explosive Shield Hardener               ")]);
+        DB::table("item_prices")->where("ITEM_ID",14758)->update(['NAME' => trim("Vepas's Modified Anti-Explosive Shield Hardener              ")]);
+        DB::table("item_prices")->where("ITEM_ID",14759)->update(['NAME' => trim("Estamel's Modified Anti-Explosive Shield Hardener            ")]);
+        DB::table("item_prices")->where("ITEM_ID",14760)->update(['NAME' => trim("Kaikka's Modified Anti-Thermal Shield Hardener               ")]);
+        DB::table("item_prices")->where("ITEM_ID",14761)->update(['NAME' => trim("Thon's Modified Anti-Thermal Shield Hardener                 ")]);
+        DB::table("item_prices")->where("ITEM_ID",14762)->update(['NAME' => trim("Vepas's Modified Anti-Thermal Shield Hardener                ")]);
+        DB::table("item_prices")->where("ITEM_ID",14763)->update(['NAME' => trim("Estamel's Modified Anti-Thermal Shield Hardener              ")]);
+        DB::table("item_prices")->where("ITEM_ID",14764)->update(['NAME' => trim("Kaikka's Modified Adaptive Invulnerability Shield Hardener   ")]);
+        DB::table("item_prices")->where("ITEM_ID",14765)->update(['NAME' => trim("Thon's Modified Adaptive Invulnerability Shield Hardener     ")]);
+        DB::table("item_prices")->where("ITEM_ID",14766)->update(['NAME' => trim("Vepas's Modified Adaptive Invulnerability Shield Hardener    ")]);
+        DB::table("item_prices")->where("ITEM_ID",14767)->update(['NAME' => trim("Estamel's Modified Adaptive Invulnerability Shield Hardener  ")]);
+        DB::table("item_prices")->where("ITEM_ID",16481)->update(['NAME' => trim("Large Radiative Scoped Remote Capacitor Transmitter          ")]);
+        DB::table("item_prices")->where("ITEM_ID",16487)->update(['NAME' => trim("Large Inductive Compact Remote Capacitor Transmitter         ")]);
+        DB::table("item_prices")->where("ITEM_ID",16489)->update(['NAME' => trim("Medium Radiative Scoped Remote Capacitor Transmitter         ")]);
+        DB::table("item_prices")->where("ITEM_ID",16495)->update(['NAME' => trim("Medium Inductive Compact Remote Capacitor Transmitter        ")]);
+        DB::table("item_prices")->where("ITEM_ID",16597)->update(['NAME' => trim("Advanced Broker Relations                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",17495)->update(['NAME' => trim("Caldari Navy Anti-Kinetic Shield Hardener                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",17496)->update(['NAME' => trim("Caldari Navy Anti-Explosive Shield Hardener                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",17497)->update(['NAME' => trim("Caldari Navy Anti-Thermal Shield Hardener                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",17498)->update(['NAME' => trim("Caldari Navy Adaptive Invulnerability Shield Hardener        ")]);
+        DB::table("item_prices")->where("ITEM_ID",17499)->update(['NAME' => trim("Caldari Navy Anti-EM Shield Hardener                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",19257)->update(['NAME' => trim("Gist C-Type Anti-Kinetic Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19258)->update(['NAME' => trim("Pith C-Type Anti-Kinetic Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19259)->update(['NAME' => trim("Gist C-Type Anti-Explosive Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",19260)->update(['NAME' => trim("Pith C-Type Anti-Explosive Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",19261)->update(['NAME' => trim("Gist C-Type Anti-Thermal Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19262)->update(['NAME' => trim("Pith C-Type Anti-Thermal Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19263)->update(['NAME' => trim("Gist C-Type Anti-EM Shield Hardener                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",19264)->update(['NAME' => trim("Pith C-Type Anti-EM Shield Hardener                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",19265)->update(['NAME' => trim("Gist B-Type Anti-EM Shield Hardener                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",19266)->update(['NAME' => trim("Pith B-Type Anti-EM Shield Hardener                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",19267)->update(['NAME' => trim("Gist B-Type Anti-Thermal Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19268)->update(['NAME' => trim("Pith B-Type Anti-Thermal Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19269)->update(['NAME' => trim("Gist B-Type Anti-Explosive Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",19270)->update(['NAME' => trim("Pith B-Type Anti-Explosive Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",19271)->update(['NAME' => trim("Gist B-Type Anti-Kinetic Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19272)->update(['NAME' => trim("Pith B-Type Anti-Kinetic Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19273)->update(['NAME' => trim("Gist A-Type Anti-Kinetic Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19274)->update(['NAME' => trim("Pith A-Type Anti-Kinetic Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19275)->update(['NAME' => trim("Gist A-Type Anti-Explosive Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",19276)->update(['NAME' => trim("Pith A-Type Anti-Explosive Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",19277)->update(['NAME' => trim("Gist A-Type Anti-Thermal Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19278)->update(['NAME' => trim("Pith A-Type Anti-Thermal Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19279)->update(['NAME' => trim("Gist A-Type Anti-EM Shield Hardener                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",19280)->update(['NAME' => trim("Pith A-Type Anti-EM Shield Hardener                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",19281)->update(['NAME' => trim("Gist X-Type Anti-EM Shield Hardener                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",19282)->update(['NAME' => trim("Pith X-Type Anti-EM Shield Hardener                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",19283)->update(['NAME' => trim("Gist X-Type Anti-Thermal Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19284)->update(['NAME' => trim("Pith X-Type Anti-Thermal Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19285)->update(['NAME' => trim("Gist X-Type Anti-Explosive Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",19286)->update(['NAME' => trim("Pith X-Type Anti-Explosive Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",19287)->update(['NAME' => trim("Gist X-Type Anti-Kinetic Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",19288)->update(['NAME' => trim("Pith X-Type Anti-Kinetic Shield Hardener                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",20633)->update(['NAME' => trim("'Nugget' Anti-Kinetic Shield Hardener                        ")]);
+        DB::table("item_prices")->where("ITEM_ID",20634)->update(['NAME' => trim("'Nugget' Anti-Kinetic Shield Hardener Blueprint              ")]);
+        DB::table("item_prices")->where("ITEM_ID",20635)->update(['NAME' => trim("'Desert Heat' Anti-Thermal Shield Hardener                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",20636)->update(['NAME' => trim("'Desert Heat' Anti-Thermal Shield Hardener Blueprint         ")]);
+        DB::table("item_prices")->where("ITEM_ID",20637)->update(['NAME' => trim("'Posse' Adaptive Invulnerability Shield Hardener             ")]);
+        DB::table("item_prices")->where("ITEM_ID",20638)->update(['NAME' => trim("'Posse' Adaptive Invulnerability Shield Hardener Blueprint   ")]);
+        DB::table("item_prices")->where("ITEM_ID",20639)->update(['NAME' => trim("'Poacher' Anti-EM Shield Hardener                            ")]);
+        DB::table("item_prices")->where("ITEM_ID",20640)->update(['NAME' => trim("'Poacher' Anti-EM Shield Hardener Blueprint                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",20641)->update(['NAME' => trim("'Snake Eyes' Anti-Explosive Shield Hardener                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",20642)->update(['NAME' => trim("'Snake Eyes' Anti-Explosive Shield Hardener Blueprint        ")]);
+        DB::table("item_prices")->where("ITEM_ID",30342)->update(['NAME' => trim("Civilian Anti-Thermal Shield Hardener                        ")]);
+        DB::table("item_prices")->where("ITEM_ID",30343)->update(['NAME' => trim("Civilian Anti-Thermal Shield Hardener Blueprint              ")]);
+        DB::table("item_prices")->where("ITEM_ID",30420)->update(['NAME' => trim("Civilian Anti-EM Shield Hardener                             ")]);
+        DB::table("item_prices")->where("ITEM_ID",30421)->update(['NAME' => trim("Civilian Anti-EM Shield Hardener Blueprint                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30422)->update(['NAME' => trim("Civilian Anti-Explosive Shield Hardener                      ")]);
+        DB::table("item_prices")->where("ITEM_ID",30423)->update(['NAME' => trim("Civilian Anti-Explosive Shield Hardener Blueprint            ")]);
+        DB::table("item_prices")->where("ITEM_ID",30424)->update(['NAME' => trim("Civilian Anti-Kinetic Shield Hardener                        ")]);
+        DB::table("item_prices")->where("ITEM_ID",30425)->update(['NAME' => trim("Civilian Anti-Kinetic Shield Hardener Blueprint              ")]);
+        DB::table("item_prices")->where("ITEM_ID",30844)->update(['NAME' => trim("Class 1 Pulsar Effects                                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",30845)->update(['NAME' => trim("Class 1 Black Hole Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30846)->update(['NAME' => trim("Class 1 Cataclysmic Variable Effects                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",30847)->update(['NAME' => trim("Class 1 Magnetar Effects                                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",30848)->update(['NAME' => trim("Class 1 Red Giant Effects                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",30849)->update(['NAME' => trim("Class 1 Wolf Rayet Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30850)->update(['NAME' => trim("Class 2 Black Hole Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30851)->update(['NAME' => trim("Class 3 Black Hole Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30852)->update(['NAME' => trim("Class 4 Black Hole Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30853)->update(['NAME' => trim("Class 5 Black Hole Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30854)->update(['NAME' => trim("Class 6 Black Hole Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30860)->update(['NAME' => trim("Class 2 Magnetar Effects                                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",30861)->update(['NAME' => trim("Class 3 Magnetar Effects                                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",30862)->update(['NAME' => trim("Class 4 Magnetar Effects                                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",30863)->update(['NAME' => trim("Class 5 Magnetar Effects                                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",30864)->update(['NAME' => trim("Class 6 Magnetar Effects                                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",30865)->update(['NAME' => trim("Class 2 Pulsar Effects                                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",30866)->update(['NAME' => trim("Class 3 Pulsar Effects                                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",30867)->update(['NAME' => trim("Class 4 Pulsar Effects                                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",30868)->update(['NAME' => trim("Class 5 Pulsar Effects                                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",30869)->update(['NAME' => trim("Class 6 Pulsar Effects                                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",30870)->update(['NAME' => trim("Class 2 Red Giant Effects                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",30871)->update(['NAME' => trim("Class 3 Red Giant Effects                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",30872)->update(['NAME' => trim("Class 4 Red Giant Effects                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",30873)->update(['NAME' => trim("Class 5 Red Giant Effects                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",30874)->update(['NAME' => trim("Class 6 Red Giant Effects                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",30875)->update(['NAME' => trim("Class 2 Wolf Rayet Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30876)->update(['NAME' => trim("Class 3 Wolf Rayet Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30877)->update(['NAME' => trim("Class 4 Wolf Rayet Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30878)->update(['NAME' => trim("Class 5 Wolf Rayet Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30879)->update(['NAME' => trim("Class 6 Wolf Rayet Effects                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",30880)->update(['NAME' => trim("Class 2 Cataclysmic Variable Effects                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",30881)->update(['NAME' => trim("Class 3 Cataclysmic Variable Effects                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",30882)->update(['NAME' => trim("Class 6 Cataclysmic Variable Effects                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",30883)->update(['NAME' => trim("Class 5 Cataclysmic Variable Effects                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",30884)->update(['NAME' => trim("Class 4 Cataclysmic Variable Effects                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",30952)->update(['NAME' => trim("Dossier - Author Unknown                                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",32371)->update(['NAME' => trim("Capital Ship Design - \"Dictator\"                             ")]);
+        DB::table("item_prices")->where("ITEM_ID",32372)->update(['NAME' => trim("Minedrill - E518 Crew                                        ")]);
+        DB::table("item_prices")->where("ITEM_ID",32383)->update(['NAME' => trim("Guristas 'Dirty' Explosive System                            ")]);
+        DB::table("item_prices")->where("ITEM_ID",32398)->update(['NAME' => trim("Lieutenant Kipo \"Foxfire\" Tekira                             ")]);
+        DB::table("item_prices")->where("ITEM_ID",32407)->update(['NAME' => trim("Holoreel - Torture Log I15B                                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",33041)->update(['NAME' => trim("NEO YC 114: Africa's Finest                                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",33046)->update(['NAME' => trim("NEO YC 114: ISN - Incursion Shiny Network                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",33048)->update(['NAME' => trim("NEO YC 114: Asine Hitama's team                              ")]);
+        DB::table("item_prices")->where("ITEM_ID",34417)->update(['NAME' => trim("Manufacturing Union's Placard                                ")]);
+        DB::table("item_prices")->where("ITEM_ID",34421)->update(['NAME' => trim("Chribba's Modified Strip Miner                               ")]);
+        DB::table("item_prices")->where("ITEM_ID",34422)->update(['NAME' => trim("Rooks & Kings - The Clarion Call Compilation                 ")]);
+        DB::table("item_prices")->where("ITEM_ID",34425)->update(['NAME' => trim("SCC Guidelines - Lotteries For Dummies                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",34426)->update(['NAME' => trim("Sort Dragon's Guide To Diplomacy                             ")]);
+        DB::table("item_prices")->where("ITEM_ID",34429)->update(['NAME' => trim("Vincent Pryce's Warp Disruption Field Generator              ")]);
+        DB::table("item_prices")->where("ITEM_ID",34430)->update(['NAME' => trim("My God, It's Full Of Holes!                                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",34431)->update(['NAME' => trim("Guillome Renard's Sleeper Loot Stash                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",34433)->update(['NAME' => trim("The Damsel's Drunk Bodyguard                                 ")]);
+        DB::table("item_prices")->where("ITEM_ID",34434)->update(['NAME' => trim("Alice Saki's Good Posting Guide                              ")]);
+        DB::table("item_prices")->where("ITEM_ID",34435)->update(['NAME' => trim("Soxfour's Spaceboots                                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",36464)->update(['NAME' => trim("[no messageID: 507048]                                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",37889)->update(['NAME' => trim("YC118 Succession Trial Champion's Decree - House Tash-Murkon ")]);
+        DB::table("item_prices")->where("ITEM_ID",37892)->update(['NAME' => trim("YC118 Succession Trial Champion's Decree - House Ardishapur  ")]);
+        DB::table("item_prices")->where("ITEM_ID",37893)->update(['NAME' => trim("YC118 Succession Trial Champion's Decree - House Kador       ")]);
+        DB::table("item_prices")->where("ITEM_ID",37894)->update(['NAME' => trim("YC118 Succession Trial Champion's Decree - House Khanid      ")]);
+        DB::table("item_prices")->where("ITEM_ID",37895)->update(['NAME' => trim("YC118 Succession Trial Champion's Decree - House Kor-Azor    ")]);
+        DB::table("item_prices")->where("ITEM_ID",37896)->update(['NAME' => trim("YC118 Succession Trial Champion's Decree - House Sarum       ")]);
+        DB::table("item_prices")->where("ITEM_ID",40631)->update(['NAME' => trim("'Holy Destiny' Electromagnetic Lance                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",40632)->update(['NAME' => trim("'Divine Harvest' Electromagnetic Reaper                      ")]);
+        DB::table("item_prices")->where("ITEM_ID",41439)->update(['NAME' => trim("'Iron Pike' Kinetic Lance                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",41440)->update(['NAME' => trim("'Phalarica' Thermal Lance                                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",41441)->update(['NAME' => trim("'Geiravor' Explosive Lance                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",41442)->update(['NAME' => trim("'Cold Wind' Kinetic Reaper                                   ")]);
+        DB::table("item_prices")->where("ITEM_ID",41443)->update(['NAME' => trim("'Guillotine' Thermal Reaper                                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",41444)->update(['NAME' => trim("'Jormungandr' Explosive Reaper                               ")]);
+        DB::table("item_prices")->where("ITEM_ID",41445)->update(['NAME' => trim("'Holy Destiny' Electromagnetic Lance Blueprint               ")]);
+        DB::table("item_prices")->where("ITEM_ID",41446)->update(['NAME' => trim("'Iron Pike' Kinetic Lance Blueprint                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",41447)->update(['NAME' => trim("'Phalarica' Thermal Lance Blueprint                          ")]);
+        DB::table("item_prices")->where("ITEM_ID",41448)->update(['NAME' => trim("'Geiravor' Explosive Lance Blueprint                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",41449)->update(['NAME' => trim("'Cold Wind' Kinetic Reaper Blueprint                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",41450)->update(['NAME' => trim("'Guillotine' Thermal Reaper Blueprint                        ")]);
+        DB::table("item_prices")->where("ITEM_ID",41451)->update(['NAME' => trim("'Jormungandr' Explosive Reaper Blueprint                     ")]);
+        DB::table("item_prices")->where("ITEM_ID",41452)->update(['NAME' => trim("'Divine Harvest' Electromagnetic Reaper Blueprint            ")]);
+        DB::table("item_prices")->where("ITEM_ID",41575)->update(['NAME' => trim("Women's \"Mirelle\" Upwell Executive Spectacles                ")]);
+        DB::table("item_prices")->where("ITEM_ID",41576)->update(['NAME' => trim("Men's \"Mirelle\" Upwell Executive Spectacles                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",42709)->update(['NAME' => trim("Women's 'Defender' Beret (Gallente Federation)               ")]);
+        DB::table("item_prices")->where("ITEM_ID",42712)->update(['NAME' => trim("Men's 'Liberator' Beret (Minmatar Republic)                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",42715)->update(['NAME' => trim("Women's 'Liberator' Cap (Minmatar Republic)                  ")]);
+        DB::table("item_prices")->where("ITEM_ID",42722)->update(['NAME' => trim("Women's Cap (Guristas)                                       ")]);
+        DB::table("item_prices")->where("ITEM_ID",42730)->update(['NAME' => trim("Men's 'Liberator' Cap (Minmatar Republic)                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",42736)->update(['NAME' => trim("Men's 'Protector' Beret (Caldari State)                      ")]);
+        DB::table("item_prices")->where("ITEM_ID",42738)->update(['NAME' => trim("Women's 'Liberator' Beret (Minmatar Republic)                ")]);
+        DB::table("item_prices")->where("ITEM_ID",42739)->update(['NAME' => trim("Men's 'Defender' Beret (Gallente Federation)                 ")]);
+        DB::table("item_prices")->where("ITEM_ID",42740)->update(['NAME' => trim("Women's 'Protector' Beret (Caldari State)                    ")]);
+        DB::table("item_prices")->where("ITEM_ID",42741)->update(['NAME' => trim("Men's 'Crusader' Beret (Amarr Empire)                        ")]);
+        DB::table("item_prices")->where("ITEM_ID",42743)->update(['NAME' => trim("Men's Cap (Guristas)                                         ")]);
+        DB::table("item_prices")->where("ITEM_ID",44205)->update(['NAME' => trim("Jezaja's Giant Secure Container                              ")]);
+        DB::table("item_prices")->where("ITEM_ID",44210)->update(['NAME' => trim("Scale Model Of [RFS] Mah'tu Rea                              ")]);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        //
+    }
+}
