@@ -43,7 +43,7 @@
         /**
          * Obtain the user information from Eve Online.
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
          */
         public function handleProviderCallback() {
             try {
@@ -61,7 +61,7 @@
                 \session()->put("login_name", $name);
                 return redirect(route("home_mine"));
             }
-            catch (Exception $e) {
+            catch (\Exception $e) {
                 return view('error', ["error" => "The EVE API had an error: " . ($e->getMessage() ?? 'No error message provided by ESI') . " - if you try logging in again it will probably work."]);
             }
         }

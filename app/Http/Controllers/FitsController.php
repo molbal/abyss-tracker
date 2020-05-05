@@ -109,11 +109,12 @@
             $char_name = DB::table('chars')->where('CHAR_ID',$fit->CHAR_ID)->value('NAME');
 
             $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
-
+            $ship_type = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
                 'char_name' => $char_name,
+                'ship_type' => $ship_type,
                 'fit_quicklook' => $this->quickParseEft($fit->RAW_EFT),
                 'description' => $description
             ]);
