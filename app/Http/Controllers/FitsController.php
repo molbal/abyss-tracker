@@ -6,6 +6,7 @@
 
 	use App\Http\Controllers\Loot\EveItem;
     use App\Http\Controllers\Loot\LootValueEstimator;
+    use App\Http\Controllers\Partners\EveWorkbench;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -116,7 +117,8 @@
                 'char_name' => $char_name,
                 'ship_type' => $ship_type,
                 'fit_quicklook' => $this->quickParseEft($fit->RAW_EFT),
-                'description' => $description
+                'description' => $description,
+                'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name)
             ]);
 	    }
 

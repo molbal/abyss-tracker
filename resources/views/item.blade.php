@@ -82,7 +82,7 @@
                                         <br>
                                         <span class="text-small">0 / 0</span>
                                     @else
-                                        <span class="estimate-confident">{{round($drops[$type][$tier]->DROPPED_COUNT/$drops[$type][$tier]->RUNS_COUNT*100, 2)}}% </span>
+                                        <span class="estimate-confident">{{min(100,round($drops[$type][$tier]->DROPPED_COUNT/$drops[$type][$tier]->RUNS_COUNT*100, 2))}}% </span>
                                         <br>
                                         <span class="text-small">{{$drops[$type][$tier]->DROPPED_COUNT}} / {{$drops[$type][$tier]->RUNS_COUNT}}</span>
                                     @endif

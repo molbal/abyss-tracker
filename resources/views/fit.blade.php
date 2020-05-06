@@ -23,7 +23,8 @@
                     </div>
                     <div id="eft" class="tab-pane fade">
                         <h3>EFT</h3>
-                        <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" style="font-family: 'Fira Code', 'Consolas', fixed">{{$fit->RAW_EFT}}</textarea>
+                        <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" onclick="this.focus();this.select()"
+                                  style="font-family: 'Fira Code', 'Consolas', fixed">{{$fit->RAW_EFT}}</textarea>
                     </div>
                 </div>
 
@@ -33,7 +34,10 @@
                 </ul>
             </div>
 
-            @component('components.fit_stats', ["stats" => $fit->STATS])@endcomponent
+            @if(strtoupper($fit->STATUS) == "DONE")
+                @component('components.fit_stats', ["stats" => $fit->STATS])@endcomponent
+                @component('components.fit_stats', ["stats" => $fit->STATS])@endcomponent
+            @endif
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Description</h5>
                 <div class="text-justify">
@@ -46,28 +50,45 @@
         </div>
         <div class="col-sm-4">
             <div class="card card-body shadow-sm border-0 text-center">
-                <div>
+                <div class="text-small">
                     <img src="https://images.evetech.net/characters/{{$fit->CHAR_ID}}/portrait?size=128" alt="{{$char_name}}" class="rounded-circle shadow" id="char_prof">
                     <br>
-                    <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark">{{$char_name}} </a>
+                    <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark mb-1 d-inline-block">{{$char_name}} </a>
+                    <br>
+                    <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">profile</a> &centerdot;
+                    <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">fits</a> &centerdot;
+                    <a href="https://zkillboard.com/character/{{$fit->CHAR_ID}}/" target="_blank" class="text-muted mx-1 ">killboard</a> &centerdot;
+                    <a href="{{$eve_workbench_url}}" target="_blank" class="text-muted mx-1 ">eve workbench</a>
                 </div>
             </div>
             <div class="card card-body shadow-sm border-0 mt-3">
-                <div class="row">
-                    <img src="https://images.evetech.net/types/{{$fit->SHIP_ID}}/render?size=64"
-                         class="pull-left ml-2 rounded-circle shadow-sm">
-                    <div class="col">
-                        <h2 class="font-weight-bold mb-0"><a class="text-dark"
-                                                             href="{{route("ship_single", ["id" => $fit->SHIP_ID])}}">{{$ship_name}}</a>
-                        </h2>
-                        <small class="text-muted font-weight-bold">{{$ship_type}}</small>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="row">
+                            <img src="https://images.evetech.net/types/{{$fit->SHIP_ID}}/render?size=64"
+                                 class="pull-left ml-2 rounded-circle shadow" style="border: 2px solid #fff;">
+                            <div class="col">
+                                <h2 class="font-weight-bold mb-0 mt-3" style="line-height: 1rem">
+                                    <a class="text-dark" href="{{route("ship_single", ["id" => $fit->SHIP_ID])}}">{{$ship_name}}</a>
+                                </h2>
+                                <small class="text-muted font-weight-bold">{{$ship_type}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <ul class="infolinks text-small">
+                            <li><a href="{{route('ship_single', ['id' => $fit->SHIP_ID])}}" class="text-muted">ship usage</a></li>
+                            <li><a href="{{route('ship_single', ['id' => $fit->SHIP_ID])}}" class="text-muted">ship fits</a></li>
+                            <li><a href="https://zkillboard.com/ship/{{$fit->SHIP_ID}}/" target="_blank" class="text-muted">killboard</a></li>
+                            <li><a href="https://www.eveworkbench.com/fitting/search?q={{$ship_name}}" target="_blank" class="text-muted">eve workbench</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
             @if(strtoupper($fit->STATUS) == "DONE")
                 @component('components.fit_stats', ["stats" => $fit->STATS])@endcomponent
             @elseif(strtoupper($fit->STATUS) == "QUEUED")
-                <div class="card card-body border-warning shadow-sm text-center">
+                <div class="card card-body border-warning shadow-sm text-center mt-3">
                     <div class="mb-0">
                         <img src="https://img.icons8.com/cotton/64/000000/clock-settings.png" style="width: 64px; height: 64px"/>
                         <h5 class="font-weight-bold">Calculating stats</h5>
@@ -75,7 +96,7 @@
                     </div>
                 </div>
             @else
-                <div class="card card-body border-warning shadow-sm text-center">
+                <div class="card card-body border-warning shadow-sm text-center mt-3">
                     <div class="mb-0">
                         <img src="https://img.icons8.com/cotton/64/000000/cancel--v1.png" style="width: 64px; height: 64px"/>
                         <h5 class="font-weight-bold">Error</h5>
@@ -92,7 +113,7 @@
     <style>
         .bringupper {
             position: relative;
-            top: -2px;
+            top: -1px;
         }
 
         .table td, .table th {
@@ -104,9 +125,15 @@
         }
 
         img.tinyicon {
-            width:16px;
-            height:16px;
+            width: 16px;
+            height: 16px;
         }
+
+        img.smallicon {
+            width: 24px;
+            height: 24px;
+        }
+
         td.w-20p {
             width: 20px !important;
         }
@@ -122,16 +149,57 @@
 
         .jqsfield {
             color: #fff;
-            font-family: 'Shentox', sans-serif  !important;
+            font-family: 'Shentox', sans-serif !important;
             text-align: left;
             padding: 1rem;
         }
+
         .inline-pie {
             position: relative;
-            top:4px
+            top: 4px;
+            opacity: 0.01;
+            overflow: hidden;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
         }
+
         .table-sm td, .table-sm th {
             padding: .1rem;
+        }
+
+        ul.infolinks {
+            list-style: none;
+            margin-bottom: 0;
+            padding: 0 20px
+        }
+
+        .resist-outer {
+            display: block;
+            width: 100%;
+            height: 20px;
+            padding: 0;
+            margin:0;
+            border: 1px solid rgba(1,5,54,0.59);
+            border-radius: 2px;
+            -webkit-border-radius: 2px;
+            -webkit-box-shadow:inset 0 -4px 8px -2px rgba(1,5,54,0.59);
+            box-shadow:inset 0 -4px 8px -2px rgba(1,5,54,0.59);
+        }
+
+        .resist-inner {
+            display: inline-block;
+            height: 100%;
+        }
+        .resist-label {    z-index: 3;
+            color: #fff;
+            text-shadow: 0 0 2px #010536, 0 1px 0 rgba(1,5,54,0.59);
+            position: relative;
+            top: -28px;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
         }
     </style>
 @endsection
@@ -141,9 +209,10 @@
         $(function () {
             $('.inline-pie').sparkline('html', {
                 type: 'pie',
-                sliceColors: ['#3c5163', '#aaa']
-
-            } );
+                sliceColors: ['#78b7aa', 'rgba(0,0,0,0)'],
+                disableInteraction: true
+            });
+            $('.inline-pie').animate({'opacity': 1}, 1500);
         });
     </script>
 @endsection

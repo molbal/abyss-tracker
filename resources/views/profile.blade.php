@@ -232,5 +232,10 @@
             text-transform: uppercase;
             font-size: 26px;
         }
+
+        .tooltip, .tooltip-inner {
+            width: 360px;
+            max-width: 360px;
+        }
     </style>
 @endsection
