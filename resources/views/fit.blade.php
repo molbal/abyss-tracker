@@ -33,11 +33,6 @@
                     <li class="nav-item mr-3"><a data-toggle="tab" href="#eft">EFT</a></li>
                 </ul>
             </div>
-
-            @if(strtoupper($fit->STATUS) == "DONE")
-                @component('components.fit_stats', ["stats" => $fit->STATS])@endcomponent
-                @component('components.fit_stats', ["stats" => $fit->STATS])@endcomponent
-            @endif
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Description</h5>
                 <div class="text-justify">

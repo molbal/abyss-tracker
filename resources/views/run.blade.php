@@ -34,10 +34,10 @@
                 <div class="row">
                     @if($run->PUBLIC)
                         <img src="https://images.evetech.net/characters/{{$run->CHAR_ID}}/portrait?size=64"
-                             class="pull-left ml-2 rounded-circle shadow-sm">
+                             class="pull-left ml-2 rounded-circle shadow-sm b2w">
                     @else
                         <img src="https://images.evetech.net/characters/1/portrait?size=64"
-                             class="pull-left ml-2 rounded-circle shadow-sm">
+                             class="pull-left ml-2 rounded-circle shadow-sm b2w">
                     @endif
                     <div class="col">
 
@@ -56,10 +56,10 @@
                 <div class="row">
                     @if($all_data->SHIP_ID)
                         <img src="https://images.evetech.net/types/{{$all_data->SHIP_ID}}/render?size=64"
-                             class="pull-left ml-2 rounded-circle shadow-sm">
+                             class="pull-left ml-2 rounded-circle shadow-sm b2w">
                     @else
                         <img src="https://imageserver.eveonline.com/Type/34436_64.png"
-                             class="pull-left ml-2 rounded-circle shadow-sm">
+                             class="pull-left ml-2 rounded-circle shadow-sm b2w">
                     @endif
                     <div class="col">
                         @if($all_data->SHIP_ID)
@@ -381,6 +381,9 @@ $lost_buy = 0;
     <style>
         td {
             border:0!important;
+        }
+        .b2w {
+            border: 2px solid #fff;
         }
     </style>
 @endsection
