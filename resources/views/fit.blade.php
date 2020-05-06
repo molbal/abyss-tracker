@@ -190,6 +190,8 @@
         .resist-inner {
             display: inline-block;
             height: 100%;
+            -webkit-box-shadow:inset 0 -4px 8px -2px rgba(1,5,54,0.59);
+            box-shadow:inset 0 -4px 8px -2px rgba(1,5,54,0.59);
         }
         .resist-label {    z-index: 3;
             color: #fff;
