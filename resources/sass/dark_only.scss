@@ -7,7 +7,7 @@ body {
 }
 
 .bg-white {
-    background: #000 !important;
+    background: $body-bg !important;
 }
 
 
@@ -198,4 +198,13 @@ body {
 }
 .daterangepicker .calendar-table {
     border-width: 0 !important;
+}
+
+.shadow {
+    box-shadow: 0 .5rem 1rem rgba(43, 35, 35, 0.36) !important;
+    -webkit-box-shadow: 0 .5rem 1rem rgba(43, 35, 35, 0.3) !important;
+}
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(43, 35, 35, 0.2) !important;
+    -webkit-box-shadow: 0 .125rem .25rem rgba(43, 35, 35, 0.2) !important;
 }

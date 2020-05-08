@@ -4,7 +4,8 @@
 	namespace App\Http\Controllers;
 
 
-	use App\Http\Controllers\Loot\EveItem;
+	use App\Http\Controllers\EFT\FitHelper;
+    use App\Http\Controllers\Loot\EveItem;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Partners\EveWorkbench;
     use Illuminate\Http\Request;
@@ -13,6 +14,19 @@
     use Illuminate\Support\Facades\Validator;
 
     class FitsController extends Controller {
+
+        /** @var FitHelper */
+        protected $fitHelper;
+
+        /**
+         * FitsController constructor.
+         *
+         * @param FitHelper $fitHelper
+         */
+        public function __construct(FitHelper $fitHelper) {
+            $this->fitHelper = $fitHelper;
+        }
+
 
         /**
          * Renders the new fit screen
@@ -29,6 +43,9 @@
          * @param Request $request
          */
         public function new_store(Request $request) {
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please sign in first to add a new fit"]);
+            }
             Validator::make($request->all(), [
                 'ELECTRICAL'     => 'required|numeric|min:0|max:5',
                 'DARK'     => 'required|numeric|min:0|max:5',
@@ -36,7 +53,8 @@
                 'FIRESTORM'   => 'required|numeric|min:0|max:5',
                 'GAMMA' => 'required|numeric|min:0|max:5',
                 'eft'  => 'required',
-                'description' => 'required'
+                'description' => 'required',
+                'privacy' => 'required'
             ], [
                 'required' => "Please fill :attribute before saving your fit",
             ])->validate();
@@ -44,6 +62,10 @@
             $id = null;
             try {
                 $shipId = $this->getShipIDFromEft($request->get("eft"));
+                if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {
+                    throw new \Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
+                }
+
                 $shipName = $this->getFitName($request->get("eft"));
 
                 // Get price
@@ -52,12 +74,10 @@
                 // Update each price
                 /** @var EveItem[] $items */
                 $items = $lootEstimator->getItems();
-//                dd($items);
                 foreach ($items as $item) {
                     LootValueEstimator::setItemPrice($item);
                 }
                 DB::beginTransaction();
-                // Insert
                 $id = DB::table("fits")->insertGetId([
                     'CHAR_ID' => session()->get("login_id"),
                     'SHIP_ID' => $shipId,
@@ -67,7 +87,9 @@
                     'STATUS' => 'queued',
                     'PRICE' => $lootEstimator->getTotalPrice(),
                     'RAW_EFT' => $request->get("eft"),
-                    'SUBMITTED' => now()
+                    'SUBMITTED' => now(),
+                    'VIDEO_LINK' => $request->get("video_link") ?? '',
+                    'PRIVACY' => $request->get('privacy')
                 ]);
 
                 if (!$this->submitSvcFitService($request->get("eft"), $id)) {
@@ -116,7 +138,7 @@
                 'ship_name' => $ship_name,
                 'char_name' => $char_name,
                 'ship_type' => $ship_type,
-                'fit_quicklook' => $this->quickParseEft($fit->RAW_EFT),
+                'fit_quicklook' => $this->fitHelper->quickParseEft($fit->RAW_EFT),
                 'description' => $description,
                 'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name)
             ]);
@@ -225,76 +247,4 @@
 	    }
 
 
-        /**
-         * Quick parses the EFT fit.
-         * @param string $eft
-         *
-         * @return array
-         */
-        private function quickParseEft(string $eft) {
-
-            $lows = [];
-            $mids = [];
-            $highs = [];
-            $rigs = [];
-            $other = [];
-
-            $current = "start";
-            $lines = explode("\n", $eft);
-            array_shift($lines);
-            foreach ($lines as $line) {
-                $line = trim($line);
-                if ($line == "") {
-                    switch ($current) {
-                        case 'lows':
-                            $current = "mids";
-                            break;
-                        case 'mids':
-                            $current = "highs";
-                            break;
-                        case 'highs':
-                            $current = "rigs";
-                            break;
-                        case 'rigs':
-                            $current = "other";
-                            break;
-                        case 'other':
-                            $current = "other";
-                            break;
-                        case 'start':
-                        default:
-                            $current = "lows";
-                    }
-                }
-                else {
-                    // Let's get before the comma: strip ammo
-                    $ammo = trim(explode(',', $line, 2)[1] ?? "");
-                    $ammo_id = DB::table("item_prices")->where("NAME", $ammo)->value("ITEM_ID");
-                    $line = explode(',', $line, 2)[0];
-
-                    if (preg_match('/^.+x\d{0,4}$/m', $line)) {
-                        $words = explode(' ', $line);
-                        $count = intval(str_replace("x", "",array_pop($words)));
-                        $line = implode(" ",$words);
-                    }
-                    ${$current}[] = [
-                        'name' => $line,
-                        'id' => DB::table("item_prices")->where("NAME", $line)->value("ITEM_ID") ?? null,
-                        'ammo' => $ammo,
-                        'count' => $count ?? 1,
-                        'price' => (DB::table("item_prices")->where("NAME", $line)->value("PRICE_BUY")+ DB::table("item_prices")->where("NAME", $line)->value("PRICE_SELL"))/2,
-                        'ammo_id' => $ammo_id ?? null
-                    ];
-                }
-            }
-
-            return [
-                'low' => $lows,
-                'mid' => $mids,
-                'high' => $highs,
-                'rig' => $rigs,
-                'other' => $other
-            ];
-
-	    }
 	}

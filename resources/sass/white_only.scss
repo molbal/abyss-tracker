@@ -1,3 +1,16 @@
 .bright-theme-only-white {
     color: #fafafa;
 }
+
+
+.pickerInputGroup {
+    input ~ label {
+        color: #343a40 !important;
+    }
+
+    input:checked ~ label {
+        color: #fff !important;
+    }
+}
+
+

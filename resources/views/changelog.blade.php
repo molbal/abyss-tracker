@@ -27,7 +27,10 @@
                     New features
                 </p>
                 <ul>
-                    <li></li>
+                    <li class="font-weight-bold">Support for fits! 🎇🎇</li>
+                    <li>Updates item table to Surgical Strike</li>
+                    <li>Adds new metadata for fits: Linked fit and T5 bonus room</li>
+                    <li>Lotts of little visibility improvements in the dark theme - which is now default</li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">

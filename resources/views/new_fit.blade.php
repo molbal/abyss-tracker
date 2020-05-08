@@ -4,7 +4,7 @@
     <form action="{{route('fit_new_store')}}" method="post" enctype="multipart/form-data">
         {{csrf_field()}}
         <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
-            <h4 class="font-weight-bold"><img src="https://img.icons8.com/cotton/50/000000/hammer.png"/> Add new fit</h4>
+            <h4 class="font-weight-bold"><img src="https://img.icons8.com/cotton/50/000000/hammer.png" style="width: 50px; height: 50px;"/> Add new fit</h4>
         </div>
         @if(isset($errors))
             @if ($errors->any())
@@ -35,10 +35,18 @@
                                 <h5 class="font-weight-bold">Important!</h5>
                                 If this fit contains drones, please split them into stacks. After the active drones, please enter 2 empty lines so the rest of the drones will look
                                 like they are in cargo. If this is missed drone DPS might be calculated incorrectly.
+                                <br>
+                                DPS is calculated if the weapons have loaded ammunition. This is written in the EFT after the weapons, divided by a comma
                             </div>
                             <textarea name="eft" id="eft" class="w-100 form-control" rows="10"></textarea>
                         </div>
                         <div class="col-sm-4">
+                            <p class="h6">Import options</p>
+                            <ul class="pl-3">
+                                <li><a href="#">Import from EVE Online</a></li>
+                                <li><a href="#">Import from zKillboard</a></li>
+                                <li><a href="#">Import from Eve Workbench</a></li>
+                            </ul>
                             <p class="h6">What is extracted from this?</p>
                             <ul class="pl-3">
                                 <li>Ship name
@@ -67,8 +75,14 @@
                             </p>
                         </div>
                         <div class="col-sm-8">
-                            <small>You can use <a href="#" target="_blank">markdown</a> formatting.</small>
-                            <textarea name="description" id="description" class="form-control w-100" rows="10"></textarea></div>
+                            <p>Good tips on what to write here: In which order should you destroy enemies (Eg. neuters, webbers first), how to deal with the rooms like the Karen room or the Leshaks room. You can use <a href="#" target="_blank">markdown</a> formatting.</p>
+                            <textarea name="description" id="description" class="form-control w-100" rows="10"></textarea>
+
+                            <div class="form-group mt-3">
+                                <label for="">Youtube video link <br> <small>If you have a video displaying the fit, it will be linked</small></label>
+                                <input type="text" name="video_link" id="" class="form-control">
+                            </div>
+                        </div>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="">For Electrical</label>
@@ -130,8 +144,50 @@
                     </div>
                 </div>
             </div>
-
         </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-body border-0 shadow-sm container mt-3">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h5 class="font-weight-bold">Privacy</h5>
+                            <p>Please select what information should be visible about your fit</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 p-1">
+                            <div class="pickerInputGroup">
+                                <input id="privacy-public" name="privacy" value="public" type="radio" checked/>
+                                <label for="privacy-public">
+                                    <p class="mb-1 font-weight-bold text-uppercase">Public</p>
+                                    <p class="mb-1 text-small">Public fitting with the modules and your name visible</p>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 p-1">
+                            <div class="pickerInputGroup">
+                                <input id="privacy-anonym" name="privacy" value="anonym" type="radio"/>
+                                <label for="privacy-anonym">
+                                    <p class="mb-1 font-weight-bold text-uppercase">Anonym</p>
+                                    <p class="mb-1 text-small">Anonym fitting with the modules visible, but your name hidden</p>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 p-1">
+                            <div class="pickerInputGroup">
+                                <input id="privacy-private" name="privacy" value="private" type="radio"/>
+                                <label for="privacy-private">
+                                    <p class="mb-1 font-weight-bold text-uppercase">Private</p>
+                                    <p class="mb-1 text-small">Private fitting with neither modules or your name visible</p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3">
@@ -167,6 +223,9 @@
             .CodeMirror {
                 background-color: #060606 !important;
             }
+
+
+
         </style>
     @else
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
