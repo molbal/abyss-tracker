@@ -65,6 +65,7 @@
                                         <option {{($prev->TIER ?? null) == 3 ? "selected" : ""}}>3</option>
                                         <option {{($prev->TIER ?? null) == 4 ? "selected" : ""}}>4</option>
                                         <option {{($prev->TIER ?? null) == 5 ? "selected" : ""}}>5</option>
+                                        <option {{($prev->TIER ?? null) == 6 ? "selected" : ""}}>5 with single bonus room</option>
                                     </select>
                                 </div>
                             </div>
@@ -79,19 +80,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="">Submit with your name or anonymus?</label>
-                                    <select name="PUBLIC" class="form-control select2-default">
-                                        <option value="0" {{($prev->PUBLIC ?? 0) == 0 ? "selected" : ""}}>Submit as
-                                            anonymus
-                                        </option>
-                                        <option value="1" {{($prev->PUBLIC ?? 0) == 1 ? "selected" : ""}}>Submit with my
-                                            name
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="">Which day did you do this run?</label>
@@ -113,6 +101,10 @@
                                         @endforeach
                                     </select>
                                 </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="">What fit did you pick? @component('components.info-toggle')This list automatically updates when you select a ship. At the top of the list your fits are listed (if you have any). Then its others' fits, ordered by popularity. If you have recently opened a fit, that will also be on the top of the list.@endcomponent</label>
+
                             </div>
                         </div>
                     </div>
@@ -307,6 +299,39 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-sm-12">
+                <div class="card card-body border-0 shadow-sm container mt-3">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h5 class="font-weight-bold">Privacy</h5>
+                            <p>Please select what information should be visible about your run</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 p-1">
+                            <div class="pickerInputGroup">
+                                <input id="privacy-public" name="PUBLIC" value="1" type="radio" {{($prev->PUBLIC ?? 0) == 0 ? "checked" : ""}}/>
+                                <label for="privacy-public">
+                                    <p class="mb-1 font-weight-bold text-uppercase">Public</p>
+                                    <p class="mb-1 text-small">The loot and statistics will be visible along with your name. This run will be listed in your <a target="_blank" href="{{route("profile.index", ['id' => session()->get("login_id")])}}" data-toggle="tooltip" title="Opens in a new tab">public profile</a> if its not hidden in
+                                        <a href="{{route('settings.index')}}" target="_blank" data-toggle="tooltip" title="Opens in a new tab">privacy settings</a>.</p>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 p-1">
+                            <div class="pickerInputGroup">
+                                <input id="privacy-private" name="PUBLIC" value="0" type="radio" {{($prev->PUBLIC ?? 0) == 1 ? "checked" : ""}}/>
+                                <label for="privacy-private">
+                                    <p class="mb-1 font-weight-bold text-uppercase">Anonym</p>
+                                    <p class="mb-1 text-small">The loot and statistics will be visible, but your name will be hidden. This will not be listed in your <a target="_blank" href="{{route("profile.index", ['id' => session()->get("login_id")])}}" data-toggle="tooltip" title="Opens in a new tab">public profile</a>, ever.</p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3">
                     <p>Thank you for your contribution, {{session()->get("login_name")}}</p>

@@ -2,6 +2,10 @@ body {
     color: #fafafa !important;
 }
 
+nav.bg-white {
+    background: #020202 !important;
+}
+
 .text-black-50 {
     color: rgba(255, 255, 255, 0.5) !important;
 }
@@ -201,10 +205,8 @@ body {
 }
 
 .shadow {
-    box-shadow: 0 .5rem 1rem rgba(43, 35, 35, 0.36) !important;
-    -webkit-box-shadow: 0 .5rem 1rem rgba(43, 35, 35, 0.3) !important;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.25) !important;
 }
 .shadow-sm {
-    box-shadow: 0 .125rem .25rem rgba(43, 35, 35, 0.2) !important;
-    -webkit-box-shadow: 0 .125rem .25rem rgba(43, 35, 35, 0.2) !important;
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.12) !important;
 }

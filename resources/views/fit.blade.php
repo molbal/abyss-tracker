@@ -59,10 +59,12 @@
             <div class="card card-body shadow-sm border-0 mt-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="row">
+                        <div class="" style="width: 191px;
+text-align: center;">
                             <img src="https://images.evetech.net/types/{{$fit->SHIP_ID}}/render?size=64"
-                                 class="pull-left ml-2 rounded-circle shadow" style="border: 2px solid #fff;">
-                            <div class="col">
+                                 class="rounded-circle shadow" style="border: 2px solid #fff;">
+                            <br>
+                            <div>
                                 <h2 class="font-weight-bold mb-0 mt-3" style="line-height: 1rem">
                                     <a class="text-dark" href="{{route("ship_single", ["id" => $fit->SHIP_ID])}}">{{$ship_name}}</a>
                                 </h2>

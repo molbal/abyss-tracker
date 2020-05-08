@@ -8,9 +8,23 @@
         color: #343a40 !important;
     }
 
+    input ~ label a {
+        color: color.scale(#343a40, $lightness: -10%, $saturation: 10%) !important;
+        text-decoration: underline;
+    }
+
     input:checked ~ label {
         color: #fff !important;
+    }
+    input ~ label a {
+        color: color.scale(#d2e1dd, $lightness: -10%, $saturation: 10%) !important;
+        text-decoration: underline;
     }
 }
 
 
+
+
+nav.bg-white {
+    background: #fff !important;
+}
