@@ -17,6 +17,21 @@
                             @component("components.fit_group", ["items" => $fit_quicklook["rig"], "section" => "Rigs"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["other"], "section" => "Drones & cargo"])@endcomponent
                             <tr>
+                                <td colspan="3" class="text-left text-uppercase font-weight-bold">Ship</td>
+                            </tr>
+                                <tr>
+                                    <td style="width: 36px;">
+                                        <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID}}_32.png" alt="{{$ship_name}} icon" style="width: 32px;height: 32px;">
+                                    </td>
+                                    <td>
+                                        {{$ship_name}}
+                                    </td>
+                                    <td class="text-right">
+                                        {{number_format($ship_price, 0, ",", " ")}} ISK
+                                    </td>
+                                </tr>
+
+                                <tr>
                                 <td colspan="3" class="font-weight-bold text-right">Total: {{number_format($fit->PRICE, 0, ","," ")}} ISK</td>
                             </tr>
                         </table>
@@ -45,16 +60,20 @@
         </div>
         <div class="col-sm-4">
             <div class="card card-body shadow-sm border-0 text-center">
-                <div class="text-small">
-                    <img src="https://images.evetech.net/characters/{{$fit->CHAR_ID}}/portrait?size=128" alt="{{$char_name}}" class="rounded-circle shadow" id="char_prof">
-                    <br>
-                    <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark mb-1 d-inline-block">{{$char_name}} </a>
-                    <br>
-                    <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">profile</a> &centerdot;
-                    <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">fits</a> &centerdot;
-                    <a href="https://zkillboard.com/character/{{$fit->CHAR_ID}}/" target="_blank" class="text-muted mx-1 ">killboard</a> &centerdot;
-                    <a href="{{$eve_workbench_url}}" target="_blank" class="text-muted mx-1 ">eve workbench</a>
-                </div>
+                @if($fit->PRIVACY == 'public')
+                    <div class="text-small">
+                        <img src="https://images.evetech.net/characters/{{$fit->CHAR_ID}}/portrait?size=128" alt="{{$char_name}}" class="rounded-circle shadow" id="char_prof">
+                        <br>
+                        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark mb-1 d-inline-block">{{$char_name}} </a>
+                        <br>
+                        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">profile</a> &centerdot;
+                        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">fits</a> &centerdot;
+                        <a href="https://zkillboard.com/character/{{$fit->CHAR_ID}}/" target="_blank" class="text-muted mx-1 ">killboard</a> &centerdot;
+                        <a href="{{$eve_workbench_url}}" target="_blank" class="text-muted mx-1 ">eve workbench</a>
+                    </div>
+                @else
+                    <p class="mb-0">This is an anonym fit, so its uploader is hidden.</p>
+                @endif
             </div>
             <div class="card card-body shadow-sm border-0 mt-3">
                 <div class="d-flex justify-content-between align-items-center">
@@ -62,7 +81,7 @@
                         <div class="" style="width: 191px;
 text-align: center;">
                             <img src="https://images.evetech.net/types/{{$fit->SHIP_ID}}/render?size=64"
-                                 class="rounded-circle shadow" style="border: 2px solid #fff;">
+                                 class="rounded-circle shadow" style="border: 2px solid #fff; width: 64px;height: 64px;">
                             <br>
                             <div>
                                 <h2 class="font-weight-bold mb-0 mt-3" style="line-height: 1rem">

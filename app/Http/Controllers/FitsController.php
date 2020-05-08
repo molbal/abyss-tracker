@@ -128,16 +128,24 @@
             }
 
             $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+
+            if ($fit->PRIVACY == 'private') {
+                return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='".route('home_mine')."'>View public fits</a></p>")]);
+            }
             $ship_name = DB::table('ship_lookup')->where('ID',$fit->SHIP_ID)->value('NAME');
             $char_name = DB::table('chars')->where('CHAR_ID',$fit->CHAR_ID)->value('NAME');
 
+
             $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
             $ship_type = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
+            $ship_price = (DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_BUY")+DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_SELL")/2) ?? 0;
+
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
                 'char_name' => $char_name,
                 'ship_type' => $ship_type,
+                'ship_price' => $ship_price,
                 'fit_quicklook' => $this->fitHelper->quickParseEft($fit->RAW_EFT),
                 'description' => $description,
                 'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name)
