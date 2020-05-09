@@ -19,3 +19,6 @@
         {{number_format($item["count"]*$item["price"], 0, ",", " ")}} ISK
     </td>
 </tr>
+{{--<tr>--}}
+{{--    <td colspan="3"><pre>{{print_r($item, 1)}}</pre></td>--}}
+{{--</tr>--}}

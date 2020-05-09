@@ -221,6 +221,7 @@
          */
         public function itemNameToId(string $fullName) {
 
+            $fullName = trim($fullName);
             if(DB::table("item_prices")->where("NAME", $fullName)->exists()) {
                 return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
             }
@@ -230,10 +231,11 @@
             if (isset($response->inventory_types[0]->id)) {
                 $systemId = $response->inventory_types[0]->id;
             } else {
-                throw new \InvalidArgumentException("Cannot find the Eve ID number for this ID: $fullName.");
+                throw new \InvalidArgumentException("Cannot find the Eve ID number for this name: $fullName. ".print_r($response, 1));
             }
             return $systemId;
         }
+
 
         /**
          * General name lookup. Caches and works for ItemIDs and solar systems too
@@ -254,6 +256,34 @@
                 return $name;
             }
             throw new \InvalidArgumentException("No item ID with name $id found in ESI");
+        }
+
+        /**
+         * General name lookup. Caches and works for ItemIDs and solar systems too
+         *
+         * @param int $id
+         * @return string
+         * @throws \Exception
+         */
+        public function getItemInformation(int $id): array {
+            return Cache::remember("ast.getItemInformation.$id", now()->addMinute(), function() use ($id) {
+                $resp = $this->simpleGet(null, sprintf("universe/types/%d", $id), true);
+                return $resp;
+            });
+        }
+
+        /**
+         * Returns group IDs for categories
+         * @param int $categoryId
+         *
+         * @return array
+         * @throws \Exception
+         */
+        public function getCategoryGroups(int $categoryId): array {
+            return Cache::remember("ast.getCategoryGroups.$categoryId", now()->addMinute(), function() use ($categoryId) {
+                $resp = $this->simpleGet(null, sprintf("universe/categories/%d", $categoryId), true);
+                return $resp["groups"] ?? null;
+            });
         }
 
 		/**

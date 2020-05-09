@@ -15,7 +15,11 @@
                             @component("components.fit_group", ["items" => $fit_quicklook["mid"], "section" => "Mid slot modules"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["low"], "section" => "Low slot modules"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["rig"], "section" => "Rigs"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["other"], "section" => "Drones & cargo"])@endcomponent
+                            @component("components.fit_group", ["items" => $fit_quicklook["drone"], "section" => "Drones"])@endcomponent
+                            @component("components.fit_group", ["items" => $fit_quicklook["ammo"], "section" => "Ammunition"])@endcomponent
+                                @component("components.fit_group", ["items" => $fit_quicklook["booster"], "section" => "Boosters"])@endcomponent
+                            @component("components.fit_group", ["items" => $fit_quicklook["cargo"], "section" => "Other cargo and implants"])@endcomponent
+{{--                            @component("components.fit_group", ["items" => $fit_quicklook["implant"], "section" => "Implants"])@endcomponent--}}
                             <tr>
                                 <td colspan="3" class="text-left text-uppercase font-weight-bold">Ship</td>
                             </tr>

@@ -77,6 +77,7 @@
                 foreach ($items as $item) {
                     LootValueEstimator::setItemPrice($item);
                 }
+                $hash = $this->fitHelper->getFitFFH($request->get("eft"));
                 DB::beginTransaction();
                 $id = DB::table("fits")->insertGetId([
                     'CHAR_ID' => session()->get("login_id"),
@@ -89,7 +90,8 @@
                     'RAW_EFT' => $request->get("eft"),
                     'SUBMITTED' => now(),
                     'VIDEO_LINK' => $request->get("video_link") ?? '',
-                    'PRIVACY' => $request->get('privacy')
+                    'PRIVACY' => $request->get('privacy'),
+                    'FFH' => $hash
                 ]);
 
                 if (!$this->submitSvcFitService($request->get("eft"), $id)) {

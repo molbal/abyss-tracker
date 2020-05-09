@@ -31,21 +31,23 @@
                             </p>
                         </div>
                         <div class="col-sm-8">
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger shadow-sm">
                                 <h5 class="font-weight-bold">Important!</h5>
-                                If this fit contains drones, please split them into stacks. After the active drones, please enter 2 empty lines so the rest of the drones will look
-                                like they are in cargo. If this is missed drone DPS might be calculated incorrectly.
+                                If this fit contains drones, please split them into stacks. The first stack will be set active and that will be used to calculate DPS. Please pay attention that if your ship can fly 2 medium drones, do not stack 10, because the fit will display a broken DPS stat.
+                                @component("components.info-toggle")
+                                    This will be fixed later
+                                @endcomponent
                                 <br>
-                                DPS is calculated if the weapons have loaded ammunition. This is written in the EFT after the weapons, divided by a comma
+                                DPS is calculated if the weapons have loaded ammunition. This is written in the EFT after the weapons, divided by a comma. If you copy from Pyfa, it will be working well.
                             </div>
                             <textarea name="eft" id="eft" class="w-100 form-control" rows="10"></textarea>
                         </div>
                         <div class="col-sm-4">
                             <p class="h6">Import options</p>
                             <ul class="pl-3">
-                                <li><a href="#">Import from EVE Online</a></li>
-                                <li><a href="#">Import from zKillboard</a></li>
-                                <li><a href="#">Import from Eve Workbench</a></li>
+                                <li><a href="javascript:void(0);" class="text-muted" onclick="alert('Sorry, this is not yet supported.')">Import from EVE Online</a></li>
+                                <li><a href="javascript:void(0);" class="text-muted" onclick="alert('Sorry, this is not yet supported.')">Import from zKillboard</a></li>
+                                <li><a href="javascript:void(0);" class="text-muted" onclick="alert('Sorry, this is not yet supported.')">Import from Eve Workbench</a></li>
                             </ul>
                             <p class="h6">What is extracted from this?</p>
                             <ul class="pl-3">

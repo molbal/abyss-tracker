@@ -22,7 +22,7 @@
 		public function __construct()
 		{
 			$this->apiRoot = env("ESI_ROOT", "https://esi.evetech.net/latest/");
-			$this->userAgent = env("ESI_USERAGENT", "Eve Co-Pilot (https://co-pilot.eve-nt.uk; molbal@outlook.com)");
+			$this->userAgent = env("ESI_USERAGENT", "Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)");
 		}
 
 		/**
@@ -41,10 +41,12 @@
 				$tokenController = new ESITokenController($charId);
 				$accessToken = $tokenController->getAccessToken();
 			}
-			curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => 1, CURLOPT_USERAGENT => $this->userAgent, CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json'],
-
-									  CURLOPT_VERBOSE => true, CURLOPT_STDERR => fopen('./curl.log', 'a+'),
-
+			curl_setopt_array($curl, [
+			    CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_USERAGENT => $this->userAgent,
+                CURLOPT_HTTPHEADER => [
+                    isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b',
+                    'accept: application/json'],
 			]);
 
 			return $curl;
@@ -59,7 +61,7 @@
 		 * @return mixed
 		 * @throws \Exception
 		 */
-		protected function simpleGet(?int $charId, string $fullPath)
+		protected function simpleGet(?int $charId, string $fullPath, bool $asAssocArray = false)
 		{
 
 			$curl = curl_init();
@@ -72,15 +74,13 @@
 				CURLOPT_RETURNTRANSFER => 1,
 				CURLOPT_USERAGENT => $this->userAgent,
 				CURLOPT_URL => $this->apiRoot . $fullPath,
-				CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json'],
-
-									  CURLOPT_VERBOSE => true, CURLOPT_STDERR => fopen('./curl.log', 'a+'),
-
+				CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json']
 			]);
 			$ret = curl_exec($curl);
+//			dd($this->apiRoot . $fullPath, $ret);
 			curl_close($curl);
 
-			return json_decode($ret);
+			return json_decode($ret, $asAssocArray);
 		}
 
 
@@ -104,10 +104,16 @@
 				$tokenController = new ESITokenController($charId);
 				$accessToken = $tokenController->getAccessToken();
 			}
-			curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => 1, CURLOPT_POST => true, CURLOPT_USERAGENT => $this->userAgent, CURLOPT_URL => $this->apiRoot . $fullPath, CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json', "Content-type: application/json"], CURLOPT_POSTFIELDS => $requestBody, CURLOPT_VERBOSE => true, CURLOPT_STDERR => fopen('./curl.log', 'a+'),
-
+			curl_setopt_array($curl, [
+			    CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_POST => true,
+                CURLOPT_USERAGENT => $this->userAgent,
+                CURLOPT_URL => $this->apiRoot . $fullPath,
+                CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json', "Content-type: application/json"],
+                CURLOPT_POSTFIELDS => $requestBody
 			]);
 			$ret = curl_exec($curl);
+//			dd($requestBody, $ret);
 			curl_close($curl);
 
 			if ($jsonReply) {
