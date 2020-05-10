@@ -26,6 +26,6 @@
 
 
         public function calculate() : bool {
-            return intval($this->stats["defense"]["burst"]["shieldBoost"]) > 0;
+            return intval($this->stats["defense"]["reps"]["burst"]["shieldBoost"]) > 0;
         }
 	}

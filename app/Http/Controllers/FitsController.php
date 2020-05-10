@@ -5,6 +5,7 @@
 
 
 	use App\Http\Controllers\EFT\FitHelper;
+    use App\Http\Controllers\EFT\Tags\TagsController;
     use App\Http\Controllers\Loot\EveItem;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Partners\EveWorkbench;
@@ -146,6 +147,10 @@
             $ship_type = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
             $ship_price = (DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_BUY")+DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_SELL")/2) ?? 0;
 
+            /** @var TagsController $tc */
+            $tc = resolve("App\Http\Controllers\EFT\Tags\TagsController");
+            $tags = $tc->getTags($fit->RAW_EFT, json_decode($fit->STATS, 1));
+            dd($tags);
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,

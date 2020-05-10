@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace App\Http\Controllers\EFT;
+	namespace App\Http\Controllers\EFT\Tags;
 
 
 	use App\Http\Controllers\EFT\Tags\IFitTag;
@@ -24,10 +24,11 @@
             ];
 
             $tags = [];
+
             foreach ($tagsToCheck as $tag) {
                 /** @var IFitTag $checker */
-                $checker = resolve(sprintf("App\\Http\\Controllers\\EFT\\Tags\\Impl\\%s", $tag), [$eft, $stats]);
-                if ($checker->calculate()) $tags[] = $tag;
+                $checker = resolve(sprintf("App\\Http\\Controllers\\EFT\\Tags\\Impl\\%s", $tag), ["eft" => $eft, "stats" => $stats]);
+                $tags[$tag] = $checker->calculate();
             }
 
             return $tags;
