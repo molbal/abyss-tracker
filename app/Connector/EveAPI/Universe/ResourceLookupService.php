@@ -262,7 +262,7 @@
          * General name lookup. Caches and works for ItemIDs and solar systems too
          *
          * @param int $id
-         * @return string
+         * @return array
          * @throws \Exception
          */
         public function getItemInformation(int $id): array {

@@ -5,6 +5,9 @@
 
 
     use App\Connector\EveAPI\Universe\ResourceLookupService;
+    use App\Http\Controllers\EFT\Constants\CategoryID;
+    use App\Http\Controllers\EFT\Constants\DogmaAttribute;
+    use App\Http\Controllers\EFT\Constants\DogmaEffect;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
@@ -23,17 +26,6 @@
         /** @var ResourceLookupService */
         protected $resourceLookup;
 
-        /**
-         * Dogma effect and attribute IDs
-         */
-        const LOW_SLOT_EFFECT_ID = 11;
-        const MID_SLOT_EFFECT_ID = 13;
-        const HIGH_SLOT_EFFECT_ID = 12;
-        const RIG_SLOT_EFFECT_ID = 2663;
-        const BOOSTER_ATTR_ID = 1087;
-        const IMPLANT_ATTR_ID = 311;
-        const CHARGE_CATEGORY_ID = 8;
-        const DRONE_CATEGORY_ID = 18;
 
         /**
          * Classifies an item, returns which display group it belongs to
@@ -64,14 +56,14 @@
                 }
 
                 // Is drone?
-                $droneCategories = $this->resourceLookup->getCategoryGroups(self::DRONE_CATEGORY_ID);
+                $droneCategories = $this->resourceLookup->getCategoryGroups(CategoryID::DRONE_CATEGORY_ID);
                 foreach ($droneCategories as $pos => $catGroup) {
                     if (intval($catGroup) == ($itemInfo["group_id"])) {
                         return "drone";
                     }
                 }
                 // Ammo?
-                $ammoCategories = $this->resourceLookup->getCategoryGroups(self::CHARGE_CATEGORY_ID);
+                $ammoCategories = $this->resourceLookup->getCategoryGroups(CategoryID::CHARGE_CATEGORY_ID);
                 foreach ($ammoCategories as $pos => $catGroup) {
                     if (intval($catGroup) == ($itemInfo["group_id"])) {
                         return "ammo";
@@ -98,16 +90,16 @@
                 return "";
             }
             foreach ($itemInfo["dogma_effects"] as $dogmaEffect) {
-                if ($dogmaEffect["effect_id"] == self::HIGH_SLOT_EFFECT_ID) {
+                if ($dogmaEffect["effect_id"] == DogmaEffect::IS_LOW_SLOT) {
                     return 'high';
                 }
-                if ($dogmaEffect["effect_id"] == self::MID_SLOT_EFFECT_ID) {
+                if ($dogmaEffect["effect_id"] == DogmaEffect::IS_MID_SLOT) {
                     return 'mid';
                 }
-                if ($dogmaEffect["effect_id"] == self::LOW_SLOT_EFFECT_ID) {
+                if ($dogmaEffect["effect_id"] == DogmaEffect::IS_HIGH_SLOT) {
                     return 'low';
                 }
-                if ($dogmaEffect["effect_id"] == self::RIG_SLOT_EFFECT_ID) {
+                if ($dogmaEffect["effect_id"] == DogmaEffect::IS_RIG_SLOT) {
                     return 'rig';
                 }
             }
@@ -125,10 +117,10 @@
                 return "";
             }
             foreach ($itemInfo["dogma_attributes"] as $dogmaAttr) {
-                if ($dogmaAttr["attribute_id"] == self::BOOSTER_ATTR_ID) {
+                if ($dogmaAttr["attribute_id"] == DogmaAttribute::IS_BOOSTER) {
                     return 'booster';
                 }
-                if ($dogmaAttr["attribute_id"] == self::IMPLANT_ATTR_ID) {
+                if ($dogmaAttr["attribute_id"] == DogmaAttribute::IS_IMPLANT) {
                     return 'implant';
                 }
             }

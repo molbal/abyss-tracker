@@ -41,6 +41,8 @@
 
         /**
          * @param Request $request
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
          */
         public function new_store(Request $request) {
             if (!session()->has("login_id")) {
@@ -61,15 +63,16 @@
 
             $id = null;
             try {
-                $shipId = $this->getShipIDFromEft($request->get("eft"));
+                $eft = $request->get("eft");
+                $shipId = $this->getShipIDFromEft($eft);
                 if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {
                     throw new \Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
                 }
 
-                $shipName = $this->getFitName($request->get("eft"));
+                $shipName = $this->getFitName($eft);
 
                 // Get price
-                $lootEstimator = new LootValueEstimator($request->get("eft") ?? "");
+                $lootEstimator = new LootValueEstimator($eft ?? "");
 
                 // Update each price
                 /** @var EveItem[] $items */
@@ -77,7 +80,8 @@
                 foreach ($items as $item) {
                     LootValueEstimator::setItemPrice($item);
                 }
-                $hash = $this->fitHelper->getFitFFH($request->get("eft"));
+                $hash = $this->fitHelper->getFitFFH($eft);
+                $eft = $this->fitHelper->pyfaBugWorkaround($eft);
                 DB::beginTransaction();
                 $id = DB::table("fits")->insertGetId([
                     'CHAR_ID' => session()->get("login_id"),
@@ -87,14 +91,14 @@
                     'STATS' => json_encode([]),
                     'STATUS' => 'queued',
                     'PRICE' => $lootEstimator->getTotalPrice(),
-                    'RAW_EFT' => $request->get("eft"),
+                    'RAW_EFT' => $eft,
                     'SUBMITTED' => now(),
                     'VIDEO_LINK' => $request->get("video_link") ?? '',
                     'PRIVACY' => $request->get('privacy'),
                     'FFH' => $hash
                 ]);
 
-                if (!$this->submitSvcFitService($request->get("eft"), $id)) {
+                if (!$this->submitSvcFitService($eft, $id)) {
                     throw new \RuntimeException("Unable to submit this fit to processing.");
                 }
 
@@ -123,6 +127,7 @@
          * @param int $id
          *
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         * @throws \Exception
          */
         public function get(int $id) {
             if (!DB::table("fits")->where("ID", $id)->exists()) {

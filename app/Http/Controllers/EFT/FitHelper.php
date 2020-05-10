@@ -6,6 +6,7 @@
 
 	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\Cache\DBCacheController;
+    use App\Http\Controllers\EFT\Constants\DogmaAttribute;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
@@ -38,13 +39,6 @@
 
             // Call the API
             return intval($this->resourceLookup->itemNameToId($itemName));
-        }
-
-        /**
-         * @param string $eft
-         */
-        public function parseEft(string $eft) {
-
         }
 
         /**
@@ -84,10 +78,12 @@
             $lines = explode("\n", $eft);
             $fit = "";
             $drone_happened = false;
-            array_shift($lines);
+            $first_line = array_shift($lines);
+            $ship = explode(",", explode("[", $first_line,2)[1], 2)[0];
+            $shipId = $this->getShipIDFromEft($eft);
+            $availableBandwidth = $this->getShipDroneBandwidth($shipId);
             foreach ($lines as $line) {
                 $line = trim($line);
-                $fit .= $line."\n";
                 if ($line == "") continue;
 
                 if (!$drone_happened) {
@@ -97,16 +93,41 @@
 
                     if (preg_match('/^.+x\d{0,4}$/m', $line)) {
                         $words = explode(' ', $line);
-                        array_pop($words);
+                        $count = intval(str_replace("x", "",array_pop($words)));
                         $line = implode(" ", $words);
+                    }
+                    else {
+                        $count = 1;
                     }
 
                     $itemID = $this->getItemID($line);
                     $slot = $this->getItemSlot($itemID);
                     if ($slot == "drone") {
-                        $fit .= "\n\n";
-                        $drone_happened = true;
+
+                        $slotCount = 0;
+                        for ($i = 1; $i<=$count;$i++) {
+                            $droneBandwidthUsage = $this->getDroneBandwidthUsage($itemID);
+                            if ($availableBandwidth >= $droneBandwidthUsage) {
+                                $slotCount++;
+                                $availableBandwidth-=$droneBandwidthUsage;
+                            }
+                        }
+
+                        $fit .= sprintf("%s x%d", $line, $slotCount);
+
+                        if ($availableBandwidth == 0 || $count > $slotCount) {
+                            $fit .= "\n\n";
+                            $drone_happened = true;
+                        }
+
+                        $fit .= sprintf("%s x%d", $line, $count-$slotCount);
                     }
+                    else {
+                        $fit .= $line."\n";
+                    }
+                }
+                else {
+                    $fit .= $line."\n";
                 }
             }
 
@@ -152,10 +173,51 @@
         }
 
         /**
+         * Gets the maximum drone bandwidth of a ship
+         * @param int $item_id
+         *
+         * @return mixed|null
+         */
+        public function getShipDroneBandwidth(int $item_id) {
+            return DBCacheController::remember("drone_bandwidth", $item_id, function () use ($item_id) {
+                $itemInfo = $this->resourceLookup->getItemInformation($item_id);
+                $item = new ItemInfoParser($itemInfo);
+                try {
+                    return $item->getDogmaAttribute(DogmaAttribute::DRONE_BANDWIDTH_AVAILABLE);
+                }
+                catch (\Exception $e) {
+                    return 0;
+                }
+            });
+        }
+
+        /**
+         * Gets bandwidth usage of a drone
+         * @param int $item_id
+         *
+         * @return mixed|null
+         */
+        public function getDroneBandwidthUsage(int $item_id) {
+
+            return DBCacheController::remember("drone_bandwidth", $item_id, function () use ($item_id) {
+                $itemInfo = $this->resourceLookup->getItemInformation($item_id);
+                $item = new ItemInfoParser($itemInfo);
+                try {
+                    return $item->getDogmaAttribute(DogmaAttribute::DRONE_BANDWIDTH_USED);
+                }
+                catch (\Exception $e) {
+                    return 0;
+                }
+            });
+        }
+
+        /**
          * Quick parses the EFT fit.
+         *
          * @param string $eft
          *
          * @return array
+         * @throws \Exception
          */
         public function quickParseEft(string $eft) {
 
