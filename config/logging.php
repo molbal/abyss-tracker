@@ -99,6 +99,14 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'itemprices' => [
+            'path' => storage_path('logs/itemprices.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+
+
     ],
 
 ];

@@ -55,7 +55,7 @@
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID'           => session()->get("login_id"),
                 'PUBLIC'            => $request->get("PUBLIC"),
-                'TIER'              => $request->get("TIER"),
+                'TIER'              => min(5, $request->get("TIER")),
                 'TYPE'              => $request->get("TYPE"),
                 'LOOT_ISK'          => $request->get("SURVIVED") ? $lootEstimator->getTotalPrice() : 0,
                 'SURVIVED'          => $request->get("SURVIVED"),
@@ -67,7 +67,8 @@
                 'FILAMENT_PRICE'    => $request->get('FILAMENT_PRICE'),
                 'LOOT_TYPE'         => $request->get('LOOT_TYPE'),
                 'KILLMAIL'          => $request->get('KILLMAIL'),
-                'RUNTIME_SECONDS'   => $runtime
+                'RUNTIME_SECONDS'   => $runtime,
+                'IS_BONUS'          => $request->get("TIER") == 6 ? 1 : 0
             ]);
 
             foreach ($lootEstimator->getItems() as $item) {
@@ -98,7 +99,7 @@
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID'           => session()->get("login_id"),
                 'PUBLIC'            => $request->get("PUBLIC"),
-                'TIER'              => $request->get("TIER"),
+                'TIER'              => min(5, $request->get("TIER")),
                 'TYPE'              => $request->get("TYPE"),
                 'LOOT_ISK'          => $request->get("SURVIVED") ? $lootDifference['totalPrice'] : 0,
                 'SURVIVED'          => $request->get("SURVIVED"),
@@ -110,7 +111,8 @@
                 'FILAMENT_PRICE'    => $request->get('FILAMENT_PRICE'),
                 'LOOT_TYPE'         => $request->get('LOOT_TYPE'),
                 'KILLMAIL'          => $request->get('KILLMAIL'),
-                'RUNTIME_SECONDS'   => $runtime
+                'RUNTIME_SECONDS'   => $runtime,
+                'IS_BONUS'          => $request->get("TIER") == 6 ? 1 : 0
             ]);
 
             foreach ($lootDifference['gainedItems'] as $item) {

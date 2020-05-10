@@ -81,7 +81,6 @@
                     LootValueEstimator::setItemPrice($item);
                 }
                 $hash = $this->fitHelper->getFitFFH($eft);
-                $eft = $this->fitHelper->pyfaBugWorkaround($eft);
                 DB::beginTransaction();
                 $id = DB::table("fits")->insertGetId([
                     'CHAR_ID' => session()->get("login_id"),
@@ -98,7 +97,7 @@
                     'FFH' => $hash
                 ]);
 
-                if (!$this->submitSvcFitService($eft, $id)) {
+                if (!$this->submitSvcFitService($this->fitHelper->pyfaBugWorkaround($eft, $shipId), $id)) {
                     throw new \RuntimeException("Unable to submit this fit to processing.");
                 }
 

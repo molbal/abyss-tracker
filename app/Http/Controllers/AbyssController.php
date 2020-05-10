@@ -176,6 +176,8 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 'regex'    => "Please link a valid zKillboard link like this: https://zkillboard.com/kill/81359022/"
             ])->validate();
 
+
+
             if ($request->get("SURVIVED") == "1") {
                 Validator::make($request->all(), ['LOOT_DETAILED' => 'required'], ['required' => "Please fill :attribute before saving your request"])->validate();
             }
@@ -186,9 +188,8 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
             }
             else {
-
-            $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
-            $id = $this->runsController->storeNewRun($request, $lootEstimator);
+                $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
+                $id = $this->runsController->storeNewRun($request, $lootEstimator);
             }
 
             Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addHour());

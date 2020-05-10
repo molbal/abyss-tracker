@@ -138,6 +138,17 @@
             </div>
         </div>
     </div>
+
+    @if ($all_data->IS_BONUS && $all_data->TIER == 5)
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card card-body border-0 shadow-sm text-center">
+                    This run got the bonus room where there is only one room in the deadspace (full of Leshaks) and the origin gate is open by default.
+                </div>
+            </div>
+        </div>
+    @endif
+
     @php
         $all_sell = 0;
         $all_buy = 0;

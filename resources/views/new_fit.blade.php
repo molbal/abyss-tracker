@@ -33,7 +33,7 @@
                         <div class="col-sm-8">
                             <div class="alert alert-danger shadow-sm">
                                 <h5 class="font-weight-bold">Important!</h5>
-                                If this fit contains drones, please split them into stacks. The first stack will be set active and that will be used to calculate DPS. Please pay attention that if your ship can fly 2 medium drones, do not stack 10, because the fit will display a broken DPS stat.
+                                As many drones of your first stack will be set active as the bandwidth of the ship allows. Sorry, we currently do not support mixed drone DPS calculation.
                                 @component("components.info-toggle")
                                     This will be fixed later
                                 @endcomponent

@@ -59,32 +59,48 @@
             $itemClassifier = resolve("App\Http\Controllers\EFT\ItemClassifier");
             $itemSlot =  $itemClassifier->classify($itemID);
             if ($itemSlot) {
-                DB::table("item_slot")->insert([
-                    "ITEM_ID" => $itemID, "ITEM_SLOT" => $itemSlot
-                ]);
+
+                if (!DB::table("item_prices")->where("ITEM_ID", $itemID)->exists()) {
+                    DB::table("item_prices")->insertOrIgnore([
+                        'ITEM_ID' => $itemID,
+                        'PRICE_BUY' => 0,
+                        'PRICE_SELL' => 0,
+                        'PRICE_LAST_UPDATED' => now(),
+                        'DESCRIPTION' => '',
+                        'GROUP_ID' => 0,
+                        'GROUP_NAME' => '',
+                        'NAME' => '',
+                    ]);
+                }
+                    DB::table("item_slot")
+                      ->insert(["ITEM_ID" => $itemID, "ITEM_SLOT" => $itemSlot]);
             }
             return $itemSlot;
         }
 
         /**
          * Inserts 2 lines after the first drone stack found
+         *
          * @param string $eft
+         *
+         * @param int    $shipId
          *
          * @return string
          * @throws \Exception
          */
-        public function pyfaBugWorkaround(string $eft) {
+        public function pyfaBugWorkaround(string $eft, int $shipId) {
 
             $lines = explode("\n", $eft);
             $fit = "";
             $drone_happened = false;
-            $first_line = array_shift($lines);
-            $ship = explode(",", explode("[", $first_line,2)[1], 2)[0];
-            $shipId = $this->getShipIDFromEft($eft);
+            $first = array_shift($lines);
             $availableBandwidth = $this->getShipDroneBandwidth($shipId);
             foreach ($lines as $line) {
                 $line = trim($line);
-                if ($line == "") continue;
+                if ($line == "") {
+                    $fit .= "\n";
+                    continue;
+                };
 
                 if (!$drone_happened) {
 
@@ -113,14 +129,14 @@
                             }
                         }
 
-                        $fit .= sprintf("%s x%d", $line, $slotCount);
+                        $fit .= sprintf("%s x%d\n", $line, $slotCount);
 
                         if ($availableBandwidth == 0 || $count > $slotCount) {
-                            $fit .= "\n\n";
+                            $fit .= "\n\nTritanium\n";
                             $drone_happened = true;
                         }
 
-                        $fit .= sprintf("%s x%d", $line, $count-$slotCount);
+                        $fit .= sprintf("%s x%d\n", $line, $count-$slotCount);
                     }
                     else {
                         $fit .= $line."\n";
@@ -131,7 +147,7 @@
                 }
             }
 
-            return $fit;
+            return $first."\n".$fit;
         }
 
         /**

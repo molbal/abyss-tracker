@@ -61,6 +61,11 @@
                     - {{$fit->SUBMITTED}}
                 </p>
             </div>
+            @if($fit->VIDEO_LINK)
+                <div class="card-footer">
+                    <a class="btn btn-outline-info" href="{{$fit->VIDEO_LINK}}" target="_blank">Video guide</a>
+                </div>
+            @endif
         </div>
         <div class="col-sm-4">
             <div class="card card-body shadow-sm border-0 text-center">
@@ -100,7 +105,7 @@ text-align: center;">
                             <li><a href="{{route('ship_single', ['id' => $fit->SHIP_ID])}}" class="text-muted">ship usage</a></li>
                             <li><a href="{{route('ship_single', ['id' => $fit->SHIP_ID])}}" class="text-muted">ship fits</a></li>
                             <li><a href="https://zkillboard.com/ship/{{$fit->SHIP_ID}}/" target="_blank" class="text-muted">killboard</a></li>
-                            <li><a href="https://www.eveworkbench.com/fitting/search?q={{$ship_name}}" target="_blank" class="text-muted">eve workbench</a></li>
+                            <li><a href="https://www.eveworkbench.com/fitting/search?q={{$ship_name}}" target="_blank" class="text-muted">eve wbench</a></li>
                         </ul>
                     </div>
                 </div>

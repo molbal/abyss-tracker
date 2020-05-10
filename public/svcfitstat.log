@@ -18,20 +18,20 @@
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x20eba478530)
+* Using Stream ID: 1 (easy handle 0x24bba327f10)
 > POST /api/calculate/async HTTP/2
 Host: svcfitstat.eve-nt.uk
 accept: */*
-content-length: 1407
+content-length: 1140
 content-type: application/x-www-form-urlencoded
 
 * We are completely uploaded and fine
 * old SSL session ID is stale, removing
 * Connection state changed (MAX_CONCURRENT_STREAMS == 256)!
 < HTTP/2 200 
-< date: Sat, 09 May 2020 19:27:06 GMT
+< date: Sun, 10 May 2020 16:54:02 GMT
 < content-type: application/json
-< set-cookie: __cfduid=da27e76461620ff5ad6b704e9e70920151589052424; expires=Mon, 08-Jun-20 19:27:04 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
+< set-cookie: __cfduid=df2e1bbf368520c66813ce1c34a0cdde21589129642; expires=Tue, 09-Jun-20 16:54:02 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
 < x-powered-by: PHP/7.4.5
 < cache-control: private, must-revalidate
 < pragma: no-cache
@@ -42,7 +42,7 @@ content-type: application/x-www-form-urlencoded
 < cf-cache-status: DYNAMIC
 < expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
 < server: cloudflare
-< cf-ray: 590dd0d50dea1f29-FRA
-< cf-request-id: 029c80d92500001f293c19e200000001
+< cf-ray: 59152e067b0a0eab-FRA
+< cf-request-id: 02a11b180d00000eabdf9b3200000001
 < 
 * Connection #0 to host svcfitstat.eve-nt.uk left intact
