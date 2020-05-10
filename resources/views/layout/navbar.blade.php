@@ -36,7 +36,7 @@
                     <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("ships_all" == Route::currentRouteName())}}/rocket.png"> Ships</a>
                 <div class="dropdown-menu" aria-labelledby="navbarShipDropdown">
                     <a class="dropdown-item pl-2 {{"ships_all" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("ships_all")}}"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("ships_all" == Route::currentRouteName())}}/rocket.png" class="mr-1"/> Ships</a>
-                    <a class="dropdown-item pl-2 {{"fits_all" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("fit_new")}}"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == Route::currentRouteName())}}/job.png" class="mr-1"/> Fits</a>
+                    <a class="dropdown-item pl-2 {{"fit.index" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("fit.index")}}"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.index" == Route::currentRouteName())}}/job.png" class="mr-1"/> Fits</a>
                  </div>
             </li>
             <li class="nav-item">

@@ -1,8 +1,8 @@
 @extends("layout.app")
-@section("browser-title", $ship_name." fit by ".$char_name)
+@section("browser-title", $ship_name." fit".($fit->VIDEO_LINK != "" ? " with video guide 🎥" : ""))
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
-        <h4 class="font-weight-bold">{{$fit->NAME}} by <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}">{{$char_name}}</a></h4>
+        <h4 class="font-weight-bold">{{$fit->NAME}}</h4>
     </div>
     <div class="row">
         <div class="col-sm-8">

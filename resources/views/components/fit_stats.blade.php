@@ -55,7 +55,7 @@
     <div class="d-flex justify-content-between">
         <h6>Firepower</h6>
         @component("components.info-toggle")
-            Stats are calculated with all modules active, but no modules overheated.
+            Stats are calculated with all modules active, but no modules overheated. Reload time is ignored while calculating these. Implants and boosters are factored in.
         @endcomponent
     </div>
     <div class="d-flex justify-content-between align-items-center">
@@ -93,7 +93,7 @@
     <div class="d-flex justify-content-between">
         <h6>Hitpoints</h6>
         @component("components.info-toggle")
-            Stats are calculated with all modules active, but no modules overheated.
+            Stats are calculated with all modules active, but no modules overheated. Implants and boosters are factored in.
         @endcomponent
     </div>
     <table class="table table-sm w-100">
@@ -132,7 +132,7 @@
     <div class="d-flex justify-content-between">
         <h6>Repairs</h6>
         @component("components.info-toggle")
-            Stats are calculated with all modules active, but no modules overheated.
+            Stats are calculated with all modules active, but no modules overheated. Implants and boosters are factored in.
         @endcomponent
     </div>
     <table class="table table-sm w-100">
@@ -166,7 +166,7 @@
     <div class="d-flex justify-content-between">
         <h6>Capacitor</h6>
         @component("components.info-toggle")
-            Stats are calculated with all modules active, but no modules overheated.
+            Stats are calculated with all modules active, but no modules overheated. Implants and boosters are factored in.
         @endcomponent
     </div>
     <table class="table-sm w-100">
@@ -193,7 +193,7 @@
     <div class="d-flex justify-content-between">
         <h6>Targeting &amp; speed</h6>
         @component("components.info-toggle")
-            Stats are calculated with all modules active, but no modules overheated.
+            Stats are calculated with all modules active, but no modules overheated. Implants and boosters are factored in.
         @endcomponent
     </div>
     <table class="table-sm w-100">
