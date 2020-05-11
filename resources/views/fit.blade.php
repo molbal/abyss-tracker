@@ -133,6 +133,20 @@ text-align: center;">
 
         </div>
     </div>
+    @if (session()->get("login_id", -1) == $fit->CHAR_ID)
+    <div class="row mt-5">
+        <div class="card card-body border-danger shadow-sm text-center mt-3">
+            <div class="mb-0">
+                <h5 class="font-weight-bold">Fit settings</h5>
+                <p class="mb-0">You submitted this fit so you can delete it or modify its privacy. If you would like to modify it, please delete this an create a new one instead.</p>
+                <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="text-danger">Delete fit</a> &centerdot;
+                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="">Set privacy to 'Public'</a> &centerdot;
+                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="">Set privacy to 'Anonym'</a> &centerdot;
+                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="">Set privacy to 'Private'</a>
+            </div>
+        </div>
+    </div>
+    @endif
 @endsection
 @section("styles")
     <style>

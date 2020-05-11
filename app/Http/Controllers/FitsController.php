@@ -41,6 +41,68 @@
 	    }
 
         /**
+         * Handles fit deletion
+         * @param int $id
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function delete(int $id) {
+            if (!session()->has("login_id")) {
+                return view("403", ["error" => "Please sign in first"]);
+            }
+            $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+
+            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                return view('403', ['error' => sprintf("You cannot delete someone else's fit.")]);
+            }
+
+            try {
+                DB::beginTransaction();
+                DB::table("fit_tags")->where("FIT_ID", $id)->delete();
+                DB::table("fit_recommendations")->where("FIT_ID", $id)->delete();
+                DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->delete();
+                DB::commit();
+                return view("sp_message", ['title' => "Fit deleted", 'message' =>"The fit and all its data was removed from the Abyss Tracker."]);
+            }
+            catch (\Exception $e) {
+                DB::rollBack();
+                Log::error("Transaction rolled back - Could not delete fit $id - ".$e->getMessage(). " ".$e->getFile()."@".$e->getLine());
+                return view("error", ["error" => "Something went wrong and could not delete this fit. Modifications reverted."]);
+            }
+        }
+
+        /**
+         * Handles fit privacy change
+         *
+         * @param int    $id
+         *
+         * @param string $privacySetting
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         */
+        public function changePrivacy(int $id, string $privacySetting) {
+            if (!session()->has("login_id")) {
+                return view("403", ["error" => "Please sign in first"]);
+            }
+            $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+
+            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            }
+
+            try {
+                DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->update([
+                    'PRIVACY' => $privacySetting
+                ]);
+                return redirect(route("fit_single",['id' => $id]));
+            }
+            catch (\Exception $e) {
+                Log::error("Transaction rolled back - Could not change fit privacy $id - ".$e->getMessage(). " ".$e->getFile()."@".$e->getLine());
+                return view("error", ["error" => "Something went wrong and could not delete this fit. Modifications reverted."]);
+            }
+        }
+
+        /**
          * @param Request $request
          *
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
@@ -73,7 +135,7 @@
                 $shipName = $this->getFitName($eft);
 
                 // Get price
-                $lootEstimator = new LootValueEstimator($eft ?? "");
+                $lootEstimator = new LootValueEstimator(preg_replace('/^\[Empty.+slot\]$/im', '', $eft) ?? "");
 
                 // Update each price
                 /** @var EveItem[] $items */
@@ -136,7 +198,7 @@
 
             $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
 
-            if ($fit->PRIVACY == 'private') {
+            if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
                 return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='".route('home_mine')."'>View public fits</a></p>")]);
             }
             $ship_name = DB::table('ship_lookup')->where('ID',$fit->SHIP_ID)->value('NAME');
@@ -147,10 +209,6 @@
             $ship_type = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
             $ship_price = (DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_BUY")+DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_SELL")/2) ?? 0;
 
-            /** @var TagsController $tc */
-            $tc = resolve("App\Http\Controllers\EFT\Tags\TagsController");
-            $tags = $tc->getTags($fit->RAW_EFT, json_decode($fit->STATS, 1));
-            dd($tags);
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,

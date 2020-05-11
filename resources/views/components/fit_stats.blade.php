@@ -177,7 +177,7 @@
                 </td>
             @else
                 <td colspan="3" class="text-center">
-                    <span class="text-uppercase font-weight-bold">Lasts for {{number_format($stats->misc->capacitor->lastsFor, 0, ",", " ")}} seconds</span>
+                    <span class="text-uppercase font-weight-bold">Lasts for {{number_format($stats->misc->capacitor->lastsSeconds, 0, ",", " ")}} seconds</span>
                 </td>
             @endif
         <tr>

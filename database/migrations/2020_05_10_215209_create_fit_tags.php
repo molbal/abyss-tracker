@@ -14,10 +14,11 @@ class CreateFitTags extends Migration
     public function up()
     {
         Schema::create('fit_tags', function (Blueprint $table) {
-            $table->bigIncrements('ID');
-            $table->string("TAG_NAME", "24");
             $table->unsignedBigInteger("FIT_ID");
+            $table->string("TAG_NAME", "24");
+            $table->tinyInteger("TAG_VALUE");
 
+            $table->primary(["FIT_ID", "TAG_NAME"]);
             $table->foreign("FIT_ID")->references("ID")->on("fits");
         });
     }

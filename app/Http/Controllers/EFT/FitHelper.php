@@ -7,6 +7,7 @@
 	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\Cache\DBCacheController;
     use App\Http\Controllers\EFT\Constants\DogmaAttribute;
+    use App\Http\Controllers\EFT\Exceptions\NotAnItemException;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
@@ -32,6 +33,9 @@
          * @throws \Exception When Item ID is not found
          */
         public function getItemID(string $itemName): int {
+            if (preg_match('/^\[Empty.+slot\]$/i',trim($itemName))) {
+                throw new NotAnItemException("Item $itemName is not an EVE item");
+            }
 
             // Get local
             if (DB::table("item_prices")->where("NAME", $itemName)->exists())
@@ -50,6 +54,11 @@
          * @throws \Exception
          */
         public function getItemSlot(int $itemID):string {
+
+            if ($itemID == -1) {
+                throw new NotAnItemException("This is not an EVE Item and has no slot");
+            }
+
             // Is cached?
             if (DB::table("item_slot")->where("ITEM_ID", $itemID)->exists()) {
                 return DB::table("item_slot")->where("ITEM_ID", $itemID)->value("ITEM_SLOT");
@@ -97,6 +106,7 @@
             $availableBandwidth = $this->getShipDroneBandwidth($shipId);
             foreach ($lines as $line) {
                 $line = trim($line);
+                $lineOriginal = $line;
                 if ($line == "") {
                     $fit .= "\n";
                     continue;
@@ -105,8 +115,9 @@
                 if (!$drone_happened) {
 
                     // Let's get before the comma: strip ammo
-                    $line = explode(',', $line, 2)[0];
+                    $all = explode(',', $line, 2);
 
+                    $line = $all[0];
                     if (preg_match('/^.+x\d{0,4}$/m', $line)) {
                         $words = explode(' ', $line);
                         $count = intval(str_replace("x", "",array_pop($words)));
@@ -115,35 +126,39 @@
                     else {
                         $count = 1;
                     }
+                    try {
+                        $itemID = $this->getItemID($line);
+                        $slot = $this->getItemSlot($itemID);
+                        if ($slot == "drone") {
 
-                    $itemID = $this->getItemID($line);
-                    $slot = $this->getItemSlot($itemID);
-                    if ($slot == "drone") {
-
-                        $slotCount = 0;
-                        for ($i = 1; $i<=$count;$i++) {
-                            $droneBandwidthUsage = $this->getDroneBandwidthUsage($itemID);
-                            if ($availableBandwidth >= $droneBandwidthUsage) {
-                                $slotCount++;
-                                $availableBandwidth-=$droneBandwidthUsage;
+                            $slotCount = 0;
+                            for ($i = 1; $i<=$count;$i++) {
+                                $droneBandwidthUsage = $this->getDroneBandwidthUsage($itemID);
+                                if ($availableBandwidth >= $droneBandwidthUsage) {
+                                    $slotCount++;
+                                    $availableBandwidth-=$droneBandwidthUsage;
+                                }
                             }
+
+                            $fit .= sprintf("%s x%d\n", $line, $slotCount);
+
+                            if ($availableBandwidth == 0 || $count > $slotCount) {
+                                $fit .= "\n\nTritanium\n";
+                                $drone_happened = true;
+                            }
+
+                            $fit .= sprintf("%s x%d\n", $line, $count-$slotCount);
                         }
-
-                        $fit .= sprintf("%s x%d\n", $line, $slotCount);
-
-                        if ($availableBandwidth == 0 || $count > $slotCount) {
-                            $fit .= "\n\nTritanium\n";
-                            $drone_happened = true;
+                        else {
+                            $fit .= $lineOriginal."\n";
                         }
-
-                        $fit .= sprintf("%s x%d\n", $line, $count-$slotCount);
                     }
-                    else {
-                        $fit .= $line."\n";
+                    catch (NotAnItemException $ignored) {
+                        $fit .= $lineOriginal."\n";
                     }
                 }
                 else {
-                    $fit .= $line."\n";
+                    $fit .= $lineOriginal."\n";
                 }
             }
 
@@ -176,10 +191,14 @@
                         $count = intval(str_replace("x", "", $last));
                         $line = implode(" ", $words);
                     }
-
-                    $itemId = $this->getItemID($line);
-                    if (in_array($this->getItemSlot($itemId), ["high", "mid", "low", "rig"])) {
-                        $modules[] = $itemId;
+                    try {
+                        $itemId = $this->getItemID($line);
+                        if (in_array($this->getItemSlot($itemId), ["high", "mid", "low", "rig"])) {
+                            $modules[] = $itemId;
+                        }
+                    }
+                    catch (NotAnItemException $ignored) {
+                        $itemId = -1;
                     }
                 }
                 sort($modules);
@@ -278,7 +297,12 @@
                 catch (\Exception $e) {
                     $price = 0;
                 }
-                $itemID = $this->getItemID($line);
+                try {
+                    $itemID = $this->getItemID($line);
+                }
+                catch (NotAnItemException $ignored) {
+                    continue;
+                }
                 $slot = $this->getItemSlot($itemID);
 
                 $struct[$slot][] = [

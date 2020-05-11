@@ -169,8 +169,8 @@
                         </div>
                         <div class="col-sm-4 p-1">
                             <div class="pickerInputGroup">
-                                <input id="privacy-anonym" name="privacy" value="anonym" type="radio"/>
-                                <label for="privacy-anonym">
+                                <input id="privacy-incognito" name="privacy" value="incognito" type="radio"/>
+                                <label for="privacy-incognito">
                                     <p class="mb-1 font-weight-bold text-uppercase">Anonym</p>
                                     <p class="mb-1 text-small">Anonym fitting with the modules visible, but your name hidden</p>
                                 </label>

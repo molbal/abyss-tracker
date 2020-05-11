@@ -39,9 +39,12 @@
             'STATS' => $data,
             'STATUS' => 'done'
         ]);
-        Log::info("Updated ".$e." rows: ".print_r([
-                'STATS' => $data,
-                'STATUS' => 'done'
-            ], 1));
+        if ($e == 0) {
+            Log::warning("Could not find fit with ID $id - response ignored.");
+        }
+
+        /** @var \App\Http\Controllers\EFT\Tags\TagsController $tags */
+        $tags = resolve("\App\Http\Controllers\EFT\Tags\TagsController");
+        $tags->applyTags($id, DB::table("fits")->where("ID", $id)->value("RAW_EFT"), $data);
         return [true];
     });
