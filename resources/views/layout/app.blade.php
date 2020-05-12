@@ -83,6 +83,25 @@
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
         }
+
+        .card-toggle {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .card-toggle:hover {
+            opacity: 1;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .hover-underline:hover {
+            text-decoration: underline !important;
+        }
     </style>
     @yield('styles')
 </head>

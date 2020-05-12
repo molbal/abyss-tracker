@@ -6,8 +6,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-sm-3">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold">Abyss target</h5>
+            @component("components.collapse.collapsible-card", ["title" => "Abyss target", 'show' => true])
                 <div class="form-group">
                     <label for="TYPE">Abyss type</label>
                     <select name="TYPE" class="form-control select2-nosearch">
@@ -30,16 +29,43 @@
                         <option value="5">5</option>
                     </select>
                 </div>
-            </div>
+            @endcomponent
 
-            <div class="card card-body border-0 shadow-sm mt-3">
-                <h5 class="font-weight-bold">Ship type
-                    @component("components.info-toggle")
-                        For optimal results only use one of these options. Set the others to "Any"
-                    @endcomponent
-                </h5>
+            @component("components.collapse.collapsible-card", ["title" => "Basic data"])
                 <div class="form-group">
-                    <label for="SHIP">Ship hull</label>
+                    <label for="TYPE">Creator</label>
+                    <select name="TYPE" class="form-control select2-nosearch">
+                        <option value="">Anyone</option>
+                    </select>
+                </div>
+                    <div class="form-group">
+                        <label for="NAME">Fit name</label>
+                        <input type="text" name="NAME" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="CHEAPER_THAN">Cheaper than</label>
+                        <select name="CHEAPER_THAN" class="form-control select2-nosearch">
+                            <option value="">-</option>
+                            <option value="50">50M ISK</option>
+                            <option value="100">100M ISK</option>
+                            <option value="150">150M ISK</option>
+                            <option value="250">250M ISK</option>
+                            <option value="300">300M ISK</option>
+                            <option value="500">500M ISK</option>
+                            <option value="750">750M ISK</option>
+                            <option value="1000">1B ISK</option>
+                            <option value="1500">1.5B ISK</option>
+                            <option value="2000">2B ISK</option>
+                        </select>
+                    </div>
+            @endcomponent
+
+            @component("components.collapse.collapsible-card", ["title" => "Ships"])
+                <div class="form-group">
+                    <label for="SHIP">Ship hull
+                        @component("components.info-toggle")
+                            For optimal results only use Ship, Class or Size selectors. Set the other options to 'Any'
+                        @endcomponent</label>
                     <select name="SHIP_ID" class="form-control select2-default">
                         <option value="" selected>Any</option>
                         @foreach($ships as $ship)
@@ -68,29 +94,28 @@
                         <option value="0">Frigate</option>
                     </select>
                 </div>
-            </div>
+            @endcomponent
 
 
-            <div class="card card-body border-0 shadow-sm mt-3">
-                <h5 class="font-weight-bold">Offense</h5>
+            @component("components.collapse.collapsible-card", ["title" => "Offense"])
                 @component("components.fits.filter.tag-selector") TagDroneCentric @endcomponent
                 @component("components.fits.filter.tag-selector") TagEnergyWeapons @endcomponent
                 @component("components.fits.filter.tag-selector") TagHybridWeapons @endcomponent
                 @component("components.fits.filter.tag-selector") TagMissileWeapons @endcomponent
                 @component("components.fits.filter.tag-selector") TagPrecursorWeapons @endcomponent
                 @component("components.fits.filter.tag-selector") TagProjectileWeapons @endcomponent
-            </div>
-            <div class="card card-body border-0 shadow-sm mt-3">
-                <h5 class="font-weight-bold">Defense</h5>
+            @endcomponent
+
+            @component("components.collapse.collapsible-card", ["title" => "Defense"])
                 @component("components.fits.filter.tag-selector") TagArmorActive @endcomponent
                 @component("components.fits.filter.tag-selector") TagProjectileWeapons @endcomponent
                 @component("components.fits.filter.tag-selector") TagShieldPassive @endcomponent
-            </div>
-            <div class="card card-body border-0 shadow-sm mt-3">
-                <h5 class="font-weight-bold">Propulsion</h5>
+            @endcomponent
+
+            @component("components.collapse.collapsible-card", ["title" => "Propulsion"])
                 @component("components.fits.filter.tag-selector") TagAfterburner @endcomponent
                 @component("components.fits.filter.tag-selector") TagMicrowarpdrive @endcomponent
-            </div>
+            @endcomponent
 
             <div class="card card-body border-0 shadow-sm mt-3 p-0">
                 <input type="submit" class="btn btn-primary" value="Search">
@@ -152,8 +177,22 @@
             border-radius: 100%;
         }
 
-        table.table.table-sm td{
+        table.table.table-sm td {
             border: 0 solid transparent;
+        }
+
+        .moveabitdown {
+            position: relative;
+            top: 3px
+        }
+
+        .moveabitup {
+            position: relative;
+            top: -3px
+        }
+
+        .vertical-align-top {
+            vertical-align: top;
         }
     </style>
 @endsection

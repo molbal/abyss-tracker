@@ -12,4 +12,5 @@
         "TagProjectileWeapons"  => "Projectile weapons",
         "TagShieldActive"  => "Shield booster",
         "TagShieldPassive"  => "Shield regen tank",
+        "TagVideo" => " With video"
     ];

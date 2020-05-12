@@ -62,7 +62,7 @@
                          ->where("PRIVACY", '!=', 'private')
                          ->where("STATUS", 'done')
                          ->join("ship_lookup", 'fits.SHIP_ID', '=', 'ship_lookup.ID')
-                         ->select(["fits.ID", "fits.SHIP_ID", "fits.NAME", "fits.STATS", "fits.PRICE", "ship_lookup.NAME as SHIP_NAME"])
+                         ->select(["fits.ID", "fits.SHIP_ID", "fits.NAME", "fits.STATS", "fits.PRICE", "fits.VIDEO_LINK", "ship_lookup.NAME as SHIP_NAME"])
                          ->get();
             });
         }
