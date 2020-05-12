@@ -1,6 +1,6 @@
-*   Trying 104.27.144.139:443...
+*   Trying 104.27.145.139:443...
 * TCP_NODELAY set
-* Connected to svcfitstat.eve-nt.uk (104.27.144.139) port 443 (#0)
+* Connected to svcfitstat.eve-nt.uk (104.27.145.139) port 443 (#0)
 * ALPN, offering h2
 * ALPN, offering http/1.1
 * successfully set certificate verify locations:
@@ -18,20 +18,20 @@
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x18d01506630)
+* Using Stream ID: 1 (easy handle 0x275db27d040)
 > POST /api/calculate/async HTTP/2
 Host: svcfitstat.eve-nt.uk
 accept: */*
-content-length: 571
+content-length: 905
 content-type: application/x-www-form-urlencoded
 
 * We are completely uploaded and fine
 * old SSL session ID is stale, removing
 * Connection state changed (MAX_CONCURRENT_STREAMS == 256)!
 < HTTP/2 200 
-< date: Tue, 12 May 2020 10:14:59 GMT
+< date: Tue, 12 May 2020 19:13:28 GMT
 < content-type: application/json
-< set-cookie: __cfduid=da7a27a4d55c0b5818a4e2f9e5d35dc8a1589278499; expires=Thu, 11-Jun-20 10:14:59 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
+< set-cookie: __cfduid=d543c0cc2e93f1d9d57391682efa5779a1589310807; expires=Thu, 11-Jun-20 19:13:27 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
 < x-powered-by: PHP/7.4.5
 < cache-control: private, must-revalidate
 < pragma: no-cache
@@ -42,7 +42,7 @@ content-type: application/x-www-form-urlencoded
 < cf-cache-status: DYNAMIC
 < expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
 < server: cloudflare
-< cf-ray: 5923603bee47d725-FRA
-< cf-request-id: 02a9fa79740000d72590abb200000001
+< cf-ray: 5926750428249736-FRA
+< cf-request-id: 02abe776950000973621290200000001
 < 
 * Connection #0 to host svcfitstat.eve-nt.uk left intact

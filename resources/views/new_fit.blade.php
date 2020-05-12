@@ -81,7 +81,8 @@
                             <textarea name="description" id="description" class="form-control w-100" rows="10"></textarea>
 
                             <div class="form-group mt-3">
-                                <label for="">Youtube video link <br> <small>If you have a video displaying the fit, it will be linked</small></label>
+                                <label for="">Youtube video link <br> <small>If you have a video displaying the fit, it will be linked.<br>Please use a well formed Youtube link such as <a
+                                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a></small></label>
                                 <input type="text" name="video_link" id="" class="form-control">
                             </div>
                         </div>

@@ -65,7 +65,7 @@
                                         <option {{($prev->TIER ?? null) == 3 ? "selected" : ""}}>3</option>
                                         <option {{($prev->TIER ?? null) == 4 ? "selected" : ""}}>4</option>
                                         <option {{($prev->TIER ?? null) == 5 ? "selected" : ""}}>5</option>
-                                        <option {{($prev->TIER ?? null) == 6 ? "selected" : ""}}>5 with single bonus room</option>
+                                        <option {{($prev->TIER ?? null) == 6 ? "selected" : ""}}>5 with single Dreadnought room</option>
                                     </select>
                                 </div>
                             </div>

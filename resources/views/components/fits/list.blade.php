@@ -3,10 +3,11 @@
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
         <h4 class="font-weight-bold">Fits</h4>
+        <a href="{{route("fit_new")}}" class="btn btn-outline-secondary">Add new fit</a>
     </div>
     <div class="row mt-3">
         <div class="col-sm-3">
-            @component("components.collapse.collapsible-card", ["title" => "Abyss target", 'show' => true])
+            @component("components.collapse.collapsible-card", ["title" => "Abyss target", 'show' => true, 'icon' => 'abyss'])
                 <div class="form-group">
                     <label for="TYPE">Abyss type</label>
                     <select name="TYPE" class="form-control select2-nosearch">
@@ -31,7 +32,7 @@
                 </div>
             @endcomponent
 
-            @component("components.collapse.collapsible-card", ["title" => "Basic data"])
+            @component("components.collapse.collapsible-card", ["title" => "Basic data", 'icon' => 'basic'])
                 <div class="form-group">
                     <label for="TYPE">Creator</label>
                     <select name="TYPE" class="form-control select2-nosearch">
@@ -60,7 +61,7 @@
                     </div>
             @endcomponent
 
-            @component("components.collapse.collapsible-card", ["title" => "Ships"])
+            @component("components.collapse.collapsible-card", ["title" => "Ships", 'icon' => 'ship'])
                 <div class="form-group">
                     <label for="SHIP">Ship hull
                         @component("components.info-toggle")
@@ -97,7 +98,7 @@
             @endcomponent
 
 
-            @component("components.collapse.collapsible-card", ["title" => "Offense"])
+            @component("components.collapse.collapsible-card", ["title" => "Offense", 'icon' => 'offense'])
                 @component("components.fits.filter.tag-selector") TagDroneCentric @endcomponent
                 @component("components.fits.filter.tag-selector") TagEnergyWeapons @endcomponent
                 @component("components.fits.filter.tag-selector") TagHybridWeapons @endcomponent
@@ -106,13 +107,13 @@
                 @component("components.fits.filter.tag-selector") TagProjectileWeapons @endcomponent
             @endcomponent
 
-            @component("components.collapse.collapsible-card", ["title" => "Defense"])
+            @component("components.collapse.collapsible-card", ["title" => "Defense", 'icon' => 'defense'])
                 @component("components.fits.filter.tag-selector") TagArmorActive @endcomponent
                 @component("components.fits.filter.tag-selector") TagProjectileWeapons @endcomponent
                 @component("components.fits.filter.tag-selector") TagShieldPassive @endcomponent
             @endcomponent
 
-            @component("components.collapse.collapsible-card", ["title" => "Propulsion"])
+            @component("components.collapse.collapsible-card", ["title" => "Propulsion", 'icon' => 'propulsion'])
                 @component("components.fits.filter.tag-selector") TagAfterburner @endcomponent
                 @component("components.fits.filter.tag-selector") TagMicrowarpdrive @endcomponent
             @endcomponent
@@ -129,7 +130,8 @@
                         <td>&nbsp;</td>
                         <td class="text-muted text-left">Name</td>
                         <td class="text-muted text-right">Total DPS</td>
-                        <td class="text-muted text-right">Total tank</td>
+                        <td class="text-muted text-right">Total rep</td>
+                        <td class="text-muted text-right">Total ehp</td>
                         <td class="text-muted text-right">Max speed</td>
                         <td class="text-muted text-right">Total cost</td>
                     </tr>
@@ -158,6 +160,12 @@
             cursor: pointer;
             border: 2px solid rgba(0, 0, 0, 0);
             text-align: center;
+        }
+
+        .card-header-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 4px;
         }
 
         .tag-selector:hover {

@@ -1,6 +1,11 @@
 .tag-offense,
 .tag-defense,
 .tag-propulsion {
-    background: color.scale($info, $lightness: -20%);
+    background: $primary;
+    color: #fff;
+}
+
+.tag-misc {
+    background: $warning;
     color: #fff;
 }

@@ -9,6 +9,8 @@
     use App\Http\Controllers\Loot\EveItem;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Partners\EveWorkbench;
+    use App\Http\Controllers\Youtube\YoutubeController;
+    use Cohensive\Embed\Embed;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -209,6 +211,20 @@
             $ship_type = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
             $ship_price = (DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_BUY")+DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_SELL")/2) ?? 0;
 
+            if (trim($fit->VIDEO_LINK)) {
+                try {
+                    $embed = YoutubeController::getEmbed($fit->VIDEO_LINK);
+                }
+                catch (\Exception $exception) {
+                    Log::warning(sprintf("Could not generate embed for %s", $fit->VIDEO_LINK));
+                    $embed = "<div class='alert alert-warning'>Could not generate embed for link: ".htmlentities($fit->VIDEO_LINK).'</div>';
+                }
+            }
+            else {
+                $embed = "";
+            }
+
+            $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->get()->get(0);
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
@@ -217,7 +233,9 @@
                 'ship_price' => $ship_price,
                 'fit_quicklook' => $this->fitHelper->quickParseEft($fit->RAW_EFT),
                 'description' => $description,
-                'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name)
+                'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),
+                'embed' => $embed,
+                'recommendations' => $recommendations
             ]);
 	    }
 

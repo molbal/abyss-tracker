@@ -1,5 +1,5 @@
 @extends("layout.app")
-@section("browser-title", $ship_name." fit".($fit->VIDEO_LINK != "" ? " with video guide 🎥" : ""))
+@section("browser-title", $ship_name." fit")
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
         <h4 class="font-weight-bold">{{$fit->NAME}}</h4>
@@ -11,6 +11,16 @@
                     <div id="home" class="tab-pane active">
                         <h5 class="font-weight-bold">Fit's modules</h5>
                         <table class="table table-responsive-sm table-sm w-100 mb-4">
+                            @php
+                            $price = 0;
+                            foreach ($fit_quicklook as $section) {
+                            	foreach($section as $item) {
+                            		$price += $item["count"]*$item["price"];
+                            	}
+                            }
+                            $fit_price = $price;
+                            $price += $ship_price;
+                            @endphp
                             @component("components.fit_group", ["items" => $fit_quicklook["high"], "section" => "High slot modules"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["mid"], "section" => "Mid slot modules"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["low"], "section" => "Low slot modules"])@endcomponent
@@ -21,22 +31,24 @@
                             @component("components.fit_group", ["items" => $fit_quicklook["cargo"], "section" => "Other cargo and implants"])@endcomponent
 {{--                            @component("components.fit_group", ["items" => $fit_quicklook["implant"], "section" => "Implants"])@endcomponent--}}
                             <tr>
+                                <td colspan="3" class="font-weight-bold text-right">Total without ship: {{number_format($fit_price, 0, ","," ")}} ISK</td>
+                            </tr>
+                            <tr>
                                 <td colspan="3" class="text-left text-uppercase font-weight-bold">Ship</td>
                             </tr>
-                                <tr>
-                                    <td style="width: 36px;">
-                                        <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID}}_32.png" alt="{{$ship_name}} icon" style="width: 32px;height: 32px;">
-                                    </td>
-                                    <td>
-                                        {{$ship_name}}
-                                    </td>
-                                    <td class="text-right">
-                                        {{number_format($ship_price, 0, ",", " ")}} ISK
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                <td colspan="3" class="font-weight-bold text-right">Total: {{number_format($fit->PRICE, 0, ","," ")}} ISK</td>
+                            <tr>
+                                <td style="width: 36px;">
+                                    <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID}}_32.png" alt="{{$ship_name}} icon" style="width: 32px;height: 32px;">
+                                </td>
+                                <td>
+                                    {{$ship_name}}
+                                </td>
+                                <td class="text-right">
+                                    {{number_format($ship_price, 0, ",", " ")}} ISK
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="font-weight-bold text-right">Total: {{number_format($price, 0, ","," ")}} ISK</td>
                             </tr>
                         </table>
                     </div>
@@ -53,7 +65,27 @@
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
+                <h5 class="font-weight-bold">Maximum suggested Abyssal difficulty</h5>
+                <table class="w-100 table-sm">
+                    <tr>
+                        @foreach(['DARK','ELECTRICAL','EXOTIC','FIRESTORM','GAMMA'] as $type)
+                            <td class="text-center" style="width: 20%">
+                                <p class="h3 mb-1">
+                                    @if($recommendations->$type == 0)
+                                        <img src="icons/unavailable.png" class="smallicon" alt="Nope" data-toggle="tooltip" title="Not recommended for any {{strtolower($type)}} runs">
+                                        @else
+                                        {{$recommendations->$type}}
+                                    @endif
+                                </p>
+                                <img src="types/{{$type}}.png"  class="tinyicon" alt=""> {{ucfirst(strtolower($type))}}
+                            </td>
+                        @endforeach
+                    </tr>
+                </table>
+            </div>
+            <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Description</h5>
+                {!! $embed !!}
                 <div class="text-justify">
                     {!! $description !!}
                 </div>
