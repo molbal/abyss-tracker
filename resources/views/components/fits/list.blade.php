@@ -7,6 +7,8 @@
     </div>
     <div class="row mt-3">
         <div class="col-sm-3">
+            <form action="{{route('fit.search')}}" method="POST">
+                {{csrf_field()}}
             @component("components.collapse.collapsible-card", ["title" => "Abyss target", 'show' => true, 'icon' => 'abyss'])
                 <div class="form-group">
                     <label for="TYPE">Abyss type</label>
@@ -121,28 +123,12 @@
             <div class="card card-body border-0 shadow-sm mt-3 p-0">
                 <input type="submit" class="btn btn-primary" value="Search">
             </div>
+        </form>
         </div>
         <div class="col-sm-9">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Result list</h5>
-                <table class="table table-sm">
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td class="text-muted text-left">Name</td>
-                        <td class="text-muted text-right">Total DPS</td>
-                        <td class="text-muted text-right">Total rep</td>
-                        <td class="text-muted text-right">Total ehp</td>
-                        <td class="text-muted text-right">Max speed</td>
-                        <td class="text-muted text-right">Total cost</td>
-                    </tr>
-                    @forelse($results as $row)
-                        @component("components.fits.filter.result-row", ["row" => $row])@endcomponent
-                    @empty
-                        <tr>
-                            <td>Empty</td>
-                        </tr>
-                    @endforelse
-                </table>
+                @component("components.fits.filter.result-list", ["results" => $results])@endcomponent
             </div>
         </div>
     </div>

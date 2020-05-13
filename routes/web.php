@@ -102,7 +102,9 @@
     Route::get("/fit/{id}/change-privacy/{privacySetting}", 'FitsController@changePrivacy')
          ->name('fit.change_privacy');
     Route::get("/fits", 'FitSearchController@index')
-        ->name("fit.index");
+         ->name("fit.index");
+    Route::any("/fits/search", 'FitSearchController@search')
+         ->name("fit.search");
 
     /**
      * Item check

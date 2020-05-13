@@ -13,11 +13,12 @@
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->defense->ehp->total/1000)}} <small>k ehp</small></span></td>
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->misc->maxSpeed)}} <small>m/s</small></span></td>
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{number_format($row->PRICE/1000000, 0, ",", " ")}} M <small>ISK</small></span>
+    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{number_format($row->RUNS_COUNT, 0, ",", " ")}} </span>
     </td>
 </tr>
 <tr class="border-bottom text-up">
     <!-- icon -->
-    <td><span class="text-muted text-small moveabitup" style="vertical-align: top">{{$row->SHIP_NAME}} {{$row->RUNS_COUNT}}</span></td>
+    <td><span class="text-muted text-small moveabitup" style="vertical-align: top">{{$row->SHIP_NAME}} </span></td>
     <td colspan="4">
         <div class="moveabitup">
             @if($row->VIDEO_LINK)

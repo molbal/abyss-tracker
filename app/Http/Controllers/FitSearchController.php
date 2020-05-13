@@ -23,19 +23,34 @@
         }
 
 
+        /**
+         * Handles the homescreen
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
         public function index() {
-            $ships = DB::table("ship_lookup")
-                       ->orderBy("NAME", "ASC")
-                       ->get();
-            $groups = Cache::remember("aft.ship.groups", now()->addHour(), function () {
-                return DB::select("select distinct `GROUP` from ship_lookup order by 1 asc");
-            });
+            $ships = Cache::remember("aft.ships", now()->addHour(), function() {return DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();});
+            $groups = Cache::remember("aft.ship.groups", now()->addHour(), function () {return DB::select("select distinct `GROUP` from ship_lookup order by 1 asc");});
             $results = $this->getStartingQuery()->orderByDesc("RUNS_COUNT")->paginate();
             foreach ($results as $i => $result) {
                 $results[$i]->TAGS = $this->getFitTags($result->ID);
             }
 
             return view("components.fits.list", ['ships' => $ships, 'shipGroups' => $groups, 'results' => $results]);
+        }
+
+        /**
+         * Handles the search view
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function search() {
+            $ships = Cache::remember("aft.ships", now()->addHour(), function() {return DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();});
+            $groups = Cache::remember("aft.ship.groups", now()->addHour(), function () {return DB::select("select distinct `GROUP` from ship_lookup order by 1 asc");});
+            $results = $this->getStartingQuery()->orderByDesc("RUNS_COUNT")->paginate();
+            foreach ($results as $i => $result) {
+                $results[$i]->TAGS = $this->getFitTags($result->ID);
+            }
+
+            return view("components.fits.results", ['ships' => $ships, 'shipGroups' => $groups, 'results' => $results]);
         }
 
         /**

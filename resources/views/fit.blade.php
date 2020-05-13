@@ -125,7 +125,7 @@ text-align: center;">
                                  class="rounded-circle shadow" style="border: 2px solid #fff; width: 64px;height: 64px;">
                             <br>
                             <div>
-                                <h2 class="font-weight-bold mb-0 mt-3" style="line-height: 1rem">
+                                <h2 class="font-weight-bold mb-0 mt-3" style="line-height: 1.6rem">
                                     <a class="text-dark" href="{{route("ship_single", ["id" => $fit->SHIP_ID])}}">{{$ship_name}}</a>
                                 </h2>
                                 <small class="text-muted font-weight-bold">{{$ship_type}}</small>
