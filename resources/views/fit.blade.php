@@ -29,7 +29,7 @@
                             @component("components.fit_group", ["items" => $fit_quicklook["ammo"], "section" => "Ammunition"])@endcomponent
                                 @component("components.fit_group", ["items" => $fit_quicklook["booster"], "section" => "Boosters"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["cargo"], "section" => "Other cargo and implants"])@endcomponent
-{{--                            @component("components.fit_group", ["items" => $fit_quicklook["implant"], "section" => "Implants"])@endcomponent--}}
+{{--                            @component("components.fit_group", ["welitems" => $fit_quicklook["implant"], "section" => "Implants"])@endcomponent--}}
                             <tr>
                                 <td colspan="3" class="font-weight-bold text-right">Total without ship: {{number_format($fit_price, 0, ","," ")}} ISK</td>
                             </tr>
