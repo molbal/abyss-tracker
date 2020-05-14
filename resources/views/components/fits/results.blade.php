@@ -7,8 +7,13 @@
     </div>
     <div class="row mt-3">
         <div class="col-sm-3">
-            @component("components.collapse.collapsible-card", ["title" => "Result filters", 'show' => true, 'icon' => 'search'])
-                <p>aaaaaaaaaaaaaaaaaa</p>
+            @component("components.collapse.collapsible-card", ["title" => "Displaying ".$results->count()." fits", 'show' => true, 'icon' => 'search'])
+                <p>With the following filters:</p>
+                @forelse($filters as $filter)
+                    <span class="badge badge-secondary m-1" style="font-size: 0.9em">{{$filter}}</span>
+                    @empty
+                    <p>No filter applied</p>
+                @endforelse
             @endcomponent
 
             <div class="card card-body border-0 shadow-sm mt-3 p-0">

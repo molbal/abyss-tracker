@@ -141,7 +141,7 @@
                             }
                             else {
                                 if ($percent < 90) {
-                                    $run_summary = "an okay-ish";
+                                    $run_summary = "an ordinary";
                                 }
                                 else {
                                     if ($percent < 110) {

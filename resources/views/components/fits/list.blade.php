@@ -36,9 +36,14 @@
 
             @component("components.collapse.collapsible-card", ["title" => "Basic data", 'icon' => 'basic'])
                 <div class="form-group">
-                    <label for="TYPE">Creator</label>
-                    <select name="TYPE" class="form-control select2-nosearch">
+                    <label for="CHAR_ID">Creator</label>
+                    <select name="CHAR_ID" class="form-control select2-character">
                         <option value="">Anyone</option>
+                        @foreach($users as $user)
+                            <option
+                                value="{{$user->CHAR_ID}}">{{$user->NAME}}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
                     <div class="form-group">
@@ -111,7 +116,7 @@
 
             @component("components.collapse.collapsible-card", ["title" => "Defense", 'icon' => 'defense'])
                 @component("components.fits.filter.tag-selector") TagArmorActive @endcomponent
-                @component("components.fits.filter.tag-selector") TagProjectileWeapons @endcomponent
+                @component("components.fits.filter.tag-selector") TagShieldActive @endcomponent
                 @component("components.fits.filter.tag-selector") TagShieldPassive @endcomponent
             @endcomponent
 
@@ -185,6 +190,11 @@
             top: -3px
         }
 
+        .movealilbitup {
+            position: relative;
+            top: -1px
+        }
+
         .vertical-align-top {
             vertical-align: top;
         }
@@ -192,6 +202,30 @@
 @endsection
 @section("scripts")
     <script>
+        function formatState (state) {
+            var $state = $(state);
+            return $state;
+        }
+
+        $(".select2-character").select2({
+            theme: 'bootstrap',
+            templateResult: function (state) {
+                console.log(state);
+                if (!state.id) { return state.text; }
+                if (state.element.value.toLowerCase() === "0") {
+                    return $('<span class="text-center">'+state.text+'</span>');
+                }
+                var $state = $(
+                    '<span><img style="width: 24px; height: 24px" src="https://images.evetech.net/characters/' +  state.element.value.toLowerCase() +
+                    '/portrait?size=32" class="rounded-circle shadow-sm movealilbitup" /> ' +
+                    state.text +     '</span>'
+                );
+                return $state;
+            },
+            width: '100%',
+        });
+
+
         function toggleTag(slot, value, ths) {
             var _this = $(ths);
             console.log(ths, _this);
