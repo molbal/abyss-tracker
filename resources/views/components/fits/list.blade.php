@@ -7,7 +7,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-sm-3">
-            <form action="{{route('fit.search')}}" method="POST">
+            <form action="{{route('fit.search')}}" method="POST" id="filters">
                 {{csrf_field()}}
             @component("components.collapse.collapsible-card", ["title" => "Abyss target", 'show' => true, 'icon' => 'abyss'])
                 <div class="form-group">
@@ -125,13 +125,16 @@
                 @component("components.fits.filter.tag-selector") TagMicrowarpdrive @endcomponent
             @endcomponent
 
-            <div class="card card-body border-0 shadow-sm mt-3 p-0">
-                <input type="submit" class="btn btn-primary" value="Search">
-            </div>
+                <div class="card card-body border-0 shadow-sm mt-3 p-0">
+                    <button type="button" class="btn btn-primary" id="doFilter">Filter this list</button>
+                </div>
+                <div class="card card-body border-0 shadow-sm mt-3 p-0">
+                    <button type="submit" class="btn btn-secondary">Search</button>
+                </div>
         </form>
         </div>
         <div class="col-sm-9">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" id="results">
                 <h5 class="font-weight-bold">Result list</h5>
                 @component("components.fits.filter.result-list", ["results" => $results])@endcomponent
             </div>
@@ -202,6 +205,14 @@
 @endsection
 @section("scripts")
     <script>
+        function filterList() {
+            var filters = $("form#filters").serializeArray();
+            $.post('{{route("fit.search.ajax")}}', filters, function(a,b,c) {
+                $("#results").css("opacity", "0.01").html(a).animate({opacity:1}, 250);
+            })
+        }
+
+
         function formatState (state) {
             var $state = $(state);
             return $state;
@@ -249,6 +260,7 @@
         }
 
         $(function () {
+            $("#doFilter").click(filterList);
         });
     </script>
 @endsection

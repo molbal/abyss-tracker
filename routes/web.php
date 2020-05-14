@@ -105,6 +105,8 @@
          ->name("fit.index");
     Route::any("/fits/search", 'FitSearchController@search')
          ->name("fit.search");
+    Route::post("/fits/search/ajax", 'FitSearchController@searchAjax')
+         ->name("fit.search.ajax");
 
     /**
      * Item check

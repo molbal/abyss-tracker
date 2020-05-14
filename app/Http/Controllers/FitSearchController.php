@@ -55,11 +55,7 @@
             $ships = Cache::remember("aft.ships", now()->addHour(), function() {return DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();});
             $groups = Cache::remember("aft.ship.groups", now()->addHour(), function () {return DB::select("select distinct `GROUP` from ship_lookup order by 1 asc");});
             [$query, $filters_display] = $this->getSearchQuery($request);
-
-            $filters =  $request->all();
             $query->orderByDesc("RUNS_COUNT")->get();
-//            dd(DB::getQueryLog());
-            Log::info(print_r(DB::getQueryLog(), 1));
             $results = $query->orderByDesc("RUNS_COUNT")->paginate();
 
             foreach ($results as $i => $result) {
@@ -72,6 +68,23 @@
                 'filters' =>  $filters_display]);
         }
 
+        /**
+         * @param Request $request
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function searchAjax(Request $request) {
+            /** @var Builder $query */
+            [$query, $filters_display] = $this->getSearchQuery($request);
+            $query->orderByDesc("RUNS_COUNT")->get();
+            $results = $query->orderByDesc("RUNS_COUNT")->limit(50)->get();
+
+            foreach ($results as $i => $result) {
+                $results[$i]->TAGS = $this->getFitTags($result->ID);
+            }
+            return view("components.fits.result-ajax", [
+                'results' => $results]);
+        }
 
 
         /**
