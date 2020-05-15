@@ -8,7 +8,7 @@
         <div class="col-md-6 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Most used cruisers</h5>
-                {!! $cruiser_chart->container() !!}
+                <div style="height: 400px">{!! $cruiser_chart->container() !!}</div>
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold mb-2">List of used cruisers</h5>
@@ -21,7 +21,7 @@
                         <tr>
                             <td class="text-center"><img src="https://imageserver.eveonline.com/Type/{{$ship->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" style="border: 1px solid #fff; width: 24px; height: 24px" alt=""></td>
                             <td><a href="{{route("ship_single", ["id" => $ship->SHIP_ID])}}" class="text-dark" data-toggle="tooltip" title="Open {{$ship->NAME}} summary">{{$ship->NAME}}</a></td>
-                            <td><a href="{{route("fit.search", ["SHIP_GROUP" => $ship->GROUP])}}" class="text-dark" data-toggle="tooltip" title="Show {{$ship->GROUP}} fits">{{$ship->GROUP}}</a></td>
+                            <td><a href="{{route("fit.search", ["SHIP_GROUP" => $ship->GROUP ?? "unknown group"])}}" class="text-dark" data-toggle="tooltip" title="Show {{$ship->GROUP ?? "unknown group"}} fits">{{$ship->GROUP ?? "unknown group"}}</a></td>
                             <td class="text-right">{{$ship->RUNS}}</td>
                         </tr>
                     @endforeach
@@ -31,7 +31,7 @@
         <div class="col-md-6 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Most used frigates</h5>
-                {!! $frigate_chart->container() !!}
+                <div style="height: 400px">{!! $frigate_chart->container() !!}</div>
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold mb-2">List of used frigates</h5>
@@ -44,7 +44,7 @@
                         <tr>
                             <td class="text-center"><img src="https://imageserver.eveonline.com/Type/{{$ship->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" style="border: 1px solid #fff; width: 24px; height: 24px" alt=""></td>
                             <td><a href="{{route("ship_single", ["id" => $ship->SHIP_ID])}}" class="text-dark" data-toggle="tooltip" title="Open {{$ship->NAME}} summary">{{$ship->NAME}}</a></td>
-                            <td><a href="{{route("fit.search", ["SHIP_GROUP" => $ship->GROUP])}}" class="text-dark" data-toggle="tooltip" title="Show {{$ship->GROUP}} fits">{{$ship->GROUP}}</a></td>
+                            <td><a href="{{route("fit.search", ["SHIP_GROUP" => $ship->GROUP ?? "unknown group"])}}" class="text-dark" data-toggle="tooltip" title="Show {{$ship->GROUP ?? "unknown group"}} fits">{{$ship->GROUP ?? "unknown group"}}</a></td>
                             <td class="text-right">{{$ship->RUNS}}</td>
                         </tr>
                     @endforeach

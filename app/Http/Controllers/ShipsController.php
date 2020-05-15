@@ -12,6 +12,7 @@
     use App\Charts\ShipCruiserChart;
     use App\Charts\ShipFrigateChart;
     use App\Http\Controllers\Loot\LootCacheController;
+    use Carbon\Carbon;
     use DateTime;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
@@ -48,8 +49,8 @@
          */
         function get_all() {
 
-            list($query_cruiser, $shipCruiserChart) = $this->getAllShipsCruiersChart();
-            list($query_frig, $shipFrigateChart) = $this->getAllShipsFrigatesChart();
+            [$query_cruiser, $shipCruiserChart] = $this->getAllShipsCruiersChart();
+            [$query_frig, $shipFrigateChart] = $this->getAllShipsFrigatesChart();
 
             return view("ships", [
                 "cruiser_chart" => $shipCruiserChart,
@@ -79,15 +80,15 @@
                 ->where("SURVIVED", false)
                 ->count();
 
-            list($chart_tiers, $i, $all_ship_runs, $all_runs, $percent) = $this->getShipTierChart($id, $name);
-            list($chart_types, $all_runs) = $this->getShipTypeChart($id, $name);
+            [$chart_tiers, $i, $all_ship_runs, $all_runs, $percent] = $this->getShipTierChart($id, $name);
+            [$chart_types, $all_runs] = $this->getShipTypeChart($id, $name);
 
             $items = DB::table("runs")
                 ->where("SHIP_ID", $id)
                 ->orderBy("CREATED_AT", 'DESC')
                 ->paginate(25);
 
-            list($death_reasons, $labels, $data, $reason, $death_reason) = $this->getShipDeathReasons($id);
+            [$death_reasons, $labels, $data, $reason, $death_reason] = $this->getShipDeathReasons($id);
             $loot_chart = $this->getShipLootStrategyChart($id);
 
 
@@ -112,21 +113,24 @@
          * @return PersonalDaily
          */
         public function getShipPopularityChart(int $id, $name): PersonalDaily {
-            list($dates, $values, $dead) = Cache::remember("ship.popularity.$id", 0.001, function() use ($id, $name) {
+            [$dates, $values, $dead] = Cache::remember("ship.popularity.$id", now()->addSecond(), function() use ($id, $name) {
                 $dates = [];
                 $values = [];
                 $dead = [];
                 for ($i = -90; $i <= 0; $i++) {
                     $date = strtotime("now $i days");
                     $val = DB::select("select
-                            (select count(ID) from runs where RUN_DATE=?) as 'ALL',
-                            (select count(ID) from runs where RUN_DATE=? and SHIP_ID=?) as 'SHIP',
-                            (select count(ID) from runs where RUN_DATE=? and SHIP_ID=? and SURVIVED=0) as 'DEAD';",
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=?) as 'ALL',
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and SHIP_ID=?) as 'SHIP',
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and SHIP_ID=? and SURVIVED=0) as 'DEAD';",
                         [
-                            date('Y-m-d', $date),
-                            date('Y-m-d', $date),
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
                             $id,
-                            date('Y-m-d', $date),
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
                             $id
                         ]);
                     $dates[] = date("M.d.", $date);
@@ -487,9 +491,9 @@
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=0
-                    group by r.SHIP_ID, l.NAME, l.ID
+                    group by r.SHIP_ID, l.NAME, l.ID,  l.GROUP
                     order by 1 desc
-                    limit 25");
+                    limit 15");
             });
 
             $dataset = [];
@@ -524,9 +528,9 @@
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=1
-                    group by r.SHIP_ID, l.NAME, l.ID
+                    group by r.SHIP_ID, l.NAME, l.ID,  l.GROUP
                     order by 1 desc
-                    limit 25");
+                    limit 15");
             });
 
             $dataset = [];

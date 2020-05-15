@@ -1,1 +1,1 @@
-<a class="badge text-dark font-weight-normal tag-@lang("tag-types.".$slot) shadow-sm vertical-align-top" href="{{route("fit.search", [trim($slot) => "yes"])}}">{!! $prefix ?? "" !!}@lang("tags.".$slot)</a>
+<a class="badge text-white font-weight-normal tag-@lang("tag-types.".$slot) shadow-sm vertical-align-top" href="{{route("fit.search", [trim($slot) => "yes"])}}">{!! $prefix ?? "" !!}@lang("tags.".$slot)</a>
