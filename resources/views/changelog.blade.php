@@ -31,6 +31,8 @@
                     <li>Updates item table to Surgical Strike</li>
                     <li>Adds new metadata for fits: Linked fit and T5 bonus room</li>
                     <li>Lotts of little visibility improvements in the dark theme - which is now default</li>
+                    <li>Tweaked the layout for ship display, adding search and fit links and switched the popularity graph to use 7 day averages which makes seeing trends easier</li>
+                    <li>Added new privacy selector for new run and new ship forms</li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">
