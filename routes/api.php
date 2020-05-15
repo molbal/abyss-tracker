@@ -35,13 +35,10 @@
         $data = $request->get("result");
 
         Log::info("Fit stats received for $id!");
-        $e = DB::table('fits')->where('ID', $id)->update([
+        DB::table('fits')->where('ID', $id)->update([
             'STATS' => $data,
             'STATUS' => 'done'
         ]);
-        if ($e == 0) {
-            Log::warning("Could not find fit with ID $id - response ignored.");
-        }
 
         /** @var \App\Http\Controllers\EFT\Tags\TagsController $tags */
         $tags = resolve("\App\Http\Controllers\EFT\Tags\TagsController");

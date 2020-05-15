@@ -19,8 +19,9 @@
                     </tr>
                     @foreach($query_cruiser as $ship)
                         <tr>
-                            <td><img src="https://imageserver.eveonline.com/Type/{{$ship->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" alt=""></td>
-                            <td><a href="{{route("ship_single", ["id" => $ship->SHIP_ID])}}">{{$ship->NAME}}</a></td>
+                            <td class="text-center"><img src="https://imageserver.eveonline.com/Type/{{$ship->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" style="border: 1px solid #fff; width: 24px; height: 24px" alt=""></td>
+                            <td><a href="{{route("ship_single", ["id" => $ship->SHIP_ID])}}" class="text-dark" data-toggle="tooltip" title="Open {{$ship->NAME}} summary">{{$ship->NAME}}</a></td>
+                            <td><a href="{{route("fit.search", ["SHIP_GROUP" => $ship->GROUP])}}" class="text-dark" data-toggle="tooltip" title="Show {{$ship->GROUP}} fits">{{$ship->GROUP}}</a></td>
                             <td class="text-right">{{$ship->RUNS}}</td>
                         </tr>
                     @endforeach
@@ -41,8 +42,9 @@
                     </tr>
                     @foreach($query_frigate as $ship)
                         <tr>
-                            <td><img src="https://imageserver.eveonline.com/Type/{{$ship->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" alt=""></td>
-                            <td><a href="{{route("ship_single", ["id" => $ship->SHIP_ID])}}">{{$ship->NAME}}</a></td>
+                            <td class="text-center"><img src="https://imageserver.eveonline.com/Type/{{$ship->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" style="border: 1px solid #fff; width: 24px; height: 24px" alt=""></td>
+                            <td><a href="{{route("ship_single", ["id" => $ship->SHIP_ID])}}" class="text-dark" data-toggle="tooltip" title="Open {{$ship->NAME}} summary">{{$ship->NAME}}</a></td>
+                            <td><a href="{{route("fit.search", ["SHIP_GROUP" => $ship->GROUP])}}" class="text-dark" data-toggle="tooltip" title="Show {{$ship->GROUP}} fits">{{$ship->GROUP}}</a></td>
                             <td class="text-right">{{$ship->RUNS}}</td>
                         </tr>
                     @endforeach

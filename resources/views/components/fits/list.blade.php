@@ -118,6 +118,7 @@
                 @component("components.fits.filter.tag-selector") TagArmorActive @endcomponent
                 @component("components.fits.filter.tag-selector") TagShieldActive @endcomponent
                 @component("components.fits.filter.tag-selector") TagShieldPassive @endcomponent
+                @component("components.fits.filter.tag-selector") TagStrongCapacitor @endcomponent
             @endcomponent
 
             @component("components.collapse.collapsible-card", ["title" => "Propulsion", 'icon' => 'propulsion'])
@@ -129,14 +130,20 @@
                     <button type="button" class="btn btn-primary" id="doFilter">Filter this list</button>
                 </div>
                 <div class="card card-body border-0 shadow-sm mt-3 p-0">
-                    <button type="submit" class="btn btn-secondary">Search</button>
+                    <button type="submit" class="btn btn-secondary" data-toggle="tooltip" title="You can use this link for sharing searches">Results to new tab</button>
+                </div>
+                <div class="card card-body border-0 shadow-sm mt-3 p-0">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.reload(true)">Reset form</button>
                 </div>
         </form>
         </div>
-        <div class="col-sm-9">
-            <div class="card card-body border-0 shadow-sm" id="results">
-                <h5 class="font-weight-bold">Result list</h5>
+        <div class="col-sm-9" id="results">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold">Showing all fits</h5>
                 @component("components.fits.filter.result-list", ["results" => $results])@endcomponent
+            </div>
+            <div class="card-footer">
+                {{$results->links()}}
             </div>
         </div>
     </div>
@@ -159,6 +166,12 @@
         .card-header-icon {
             width: 24px;
             height: 24px;
+            margin-right: 4px;
+        }
+
+        .tinyicon {
+            width: 12px;
+            height: 12px;
             margin-right: 4px;
         }
 
@@ -207,9 +220,16 @@
     <script>
         function filterList() {
             var filters = $("form#filters").serializeArray();
-            $.post('{{route("fit.search.ajax")}}', filters, function(a,b,c) {
+            $("#doFilter").attr("disabled", "disabled").addClass("disabled");
+            $.post('{{route("fit.search.ajax")}}', filters, function(a) {
                 $("#results").css("opacity", "0.01").html(a).animate({opacity:1}, 250);
             })
+            .fail(function() {
+                alert("Sorry, something went wrong while searching");
+            })
+            .always(function() {
+                $("#doFilter").removeAttr("disabled").removeClass("disabled");
+            });
         }
 
 

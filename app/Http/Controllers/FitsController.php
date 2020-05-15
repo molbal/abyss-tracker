@@ -10,6 +10,7 @@
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Partners\EveWorkbench;
     use App\Http\Controllers\Youtube\YoutubeController;
+    use ChrisKonnertz\OpenGraph\OpenGraph;
     use Cohensive\Embed\Embed;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\DB;
@@ -186,6 +187,13 @@
 	    }
 
         /**
+         * @return FitHelper
+         */
+        public function getFitHelper() : FitHelper {
+            return $this->fitHelper;
+        }
+
+        /**
          * Handles the display for a ship fit
          *
          * @param int $id
@@ -194,37 +202,66 @@
          * @throws \Exception
          */
         public function get(int $id) {
-            if (!DB::table("fits")->where("ID", $id)->exists()) {
+            if (!DB::table("fits")
+                   ->where("ID", $id)
+                   ->exists()) {
                 return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
             }
 
-            $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+            $fit = DB::table("fits")
+                     ->where("ID", $id)
+                     ->get()
+                     ->get(0);
 
             if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
-                return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='".route('home_mine')."'>View public fits</a></p>")]);
+                return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('home_mine') . "'>View public fits</a></p>")]);
             }
-            $ship_name = DB::table('ship_lookup')->where('ID',$fit->SHIP_ID)->value('NAME');
-            $char_name = DB::table('chars')->where('CHAR_ID',$fit->CHAR_ID)->value('NAME');
+            $ship_name = DB::table('ship_lookup')
+                           ->where('ID', $fit->SHIP_ID)
+                           ->value('NAME');
+            $char_name = DB::table('chars')
+                           ->where('CHAR_ID', $fit->CHAR_ID)
+                           ->value('NAME');
 
 
-            $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
-            $ship_type = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
-            $ship_price = (DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_BUY")+DB::table("item_prices")->where("ITEM_ID", $fit->SHIP_ID)->value("PRICE_SELL")/2) ?? 0;
+            $description = (new \Parsedown())->setSafeMode(true)
+                                             ->parse($fit->DESCRIPTION);
+            $ship_type = DB::table("ship_lookup")
+                           ->where("ID", $fit->SHIP_ID)
+                           ->value("GROUP") ?? "Unknown type";
+            $ship_price = (DB::table("item_prices")
+                             ->where("ITEM_ID", $fit->SHIP_ID)
+                             ->value("PRICE_BUY") + DB::table("item_prices")
+                                                      ->where("ITEM_ID", $fit->SHIP_ID)
+                                                      ->value("PRICE_SELL") / 2) ?? 0;
 
             if (trim($fit->VIDEO_LINK)) {
                 try {
                     $embed = YoutubeController::getEmbed($fit->VIDEO_LINK);
-                }
-                catch (\Exception $exception) {
+                } catch (\Exception $exception) {
                     Log::warning(sprintf("Could not generate embed for %s", $fit->VIDEO_LINK));
-                    $embed = "<div class='alert alert-warning'>Could not generate embed for link: ".htmlentities($fit->VIDEO_LINK).'</div>';
+                    $embed = "<div class='alert alert-warning'>Could not generate embed for link: " . htmlentities($fit->VIDEO_LINK) . '</div>';
                 }
-            }
-            else {
+            } else {
                 $embed = "";
             }
 
-            $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->get()->get(0);
+            $recommendations = DB::table("fit_recommendations")
+                                 ->where("FIT_ID", $id)
+                                 ->first();
+
+            $og = new OpenGraph();
+            $og->title(sprintf("%s fit - %s", $ship_name, env("APP_NAME")))
+               ->type('profile')
+               ->description(sprintf("%s fit - %s", $ship_name, env("APP_NAME")))
+               ->url()
+               ->locale('en_US')
+               ->localeAlternate(['en_UK'])
+               ->siteName(env('APP_NAME'))
+               ->determiner('an')
+               ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
+            $og->profile(["first_name" => trim($fit->NAME)]);
+
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
@@ -235,7 +272,8 @@
                 'description' => $description,
                 'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),
                 'embed' => $embed,
-                'recommendations' => $recommendations
+                'recommendations' => $recommendations,
+                'og' => $og
             ]);
 	    }
 
@@ -246,7 +284,7 @@
          * @return bool
          * @throws \Exception
          */
-        private function submitSvcFitService(string $eft, int $fitId) {
+        public function submitSvcFitService(string $eft, int $fitId) {
 
 
             $ch = curl_init();

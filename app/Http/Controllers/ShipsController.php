@@ -484,12 +484,12 @@
          */
         public function getAllShipsFrigatesChart(): array {
             $query_frig = Cache::remember("ships.frigates", 20, function() {
-                return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID
+                return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=0
                     group by r.SHIP_ID, l.NAME, l.ID
                     order by 1 desc
-                    limit 15");
+                    limit 25");
             });
 
             $dataset = [];
@@ -521,12 +521,12 @@
          */
         public function getAllShipsCruiersChart(): array {
             $query_cruiser = Cache::remember("ships.cruisers", 20, function() {
-                return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID
+                return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=1
                     group by r.SHIP_ID, l.NAME, l.ID
                     order by 1 desc
-                    limit 15");
+                    limit 25");
             });
 
             $dataset = [];

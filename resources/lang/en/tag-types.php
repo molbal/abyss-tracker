@@ -12,6 +12,7 @@
         "TagProjectileWeapons"  => "offense",
         "TagShieldActive"  => "defense",
         "TagShieldPassive"  => "defense",
+        "TagStrongCapacitor"  => "defense",
         "TagVideo" => "misc"
     ];
 

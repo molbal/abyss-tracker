@@ -203,39 +203,3 @@
         });
     </script>
 @endsection
-
-@section("styles")
-    <style type="text/css">
-        #banner {
-            background: url("/profile.jpg");
-            background-size: cover;
-            display: flex;
-            height: 86px;
-            border-radius: 8px;
-            align-items: center;
-        }
-
-        #banner > img {
-            border: 3px solid{{App\Http\Controllers\ThemeController::getThemedBorderColor()}};
-            position: relative;
-            top: 0;
-            left: 32px;
-            z-index: 50;
-        }
-
-        #banner > h4 {
-            color: #fff;
-            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
-            position: relative;
-            top: 10px;
-            left: 64px;
-            text-transform: uppercase;
-            font-size: 26px;
-        }
-
-        .tooltip, .tooltip-inner {
-            width: 360px;
-            max-width: 360px;
-        }
-    </style>
-@endsection

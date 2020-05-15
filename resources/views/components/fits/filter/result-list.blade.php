@@ -13,7 +13,7 @@
         @component("components.fits.filter.result-row", ["row" => $row])@endcomponent
     @empty
         <tr>
-            <td>Empty</td>
+            <td colspan="8" class="text-center py-2">No results<br><small><a href="{{route("fit_new")}}" target="_blank">Upload a new fit</a></small></td>
         </tr>
     @endforelse
 </table>

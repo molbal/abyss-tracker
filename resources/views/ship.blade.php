@@ -1,10 +1,19 @@
 @extends("layout.app")
 @section("browser-title", "$name")
 @section("content")
-    <div class="d-flex justify-content-between align-items-start mt-5">
-        <h4 class="font-weight-bold">
-            <img src="https://images.evetech.net/types/{{$id}}/render?size=64"
-                 class="pull-left ml-2 rounded-circle shadow-sm"> {{$name}} overview</h4>
+{{--    <div class="d-flex justify-content-between align-items-start mt-5">--}}
+{{--        <h4 class="font-weight-bold">--}}
+{{--            <img src="https://images.evetech.net/types/{{$id}}/render?size=64"--}}
+{{--                 class="pull-left ml-2 rounded-circle shadow-sm"> {{$name}} overview</h4>--}}
+{{--    </div>--}}
+    <div class="row mt-3">
+        <div class="col-sm-12 col-md-12">
+            <div id="banner" class="shadow-sm w-100">
+                <img src="https://images.evetech.net/types/{{$id}}/render?size=128" class="rounded-circle shadow-sm">
+                <h4 class="font-weight-bold">{{$name}}
+                </h4>
+            </div>
+        </div>
     </div>
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">

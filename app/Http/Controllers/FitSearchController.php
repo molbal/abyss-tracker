@@ -83,7 +83,7 @@
                 $results[$i]->TAGS = $this->getFitTags($result->ID);
             }
             return view("components.fits.result-ajax", [
-                'results' => $results]);
+                'results' => $results, 'filters' => $filters_display]);
         }
 
 
@@ -118,11 +118,12 @@
                                "fits.PRICE",
                                "fits.VIDEO_LINK",
                                "ship_lookup.NAME as SHIP_NAME", DB::raw('(select count(runs.`ID`) from `runs` where runs.`FIT_ID`=fits.`ID`) as `RUNS_COUNT`'),
-                               "fit_recommendations.DARK",
-                               "fit_recommendations.ELECTRICAL",
-                               "fit_recommendations.EXOTIC",
-                               "fit_recommendations.FIRESTORM",
-                               "fit_recommendations.GAMMA"])
+                               "ship_lookup.GROUP",
+                               "fit_recommendations.DARK as Dark",
+                               "fit_recommendations.ELECTRICAL as Electrical",
+                               "fit_recommendations.EXOTIC as Exotic",
+                               "fit_recommendations.FIRESTORM as Firestorm",
+                               "fit_recommendations.GAMMA as Gamma"])
                      ->distinct("fits.ID");
         }/**
      * @param Request $request
@@ -160,7 +161,7 @@
                       ->where("fits.PRIVACY", '=', 'public');
                 $filters_display->add("Uploaded by " . DB::table('chars')
                                                          ->where('CHAR_ID', '=', $request->get("CHAR_ID"))
-                                                         ->value('NAME'));
+                                                         ->value('NAME') ?? "Unregistered user");
             }
             if ($request->filled("NAME")) {
                 $query->where("fits.NAME", 'like', '%' . $request->get("NAME") . '%');
@@ -175,6 +176,11 @@
                 $filters_display->add(DB::table('ship_lookup')
                                         ->where('ID', '=', $request->get("SHIP_ID"))
                                         ->value('NAME') . " fits");
+            }
+
+            if ($request->filled("SHIP_GROUP")) {
+                $query->where("ship_lookup.GROUP", '=', $request->get("SHIP_GROUP"));
+                $filters_display->add($request->get("SHIP_GROUP")." class");
             }
 
             $tagList = $this->tags->getTagList();

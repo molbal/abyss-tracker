@@ -12,6 +12,7 @@
         "TagProjectileWeapons"  => "Projectile weapons",
         "TagShieldActive"  => "Shield booster",
         "TagShieldPassive"  => "Shield regen tank",
+        "TagStrongCapacitor"  => "Reinforced capacitor",
         "TagVideo" => " With video",
         'show-only' => "Must have",
         'exclude' => "Exclude"

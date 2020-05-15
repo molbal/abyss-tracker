@@ -221,3 +221,16 @@
 
         return redirect(\route("home_mine"));
     });
+
+    Route::get("/maintenance/recalc-fit/{id}/{secret}", function ($id, $secret) {
+        if ($secret != env("MAINTENANCE_TOKEN")) {
+            abort(403, "Invalid maintenance token.");
+        }
+
+        /** @var \App\Http\Controllers\FitsController $fits */
+        $fits = resolve('App\Http\Controllers\FitsController');
+        $fit = DB::table("fits")->where("ID", $id)->select(["RAW_EFT", "SHIP_ID"])->first();
+        $fits->submitSvcFitService($fits->getFitHelper()->pyfaBugWorkaround($fit->RAW_EFT, $fit->SHIP_ID), $id);
+
+        return redirect(\route("fit_single", ["id" => $id]));
+    });
