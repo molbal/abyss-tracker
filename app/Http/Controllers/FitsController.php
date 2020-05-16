@@ -273,7 +273,8 @@
                 'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),
                 'embed' => $embed,
                 'recommendations' => $recommendations,
-                'og' => $og
+                'og' => $og,
+                'id' => $id
             ]);
 	    }
 

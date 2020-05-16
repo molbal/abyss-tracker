@@ -167,6 +167,15 @@
     </div>
 @endsection
 
+@section("styles")
+    <style>
+
+        .tooltip, .tooltip-inner {
+            width: 360px;
+            max-width: 360px;
+        }
+    </style>
+@endsection
 @section("scripts")
     {!! $favoriteShipsChart->script(); !!}
 

@@ -26,6 +26,10 @@
         }
 
 
+        public function getFitsForNewRunDropdown(int $shipId) {
+            return (['results' => [['id' => 0, 'text' => 'a'], ['id' => 1, 'text' => 'b']]]);
+        }
+
         /**
          * Handles the homescreen
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

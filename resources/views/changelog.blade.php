@@ -38,6 +38,7 @@
                     <li>Tweaked the layout for ship display, adding search and fit links and switched the popularity graph to use 7 day averages which makes seeing trends easier</li>
                     <li>Added new privacy selector for new run and new ship forms</li>
                     <li>Added run length to my runs table (xbigxgrizzlyx's request)</li>
+                    <li>Reduced stopwatch location update frequency from 10 seconds to 7 seconds</li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">

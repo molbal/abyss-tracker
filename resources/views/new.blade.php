@@ -89,7 +89,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="">What ship did you fly?</label>
-                                    <select name="SHIP_ID" class="form-control select2-default">
+                                    <select name="SHIP_ID" id="SHIP_ID" class="form-control select2-default">
                                         <option {{($prev->SHIP_ID ?? "") == "" ? "selected" : ""}} value="">I don't
                                             remember / secret
                                         </option>
@@ -103,8 +103,13 @@
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <label for="">What fit did you pick? @component('components.info-toggle')This list automatically updates when you select a ship. At the top of the list your fits are listed (if you have any). Then its others' fits, ordered by popularity. If you have recently opened a fit, that will also be on the top of the list.@endcomponent</label>
+                                <label for="">What fit did you pick? @component('components.info-toggle')This list automatically updates when you select a ship.@endcomponent</label>
 
+                                <select name="FIT_ID" class="form-control select2-fit">
+                                    <option {{($prev->FIT_ID ?? "") == "" ? "selected" : ""}} value="">I don't
+                                        remember / secret
+                                    </option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -432,7 +437,6 @@
 
         }
 
-
         function check_status() {
             $.ajax({
                 method: "GET",
@@ -454,7 +458,6 @@
             });
         }
 
-
         function stop_stopwatch() {
             switch_to_manual();
             $("#start_sw").show();
@@ -465,6 +468,7 @@
 
             }
         }
+
 
         // When ready.
         $(function () {
@@ -482,6 +486,18 @@
             $("#stopwatch_enabled").show();
 
 
+            window.fitSelector = $(".select2-fit").select2({
+                theme: 'bootstrap',
+                width: '100%',
+                ajax: {
+                    url: function(params) {
+                        var ship = $("#SHIP_ID").select2('data')[0]['id'];
+                        console.log(ship)
+                        var url = '{{env('APP_URL')}}/fits/search/select/'+(ship);
+                        return url;
+                    },
+                }
+            });
             @if($stopwatch)
                 start_stopwatch();
             @endif

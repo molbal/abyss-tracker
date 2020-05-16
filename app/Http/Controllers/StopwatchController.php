@@ -101,8 +101,8 @@
                 throw new \Exception(sprintf("Stopwatch doesnt exist with charid %d!", $charId));
             }
 
-            $var = DB::table("stopwatch")->where("CHAR_ID", $charId)->get()->get(0);
-            $loc = Cache::remember(sprintf("location.cache.%d", $charId), 1/6, function() use ($locationService, $charId){
+            $var = DB::table("stopwatch")->where("CHAR_ID", $charId)->first();
+            $loc = Cache::remember(sprintf("location.cache.%d", $charId), now()->addSeconds(7), function() use ($locationService, $charId){
                return $locationService->getCurrentLocation($charId);
             });
             unset($locationService);

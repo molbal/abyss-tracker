@@ -2,7 +2,7 @@
 @section("browser-title", $ship_name." fit")
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
-        <h4 class="font-weight-bold">{{$fit->NAME}}</h4>
+        <h4 class="font-weight-bold">{{$fit->NAME}} <small class="ml-3">(Fit #{{$id}})</small></h4>
     </div>
     <div class="row">
         <div class="col-sm-8">
@@ -179,102 +179,6 @@ text-align: center;">
         </div>
     </div>
     @endif
-@endsection
-@section("styles")
-    <style>
-        .bringupper {
-            position: relative;
-            top: -1px;
-        }
-
-        .table td, .table th {
-            border-top: 0 solid transparent !important;
-        }
-
-        td.tinyhead {
-            line-height: 0.6rem;
-        }
-
-        img.tinyicon {
-            width: 16px;
-            height: 16px;
-        }
-
-        img.smallicon {
-            width: 24px;
-            height: 24px;
-        }
-
-        td.w-20p {
-            width: 20px !important;
-        }
-
-        #char_prof {
-            width: 128px;
-            height: 128px;
-            position: relative;
-            top: -52px;
-            margin-bottom: -38px;
-            border: 2px solid #fff;
-        }
-
-        .jqsfield {
-            color: #fff;
-            font-family: 'Shentox', sans-serif !important;
-            text-align: left;
-            padding: 1rem;
-        }
-
-        .inline-pie {
-            position: relative;
-            top: 4px;
-            opacity: 0.01;
-            overflow: hidden;
-            width: 16px;
-            height: 16px;
-            display: inline-block;
-        }
-
-        .table-sm td, .table-sm th {
-            padding: .1rem;
-        }
-
-        ul.infolinks {
-            list-style: none;
-            margin-bottom: 0;
-            padding: 0 20px
-        }
-
-        .resist-outer {
-            display: block;
-            width: 100%;
-            height: 20px;
-            padding: 0;
-            margin:0;
-            border: 1px solid rgba(1,5,54,0.59);
-            border-radius: 2px;
-            -webkit-border-radius: 2px;
-            -webkit-box-shadow:inset 0 -4px 8px -2px rgba(1,5,54,0.59);
-            box-shadow:inset 0 -4px 8px -2px rgba(1,5,54,0.59);
-        }
-
-        .resist-inner {
-            display: inline-block;
-            height: 100%;
-            -webkit-box-shadow:inset 0 -4px 8px -2px rgba(1,5,54,0.59);
-            box-shadow:inset 0 -4px 8px -2px rgba(1,5,54,0.59);
-        }
-        .resist-label {    z-index: 3;
-            color: #fff;
-            text-shadow: 0 0 2px #010536, 0 1px 0 rgba(1,5,54,0.59);
-            position: relative;
-            top: -28px;
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-        }
-        }
-    </style>
 @endsection
 @section("scripts")
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
