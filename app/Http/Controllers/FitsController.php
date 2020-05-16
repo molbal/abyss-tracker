@@ -13,6 +13,7 @@
     use ChrisKonnertz\OpenGraph\OpenGraph;
     use Cohensive\Embed\Embed;
     use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Validator;
@@ -262,6 +263,13 @@
                ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
             $og->profile(["first_name" => trim($fit->NAME)]);
 
+            if (session()->has("login_id")) {
+                if (Cache::has("aft.fit.last-seen-".session()->get("login_id"))) {
+                    Cache::forget("aft.fit.last-seen-".session()->get("login_id"));
+                }
+                Cache::put("aft.fit.last-seen-".session()->get("login_id"),  $id,now()->addHour());
+            }
+
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
@@ -286,8 +294,6 @@
          * @throws \Exception
          */
         public function submitSvcFitService(string $eft, int $fitId) {
-
-
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL,env("FIT_SERVICE_URL"));

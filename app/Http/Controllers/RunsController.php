@@ -68,7 +68,8 @@
                 'LOOT_TYPE'         => $request->get('LOOT_TYPE'),
                 'KILLMAIL'          => $request->get('KILLMAIL'),
                 'RUNTIME_SECONDS'   => $runtime,
-                'IS_BONUS'          => $request->get("TIER") == 6 ? 1 : 0
+                'IS_BONUS'          => $request->get("TIER") == 6 ? 1 : 0,
+                'FIT_ID'            => ($request->get('FIT_ID') ?? 0) == 0 ? null : $request->get("FIT_ID")
             ]);
 
             foreach ($lootEstimator->getItems() as $item) {
@@ -112,7 +113,8 @@
                 'LOOT_TYPE'         => $request->get('LOOT_TYPE'),
                 'KILLMAIL'          => $request->get('KILLMAIL'),
                 'RUNTIME_SECONDS'   => $runtime,
-                'IS_BONUS'          => $request->get("TIER") == 6 ? 1 : 0
+                'IS_BONUS'          => $request->get("TIER") == 6 ? 1 : 0,
+                'FIT_ID'            => ($request->get('FIT_ID') ?? 0) == 0 ? null : $request->get("FIT_ID")
             ]);
 
             foreach ($lootDifference['gainedItems'] as $item) {

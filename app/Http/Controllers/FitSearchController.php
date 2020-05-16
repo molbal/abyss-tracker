@@ -7,6 +7,7 @@
     use App\Http\Controllers\EFT\Tags\TagsController;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Http\Request;
+    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -26,8 +27,93 @@
         }
 
 
-        public function getFitsForNewRunDropdown(int $shipId) {
-            return (['results' => [['id' => 0, 'text' => 'a'], ['id' => 1, 'text' => 'b']]]);
+        public function getFitsForNewRunDropdown(int $shipId, string $nameOrId="") {
+
+            $return = [];
+
+            $return[] = [
+                "text" => "Don't remember or secret",
+                "children" => [$this->getFitSelect(null, false, "No fit or don't remember", 0)]
+            ];
+            $shipName = DB::table('ship_lookup')
+                           ->where('ID', $shipId)
+                           ->value('NAME');
+            // Last viewed fit
+            if (session()->has("login_id")) {
+                if (Cache::has("aft.fit.last-seen-" . session()->get("login_id"))) {
+                    try {
+                        DB::enableQueryLog();
+                        $query = DB::table("fits")
+                                   ->where("ID", Cache::get("aft.fit.last-seen-" . session()->get("login_id")))
+                                   ->orWhere("NAME", 'LIKE', "%" . $nameOrId . "%")
+                                   ->first();
+//                        dd(DB::getQueryLog());
+                        $return[] = [
+                            "text" => sprintf("Last viewed %s fit", $nameOrId),
+                            "children" => [
+                                $this->getFitSelect($query)
+                            ]
+                        ];
+                    }catch (\Exception $ignored) {
+                    }
+                }
+            }
+
+            // My fits
+            $myFits = DB::table("fits")->where("SHIP_ID", $shipId)->where("CHAR_ID", session()->get("login_id"))->get();
+            if ($myFits->count() > 1) {
+                $list = [];
+                foreach ($myFits as $myFit) {
+                    $list[] = $this->getFitSelect($myFit);
+                }
+                $return[] = [
+                    "text" => sprintf("My %s fits", $shipName),
+                    "children" => $list
+                ];
+            }
+            else {
+                $return[] = [
+                    "text" => sprintf("My %s fits", $shipName),
+                    "children" => [$this->getFitSelect(null, true, "You don't have any $shipName fits", -1)]
+                ];
+            }
+
+            // Public & anonym fits
+            $myFits = DB::table("fits")->where("SHIP_ID", $shipId)->where("CHAR_ID",'<>', session()->get("login_id"))->get();
+            if ($myFits->count() > 1) {
+                $list = [];
+                foreach ($myFits as $myFit) {
+                    $list[] = $this->getFitSelect($myFit);
+                }
+                $return[] = [
+                    "text" => sprintf("Public and anonym %s fits", $shipName),
+                    "children" => $list
+                ];
+            }
+            else {
+                $return[] = [
+                    "text" => sprintf("Public and anonym  %s fits", $shipName),
+                    "children" => [$this->getFitSelect(null, true, "No public or anyonym $shipName fits", -1)]
+                ];
+            }
+
+            return (["results" =>$return , "pagination" =>['more' => false]]);
+        }
+
+        /**
+         * @param             $thing
+         * @param bool        $disabled
+         * @param string|null $nameOverride
+         * @param int|null    $idOverride
+         *
+         * @return array
+         */
+        private function getFitSelect($thing, bool $disabled = false, string $nameOverride = null, int $idOverride=null) {
+            return [
+                'id' => $idOverride ?? intval($thing->ID),
+                'text' => $nameOverride ?? sprintf("%s (Fit #%s)", trim($thing->NAME), $thing->ID),
+                'disabled' => $disabled
+            ];
         }
 
         /**

@@ -27,7 +27,8 @@
                         <div class="col-sm-12">
                             <h5 class="font-weight-bold">EFT fit</h5>
                             <p>
-                                Please paste here the fit in EFT format. If you need help in exporting the "EFT format" please see our guide <a href="#" target="_blank">here.</a>
+                                Please paste here the fit in EFT format.
+{{--                                If you need help in exporting the "EFT format" please see our guide <a href="#" target="_blank">here.</a>--}}
                             </p>
                         </div>
                         <div class="col-sm-8">

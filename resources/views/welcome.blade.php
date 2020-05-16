@@ -5,27 +5,26 @@
         <h4 class="font-weight-bold">Welcome to Veetor's Abyss Loot Tracker</h4>
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
-{{--    <div class="row mt-3">--}}
-{{--        <div class="col-sm-12">--}}
-{{--            <div class="border-danger shadow-sm" style="--}}
-{{--            border: 1px solid #e3342f;--}}
-{{--    border-top-color: rgb(227, 52, 47);--}}
-{{--    border-right-color: rgb(227, 52, 47);--}}
-{{--    border-bottom-color: rgb(227, 52, 47);--}}
-{{--    border-left-color: rgb(227, 52, 47);--}}
-{{--    border-radius: 4px;--}}
-{{--    -webkit-border-radius: 4px;--}}
-{{--">--}}
-{{--            <div class="card card-body border-0">--}}
-{{--                <p class="h5">DDOS Alert</p>--}}
-{{--                <p class="mb-0">Due to the attacks on EVE Online, the stopwatch function might be slow to update or not working at all. Let's hope for a quick fix soon.</p>--}}
-{{--            </div>--}}
-{{--            <div class="card-footer">--}}
-{{--                <a href="https://wwww.reddit.com/r/Eve/comments/fvyn80/king_of_the_abyss_pvp_tournament_185b_isk/" class="btn btn-primary" target="_blank">More info here</a>--}}
-{{--            </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="shadow-sm border-info" style="
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+">
+            <div class="card card-body border-0 pb-2">
+                <p class="h5">Big update info</p>
+                <p class="mb-0">Abyss Tracker was updated to 1.5.0 which includes fits and lots of other changes. If you find a bug or have feedback you can find me in the Abyssal Lurkers discord's #abyssal-tracker channel, or on Twitter. If you like the new updates please consider donating to the project</p>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group">
+                    <a href="{{route("changelog")}}" class="px-3 btn btn-sm btn-primary" target="_blank">Changelog</a>
+                    <a href="https://discord.gg/FyNsM5k" class="px-3 btn btn-sm btn-secondary" target="_blank">Discord</a>
+                    <a href="https://patreon.com/veetor" class="px-3 btn btn-sm btn-secondary" target="_blank">Patreon</a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
     <div class="row mt-3">
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">

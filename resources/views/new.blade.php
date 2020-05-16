@@ -105,9 +105,8 @@
                             <div class="col-sm-4">
                                 <label for="">What fit did you pick? @component('components.info-toggle')This list automatically updates when you select a ship.@endcomponent</label>
 
-                                <select name="FIT_ID" class="form-control select2-fit">
-                                    <option {{($prev->FIT_ID ?? "") == "" ? "selected" : ""}} value="">I don't
-                                        remember / secret
+                                <select name="FIT_ID" id="FIT_ID" class="form-control select2-fit">
+                                    <option {{($prev->FIT_ID ?? "") == "" ? "selected" : ""}} value="">I don't remember / secret
                                     </option>
                                 </select>
                             </div>
@@ -492,8 +491,8 @@
                 ajax: {
                     url: function(params) {
                         var ship = $("#SHIP_ID").select2('data')[0]['id'];
-                        console.log(ship)
-                        var url = '{{env('APP_URL')}}/fits/search/select/'+(ship);
+                        console.log(ship, params);
+                        var url = '{{env('APP_URL')}}/fits/search/select/'+(ship)+"/"+(params.term ? params.term : "")+"/";
                         return url;
                     },
                 }

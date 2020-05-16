@@ -180,6 +180,13 @@ text-align: center;">
     </div>
     @endif
 @endsection
+@section("styles")
+    <style>
+        .table-sm td, .table-sm th {
+            padding: .1rem;
+        }
+    </style>
+@endsection
 @section("scripts")
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
     <script>

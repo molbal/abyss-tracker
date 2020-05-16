@@ -107,7 +107,7 @@
          ->name("fit.search");
     Route::post("/fits/search/ajax", 'FitSearchController@searchAjax')
          ->name("fit.search.ajax");
-    Route::get("/fits/search/select/{shipId}", 'FitSearchController@getFitsForNewRunDropdown')
+    Route::get("/fits/search/select/{shipId}/{nameOrId?}", 'FitSearchController@getFitsForNewRunDropdown')
          ->name("fit.search.select");
 
     /**

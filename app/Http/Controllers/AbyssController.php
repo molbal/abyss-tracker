@@ -307,6 +307,8 @@ from (`abyss`.`lost_items` `dl`
             $reported = DB::table("run_report")->where("RUN_ID", $id)->exists();
             $reported_message = DB::table("run_report")->where("RUN_ID", $id)->value("MESSAGE");
 
+            $fit_name = $all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit";
+
             return view("run", [
                 "id"                   => $id,
                 "run"                  => $data,
@@ -321,7 +323,8 @@ from (`abyss`.`lost_items` `dl`
                 "count_same_type_tier" => $count_same_type_tier,
                 "count_same_ship" => $count_same_ship,
                 "reported" => $reported,
-                "reported_message" => $reported_message
+                "reported_message" => $reported_message,
+                'fit_name' => $fit_name
             ]);
         }
 

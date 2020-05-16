@@ -10,6 +10,20 @@
             Saved at: {{$run->CREATED_AT ?? $run->RUN_DATE}}
         </p>
     </div>
+
+    @if (!$run->SURVIVED)
+        <div class="row my-3">
+            <div class="col-md-12">
+                <div class="card card-body border-danger shadow-sm text-center p-0">
+                    <div class="d-flex justify-content-start m-2">
+                        <img src="https://image.eveonline.com/Type/{{!$run->SURVIVED ? "37885" : "34432"}}_64.png" class="" style="width: 48px; height: 48px">
+                        <span class="mb-0 h6 text-danger my-2 py-0" style="position: relative;top: 7px">This is a failed run - the ship and the capsule was lost.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="row">
 
         @if(isset($errors))
@@ -77,15 +91,14 @@
         <div class="col-md-4 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
-                    <img src="https://image.eveonline.com/Type/434_64.png" class="pull-left ml-2 rounded-circle">
+                    <img src="/icons/search-icons/ship.png" class="pull-left ml-2 rounded-circle">
                     <div class="col"><h2 class="font-weight-bold mb-0">
-                            @if($all_data->RUNTIME_SECONDS == 0)
-                                <span class="">Unknown</span>
+                            @if($all_data->FIT_ID)
+                                <h2><a href="{{route("fit_single", ["id" => $all_data->FIT_ID])}}">{{$fit_name}}</a></h2>
                             @else
-                                {{sprintf("%02d", $all_data->RUNTIME_SECONDS/60)}}
-                                :{{sprintf("%02d", $all_data->RUNTIME_SECONDS%60)}}
-                            @endif</h2>
-                        <small class="text-muted font-weight-bold">Run duration</small>
+                                <h2>Unknown fit</h2>
+                            @endif
+                        <small class="text-muted font-weight-bold">Fit name</small>
                     </div>
                 </div>
             </div>
@@ -128,11 +141,15 @@
         <div class="col-md-3 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
-                    <img src="https://image.eveonline.com/Type/{{!$run->SURVIVED ? "37885" : "34432"}}_64.png"
-                         class="pull-left ml-2">
-                    <div class="col">
-                        <h2 class="font-weight-bold mb-0 {{!$run->SURVIVED ? "text-danger" : ""}}">{{$run->SURVIVED ? "Survived" : "Exploded"}}</h2>
-                        <small class="text-muted font-weight-bold">Survival</small>
+                    <img src="https://image.eveonline.com/Type/434_64.png" class="pull-left ml-2 rounded-circle">
+                    <div class="col"><h2 class="font-weight-bold mb-0">
+                            @if($all_data->RUNTIME_SECONDS == 0)
+                                <span class="">Unknown</span>
+                            @else
+                                {{sprintf("%02d", $all_data->RUNTIME_SECONDS/60)}}
+                                :{{sprintf("%02d", $all_data->RUNTIME_SECONDS%60)}}
+                            @endif</h2>
+                        <small class="text-muted font-weight-bold">Run duration</small>
                     </div>
                 </div>
             </div>
@@ -148,6 +165,7 @@
             </div>
         </div>
     @endif
+
 
     @php
         $all_sell = 0;
