@@ -12,9 +12,13 @@
                     <li><span class="badge badge-warning">IN PROGRESS</span> Showing ship fits</li>
                     <li>Blueprint price estimation</li>
                     <li>Dynamically adding and removing search filters</li>
-                    <li>Bonus room for T5s</li>
+                    <li>Dynamically adding and removing fit search filters</li>
+                    <li>General search</li>
+                    <li>Gank alert broadcast</li>
                     <li>Leaderboard search and custom ranges</li>
                     <li>Add filtering for loot table drop rates</li>
+                    <li>'Was the loot nerfed or am I just unlucky?' - info graphs</li>
+                    <li>Aggregator pages for types/tiers</li>
                 </ul>
 
                 </p>
@@ -33,6 +37,7 @@
                     <li>Lotts of little visibility improvements in the dark theme - which is now default</li>
                     <li>Tweaked the layout for ship display, adding search and fit links and switched the popularity graph to use 7 day averages which makes seeing trends easier</li>
                     <li>Added new privacy selector for new run and new ship forms</li>
+                    <li>Added run length to my runs table (xbigxgrizzlyx's request)</li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">

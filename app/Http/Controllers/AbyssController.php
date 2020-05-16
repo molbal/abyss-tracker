@@ -345,7 +345,10 @@ from (`abyss`.`lost_items` `dl`
             if (!session()->has("login_id")) {
                 return view("error", ["error" => "Please log in to list your runs"]);
             }
-            $builder = DB::table("v_runall")->where("CHAR_ID", session()->get('login_id'));
+            $builder = DB::table("v_runall")
+                         ->select(["v_runall.*","runs.RUNTIME_SECONDS"])
+                        ->join("runs", "runs.ID",'=', 'v_runall.ID')
+                         ->where("runs.CHAR_ID", session()->get('login_id'));
             [$order_by, $order_by_text, $order_type_text, $order_type] = $this->getSort($order_by, $order_type);
 
             $items = $builder->orderBy($order_by, $order_type);
