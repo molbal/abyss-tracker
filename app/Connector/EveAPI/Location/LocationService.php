@@ -17,7 +17,7 @@
          * @return \stdClass
          * @throws \Exception
          */
-        public function getCurrentLocation(int $charId) : \stdClass {
+        public function getCurrentLocation(int $charId) : ?\stdClass {
             try {
 
                 $c = $this->createGet($charId);

@@ -32,16 +32,11 @@
                             </p>
                         </div>
                         <div class="col-sm-8">
-                            <div class="alert alert-danger shadow-sm">
+                            <div class="alert alert-danger shadow-sm font-weight-bold">
                                 <h5 class="font-weight-bold">Important!</h5>
-                                As many drones of your first stack will be set active as the bandwidth of the ship allows. Sorry, we currently do not support mixed drone DPS calculation.
-                                @component("components.info-toggle")
-                                    This will be fixed later
-                                @endcomponent
-                                <br>
-                                DPS is calculated if the weapons have loaded ammunition. This is written in the EFT after the weapons, divided by a comma. If you copy from Pyfa, it will be working well.
+                                DPS is calculated if the weapons have loaded ammunition. This is written in the EFT after the weapons, divided by a comma.
                             </div>
-                            <textarea name="eft" id="eft" class="w-100 form-control" rows="10"></textarea>
+                            <textarea name="eft" id="eft" class="w-100 form-control" rows="10" required></textarea>
                         </div>
                         <div class="col-sm-4">
                             <p class="h6">Import options</p>
@@ -79,7 +74,7 @@
                         </div>
                         <div class="col-sm-8">
                             <p>Good tips on what to write here: In which order should you destroy enemies (Eg. neuters, webbers first), how to deal with the rooms like the Karen room or the Leshaks room. You can use <a href="#" target="_blank">markdown</a> formatting.</p>
-                            <textarea name="description" id="description" class="form-control w-100" rows="10"></textarea>
+                            <textarea name="description" id="description" class="form-control w-100" rows="10" required></textarea>
 
                             <div class="form-group mt-3">
                                 <label for="">Youtube video link <br> <small>If you have a video displaying the fit, it will be linked.<br>Please use a well formed Youtube link such as <a
@@ -247,6 +242,7 @@
                 status: false,
                 hideIcons: ["guide"]
             });
+            $('.CodeMirror textarea').attr('required', true);
         });
     </script>
 @endsection

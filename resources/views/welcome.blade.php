@@ -18,6 +18,7 @@
             <div class="card-footer">
                 <div class="btn-group">
                     <a href="{{route("changelog")}}" class="px-3 btn btn-sm btn-primary" target="_blank">Changelog</a>
+                    <a href="https://github.com/molbal/abyss-tracker/issues" class="px-3 btn btn-sm btn-secondary" target="_blank">Issue tracker</a>
                     <a href="https://discord.gg/FyNsM5k" class="px-3 btn btn-sm btn-secondary" target="_blank">Discord</a>
                     <a href="https://patreon.com/veetor" class="px-3 btn btn-sm btn-secondary" target="_blank">Patreon</a>
                 </div>
