@@ -6,6 +6,17 @@
     </div>
     <div class="row">
         <div class="col-sm-8">
+
+            @if(strtoupper($fit->STATUS) == "DONE" && intval(json_decode($fit->STATS)->offense->weaponDps) == 0)
+                <div class="card card-body border-warning shadow-sm mb-3">
+                    <div class="d-flex justify-content-start">
+                        <img src="https://img.icons8.com/cotton/64/000000/error--v1.png" class="mr-3"/>
+                        <span>
+                        This fit's weapon DPS is 0. Maybe the submitter forgot to load ammo before uploading the fit or this fit only relies on drones.
+                        </span>
+                    </div>
+                </div>
+            @endif
             <div class="card card-body border-0 shadow-sm">
                 <div class="tab-content">
                     <div id="home" class="tab-pane active">
