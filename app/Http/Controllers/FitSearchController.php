@@ -38,6 +38,8 @@
             $shipName = DB::table('ship_lookup')
                            ->where('ID', $shipId)
                            ->value('NAME');
+
+
             // Last viewed fit
             if (session()->has("login_id")) {
                 if (Cache::has("aft.fit.last-seen-" . session()->get("login_id"))) {
@@ -61,7 +63,7 @@
 
             // My fits
             $myFits = DB::table("fits")->where("SHIP_ID", $shipId)->where("CHAR_ID", session()->get("login_id"))->get();
-            if ($myFits->count() > 1) {
+            if ($myFits->count() > 0) {
                 $list = [];
                 foreach ($myFits as $myFit) {
                     $list[] = $this->getFitSelect($myFit);
@@ -80,7 +82,7 @@
 
             // Public & anonym fits
             $myFits = DB::table("fits")->where("SHIP_ID", $shipId)->where("CHAR_ID",'<>', session()->get("login_id"))->get();
-            if ($myFits->count() > 1) {
+            if ($myFits->count() > 0) {
                 $list = [];
                 foreach ($myFits as $myFit) {
                     $list[] = $this->getFitSelect($myFit);
