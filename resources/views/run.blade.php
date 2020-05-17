@@ -91,7 +91,7 @@
         <div class="col-md-4 col-sm-6">
             <div class="card card-body shadow-sm border-0">
                 <div class="row">
-                    <img src="/icons/search-icons/ship.png" class="pull-left ml-2 rounded-circle">
+                    <img src="/_icons/search-icons/ship.png" class="pull-left ml-2 rounded-circle">
                     <div class="col"><h2 class="font-weight-bold mb-0">
                             @if($all_data->FIT_ID)
                                 <h2><a href="{{route("fit_single", ["id" => $all_data->FIT_ID])}}">{{$fit_name}}</a></h2>
