@@ -272,7 +272,7 @@ where CHAR_ID=? and RUN_DATE=?" ,[
             $data = DB::table("v_runall")->where("ID", $id)->get()->get(0);
 
             // Get graphs
-            [$otherCharts, $averageLootForTier] = $this->graphContainerController->getRunGraphs($data);
+            [$otherCharts, $medianLootForTier] = $this->graphContainerController->getRunGraphs($data);
 
             // Get all data and all loot
             $all_data = DB::table("runs")->where("ID", $id)->get()->get(0);
@@ -292,7 +292,7 @@ from (`abyss`.`lost_items` `dl`
             $lost = $this->normalizeLootAndLost($id, $all_data, $lost, $loot);
 
             // Get customization options
-            [$percent, $run_summary] = $this->barkController->getRunSummaryBark($data, $averageLootForTier);
+            [$percent, $run_summary] = $this->barkController->getRunSummaryBark($data, $medianLootForTier);
             $death_reason = $this->barkController->getDeathReasonBark($all_data);
             $looting = $this->barkController->getLootStrategyDescription($all_data);
 

@@ -192,16 +192,27 @@
          * @return array
          */
         public function getRunGraphs($data): array {
+            $isCruiser = DB::table("ship_lookup")
+                       ->where("ID", $data->SHIP_ID ?? 17715)
+                       ->value("IS_CRUISER");
             $otherCharts = new RunBetter();
             $averageLootForTierType = DB::table("runs")
                 ->where("TIER", $data->TIER)
                 ->where("TYPE", $data->TYPE)
                 ->where("SURVIVED", true)
                 ->avg("LOOT_ISK");
-            $averageLootForTier = DB::table("runs")
-                ->where("TIER", $data->TIER)
-                ->where("SURVIVED", true)
-                ->avg("LOOT_ISK");
+
+
+            $medianLootForTier = DB::select("SELECT AVG(dd.LOOT_ISK) as MEDIAN
+FROM (
+SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
+  FROM runs d, (SELECT @rownum:=0) r
+  WHERE d.LOOT_ISK is NOT NULL
+  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
+  ORDER BY d.LOOT_ISK
+) as dd
+WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER, $isCruiser])[0]->MEDIAN;
+
 
             $averageLootForTierTypeCruiser = DB::table("runs")
                 ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
@@ -222,22 +233,26 @@
                 ->where("runs.SURVIVED", true)
                 ->avg("LOOT_ISK");
 
-            $averageLootForTierCruiser = DB::table("runs")
-                ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                ->whereNotNull("runs.SHIP_ID")
-                ->where("ship_lookup.IS_CRUISER", "1")
-                ->where("runs.TIER", $data->TIER)
-                ->where("runs.SURVIVED", true)
-                ->avg("LOOT_ISK");
+            $medianLootForTierCruiser =  DB::select("SELECT AVG(dd.LOOT_ISK) as MEDIAN
+FROM (
+SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
+  FROM runs d, (SELECT @rownum:=0) r
+  WHERE d.LOOT_ISK is NOT NULL
+  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
+  ORDER BY d.LOOT_ISK
+) as dd
+WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER, 1])[0]->MEDIAN;
 
 
-            $averageLootForTierFrigate = DB::table("runs")
-                ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                ->whereNotNull("runs.SHIP_ID")
-                ->where("ship_lookup.IS_CRUISER", "0")
-                ->where("runs.TIER", $data->TIER)
-                ->where("runs.SURVIVED", true)
-                ->avg("LOOT_ISK");
+            $medianLootForTierFrigate =  DB::select("SELECT AVG(dd.LOOT_ISK) as MEDIAN
+FROM (
+SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
+  FROM runs d, (SELECT @rownum:=0) r
+  WHERE d.LOOT_ISK is NOT NULL
+  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
+  ORDER BY d.LOOT_ISK
+) as dd
+WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER, 0])[0]->MEDIAN;
 
             if ($data->SHIP_NAME) {
                 $averageLootForTierTypeShip = DB::table("v_runall")
@@ -274,9 +289,9 @@
             $otherCharts->dataset(sprintf("%s tier %s all", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);
             $otherCharts->dataset(sprintf("%s tier %s cruiser", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierTypeCruiser/ 1000000, 2)]);
             $otherCharts->dataset(sprintf("%s tier %s frigates", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierTypeFrigate/ 1000000, 2)]);
-            $otherCharts->dataset(sprintf("%s tier cruiser",  $data->TIER), 'bar', [round($averageLootForTierCruiser/ 1000000, 2)]);
-            $otherCharts->dataset(sprintf("%s tier frigates",  $data->TIER), 'bar', [round($averageLootForTierFrigate/ 1000000, 2)]);
-            $otherCharts->dataset(sprintf("Tier %s all", $data->TIER), 'bar', [round($averageLootForTier / 1000000, 2)]);
+            $otherCharts->dataset(sprintf("%s tier cruiser (median)",  $data->TIER), 'bar', [round($medianLootForTierCruiser/ 1000000, 2)]);
+            $otherCharts->dataset(sprintf("%s tier frigates (median)",  $data->TIER), 'bar', [round($medianLootForTierFrigate/ 1000000, 2)]);
+            $otherCharts->dataset(sprintf("Tier %s (median)", $data->TIER), 'bar', [round($medianLootForTier / 1000000, 2)]);
             $otherCharts->dataset(sprintf("This run"), 'bar', [round($data->LOOT_ISK / 1000000, 2)]);
             $otherCharts->theme(ThemeController::getChartTheme());
             $otherCharts->displayAxes(true);
@@ -288,16 +303,16 @@
                 $group = DB::table("ship_lookup")->where("NAME", $data->SHIP_NAME)->value("IS_CRUISER");
                 switch ($group) {
                     case 1:
-                        $averageLootForTier = $averageLootForTierCruiser;
+                        $medianLootForTier = $medianLootForTierCruiser;
                         break;
                     case 0:
-                        $averageLootForTier = $averageLootForTierFrigate;
+                        $medianLootForTier = $medianLootForTierFrigate;
                         break;
 
                 }
             }
 
-            return [$otherCharts, $averageLootForTier];
+            return [$otherCharts, $medianLootForTier];
 
         }
     }
