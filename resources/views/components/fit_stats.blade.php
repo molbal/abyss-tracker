@@ -35,18 +35,18 @@
             </td>
             <td class="text-right">{{number_format($stats->misc->ship->powerMax, 0, ",", "")}} MW</td>
         </tr>
-        <tr>
-            <td class="w-20p"><img src="/_icons/fit/drone.png" alt="Dronebay icon" class="tinyicon"></td>
-            <td>Dronebay</td>
-            <td>
-                @if($stats->misc->drones->droneBayTotal<$stats->misc->drones->droneBayUsed)
-                    <img src="https://img.icons8.com/officexs/24/000000/box-important.png" style="width: 16px; height: 16px" data-toggle="tooltip"
-                         title="CPU usage is {{round($stats->misc->drones->droneBayUsed/$stats->misc->drones->droneBayTotal*100, 2)}}%"/>
-            @endif
-            <td class="text-right {{$stats->misc->drones->droneBayTotal<$stats->misc->drones->droneBayUsed ? 'text-danger font-weight-bold' : ''}}">{{number_format($stats->misc->drones->droneBayUsed, 0, ",", "")}}
-                m<sup>3</sup></td>
-            <td class="text-right">{{number_format($stats->misc->drones->droneBayTotal, 0, ",", "")}} m<sup>3</sup></td>
-        </tr>
+{{--        <tr>--}}
+{{--            <td class="w-20p"><img src="/_icons/fit/drone.png" alt="Dronebay icon" class="tinyicon"></td>--}}
+{{--            <td>Dronebay</td>--}}
+{{--            <td>--}}
+{{--                @if($stats->misc->drones->droneBayTotal<$stats->misc->drones->droneBayUsed)--}}
+{{--                    <img src="https://img.icons8.com/officexs/24/000000/box-important.png" style="width: 16px; height: 16px" data-toggle="tooltip"--}}
+{{--                         title="CPU usage is {{round($stats->misc->drones->droneBayUsed/$stats->misc->drones->droneBayTotal*100, 2)}}%"/>--}}
+{{--            @endif--}}
+{{--            <td class="text-right {{$stats->misc->drones->droneBayTotal<$stats->misc->drones->droneBayUsed ? 'text-danger font-weight-bold' : ''}}">{{number_format($stats->misc->drones->droneBayUsed, 0, ",", "")}}--}}
+{{--                m<sup>3</sup></td>--}}
+{{--            <td class="text-right">{{number_format($stats->misc->drones->droneBayTotal, 0, ",", "")}} m<sup>3</sup></td>--}}
+{{--        </tr>--}}
     </table>
 </div>
 

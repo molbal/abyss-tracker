@@ -105,10 +105,10 @@
                 $total_price += $gainedItem->getCount() * (($gainedItem->getSellValue() + $gainedItem->getBuyValue()) / 2);
             }
 
-            Log::info("newItems: " . print_r($newItems, 1));
-            Log::info("oldItems: " . print_r($oldItems, 1));
-            Log::info("gainedItems: " . print_r($gainedItems, 1));
-            Log::info("lostItems: " . print_r($lostItems, 1));
+//            Log::info("newItems: " . print_r($newItems, 1));
+//            Log::info("oldItems: " . print_r($oldItems, 1));
+//            Log::info("gainedItems: " . print_r($gainedItems, 1));
+//            Log::info("lostItems: " . print_r($lostItems, 1));
 
 
             return ["gainedItems" => $gainedItems, "lostItems" => $lostItems, "totalPrice" => round($total_price)];
@@ -124,6 +124,7 @@
             try {
 
                 $data = $this->sendToEvePraisal();
+                Log::info("Regualar loot for evepraisal. Sent: ".print_r($this->rawDat, 1)." - returned: ".print_r($data, 1));
 
                 $this->totalPrice = round(($data->totals->buy + $data->totals->sell) / 2);
 

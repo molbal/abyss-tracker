@@ -98,7 +98,7 @@
                 <h5 class="font-weight-bold">Description</h5>
                 {!! $embed !!}
                 <div class="text-justify">
-                    {!! $description !!}
+                    {!! $description ?? "<p class='py-2 text-center text-italic'>No description provided</p>" !!}
                 </div>
                 <p class="text-right text-small">
                     - {{$fit->SUBMITTED}}

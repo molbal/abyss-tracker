@@ -110,6 +110,7 @@
          * @param Request $request
          *
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @throws \Exception
          */
         public function new_store(Request $request) {
             if (!session()->has("login_id")) {
@@ -122,14 +123,25 @@
                 'FIRESTORM'   => 'required|numeric|min:0|max:5',
                 'GAMMA' => 'required|numeric|min:0|max:5',
                 'eft'  => 'required',
-                'description' => 'required',
+//                'description' => 'required',
                 'privacy' => 'required'
             ], [
                 'required' => "Please fill :attribute before saving your fit",
             ])->validate();
 
+
             $id = null;
             try {
+                if (
+                    $request->get("ELECTRICAL") == 0 &&
+                    $request->get("DARK") == 0 &&
+                    $request->get("EXOTIC") == 0 &&
+                    $request->get("FIRESTORM") == 0 &&
+                    $request->get("GAMMA") == 0
+                )
+                {
+                    throw new \Exception("Please mark at least one type/tier possible in this fit.");
+                }
                 $eft = $request->get("eft");
                 $shipId = $this->getShipIDFromEft($eft);
                 if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {

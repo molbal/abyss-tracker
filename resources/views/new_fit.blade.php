@@ -76,7 +76,7 @@
                         </div>
                         <div class="col-sm-8">
                             <p>Good tips on what to write here: In which order should you destroy enemies (Eg. neuters, webbers first), how to deal with the rooms like the Karen room or the Leshaks room. You can use <a href="#" target="_blank">markdown</a> formatting.</p>
-                            <textarea name="description" id="description" class="form-control w-100" rows="10" required></textarea>
+                            <textarea name="description" id="description" class="form-control w-100" rows="10"></textarea>
 
                             <div class="form-group mt-3">
                                 <label for="">Youtube video link <br> <small>If you have a video displaying the fit, it will be linked.<br>Please use a well formed Youtube link such as <a
@@ -244,7 +244,6 @@
                 status: false,
                 hideIcons: ["guide"]
             });
-            $('.CodeMirror textarea').attr('required', true);
         });
     </script>
 @endsection

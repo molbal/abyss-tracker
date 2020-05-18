@@ -375,10 +375,11 @@ $lost_buy = 0;
     <div class="row mt-3">
         <div class="col-sm-12 text-right">
             @if(session()->get('login_id') == $all_data->CHAR_ID)
+                <a href="{{route('new')}}" class="text-dark">Add new run</a> &centerdot;
                 <a href="{{route('run.change_privacy', ['id' => $id, 'privacy' => $all_data->PUBLIC ? 'private' : 'public'])}}" class="text-dark"><img
-                        src="https://img.icons8.com/officexs/16/000000/key-security.png"> Make run {{$all_data->PUBLIC ? 'private' : 'public'}}</a>
+                        src="https://img.icons8.com/officexs/16/000000/key-security.png"> Make run {{$all_data->PUBLIC ? 'private' : 'public'}}</a> &centerdot;
                 <a href="{{route('run_delete', ['id' => $id])}}" class="text-danger"><img
-                        src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a>
+                        src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a> &centerdot;
             @elseif(!$reported)
                 <a href="javascript:void(0)" id="flag" class="text-danger"><img
                         src="https://img.icons8.com/officexs/16/000000/filled-flag2.png"> Flag for review</a>
