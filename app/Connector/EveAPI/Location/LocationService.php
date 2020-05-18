@@ -18,12 +18,11 @@
          * @throws \Exception
          */
         public function getCurrentLocation(int $charId) : ?\stdClass {
+            $c = $this->createGet($charId);
             try {
 
-                $c = $this->createGet($charId);
                 curl_setopt($c, CURLOPT_URL, $this->apiRoot . "characters/$charId/location/");
                 $ret = curl_exec($c);
-                curl_close($c);
 
                 $val = json_decode($ret);
                 /** @var ResourceLookupService $res */
@@ -34,9 +33,11 @@
 
                 return $val;
             } catch (\Exception $e) {
-                Log::warning("Error during " . $e->getMessage() . " with response " . ($ret ?? "[no response]"));
+                Log::warning("Error during " . $e->getMessage() . " with response " . ($ret ?? "[no response]")." headers".print_r(curl_getinfo($c), 1));
 
                 return null;
+            } finally {
+                curl_close($c);
             }
         }
 

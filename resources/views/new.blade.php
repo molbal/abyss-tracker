@@ -165,11 +165,16 @@
                                         You have exited the Abyss, the run is over, the timer is stopped.<br>
                                         <small>Congratulations!</small>
                                     </p>
+                                    <p class="error sw_status">
+                                        <small class="text-danger">Error</small><br>
+                                        There was something wrong with the ESI responses so your ESI token was removed. Please authenticate again. Please enable the stopwatch again<br>
+                                        <a href="{{route("auth-scoped-start")}}" class="btn btn-sm btn-outline-primary mb-1">Re-enable stopwatch</a>
+                                    </p>
                                 @else
                                     <p class="mb-1">To automatically measure how much time a run takes please enable the
                                         API access so we can check your location. (Your location will never be
                                         saved)</p>
-                                    <a href="{{route("auth-scoped-start")}}" class="btn btn-outline-primary mb-1">Enable
+                                    <a href="{{route("auth-scoped-start")}}" class="btn btn-sm btn-outline-primary mb-1">Enable
                                         stopwatch</a>
                                 @endif
 
@@ -315,7 +320,7 @@
                     <div class="row">
                         <div class="col-sm-6 p-1">
                             <div class="pickerInputGroup">
-                                <input id="privacy-public" name="PUBLIC" value="1" type="radio" {{($prev->PUBLIC ?? 0) == 0 ? "checked" : ""}}/>
+                                <input id="privacy-public" name="PUBLIC" value="1" type="radio" {{($prev->PUBLIC ?? 0) == 1 ? "checked=''" : ""}}/>
                                 <label for="privacy-public">
                                     <p class="mb-1 font-weight-bold text-uppercase">Public</p>
                                     <p class="mb-1 text-small">The loot and statistics will be visible along with your name. This run will be listed in your <a target="_blank" href="{{route("profile.index", ['id' => session()->get("login_id")])}}" data-toggle="tooltip" title="Opens in a new tab">public profile</a> if its not hidden in
@@ -325,7 +330,7 @@
                         </div>
                         <div class="col-sm-6 p-1">
                             <div class="pickerInputGroup">
-                                <input id="privacy-private" name="PUBLIC" value="0" type="radio" {{($prev->PUBLIC ?? 0) == 1 ? "checked" : ""}}/>
+                                <input id="privacy-private" name="PUBLIC" value="0" type="radio" {{($prev->PUBLIC ?? 0) == 0 ? "checked=''" : ""}}/>
                                 <label for="privacy-private">
                                     <p class="mb-1 font-weight-bold text-uppercase">Anonym</p>
                                     <p class="mb-1 text-small">The loot and statistics will be visible, but your name will be hidden. This will not be listed in your <a target="_blank" href="{{route("profile.index", ['id' => session()->get("login_id")])}}" data-toggle="tooltip" title="Opens in a new tab">public profile</a>, ever.</p>
@@ -454,6 +459,10 @@
 
                 $(".sw_status").hide();
                 $("."+msg.infodiv).show();
+                if (msg.infodiv==='error') {
+                    stop_stopwatch();
+                    $("#start_sw").hide();
+                }
             });
         }
 

@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use App\Exceptions\ESIAuthException;
     use Exception;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -41,7 +42,6 @@
          * @throws Exception
          */
         public function getAndCacheNewAccessToken(): string {
-            //Log::info("Requesting new access token (CharID: ".$this->charId.";Refresh token:".$this->getRefreshToken().")");
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL,"https://login.eveonline.com/oauth/token");
@@ -56,11 +56,9 @@
             ]);
 
             curl_setopt($ch,CURLOPT_VERBOSE ,true);
-//            curl_setopt($ch,CURLOPT_STDERR ,fopen('./curl-token-'.$this->charId.'.log', 'w+'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
             $esiResponse = curl_exec($ch);
-            //Log::debug("Received access token (CharID: ".$this->charId."; response code: ".$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)."): ". $esiResponse);
             /**
              {
                 "access_token":"MXP...tg2",
@@ -77,14 +75,16 @@
             }
 
             /** @var array $esiResponseDecoded */
-            $esiResponseDecoded = json_decode($esiResponse, true);
+            $esiResponseDecoded = @json_decode($esiResponse, true);
             /** @var int $expiresInMinutes */
-            $expiresInMinutes = floor($esiResponseDecoded["expires_in"]/60);
+            $expiresInMinutes = floor($esiResponseDecoded["expires_in"] ?? 0/60);
             /** @var string $newAccessToken */
-            $newAccessToken = $esiResponseDecoded["access_token"];
+            $newAccessToken = $esiResponseDecoded["access_token"] ?? null;
 
+            if (!$newAccessToken) {
+                throw new ESIAuthException("Could not get auth token for char ID ".$this->charId);
+            }
             Cache::put("AccessToken-".$this->charId, $newAccessToken, $expiresInMinutes);
-            //Log::info("Request token ($newAccessToken) live for $expiresInMinutes minutes");
             return $newAccessToken;
         }
 

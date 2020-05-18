@@ -9,7 +9,6 @@
                 <p>
                     The following features are planned (in no particular order or grouping).
                 <ul>
-                    <li><span class="badge badge-warning">IN PROGRESS</span> Showing ship fits</li>
                     <li>Blueprint price estimation</li>
                     <li>Dynamically adding and removing search filters</li>
                     <li>Dynamically adding and removing fit search filters</li>
@@ -26,7 +25,7 @@
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                 <h4 class="mb-0 pb-0"><strong>1.5.0</strong> 'Command' release</h4>
-                <small class="mt-0">2020 </small>
+                <small class="mt-0">2020 may 17</small>
                 <p class="text-justify">
                     New features
                 </p>

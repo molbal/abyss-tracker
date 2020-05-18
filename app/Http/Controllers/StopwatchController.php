@@ -5,6 +5,7 @@
 
 
     use App\Connector\EveAPI\Location\LocationService;
+    use App\Exceptions\ESIAuthException;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -36,6 +37,16 @@
         }
 
         public function getAbyssState(int $charId) {
+
+
+            if (DB::table("chars")->where("CHAR_ID", $charId)->value("REFRESH_TOKEN") == "") {
+                return [
+                    'status' => 'error',
+                    'infodiv' => 'error',
+                    'seconds' => 0
+                ];
+            }
+
             $state = [
                 'status' => 'error',
                 'seconds' => 0
@@ -82,7 +93,8 @@
                     //Log::debug(sprintf("Updated location from ESI for %d", $char->CHAR_ID));
                 }
                 catch (\Exception $e) {
-                    Log::warning(sprintf("Could not check ESI for char %d: %s %s@%d",$char->CHAR_ID, $e->getMessage(), $e->getFile(), $e->getLine()));
+                    Log::channel("stopwatch")->warning(sprintf("Could not check ESI for char %d: %s %s@%d",$char->CHAR_ID, $e->getMessage(), $e->getFile(), $e->getLine())." - removing stopwatch");
+                    DB::table("stopwatch")->where("CHAR_ID", $char->CHAR_ID)->delete();
                 }
             }
             unset($chars);
@@ -101,14 +113,28 @@
                 throw new \Exception(sprintf("Stopwatch doesnt exist with charid %d!", $charId));
             }
 
+            if (DB::table("chars")->where("CHAR_ID", $charId)->value("REFRESH_TOKEN") == "") {
+                throw new \Exception(sprintf("Stopwatch is turned off for  charid %d!", $charId));
+            }
+
             $var = DB::table("stopwatch")->where("CHAR_ID", $charId)->first();
-            $loc = Cache::remember(sprintf("location.cache.%d", $charId), now()->addSeconds(7), function() use ($locationService, $charId){
-               return $locationService->getCurrentLocation($charId);
-            });
+            try {
+                $loc = Cache::remember(sprintf("location.cache.%d", $charId), now()->addSeconds(7), function() use ($locationService, $charId){
+                   return $locationService->getCurrentLocation($charId);
+                });
+            }
+            catch (ESIAuthException $e) {
+                DB::table("chars")->where("CHAR_ID", $charId)->update(["REFRESH_TOKEN" => ""]);
+                throw new ESIAuthException("Auth exception, removed refresh token. Please auth again.");
+            }
+
             unset($locationService);
             $preAbyss = $var->IN_ABYSS ? true : false;
-            $nowAbyss = $this->isAbyssSystem($loc->solar_system_name);
 
+            if (!$loc)  {
+                throw new \Exception("Could not location for user $charId");
+            }
+            $nowAbyss = $this->isAbyssSystem($loc->solar_system_name);
             //Log::info(sprintf("Comparsion for %s pre: %s now: %s", $charId, $preAbyss ? "in" : "out", $nowAbyss ? "in" : "out"));
 
             if ($preAbyss != $nowAbyss) {

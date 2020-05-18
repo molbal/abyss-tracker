@@ -105,6 +105,12 @@
                 $total_price += $gainedItem->getCount() * (($gainedItem->getSellValue() + $gainedItem->getBuyValue()) / 2);
             }
 
+            Log::info("newItems: " . print_r($newItems, 1));
+            Log::info("oldItems: " . print_r($oldItems, 1));
+            Log::info("gainedItems: " . print_r($gainedItems, 1));
+            Log::info("lostItems: " . print_r($lostItems, 1));
+
+
             return ["gainedItems" => $gainedItems, "lostItems" => $lostItems, "totalPrice" => round($total_price)];
         }
 

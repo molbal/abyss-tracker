@@ -94,9 +94,9 @@
                     <img src="/_icons/search-icons/ship.png" class="pull-left ml-2 rounded-circle">
                     <div class="col"><h2 class="font-weight-bold mb-0">
                             @if($all_data->FIT_ID)
-                                <h2><a href="{{route("fit_single", ["id" => $all_data->FIT_ID])}}">{{$fit_name}}</a></h2>
+                                <h2 class="mb-0"><a href="{{route("fit_single", ["id" => $all_data->FIT_ID])}}">{{$fit_name}}</a></h2>
                             @else
-                                <h2>Unknown fit</h2>
+                                <h2 class="mb-0">Unknown fit</h2>
                             @endif
                         <small class="text-muted font-weight-bold">Fit name</small>
                     </div>

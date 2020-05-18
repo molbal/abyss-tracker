@@ -42,7 +42,7 @@ return [
         ],
 
         'single' => [
-            'driver' => 'single',
+            'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
         ],
@@ -52,6 +52,13 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
             'days' => 14,
+        ],
+
+        'stopwatch' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stopwatch.log'),
+            'level' => 'debug',
+            'days' => 7,
         ],
 
         'slack' => [
