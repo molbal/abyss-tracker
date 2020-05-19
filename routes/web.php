@@ -236,3 +236,24 @@
 
         return redirect(\route("fit_single", ["id" => $id]));
     });
+
+    Route::get("/maintenance/recalc-fits/{secret}", function ($secret) {
+        if ($secret != env("MAINTENANCE_TOKEN")) {
+            abort(403, "Invalid maintenance token.");
+        }
+
+        $IDs = DB::table("fits")->where("STATUS", 'queued')->get();
+
+        echo "Starting <br><pre>";
+        foreach ($IDs as $id) {
+            $id = $id->ID;
+            /** @var \App\Http\Controllers\FitsController $fits */
+            $fits = resolve('App\Http\Controllers\FitsController');
+            $fit = DB::table("fits")->where("ID", $id)->select(["RAW_EFT", "SHIP_ID"])->first();
+            $fits->submitSvcFitService($fits->getFitHelper()->pyfaBugWorkaround($fit->RAW_EFT, $fit->SHIP_ID), $id);
+
+            echo "Resubmitted $id \n";
+        }
+        echo "</pre>";
+
+    });

@@ -18,6 +18,27 @@
 
     class GraphContainerController
     {
+
+
+        public function getLootBellGraphs(int $tier, bool $isCruiser = true): RunBetter {
+
+            $mean = DB::table("runs")->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", $isCruiser)->avg("runs.LOOT_ISK");
+            $sdev = DB::table("runs")->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", $isCruiser)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV;
+
+
+
+            $chart = new RunBetter();
+            $chart->load(route("chart.home.type"));
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->export(true, "Download");
+            $chart->height("400");
+            $chart->theme(ThemeController::getChartTheme());
+        }
+
+
+
+
         /**
          * @return LootTypesChart
          */
