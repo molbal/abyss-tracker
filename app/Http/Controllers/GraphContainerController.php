@@ -28,12 +28,48 @@
 
 
             $chart = new RunBetter();
-            $chart->load(route("chart.home.type"));
-            $chart->displayAxes(false);
-            $chart->displayLegend(false);
+
+            $chart->displayAxes(true);
+            $chart->displayLegend(true);
             $chart->export(true, "Download");
             $chart->height("400");
             $chart->theme(ThemeController::getChartTheme());
+
+//            DB::enableQueryLog();
+            $data = DB::select("
+                    select
+            AVG(i.LOOT_ISK) AS LOOT_ISK,
+            gaussCdf(?, ?, MIN(i.LOOT_ISK)) AS VAL
+               from
+        (SELECT
+            LOOT_ISK as `LOOT_ISK`,
+            CUME_DIST() OVER (ORDER BY LOOT_ISK) as `DIST`
+        FROM
+            runs
+        join ship_lookup sl on runs.SHIP_ID = sl.ID
+        where SURVIVED=1 and LOOT_ISK>0 and TIER=?  and sl.IS_CRUISER=?) i
+        GROUP BY ROUND(i.DIST, 2);
+        ", [$mean, $sdev, $tier, $isCruiser]);
+
+//            dd(DB::getQueryLog(), $data);
+
+            $chartData = [];
+            foreach ($data as $dat) {
+                $chartData[] = [floatval($dat->LOOT_ISK), floatval($dat->VAL)];
+            }
+
+            $chart->dataset("Loot graph", "scatter", $chartData);
+
+            $chart->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            return $chart;
+
         }
 
 
