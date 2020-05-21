@@ -15,4 +15,20 @@ class RunBetter extends Chart
     {
         parent::__construct();
     }
+
+    public function formatOptions(bool $strict = false, bool $noBraces = false) {
+//        dd($strict, $noBraces);
+//        dd($this->options);
+        $options =  parent::formatOptions($strict, $noBraces);
+
+
+        // Workaround!
+        $options = str_ireplace('"xAxis":{"data":[]}', '"xAxis":{}', $options);
+        $options = str_ireplace('"yAxis":{"show":true}', '"yAxis":{"show":false}', $options);
+        $options = str_ireplace('"formatter":"function(params) {return params.name;}"', '"formatter":function(params) {return params[0]["value"][0]+" M ISK";}', $options);
+
+        return $options;
+    }
+
+
 }
