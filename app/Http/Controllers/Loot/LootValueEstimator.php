@@ -243,8 +243,8 @@
                         $item->setSellValue(0);
                     } else if ($item->getBuyValue() == 0 && $item->getSellValue() == 0) {
                         $fixed = self::getEvePraisalItem($item->getItemId());
-                        $item->setBuyValue($fixed[0]);
-                        $item->setSellValue($fixed[1]);
+                        $item->setBuyValue($fixed[0] ?? 0);
+                        $item->setSellValue($fixed[1] ?? 0);
                     }
 
                     DB::table("item_prices")
