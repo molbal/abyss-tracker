@@ -141,6 +141,8 @@
          ->name("chart.personal.loot");
     Route::get("/api/chart/personal/isk_per_hour", 'GraphHelper@personalIsk')
          ->name("chart.personal.ihp");
+    Route::get("/api/chart/run/distribution/{tier}/{isCruiser}", 'GraphHelper@getRunApi')
+         ->name("chart.run.averages");
 
     /**
      * Search routes

@@ -367,7 +367,7 @@ $lost_buy = 0;
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
-                <h4 class="font-weight-bold">Average loot values</h4>
+                <h4 class="font-weight-bold">Loot distribution values</h4>
                 {!! $other->container(); !!}
             </div>
         </div>

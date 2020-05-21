@@ -22,93 +22,21 @@
 
         public function getLootBellGraphs(int $tier, bool $isCruiser = true): RunBetter {
 
-            $million = 1000000;
-//            DB::enableQueryLog();
-            $mean = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", $isCruiser)->avg("runs.LOOT_ISK"))/$million;
-            $sdev = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", $isCruiser)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
-
-
-
             $chart = new RunBetter();
 
             $chart->export(true, "Download");
             $chart->height("400");
             $chart->theme(ThemeController::getChartTheme());
+            $chart->load(route("chart.run.averages", [
+                "tier" => $tier, $isCruiser => $isCruiser ? 1 : 0
+            ]));
+            $options = $chart->options;
+            $options["xAxis"] = [];
+            $chart->options($options, true);
+            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
 
-            $data = DB::select("
-        select
-            (i.LOOT_ISK) AS LOOT_ISK
-               from
-        (SELECT
-            LOOT_ISK as `LOOT_ISK`,
-            CUME_DIST() OVER (ORDER BY LOOT_ISK) as `DIST`
-        FROM
-            runs
-        join ship_lookup sl on runs.SHIP_ID = sl.ID
-        where SURVIVED=1 and TIER=? and LOOT_ISK>0  and sl.IS_CRUISER=?) i WHERE DIST<0.985
-        GROUP BY ROUND(i.DIST, 2);
-        ", [$tier, $isCruiser]);
-
-//            dd(DB::getQueryLog());
-
-            $chartData = [[0,0]];
-            $i = 0;
-            $labels = [[0]];
-            foreach ($data as $dat) {
-                if ($i++%3==0) continue;
-                $label = floatval(round($dat->LOOT_ISK/$million, 2));
-                $chartData[] = [
-                    $label,
-                    round($this->calcNormalDist(floatval(round($dat->LOOT_ISK/$million, 2)),$mean, $sdev)*100, 2)
-                ];
-                $labels[] = $label;
-            }
-//            dd($chartData);
-
-//            $chart->labels($labels);
-            $chart->dataset("Loot graph", "line", $chartData)->options([
-                "smooth" => 0.5,
-                "showSymbol" => false,
-                "hoverAnimation" => false
-            ]);
-
-
-           $options = $chart->options;
-           $options["xAxis"] = [];
-           $chart->options($options, true);
-           $chart->options([
-               'tooltip' => [
-                   'trigger' => 'axis',
-                   'formatter' => "function(params) {return params.name;}"
-               ]
-           ]);
-
-           /*
-            *
-    tooltip: {
-        trigger: 'axis',
-        formatter: function (params) {
-            params = params[0];
-            var date = new Date(params.name);
-            return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
-        },
-        axisPointer: {
-            animation: false
-        }
-    },*/
-//            $chart->options([
-//                'smooth'         => true,
-//                'symbolSize'     => 0,
-//                'smoothMonotone' => 'x',
-//                'tooltip'        => [
-//                    'trigger' => "axis"
-//                ]
-//            ]);
             return $chart;
-
         }
-
-
 
 
         /**
@@ -407,18 +335,5 @@ WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );",
 
             return [$otherCharts, $medianLootForTier];
 
-        }
-
-        /**
-         * Calculates the nornal distribution
-         * @param float $x Value
-         * @param float $mean Mean value
-         * @param float $sdev Standard deviation
-         *
-         * @return float|int
-         */
-        private function calcNormalDist(float  $x, float $mean, float $sdev) {
-            $z = ($x - $mean) / $sdev;
-            return (1.0 / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
         }
     }

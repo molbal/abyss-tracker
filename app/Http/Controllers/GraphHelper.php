@@ -8,6 +8,7 @@
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
     use App\Charts\PersonalDaily;
+    use App\Charts\RunBetter;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use Illuminate\Support\Facades\Cache;
@@ -65,6 +66,51 @@
             ]);
             return $chart->api();
 
+        }
+
+        public function getRunApi(int $tier, int $isCruiser) {
+
+            $million = 1000000;
+            $mean = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", $isCruiser)->avg("runs.LOOT_ISK"))/$million;
+            $sdev = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", $isCruiser)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
+
+
+
+            $data = DB::select("
+        select
+            i.LOOT_ISK
+               from
+        (
+        SELECT
+            r.LOOT_ISK as `LOOT_ISK`
+        FROM
+            runs r
+        join ship_lookup sl on r.SHIP_ID = sl.ID
+        where r.SURVIVED=1 and r.TIER=? and r.LOOT_ISK>0  and sl.IS_CRUISER=? ORDER BY r.LOOT_ISK ASC) i;
+        ORDER BY i.LOOT_ISK ASC
+        ", [$tier, $isCruiser]);
+
+            $chartData = [[0,0]];
+            $i = 0;
+            $labels = [[0]];
+            foreach ($data as $dat) {
+                if ($i++%3==0) continue;
+                $label = floatval(round($dat->LOOT_ISK/$million, 2));
+                $chartData[] = [
+                    $label,
+                    round($this->calcNormalDist(floatval(round($dat->LOOT_ISK/$million, 2)),$mean, $sdev)*100, 2)
+                ];
+                $labels[] = $label;
+            }
+
+
+            $chart = new RunBetter();
+            $chart->dataset("Loot distribution", "scatter", $chartData)->options([
+                "smooth" => 0.5,
+                "showSymbol" => false,
+                "hoverAnimation" => false
+            ]);
+            return $chart->api();
         }
 
         public function homeSurvival() {
@@ -205,5 +251,18 @@
             $chart->dataset('Approximate ISK/hour (Million ISK)', 'line', $values)->options(["smooth" => true]);
 
             return $chart->api();
+        }
+
+        /**
+         * Calculates the nornal distribution
+         * @param float $x Value
+         * @param float $mean Mean value
+         * @param float $sdev Standard deviation
+         *
+         * @return float|int
+         */
+        private function calcNormalDist(float  $x, float $mean, float $sdev) {
+            $z = ($x - $mean) / $sdev;
+            return (1.0 / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
         }
     }
