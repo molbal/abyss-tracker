@@ -81,7 +81,7 @@
             }
 
             // Public & anonym fits
-            $myFits = DB::table("fits")->where("SHIP_ID", $shipId)->where("CHAR_ID",'<>', session()->get("login_id"))->get();
+            $myFits = DB::table("fits")->where("SHIP_ID", $shipId)->whereIn("PRIVACY", ["public", "incognito"])->where("CHAR_ID",'<>', session()->get("login_id"))->get();
             if ($myFits->count() > 0) {
                 $list = [];
                 foreach ($myFits as $myFit) {
