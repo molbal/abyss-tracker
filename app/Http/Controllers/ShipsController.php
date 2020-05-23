@@ -21,6 +21,8 @@
     use function Psy\debug;
 
     class ShipsController extends Controller {
+        const PIE_RADIUS = [45, 135];
+        const PIE_RADIUS_SMALL = [25, 95];
 
         /** @var LootCacheController */
         private $lootCacheController;
@@ -487,7 +489,7 @@
          * @return array
          */
         public function getAllShipsFrigatesChart(): array {
-            $query_frig = Cache::remember("ships.frigates", 20, function() {
+            $query_frig = Cache::remember("ships.frigates", now()->addMinutes(20), function() {
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=0
@@ -513,7 +515,7 @@
             $shipFrigateChart->theme(ThemeController::getChartTheme());
             $shipFrigateChart->labels($dataset);
             $shipFrigateChart->dataset("Frigates", "pie", $values)->options([
-                "radius"   => [70, 170],
+                "radius"   => self::PIE_RADIUS,
                 "roseType" => "radius"
             ]);
             $shipFrigateChart->displayLegend(false);
@@ -524,7 +526,7 @@
          * @return array
          */
         public function getAllShipsCruiersChart(): array {
-            $query_cruiser = Cache::remember("ships.cruisers", 20, function() {
+            $query_cruiser = Cache::remember("ships.cruisers", now()->addMinutes(20), function() {
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
                     where l.IS_CRUISER=1
@@ -549,7 +551,7 @@
             $shipCruiserChart->theme(ThemeController::getChartTheme());
             $shipCruiserChart->labels($dataset);
             $shipCruiserChart->dataset("Cruisers", "pie", $values)->options([
-                "radius"   => [70, 170],
+                "radius"   => self::PIE_RADIUS,
                 "roseType" => "radius"
             ]);
             $shipCruiserChart->displayLegend(false);
@@ -582,7 +584,9 @@
             $death_reason->theme(ThemeController::getChartTheme());
             $death_reason->displayLegend(true);
             $death_reason->labels($labels);
-            $death_reason->dataset("Death reason", "pie", $data);
+            $death_reason->dataset("Death reason", "pie", $data)->options([
+                'radius' => self::PIE_RADIUS_SMALL
+            ]);
             return [$death_reasons, $labels, $data, $reason ?? null, $death_reason];
         }
 
@@ -612,7 +616,9 @@
             $loot_chart->theme(ThemeController::getChartTheme());
             $loot_chart->displayLegend(true);
             $loot_chart->labels($labels);
-            $loot_chart->dataset("Looting strategy", "pie", $data);
+            $loot_chart->dataset("Looting strategy", "pie", $data)->options([
+                'radius' => self::PIE_RADIUS_SMALL
+            ]);
             return $loot_chart;
         }
     }

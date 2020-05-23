@@ -16,6 +16,8 @@
 
     class GraphHelper extends Controller {
 
+        const HOME_PIE_RADIUS = [50, 90];
+
         public function homeType() {
             if (Cache::has("home.types")) {
                 $chart = Cache::get("home.types");
@@ -38,7 +40,7 @@
 
             $chart->labels($dataset);
             $chart->dataset('Filament types', 'pie', $values)->options([
-                "radius" => [50, 120]
+                "radius" => self::HOME_PIE_RADIUS
             ]);
             return $chart->api();
         }
@@ -62,7 +64,7 @@
 
             $chart->labels($dataset);
             $chart->dataset('Tier levels', 'pie', $values)->options([
-                "radius" => [50, 120]
+                "radius" => self::HOME_PIE_RADIUS
             ]);
             return $chart->api();
 
@@ -135,7 +137,7 @@
 
             $chart->labels($dataset);
             $chart->dataset('Survival', 'pie', $values)->options([
-                "radius" => [50, 120]
+                "radius" => self::HOME_PIE_RADIUS
             ]);
             return $chart->api();
 
