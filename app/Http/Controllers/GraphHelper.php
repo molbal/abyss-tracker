@@ -71,6 +71,52 @@
         }
 
         /**
+         * @return string
+         */
+        public function getHomeRunBellGraphs() {
+            $million = 1000000;
+
+            $meansCruiser = collect([]);
+            $meansFrigate = collect([]);
+            $sdevsCruiser = collect([]);
+            $sdevsFrigate = collect([]);
+            $ndataCruiser = collect([]);
+            $ndataFrigate = collect([]);
+
+            $datasets = collect([]);
+
+
+            $chart = new RunBetter();
+
+            for ($i=1;$i<=5;$i++) {
+                $meansCruiser->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->avg("runs.LOOT_ISK"))/$million);
+                $meansFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->avg("runs.LOOT_ISK"))/$million);
+                $sdevsCruiser->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million);
+                $sdevsFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million);
+                $ndataCruiser->add($this->getCruiserBaseDataForTier($i));
+                $ndataFrigate->add($this->getFrigateBaseDataForTier($i));
+
+                $datasets->add($this->buildDataSet($ndataCruiser->last(), $million, $meansCruiser->last(), $sdevsCruiser->last())[0]);
+                $chart->dataset("Cruisers Tier $i", "line", $datasets->last())->options([
+                    "smooth" => 0.3,
+                    "showSymbol" => false,
+                    "hoverAnimation" => false
+                ]);
+
+                $datasets->add($this->buildDataSet($ndataFrigate->last(), $million, $meansFrigate->last(), $sdevsFrigate->last())[0]);
+                $chart->dataset("Frigates Tier $i", "line", $datasets->last())->options([
+                    "smooth" => 0.3,
+                    "showSymbol" => false,
+                    "hoverAnimation" => false
+                ]);
+            }
+
+//            dd($meansCruiser,$sdevsCruiser );
+
+            return $chart->api();
+        }
+
+        /**
          * Gets the run bell graphs for
          * @param int $tier
          * @param int $isCruiser
@@ -93,15 +139,15 @@
             [$chartDataCruiser, $i, $dat, $label] = $this->buildDataSet($dataCruiser, $million, $meanCruiser, $sdevCruiser);
             [$chartDataFrigate, $i, $dat, $label] = $this->buildDataSet($dataFrigate, $million, $meanFrigate, $sdevFrigate);
 
-            usort($chartDataCruiser, function($a, $b) {
-                if ($a == $b) return 0;
-                return ($a < $b) ? -1 : 1;
-            });
-
-            usort($chartDataFrigate, function($a, $b) {
-                if ($a == $b) return 0;
-                return ($a < $b) ? -1 : 1;
-            });
+//            usort($chartDataCruiser, function($a, $b) {
+//                if ($a == $b) return 0;
+//                return ($a < $b) ? -1 : 1;
+//            });
+//
+//            usort($chartDataFrigate, function($a, $b) {
+//                if ($a == $b) return 0;
+//                return ($a < $b) ? -1 : 1;
+//            });
 
             $thisRunData = [[
                 floatval(round($thisRun/$million, 2)),
@@ -273,9 +319,15 @@
          * @return float|int
          */
         private function calcNormalDist(float  $x, float $mean, float $sdev) {
+
             $z = ($x - $mean) / $sdev;
             return (1.0 / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
-        }/**
+//            return ($mean+$sdev / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
+
+
+        }
+
+        /**
      * @param array $dataCruiser
      * @param int   $million
      * @param       $meanCruiser
@@ -283,15 +335,20 @@
      * @return array
      */
         protected function buildDataSet(array $dataCruiser, int $million, $meanCruiser, $sdevCruiser) : array {
-            $chartDataCruiser = [[0, 0]];
+            $chartDataSet = [[0, 0]];
             $i = 0;
             foreach ($dataCruiser as $dat) {
                 if ($i++ % 3 == 0) continue;
                 $label = floatval(round($dat->LOOT_ISK / $million, 2));
-                $chartDataCruiser[] = [$label, round($this->calcNormalDist(floatval(round($dat->LOOT_ISK / $million, 2)), $meanCruiser, $sdevCruiser) * 100, 2)];
+                $chartDataSet[] = [$label, round($this->calcNormalDist(floatval(round($dat->LOOT_ISK / $million, 2)), $meanCruiser, $sdevCruiser) * 100, 2)];
             }
 
-            return array($chartDataCruiser, $i, $dat, $label);
+            usort($chartDataSet, function($a, $b) {
+                if ($a == $b) return 0;
+                return ($a < $b) ? -1 : 1;
+            });
+
+            return array($chartDataSet, $i, $dat, $label);
         }
 
         /**
@@ -312,9 +369,9 @@
                             and sl.IS_CRUISER = ?
                           GROUP BY r.LOOT_ISK
                           ORDER BY r.LOOT_ISK ASC) i
-                    WHERE i.DIST<=?
+                    WHERE i.DIST<=? AND i.LOOT_ISK <= ?
                     GROUP BY ROUND(i.DIST, 2)
-                    ORDER BY i.LOOT_ISK ASC", [$tier, 1, 1 - ((sqrt($tier)) / 100)]);
+                    ORDER BY i.LOOT_ISK ASC", [$tier, 1, 1, ($tier*$tier)*10000000]);
             });
         }
 
@@ -337,9 +394,9 @@
                             and sl.IS_CRUISER = ?
                           GROUP BY r.LOOT_ISK
                           ORDER BY r.LOOT_ISK ASC) i
-                    WHERE i.DIST<=?
+                    WHERE i.DIST<=? AND i.LOOT_ISK <= ?
                     GROUP BY ROUND(i.DIST, 2)
-                    ORDER BY i.LOOT_ISK ASC", [$tier, 0, 1 - (($tier) / 100)]);
+                    ORDER BY i.LOOT_ISK ASC", [$tier, 0, 1, ($tier*$tier)*10000000]);
             });
         }
     }

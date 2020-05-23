@@ -88,20 +88,29 @@
             </div>
         </div>
     </div>
+
     <div class="row mt-3">
-        <div class="col-md-5 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Average loot per tier</h5>
-                <div class="graph-container h-400px">
-                {!! $loot_tier_chart->container(); !!}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-7 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Last 60 days</h5>
-                    <div class="graph-container h-400px">
-                    {!! $daily_add_chart->container(); !!}
+        <div class="col-md-12 col-sm-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="tab-head-distribution" data-toggle="tab" href="#tab-distribution" role="tab" aria-controls="home" aria-selected="true">Loot distribution</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-head-activity" data-toggle="tab" href="#tab-activity" role="tab" aria-controls="profile" aria-selected="false">Abyss activity</a>
+                </li>
+            </ul>
+            <div class="card card-body border-0 shadow-sm top-left-no-round">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab-distribution" role="tabpanel" aria-labelledby="tab-head-distribution">
+                        <div class="graph-container h-400px">
+                            {!! $loot_tier_chart->container(); !!}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-activity" role="tabpanel" aria-labelledby="tab-head-activity">
+                        <div class="graph-container h-400px">
+                            {!! $daily_add_chart->container(); !!}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -223,5 +232,12 @@
     {!! $loot_tier_chart->script(); !!}
     {!! $daily_add_chart->script(); !!}
     <script type="text/javascript">
+
+        $('#tab-head-distribution').on('shown.bs.tab', function (e) {
+            window.{{$loot_tier_chart->id}}.resize();
+        });
+        $('#tab-head-activity').on('shown.bs.tab', function (e) {
+            window.{{$daily_add_chart->id}}.resize();
+        });
     </script>
 @endsection

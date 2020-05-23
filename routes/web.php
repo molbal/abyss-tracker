@@ -95,6 +95,7 @@
     Route::get("/api/chart/personal/loot", 'GraphHelper@personalLoot')->name("chart.personal.loot");
     Route::get("/api/chart/personal/isk_per_hour", 'GraphHelper@personalIsk')->name("chart.personal.ihp");
     Route::get("/api/chart/run/distribution/{tier}/{isCruiser}/{thisRun}", 'GraphHelper@getRunBellGraphs')->name("chart.run.averages");
+    Route::get("/api/chart/run/distribution/all", 'GraphHelper@getHomeRunBellGraphs')->name("chart.home.distribution");
 
     /**
      * Search routes
