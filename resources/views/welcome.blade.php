@@ -92,7 +92,7 @@
         <div class="col-md-5 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Average loot per tier</h5>
-                <div style="height: 400px">
+                <div class="graph-container h-400px">
                 {!! $loot_tier_chart->container(); !!}
                 </div>
             </div>
@@ -100,7 +100,7 @@
         <div class="col-md-7 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Last 60 days</h5>
-                    <div style="height: 400px">
+                    <div class="graph-container h-400px">
                     {!! $daily_add_chart->container(); !!}
                 </div>
             </div>
@@ -175,7 +175,7 @@
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">All recorded filament types</h5>
-                <div style="height: 400px">
+                <div class="graph-container h-400px">
                     {!! $loot_types_chart->container(); !!}
                 </div>
             </div>
@@ -183,7 +183,7 @@
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">All recorded tier levels</h5>
-                <div style="height: 400px">
+                <div class="graph-container h-400px">
                     {!! $tier_levels_chart->container(); !!}
                 </div>
             </div>
@@ -191,7 +191,7 @@
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Survival rate of recorded runs</h5>
-                <div style="height: 400px">
+                <div class="graph-container h-400px">
                     {!! $survival_chart->container(); !!}
                 </div>
             </div>

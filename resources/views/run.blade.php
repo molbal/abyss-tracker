@@ -375,15 +375,15 @@ $lost_buy = 0;
                     <a class="nav-link" id="tab-head-legacy" data-toggle="tab" href="#tab-legacy" role="tab" aria-controls="profile" aria-selected="false">Legacy averages graph</a>
                 </li>
             </ul>
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm top-left-no-round">
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="tab-bell" role="tabpanel" aria-labelledby="tab-head-bell">
-                            <div style="height: 400px">
+                            <div class="graph-container h-400px">
                                 {!! $bell->container(); !!}
                             </div>
                         </div>
                         <div class="tab-pane fade" id="tab-legacy" role="tabpanel" aria-labelledby="tab-head-legacy">
-                            <div style="height: 400px">
+                            <div class="graph-container h-400px">
                                 {!! $other->container(); !!}
                             </div>
                         </div>
