@@ -216,7 +216,7 @@
             $isCruiser = DB::table("ship_lookup")
                        ->where("ID", $data->SHIP_ID ?? 17715)
                        ->value("IS_CRUISER");
-            $otherCharts = new RunBetter();
+            $otherCharts = new PersonalDaily();
             $averageLootForTierType = DB::table("runs")
                 ->where("TIER", $data->TIER)
                 ->where("TYPE", $data->TYPE)

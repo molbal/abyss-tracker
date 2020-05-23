@@ -313,7 +313,8 @@ from (`abyss`.`lost_items` `dl`
             return view("run", [
                 "id"                   => $id,
                 "run"                  => $data,
-                "other"                => $bell,
+                "bell"                  => $bell,
+                "other"                => $otherCharts,
                 "loot_table"           => $loot,
                 "lost_table"           => $lost,
                 "all_data"             => $all_data,

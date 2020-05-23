@@ -364,12 +364,29 @@ $lost_buy = 0;
             </div>
         </div>
     @endif
+
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="tab-head-bell" data-toggle="tab" href="#tab-bell" role="tab" aria-controls="home" aria-selected="true">Tier {{$all_data->TIER}} loot distribution</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-head-legacy" data-toggle="tab" href="#tab-legacy" role="tab" aria-controls="profile" aria-selected="false">Legacy averages graph</a>
+                </li>
+            </ul>
             <div class="card card-body border-0 shadow-sm">
-                <h4 class="font-weight-bold">Tier {{$all_data->TIER}} loot distribution</h4>
-                <div style="height: 400px">
-                    {!! $other->container(); !!}
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tab-bell" role="tabpanel" aria-labelledby="tab-head-bell">
+                            <div style="height: 400px">
+                                {!! $bell->container(); !!}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab-legacy" role="tabpanel" aria-labelledby="tab-head-legacy">
+                            <div style="height: 400px">
+                                {!! $other->container(); !!}
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -397,6 +414,7 @@ $lost_buy = 0;
 
     @component("components.flag_modal", ["id" => $id])
     @endcomponent
+    {!! $bell->script(); !!}
     {!! $other->script(); !!}
 
     <script type="text/javascript">
@@ -406,6 +424,15 @@ $lost_buy = 0;
 
         $(function () {
             $("#flag").click(flag);
+        });
+
+        $('#tab-head-bell').on('shown.bs.tab', function (e) {
+            console.log("tab-bell", "shown.bs.tab");
+            window.{{$bell->id}}.resize();
+        });
+        $('#tab-head-legacy').on('shown.bs.tab', function (e) {
+            console.log("tab-legacy", "shown.bs.tab");
+            window.{{$other->id}}.resize();
         });
     </script>
 @endsection
