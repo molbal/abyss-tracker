@@ -20,15 +20,15 @@
     {
 
 
-        public function getLootBellGraphs(int $tier, bool $isCruiser = true): RunBetter {
+        public function getLootBellGraphs(int $tier, bool $isCruiser = true, int $thisRun = 0): RunBetter {
 
             $chart = new RunBetter();
 
             $chart->export(true, "Download");
-            $chart->height("400");
+//            $chart->height("400px");
             $chart->theme(ThemeController::getChartTheme());
             $chart->load(route("chart.run.averages", [
-                "tier" => $tier, $isCruiser => $isCruiser ? 1 : 0
+                "tier" => $tier, "isCruiser"=>$isCruiser, "thisRun" => $thisRun
             ]));
             $options = $chart->options;
             $options["xAxis"] = [];

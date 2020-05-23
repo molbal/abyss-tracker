@@ -367,8 +367,10 @@ $lost_buy = 0;
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
-                <h4 class="font-weight-bold">Loot distribution values</h4>
-                {!! $other->container(); !!}
+                <h4 class="font-weight-bold">Tier {{$all_data->TIER}} loot distribution</h4>
+                <div style="height: 400px">
+                    {!! $other->container(); !!}
+                </div>
             </div>
         </div>
     </div>
@@ -379,7 +381,7 @@ $lost_buy = 0;
                 <a href="{{route('run.change_privacy', ['id' => $id, 'privacy' => $all_data->PUBLIC ? 'private' : 'public'])}}" class="text-dark"><img
                         src="https://img.icons8.com/officexs/16/000000/key-security.png"> Make run {{$all_data->PUBLIC ? 'private' : 'public'}}</a> &centerdot;
                 <a href="{{route('run_delete', ['id' => $id])}}" class="text-danger"><img
-                        src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a> &centerdot;
+                        src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a>
             @elseif(!$reported)
                 <a href="javascript:void(0)" id="flag" class="text-danger"><img
                         src="https://img.icons8.com/officexs/16/000000/filled-flag2.png"> Flag for review</a>

@@ -68,47 +68,93 @@
 
         }
 
-        public function getRunApi(int $tier, int $isCruiser) {
+        public function getRunBellGraphs(int $tier, int  $isCruiser, int $thisRun) {
 
             $million = 1000000;
-            $mean = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", $isCruiser)->avg("runs.LOOT_ISK"))/$million;
-            $sdev = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", $isCruiser)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
+            $meanCruiser = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->avg("runs.LOOT_ISK"))/$million;
+            $sdevCruiser = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
+            $meanFrigate = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->avg("runs.LOOT_ISK"))/$million;
+            $sdevFrigate = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
 
 
-
-            $data = DB::select("
-        select
-            i.LOOT_ISK
-               from
-        (
-        SELECT
-            r.LOOT_ISK as `LOOT_ISK`
-        FROM
-            runs r
-        join ship_lookup sl on r.SHIP_ID = sl.ID
-        where r.SURVIVED=1 and r.TIER=? and r.LOOT_ISK>0  and sl.IS_CRUISER=? ORDER BY r.LOOT_ISK ASC) i;
-        ORDER BY i.LOOT_ISK ASC
-        ", [$tier, $isCruiser]);
-
-            $chartData = [[0,0]];
+            $dataCruiser = DB::select("
+select AVG(i.LOOT_ISK) as `LOOT_ISK`
+from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
+      FROM runs r
+               join ship_lookup sl on r.SHIP_ID = sl.ID
+      where r.SURVIVED = 1
+        and r.TIER = ?
+        and r.LOOT_ISK > 0
+        and sl.IS_CRUISER = ?
+      GROUP BY r.LOOT_ISK
+      ORDER BY r.LOOT_ISK ASC) i
+WHERE i.DIST<=?
+GROUP BY ROUND(i.DIST, 2)
+ORDER BY i.LOOT_ISK ASC
+        ", [$tier, 1, 1-(($tier-2)/100)]);
+            $dataFrigate = DB::select("
+select AVG(i.LOOT_ISK) as `LOOT_ISK`
+from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
+      FROM runs r
+               join ship_lookup sl on r.SHIP_ID = sl.ID
+      where r.SURVIVED = 1
+        and r.TIER = ?
+        and r.LOOT_ISK > 0
+        and sl.IS_CRUISER = ?
+      GROUP BY r.LOOT_ISK
+      ORDER BY r.LOOT_ISK ASC) i
+WHERE i.DIST<=?
+GROUP BY ROUND(i.DIST, 2)
+ORDER BY i.LOOT_ISK ASC
+        ", [$tier, 0, 1-(($tier)/100)]);
+            $chartDataCruiser = [[0,0]];
             $i = 0;
-            $labels = [[0]];
-            foreach ($data as $dat) {
+            foreach ($dataCruiser as $dat) {
                 if ($i++%3==0) continue;
                 $label = floatval(round($dat->LOOT_ISK/$million, 2));
-                $chartData[] = [
+                $chartDataCruiser[] = [
                     $label,
-                    round($this->calcNormalDist(floatval(round($dat->LOOT_ISK/$million, 2)),$mean, $sdev)*100, 2)
+                    round($this->calcNormalDist(floatval(round($dat->LOOT_ISK/$million, 2)),$meanCruiser, $sdevCruiser)*100, 2)
                 ];
-                $labels[] = $label;
+            }
+            $chartDataFrigate = [[0,0]];
+            $i = 0;
+            foreach ($dataFrigate as $dat) {
+                if ($i++%3==0) continue;
+                $label = floatval(round($dat->LOOT_ISK/$million, 2));
+                $chartDataFrigate[] = [
+                    $label,
+                    round($this->calcNormalDist(floatval(round($dat->LOOT_ISK/$million, 2)),$meanFrigate, $sdevFrigate)*100, 2)
+                ];
             }
 
+            usort($chartDataCruiser, function($a, $b) {
+                if ($a == $b) return 0;
+                return ($a < $b) ? -1 : 1;
+            });
+
+            usort($chartDataFrigate, function($a, $b) {
+                if ($a == $b) return 0;
+                return ($a < $b) ? -1 : 1;
+            });
+
+            $thisRunData = [[
+                floatval(round($thisRun/$million, 2)),
+                round($this->calcNormalDist(floatval(round($thisRun/$million, 2)),$isCruiser ? $meanCruiser : $meanFrigate, $isCruiser ? $sdevCruiser : $sdevFrigate)*100, 2)
+            ]];
 
             $chart = new RunBetter();
-            $chart->dataset("Loot distribution", "scatter", $chartData)->options([
+            $chart->dataset("Cruiser size distribution", "line", $chartDataCruiser)->options([
                 "smooth" => 0.5,
                 "showSymbol" => false,
                 "hoverAnimation" => false
+            ]);
+            $chart->dataset("Frigate size distribution", "line", $chartDataFrigate)->options([
+                "smooth" => 0.5,
+                "showSymbol" => false,
+                "hoverAnimation" => false
+            ]);
+            $chart->dataset("This run", "scatter", $thisRunData)->options([
             ]);
             return $chart->api();
         }

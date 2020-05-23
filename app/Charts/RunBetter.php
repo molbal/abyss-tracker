@@ -23,7 +23,7 @@ class RunBetter extends Chart
 
 
         // Workaround!
-        $options = str_ireplace('"xAxis":{"data":[]}', '"xAxis":{}', $options);
+        $options = str_ireplace('"xAxis":{"data":[]}', '"xAxis":{axisLabel: {formatter: \'{value} M ISK\'}}', $options);
         $options = str_ireplace('"yAxis":{"show":true}', '"yAxis":{"show":false}', $options);
         $options = str_ireplace('"formatter":"function(params) {return params.name;}"', '"formatter":function(params) {return params[0]["value"][0]+" M ISK";}', $options);
 

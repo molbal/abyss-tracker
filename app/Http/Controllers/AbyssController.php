@@ -309,7 +309,7 @@ from (`abyss`.`lost_items` `dl`
 
             $fit_name = $all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit";
 
-            $bell = $this->graphContainerController->getLootBellGraphs($data->TIER, 1);
+            $bell = $this->graphContainerController->getLootBellGraphs($data->TIER, 1, $all_data->LOOT_ISK);
             return view("run", [
                 "id"                   => $id,
                 "run"                  => $data,

@@ -61,6 +61,13 @@ return [
             'days' => 7,
         ],
 
+        'lootvalue' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/lootvalue.log'),
+            'level' => 'debug',
+            'days' => 7,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
