@@ -68,6 +68,14 @@
 
         }
 
+        /**
+         * Gets the run bell graphs for
+         * @param int $tier
+         * @param int $isCruiser
+         * @param int $thisRun
+         *
+         * @return string
+         */
         public function getRunBellGraphs(int $tier, int  $isCruiser, int $thisRun) {
 
             $million = 1000000;
@@ -77,56 +85,11 @@
             $sdevFrigate = (DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $tier)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
 
 
-            $dataCruiser = DB::select("
-select AVG(i.LOOT_ISK) as `LOOT_ISK`
-from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
-      FROM runs r
-               join ship_lookup sl on r.SHIP_ID = sl.ID
-      where r.SURVIVED = 1
-        and r.TIER = ?
-        and r.LOOT_ISK > 0
-        and sl.IS_CRUISER = ?
-      GROUP BY r.LOOT_ISK
-      ORDER BY r.LOOT_ISK ASC) i
-WHERE i.DIST<=?
-GROUP BY ROUND(i.DIST, 2)
-ORDER BY i.LOOT_ISK ASC
-        ", [$tier, 1, 1-(($tier-2)/100)]);
-            $dataFrigate = DB::select("
-select AVG(i.LOOT_ISK) as `LOOT_ISK`
-from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
-      FROM runs r
-               join ship_lookup sl on r.SHIP_ID = sl.ID
-      where r.SURVIVED = 1
-        and r.TIER = ?
-        and r.LOOT_ISK > 0
-        and sl.IS_CRUISER = ?
-      GROUP BY r.LOOT_ISK
-      ORDER BY r.LOOT_ISK ASC) i
-WHERE i.DIST<=?
-GROUP BY ROUND(i.DIST, 2)
-ORDER BY i.LOOT_ISK ASC
-        ", [$tier, 0, 1-(($tier)/100)]);
-            $chartDataCruiser = [[0,0]];
-            $i = 0;
-            foreach ($dataCruiser as $dat) {
-                if ($i++%3==0) continue;
-                $label = floatval(round($dat->LOOT_ISK/$million, 2));
-                $chartDataCruiser[] = [
-                    $label,
-                    round($this->calcNormalDist(floatval(round($dat->LOOT_ISK/$million, 2)),$meanCruiser, $sdevCruiser)*100, 2)
-                ];
-            }
-            $chartDataFrigate = [[0,0]];
-            $i = 0;
-            foreach ($dataFrigate as $dat) {
-                if ($i++%3==0) continue;
-                $label = floatval(round($dat->LOOT_ISK/$million, 2));
-                $chartDataFrigate[] = [
-                    $label,
-                    round($this->calcNormalDist(floatval(round($dat->LOOT_ISK/$million, 2)),$meanFrigate, $sdevFrigate)*100, 2)
-                ];
-            }
+            $dataCruiser = $this->getCruiserBaseDataForTier($tier);
+            $dataFrigate = $this->getFrigateBaseDataForTier($tier);
+
+            [$chartDataCruiser, $i, $dat, $label] = $this->buildDataSet($dataCruiser, $million, $meanCruiser, $sdevCruiser);
+            [$chartDataFrigate, $i, $dat, $label] = $this->buildDataSet($dataFrigate, $million, $meanFrigate, $sdevFrigate);
 
             usort($chartDataCruiser, function($a, $b) {
                 if ($a == $b) return 0;
@@ -310,5 +273,71 @@ ORDER BY i.LOOT_ISK ASC
         private function calcNormalDist(float  $x, float $mean, float $sdev) {
             $z = ($x - $mean) / $sdev;
             return (1.0 / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
+        }/**
+     * @param array $dataCruiser
+     * @param int   $million
+     * @param       $meanCruiser
+     * @param       $sdevCruiser
+     * @return array
+     */
+        protected function buildDataSet(array $dataCruiser, int $million, $meanCruiser, $sdevCruiser) : array {
+            $chartDataCruiser = [[0, 0]];
+            $i = 0;
+            foreach ($dataCruiser as $dat) {
+                if ($i++ % 3 == 0) continue;
+                $label = floatval(round($dat->LOOT_ISK / $million, 2));
+                $chartDataCruiser[] = [$label, round($this->calcNormalDist(floatval(round($dat->LOOT_ISK / $million, 2)), $meanCruiser, $sdevCruiser) * 100, 2)];
+            }
+
+            return array($chartDataCruiser, $i, $dat, $label);
+        }
+
+        /**
+         * @param int $tier
+         *
+         * @return array
+         */
+        protected function getCruiserBaseDataForTier(int $tier) : array {
+            return Cache::remember("aft.bellgraph.cruiser.t" . $tier, now()->addMinutes(15), function () use ($tier) {
+                return DB::select("
+                    select AVG(i.LOOT_ISK) as `LOOT_ISK`
+                    from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
+                          FROM runs r
+                                   join ship_lookup sl on r.SHIP_ID = sl.ID
+                          where r.SURVIVED = 1
+                            and r.TIER = ?
+                            and r.LOOT_ISK > 0
+                            and sl.IS_CRUISER = ?
+                          GROUP BY r.LOOT_ISK
+                          ORDER BY r.LOOT_ISK ASC) i
+                    WHERE i.DIST<=?
+                    GROUP BY ROUND(i.DIST, 2)
+                    ORDER BY i.LOOT_ISK ASC", [$tier, 1, 1 - ((sqrt($tier)) / 100)]);
+            });
+        }
+
+        /**
+         * @param int $tier
+         *
+         * @return array
+         */
+        protected function getFrigateBaseDataForTier(int $tier) : array {
+
+            return Cache::remember("aft.bellgraph.cruiser.t" . $tier, now()->addMinutes(15), function () use ($tier) {
+                return DB::select("
+                    select AVG(i.LOOT_ISK) as `LOOT_ISK`
+                    from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
+                          FROM runs r
+                                   join ship_lookup sl on r.SHIP_ID = sl.ID
+                          where r.SURVIVED = 1
+                            and r.TIER = ?
+                            and r.LOOT_ISK > 0
+                            and sl.IS_CRUISER = ?
+                          GROUP BY r.LOOT_ISK
+                          ORDER BY r.LOOT_ISK ASC) i
+                    WHERE i.DIST<=?
+                    GROUP BY ROUND(i.DIST, 2)
+                    ORDER BY i.LOOT_ISK ASC", [$tier, 0, 1 - (($tier) / 100)]);
+            });
         }
     }
