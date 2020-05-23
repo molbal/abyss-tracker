@@ -221,10 +221,12 @@
                 return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
             }
 
-            $fit = DB::table("fits")
-                     ->where("ID", $id)
-                     ->get()
-                     ->get(0);
+            $fit = Cache::remember("aft.fit-full.".$id, now()->addMinutes(5), function () use ($id) {
+                return DB::table("fits")
+                         ->where("ID", $id)
+                         ->first();
+            });
+
 
             if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
                 return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('home_mine') . "'>View public fits</a></p>")]);

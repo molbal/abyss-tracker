@@ -110,7 +110,7 @@
         public function getHomeDailyRunCounts() : object
         {
 
-            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", 15, function () {
+            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
 
             $run_date = [];
             $count_unknown = [];
