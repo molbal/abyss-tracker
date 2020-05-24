@@ -74,7 +74,8 @@
             $lootTypesChart = $this->graphContainerController->getHomeLootTypesChart();
             $tierLevelsChart = $this->graphContainerController->getHomeLootTierLevels();
             $survival_chart = $this->graphContainerController->getHomeSurvivalLevels();
-            $loot_tier_chart = $this->graphContainerController->getHomeLootAverages();
+            $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
+            $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
             $last_runs = $this->homeQueriesController->getLastRuns();
             $drops = $this->homeQueriesController->getCommonDrops();
             $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
@@ -89,7 +90,8 @@
                 'loot_types_chart'  => $lootTypesChart,
                 'tier_levels_chart' => $tierLevelsChart,
                 'survival_chart'    => $survival_chart,
-                'loot_tier_chart'   => $loot_tier_chart,
+                'lootDistributionCruiser'   => $lootDistributionCruiser,
+                'lootDistributionFrigateh'   => $lootDistributionCruiser,
                 'abyss_num'         => $count,
                 'today_num'         => $today_num,
                 'items'             => $last_runs,

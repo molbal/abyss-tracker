@@ -93,7 +93,10 @@
         <div class="col-md-12 col-sm-12">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="tab-head-distribution" data-toggle="tab" href="#tab-distribution" role="tab" aria-controls="home" aria-selected="true">Loot distribution</a>
+                    <a class="nav-link active" id="tab-head-distribution" data-toggle="tab" href="#tab-distribution" role="tab" aria-controls="home" aria-selected="true">Cruiser loot distribution</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-head-distribution-frig" data-toggle="tab" href="#tab-distribution-frig" role="tab" aria-controls="home" aria-selected="true">Frigate loot distribution</a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="tab-head-activity" data-toggle="tab" href="#tab-activity" role="tab" aria-controls="profile" aria-selected="false">Abyss activity</a>
@@ -103,7 +106,12 @@
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab-distribution" role="tabpanel" aria-labelledby="tab-head-distribution">
                         <div class="graph-container h-400px">
-                            {!! $loot_tier_chart->container(); !!}
+                            {!! $lootDistributionCruiser->container(); !!}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show active" id="tab-distribution-frig" role="tabpanel" aria-labelledby="tab-head-distribution-frig">
+                        <div class="graph-container h-400px">
+                            {!! $lootDistributionFrigateh->container(); !!}
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab-activity" role="tabpanel" aria-labelledby="tab-head-activity">
@@ -229,15 +237,13 @@
     {!! $loot_types_chart->script(); !!}
     {!! $tier_levels_chart->script(); !!}
     {!! $survival_chart->script(); !!}
-    {!! $loot_tier_chart->script(); !!}
+    {!! $lootDistributionCruiser->script(); !!}
+    {!! $lootDistributionFrigateh->script(); !!}
     {!! $daily_add_chart->script(); !!}
     <script type="text/javascript">
 
-        $('#tab-head-distribution').on('shown.bs.tab', function (e) {
-            window.{{$loot_tier_chart->id}}.resize();
-        });
-        $('#tab-head-activity').on('shown.bs.tab', function (e) {
-            window.{{$daily_add_chart->id}}.resize();
-        });
+        $('#tab-head-distribution').on('shown.bs.tab', function (e) {window.{{$lootDistributionCruiser->id}}.resize();});
+        $('#tab-head-distribution-frig').on('shown.bs.tab', function (e) {window.{{$lootDistributionFrigateh->id}}.resize();});
+        $('#tab-head-activity').on('shown.bs.tab', function (e) {window.{{$daily_add_chart->id}}.resize();});
     </script>
 @endsection

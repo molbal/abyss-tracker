@@ -90,24 +90,34 @@
         /**
          * @return RunBetter
          */
-        public function getHomeLootAverages() : RunBetter
+        public function getHomeLootAveragesCruisers() : RunBetter
         {
-//            $loot_tier_chart = new LootTierChart();
-//            $loot_tier_chart->load(route("chart.home.tier_averages"));
-//            $loot_tier_chart->export(true, "Download");
-//            $loot_tier_chart->displayAxes(true);
-//            $loot_tier_chart->height(400);
-//            $loot_tier_chart->labels(["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5"]);
-//            $loot_tier_chart->theme(ThemeController::getChartTheme());
-//            $loot_tier_chart->displayLegend(true);
-//
-//            return $loot_tier_chart;
-            $chart = new RunBetter();
+            $chart = new RunBetter(0,200);
 
             $chart->export(true, "Download");
-//            $chart->height("400px");
+            $chart->height("400");
             $chart->theme(ThemeController::getChartTheme());
-            $chart->load(route("chart.home.distribution"));
+            $chart->load(route("chart.home.distribution.cruisers"));
+            $options = $chart->options;
+            $options["xAxis"] = [];
+            $chart->options($options, true);
+            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
+
+            return $chart;
+        }
+
+
+        /**
+         * @return RunBetter
+         */
+        public function getHomeLootAveragesFrigates() : RunBetter
+        {
+            $chart = new RunBetter(0,200);
+
+            $chart->export(true, "Download");
+            $chart->height("400");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->load(route("chart.home.distribution.frigates"));
             $options = $chart->options;
             $options["xAxis"] = [];
             $chart->options($options, true);
