@@ -5,6 +5,7 @@
 
 
 	use App\Http\Controllers\DS\FitBreakEvenCalculator;
+    use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\Tags\TagsController;
     use App\Http\Controllers\Loot\EveItem;
@@ -291,7 +292,7 @@
               ->paginate(25);
 
             $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
-            dd($maxTiers);
+            $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
 
             return view('fit', [
                 'fit' => $fit,
@@ -306,7 +307,8 @@
                 'recommendations' => $recommendations,
                 'og' => $og,
                 'id' => $id,
-                'runs' => $runs
+                'runs' => $runs,
+                "breaksEven" => $breaksEven
             ]);
 	    }
 
@@ -411,4 +413,5 @@
 	    }
 
 
-	}
+
+    }
