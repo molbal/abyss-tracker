@@ -115,7 +115,7 @@
          * @return PersonalDaily
          */
         public function getShipPopularityChart(int $id, $name): PersonalDaily {
-            [$dates, $values, $dead] = Cache::remember("ship.popularity.$id", now()->addSecond(), function() use ($id, $name) {
+            [$dates, $values, $dead] = Cache::remember("ship.popularity.$id", now()->addHour(), function() use ($id, $name) {
                 $dates = [];
                 $values = [];
                 $dead = [];

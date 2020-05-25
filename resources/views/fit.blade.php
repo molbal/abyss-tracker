@@ -176,6 +176,22 @@ text-align: center;">
 
         </div>
     </div>
+
+
+    <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
+        <h4 class="font-weight-bold">{{$fit->NAME}} usage</h4>
+    </div>
+    <div class="row mt-3">
+        <div class="col-xs-12 col-sm-8">
+            @component("components.runs.list", ['title' => "Runs with this fit", 'items' => $runs]) @endcomponent
+        </div>
+
+        <div class="col-xs-12 col-sm-4">
+
+        </div>
+    </div>
+
+
     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
     <div class="row mt-5">
         <div class="card card-body border-danger shadow-sm text-center mt-3">

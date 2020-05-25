@@ -4,7 +4,8 @@
 	namespace App\Http\Controllers;
 
 
-	use App\Http\Controllers\EFT\FitHelper;
+	use App\Http\Controllers\DS\FitBreakEvenCalculator;
+    use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\Tags\TagsController;
     use App\Http\Controllers\Loot\EveItem;
     use App\Http\Controllers\Loot\LootValueEstimator;
@@ -284,6 +285,14 @@
                 Cache::put("aft.fit.last-seen-".session()->get("login_id"),  $id,now()->addHour());
             }
 
+            $runs = DB::table("runs")
+              ->where("FIT_ID", $id)
+              ->orderBy("CREATED_AT", 'DESC')
+              ->paginate(25);
+
+            $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
+            dd($maxTiers);
+
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
@@ -296,7 +305,8 @@
                 'embed' => $embed,
                 'recommendations' => $recommendations,
                 'og' => $og,
-                'id' => $id
+                'id' => $id,
+                'runs' => $runs
             ]);
 	    }
 
