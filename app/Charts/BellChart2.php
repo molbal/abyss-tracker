@@ -4,14 +4,15 @@ namespace App\Charts;
 
 use ConsoleTVs\Charts\Classes\Echarts\Chart;
 
-class RunBetter extends Chart
+class BellChart2 extends Chart
 {
     /**
      * Initializes the chart.
      *
-     * @return void
+     * @param null $min
+     * @param null $max
      */
-    public function __construct($min = null, $max = null) {
+    public function __construct($min =  null, $max = null) {
 
         $this->min = $min;
         $this->max = $max;
@@ -24,19 +25,8 @@ class RunBetter extends Chart
 
 
     public function formatOptions(bool $strict = false, bool $noBraces = false) {
-//        dd($strict, $noBraces);
-//        dd($this->options);
         $options =  parent::formatOptions($strict, $noBraces);
-
-
-        $extra = "";
-//        if ($this->min != null && $this->max != null) {
-            $extra = ",min:".$this->min??"dataMin".", max:".$this->max??"dataMax";
-//        }
-//        else {
-//            dd("s");
-//            $extra = "";
-//        }
+        $extra = ",min:".$this->min??"'dataMin'".", max:".$this->max??"'dataMax'";
         // Workaround!
         $options = str_ireplace('"xAxis":{"data":[]}', '"xAxis":{type: \'value\''.$extra.', axisLabel: {formatter: \'{value} M ISK\'}}', $options);
         $options = str_ireplace('"yAxis":{"show":true}', '"yAxis":{"show":false}', $options);
@@ -44,6 +34,7 @@ class RunBetter extends Chart
 
         return $options;
     }
+
 
 
 }

@@ -109,9 +109,9 @@
                             {!! $lootDistributionCruiser->container(); !!}
                         </div>
                     </div>
-                    <div class="tab-pane fade show active" id="tab-distribution-frig" role="tabpanel" aria-labelledby="tab-head-distribution-frig">
+                    <div class="tab-pane fade show" id="tab-distribution-frig" role="tabpanel" aria-labelledby="tab-head-distribution-frig">
                         <div class="graph-container h-400px">
-                            {!! $lootDistributionFrigateh->container(); !!}
+                            {!! $lootDistributionFrigate->container(); !!}
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab-activity" role="tabpanel" aria-labelledby="tab-head-activity">
@@ -238,12 +238,12 @@
     {!! $tier_levels_chart->script(); !!}
     {!! $survival_chart->script(); !!}
     {!! $lootDistributionCruiser->script(); !!}
-    {!! $lootDistributionFrigateh->script(); !!}
+    {!! $lootDistributionFrigate->script(); !!}
     {!! $daily_add_chart->script(); !!}
     <script type="text/javascript">
 
         $('#tab-head-distribution').on('shown.bs.tab', function (e) {window.{{$lootDistributionCruiser->id}}.resize();});
-        $('#tab-head-distribution-frig').on('shown.bs.tab', function (e) {window.{{$lootDistributionFrigateh->id}}.resize();});
+        $('#tab-head-distribution-frig').on('shown.bs.tab', function (e) {window.{{$lootDistributionFrigate->id}}.resize();});
         $('#tab-head-activity').on('shown.bs.tab', function (e) {window.{{$daily_add_chart->id}}.resize();});
     </script>
 @endsection

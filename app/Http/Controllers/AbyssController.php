@@ -11,7 +11,7 @@
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
-    use App\Charts\RunBetter;
+    use App\Charts\BellChart1;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use App\Http\Controllers\Loot\LootCacheController;
@@ -91,7 +91,7 @@
                 'tier_levels_chart' => $tierLevelsChart,
                 'survival_chart'    => $survival_chart,
                 'lootDistributionCruiser'   => $lootDistributionCruiser,
-                'lootDistributionFrigateh'   => $lootDistributionCruiser,
+                'lootDistributionFrigate'   => $lootDistributionfrigate,
                 'abyss_num'         => $count,
                 'today_num'         => $today_num,
                 'items'             => $last_runs,

@@ -5,12 +5,13 @@
 
 
     use App\Charts\AbyssSurvivalType;
+    use App\Charts\BellChart2;
     use App\Charts\DailyAdds;
     use App\Charts\IskPerHourChart;
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
-    use App\Charts\RunBetter;
+    use App\Charts\BellChart1;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use Illuminate\Support\Facades\Cache;
@@ -20,9 +21,9 @@
     {
 
 
-        public function getLootBellGraphs(int $tier, bool $isCruiser = true, int $thisRun = 0): RunBetter {
+        public function getLootBellGraphs(int $tier, bool $isCruiser = true, int $thisRun = 0): BellChart1 {
 
-            $chart = new RunBetter();
+            $chart = new BellChart1();
 
             $chart->export(true, "Download");
 //            $chart->height("400px");
@@ -88,11 +89,11 @@
         }
 
         /**
-         * @return RunBetter
+         * @return BellChart1
          */
-        public function getHomeLootAveragesCruisers() : RunBetter
+        public function getHomeLootAveragesCruisers() : BellChart1
         {
-            $chart = new RunBetter(0,200);
+            $chart = new BellChart1(0,150);
 
             $chart->export(true, "Download");
             $chart->height("400");
@@ -108,11 +109,11 @@
 
 
         /**
-         * @return RunBetter
+         * @return BellChart1
          */
-        public function getHomeLootAveragesFrigates() : RunBetter
+        public function getHomeLootAveragesFrigates() : BellChart2
         {
-            $chart = new RunBetter(0,200);
+            $chart = new BellChart2(0,250);
 
             $chart->export(true, "Download");
             $chart->height("400");

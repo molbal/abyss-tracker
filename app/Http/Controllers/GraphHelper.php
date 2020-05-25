@@ -8,7 +8,7 @@
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
     use App\Charts\PersonalDaily;
-    use App\Charts\RunBetter;
+    use App\Charts\BellChart1;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use Illuminate\Http\Request;
@@ -86,7 +86,7 @@
             $datasets = collect([]);
 
 
-            $chart = new RunBetter();
+            $chart = new BellChart1();
 
             for ($i=1;$i<=5;$i++) {
                 $meansCruiser->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->avg("runs.LOOT_ISK"))/$million);
@@ -114,7 +114,7 @@
             $datasets = collect([]);
 
 
-            $chart = new RunBetter();
+            $chart = new BellChart1();
 
             for ($i=1;$i<=5;$i++) {
                 $meansFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->avg("runs.LOOT_ISK"))/$million);
@@ -184,7 +184,7 @@
                 round($this->calcNormalDist(floatval(round($thisRun/$million, 2)),$isCruiser ? $meanCruiser : $meanFrigate, $isCruiser ? $sdevCruiser : $sdevFrigate)*100, 2)
             ]];
 
-            $chart = new RunBetter();
+            $chart = new BellChart1();
             $chart->dataset("Cruiser size distribution", "line", $chartDataCruiser)->options([
                 "smooth" => 0.5,
                 "showSymbol" => false,
