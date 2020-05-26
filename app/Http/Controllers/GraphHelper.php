@@ -8,14 +8,19 @@
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
     use App\Charts\PersonalDaily;
+    use App\Charts\BellChart1;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
+    use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
     class GraphHelper extends Controller {
 
-        public function homeType() {
+        const HOME_PIE_RADIUS = [50, 90];
+
+        public function homeType(Request $request) {
+            $request->headers->set('Accept', 'application/json');
             if (Cache::has("home.types")) {
                 $chart = Cache::get("home.types");
             } else {
@@ -37,12 +42,13 @@
 
             $chart->labels($dataset);
             $chart->dataset('Filament types', 'pie', $values)->options([
-                "radius" => [50, 120]
+                "radius" => self::HOME_PIE_RADIUS
             ]);
             return $chart->api();
         }
 
-        public function homeTier() {
+        public function homeTier(Request $request) {
+            $request->headers->set('Accept', 'application/json');
             if (Cache::has("home.levels")) {
                 $chart = Cache::get("home.levels");
             } else {
@@ -61,13 +67,141 @@
 
             $chart->labels($dataset);
             $chart->dataset('Tier levels', 'pie', $values)->options([
-                "radius" => [50, 120]
+                "radius" => self::HOME_PIE_RADIUS
             ]);
             return $chart->api();
 
         }
 
-        public function homeSurvival() {
+        /**
+         * @return string
+         */
+        public function getHomeRunBellGraphsCruisers(Request $request) {
+            $million = 1000000;
+
+            $meansCruiser = collect([]);
+            $sdevsCruiser = collect([]);
+            $ndataCruiser = collect([]);
+
+            $datasets = collect([]);
+
+
+            $chart = new BellChart1();
+
+            for ($i=1;$i<=5;$i++) {
+                $meansCruiser->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->avg("runs.LOOT_ISK"))/$million);
+                $sdevsCruiser->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million);
+                $ndataCruiser->add($this->getCruiserBaseDataForTier($i));
+
+                $datasets->add($this->buildDataSet($ndataCruiser->last(), $million, $meansCruiser->last(), $sdevsCruiser->last()));
+                $chart->dataset("Cruisers Tier $i", "line", $datasets->last())->options([
+                    "smooth" => 0.3,
+                    "showSymbol" => false,
+                    "hoverAnimation" => false
+                ]);
+            }
+            $request->headers->set('Accept', 'application/json');
+            return $chart->api();
+        }
+
+        public function getHomeRunBellGraphsFrigates(Request $request) {
+            $million = 1000000;
+
+            $meansFrigate = collect([]);
+            $sdevsFrigate = collect([]);
+            $ndataFrigate = collect([]);
+
+            $datasets = collect([]);
+
+
+            $chart = new BellChart1();
+
+            for ($i=1;$i<=5;$i++) {
+                $meansFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->avg("runs.LOOT_ISK"))/$million);
+                $sdevsFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million);
+                $ndataFrigate->add($this->getFrigateBaseDataForTier($i));
+
+                $datasets->add($this->buildDataSet($ndataFrigate->last(), $million, $meansFrigate->last(), $sdevsFrigate->last()));
+                $chart->dataset("Frigates Tier $i", "line", $datasets->last())->options([
+                    "smooth" => 0.3,
+                    "showSymbol" => false,
+                    "hoverAnimation" => false
+                ]);
+            }
+            $request->headers->set('Accept', 'application/json');
+            return $chart->api();
+        }
+
+        /**
+         * Gets the run bell graphs for
+         * @param int $tier
+         * @param int $isCruiser
+         * @param int $thisRun
+         *
+         * @return string
+         */
+        public function getRunBellGraphs(int $tier, int  $isCruiser, int $thisRun) {
+
+            $million = 1000000;
+            $meanCruiser = (DB::table("runs")
+                              ->where("runs.LOOT_ISK", '>', 0)
+                              ->where("runs.SURVIVED", true)
+                              ->where("runs.TIER", $tier)
+                              ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
+                              ->where("ship_lookup.IS_CRUISER", 1)
+                              ->avg("runs.LOOT_ISK"))/$million;
+            $sdevCruiser = (DB::table("runs")
+                              ->where("runs.LOOT_ISK", '>', 0)
+                              ->where("runs.SURVIVED", true)
+                              ->where("runs.TIER", $tier)
+                              ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
+                              ->where("ship_lookup.IS_CRUISER", 1)
+                              ->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
+            $meanFrigate = (DB::table("runs")
+                              ->where("runs.LOOT_ISK", '>', 0)
+                              ->where("runs.SURVIVED", true)
+                              ->where("runs.TIER", $tier)
+                              ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
+                              ->where("ship_lookup.IS_CRUISER", 0)
+                              ->avg("runs.LOOT_ISK"))/$million;
+            $sdevFrigate = (DB::table("runs")
+                              ->where("runs.LOOT_ISK", '>', 0)
+                              ->where("runs.SURVIVED", true)
+                              ->where("runs.TIER", $tier)
+                              ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
+                              ->where("ship_lookup.IS_CRUISER", 0)
+                              ->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
+
+
+            $dataCruiser = $this->getCruiserBaseDataForTier($tier);
+            $dataFrigate = $this->getFrigateBaseDataForTier($tier);
+
+            $chartDataCruiser = $this->buildDataSet($dataCruiser, $million, $meanCruiser, $sdevCruiser);
+            $chartDataFrigate = $this->buildDataSet($dataFrigate, $million, $meanFrigate, $sdevFrigate);
+
+            $thisRunData = [[
+                floatval(round($thisRun/$million, 2)),
+                round($this->calcNormalDist(floatval(round($thisRun/$million, 2)),$isCruiser ? $meanCruiser : $meanFrigate, $isCruiser ? $sdevCruiser : $sdevFrigate)*100, 2)
+            ]];
+
+            $chart = new BellChart1();
+            $chart->dataset("Cruiser size distribution", "line", $chartDataCruiser)->options([
+                "smooth" => 0.5,
+                "showSymbol" => false,
+                "hoverAnimation" => false
+            ]);
+            $chart->dataset("Frigate size distribution", "line", $chartDataFrigate)->options([
+                "smooth" => 0.5,
+                "showSymbol" => false,
+                "hoverAnimation" => false
+            ]);
+            $chart->dataset("This run", "scatter", $thisRunData)->options([
+            ]);
+            return $chart->api();
+        }
+
+        public function homeSurvival(Request $request) {
+            $request->headers->set('Accept', 'application/json');
             $data = Cache::remember("home.survival", 15, function () {
                 return [
                     "survived" => DB::table("runs")->where("SURVIVED", '=', true)->whereRaw("RUN_DATE > NOW() - INTERVAL 90 DAY")->count(),
@@ -80,13 +214,14 @@
 
             $chart->labels($dataset);
             $chart->dataset('Survival', 'pie', $values)->options([
-                "radius" => [50, 120]
+                "radius" => self::HOME_PIE_RADIUS
             ]);
             return $chart->api();
 
         }
 
-        public function tierAverages() {
+        public function tierAverages(Request $request) {
+            $request->headers->set('Accept', 'application/json');
 
             $data = Cache::remember("home.tier_averages", 15, function () {
                 return DB::table("runs")
@@ -148,7 +283,8 @@
             return $chart->api();
         }
 
-        public function personalLoot() {
+        public function personalLoot(Request $request) {
+            $request->headers->set('Accept', 'application/json');
 
             if (!session()->has("login_id")) {
                 return view("error", ["error" => "Please log in to access this page"]);
@@ -181,7 +317,8 @@
             return $chart->api();
         }
 
-        public function personalIsk() {
+        public function personalIsk(Request $request) {
+            $request->headers->set('Accept', 'application/json');
 
             if (!session()->has("login_id")) {
                 return view("error", ["error" => "Please log in to access this page"]);
@@ -205,5 +342,94 @@
             $chart->dataset('Approximate ISK/hour (Million ISK)', 'line', $values)->options(["smooth" => true]);
 
             return $chart->api();
+        }
+
+        /**
+         * Calculates the nornal distribution
+         * @param float $x Value
+         * @param float $mean Mean value
+         * @param float $sdev Standard deviation
+         *
+         * @return float|int
+         */
+        private function calcNormalDist(float  $x, float $mean, float $sdev) {
+
+            $z = ($x - $mean) / $sdev;
+            return (1.0 / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
+//            return ($mean+$sdev / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
+
+
+        }
+
+        /**
+     * @param array $dataCruiser
+     * @param int   $million
+     * @param       $meanCruiser
+     * @param       $sdevCruiser
+     * @return array
+     */
+        protected function buildDataSet(array $dataCruiser, int $million, $meanCruiser, $sdevCruiser) : array {
+            $chartDataSet = [[0, 0]];
+            $i = 0;
+            foreach ($dataCruiser as $dat) {
+                if ($i++ % 3 == 0) continue;
+                $label = floatval(round($dat->LOOT_ISK / $million, 2));
+                $chartDataSet[] = [$label, round($this->calcNormalDist(floatval(round($dat->LOOT_ISK / $million, 2)), $meanCruiser, $sdevCruiser) * 100, 2)];
+            }
+
+            usort($chartDataSet, function($a, $b) {
+                if ($a == $b) return 0;
+                return ($a < $b) ? -1 : 1;
+            });
+
+            $max = $chartDataSet[0][1];
+            foreach ($chartDataSet as $chartData) {
+                $max = max($max, $chartData[1]);
+            }
+
+            foreach ($chartDataSet as $i => $chartData) {
+                $chartDataSet[$i][1] = $chartData[1]/$max;
+            }
+            return $chartDataSet;
+        }
+
+        /**
+         * @param int $tier
+         *
+         * @return array
+         */
+        protected function getCruiserBaseDataForTier(int $tier) : array {
+            return Cache::remember("aft.bellgraph.cruiser.t" . $tier, now()->addMinutes(15), function () use ($tier) {
+                return $this->executeBaseDataForTier($tier, true);
+            });
+        }
+
+        protected function executeBaseDataForTier(int $tier, bool $isCruiser) {
+            return DB::select("
+                    select AVG(i.LOOT_ISK) as `LOOT_ISK`
+                    from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
+                          FROM runs r
+                                   join ship_lookup sl on r.SHIP_ID = sl.ID
+                          where r.SURVIVED = 1
+                            and r.TIER = ?
+                            and r.LOOT_ISK > 0
+                            and sl.IS_CRUISER = ?
+                          GROUP BY r.LOOT_ISK
+                          ORDER BY r.LOOT_ISK ASC) i
+                    WHERE i.DIST<=? AND i.LOOT_ISK <= ?
+                    GROUP BY ROUND(i.DIST, 2)
+                    ORDER BY i.LOOT_ISK ASC", [$tier, $isCruiser, 1, 300000000]);
+        }
+
+        /**
+         * @param int $tier
+         *
+         * @return array
+         */
+        protected function getFrigateBaseDataForTier(int $tier) : array {
+
+            return Cache::remember("aft.bellgraph.cruiser.t" . $tier, now()->addMinutes(15), function () use ($tier) {
+                return $this->executeBaseDataForTier($tier, false);
+            });
         }
     }

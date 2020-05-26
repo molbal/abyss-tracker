@@ -13,7 +13,8 @@
 ">
             <div class="card card-body border-0 pb-2">
                 <p class="h5">Big update info</p>
-                <p class="mb-0">Abyss Tracker was updated to 1.5.0 which includes fits and lots of other changes. If you find a bug or have feedback you can find me in the Abyssal Lurkers discord's #abyssal-tracker channel, or on Twitter. If you like the new updates please consider donating to the project</p>
+                <p class="mb-0">Abyss Tracker was updated to 1.5.1 which includes mostly bugfixes, improved fit pages, and better data presentation. If you find a bug or have feedback you can find me in the Abyssal Lurkers discord's #abyssal-tracker channel, or on Twitter. If you like the new updates please consider donating to the project.
+                </p>
             </div>
             <div class="card-footer">
                 <div class="btn-group">
@@ -88,20 +89,37 @@
             </div>
         </div>
     </div>
+
     <div class="row mt-3">
-        <div class="col-md-5 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Average loot per tier</h5>
-                <div style="height: 400px">
-                {!! $loot_tier_chart->container(); !!}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-7 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Last 60 days</h5>
-                    <div style="height: 400px">
-                    {!! $daily_add_chart->container(); !!}
+        <div class="col-md-12 col-sm-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="tab-head-distribution" data-toggle="tab" href="#tab-distribution" role="tab" aria-controls="home" aria-selected="true">Cruiser loot distribution</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-head-distribution-frig" data-toggle="tab" href="#tab-distribution-frig" role="tab" aria-controls="home" aria-selected="true">Frigate loot distribution</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-head-activity" data-toggle="tab" href="#tab-activity" role="tab" aria-controls="profile" aria-selected="false">Abyss activity</a>
+                </li>
+            </ul>
+            <div class="card card-body border-0 shadow-sm top-left-no-round">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab-distribution" role="tabpanel" aria-labelledby="tab-head-distribution">
+                        <div class="graph-container h-400px">
+                            {!! $lootDistributionCruiser->container(); !!}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show" id="tab-distribution-frig" role="tabpanel" aria-labelledby="tab-head-distribution-frig">
+                        <div class="graph-container h-400px">
+                            {!! $lootDistributionFrigate->container(); !!}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-activity" role="tabpanel" aria-labelledby="tab-head-activity">
+                        <div class="graph-container h-400px">
+                            {!! $daily_add_chart->container(); !!}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -175,7 +193,7 @@
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">All recorded filament types</h5>
-                <div style="height: 400px">
+                <div class="graph-container h-400px">
                     {!! $loot_types_chart->container(); !!}
                 </div>
             </div>
@@ -183,7 +201,7 @@
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">All recorded tier levels</h5>
-                <div style="height: 400px">
+                <div class="graph-container h-400px">
                     {!! $tier_levels_chart->container(); !!}
                 </div>
             </div>
@@ -191,7 +209,7 @@
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Survival rate of recorded runs</h5>
-                <div style="height: 400px">
+                <div class="graph-container h-400px">
                     {!! $survival_chart->container(); !!}
                 </div>
             </div>
@@ -220,8 +238,13 @@
     {!! $loot_types_chart->script(); !!}
     {!! $tier_levels_chart->script(); !!}
     {!! $survival_chart->script(); !!}
-    {!! $loot_tier_chart->script(); !!}
+    {!! $lootDistributionCruiser->script(); !!}
+    {!! $lootDistributionFrigate->script(); !!}
     {!! $daily_add_chart->script(); !!}
     <script type="text/javascript">
+
+        $('#tab-head-distribution').on('shown.bs.tab', function (e) {window.{{$lootDistributionCruiser->id}}.resize();});
+        $('#tab-head-distribution-frig').on('shown.bs.tab', function (e) {window.{{$lootDistributionFrigate->id}}.resize();});
+        $('#tab-head-activity').on('shown.bs.tab', function (e) {window.{{$daily_add_chart->id}}.resize();});
     </script>
 @endsection

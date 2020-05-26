@@ -124,7 +124,7 @@
             try {
 
                 $data = $this->sendToEvePraisal();
-                Log::info("Regualar loot for evepraisal. Sent: ".print_r($this->rawData, 1)." - returned: ".print_r($data, 1));
+                Log::channel("lootvalue")->info("Regualar loot for evepraisal. Sent: ".print_r($this->rawData, 1)." - returned: ".print_r($data, 1));
 
                 $this->totalPrice = round(($data->totals->buy + $data->totals->sell) / 2);
 

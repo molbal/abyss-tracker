@@ -5,12 +5,13 @@
 
 
     use App\Charts\AbyssSurvivalType;
+    use App\Charts\BellChart2;
     use App\Charts\DailyAdds;
     use App\Charts\IskPerHourChart;
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
-    use App\Charts\RunBetter;
+    use App\Charts\BellChart1;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use Illuminate\Support\Facades\Cache;
@@ -18,6 +19,27 @@
 
     class GraphContainerController
     {
+
+
+        public function getLootBellGraphs(int $tier, bool $isCruiser = true, int $thisRun = 0): BellChart1 {
+
+            $chart = new BellChart1();
+
+            $chart->export(true, "Download");
+//            $chart->height("400px");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->load(route("chart.run.averages", [
+                "tier" => $tier, "isCruiser"=>$isCruiser, "thisRun" => $thisRun
+            ]));
+            $options = $chart->options;
+            $options["xAxis"] = [];
+            $chart->options($options, true);
+            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
+
+            return $chart;
+        }
+
+
         /**
          * @return LootTypesChart
          */
@@ -67,20 +89,42 @@
         }
 
         /**
-         * @return LootTierChart
+         * @return BellChart1
          */
-        public function getHomeLootAverages() : LootTierChart
+        public function getHomeLootAveragesCruisers() : BellChart1
         {
-            $loot_tier_chart = new LootTierChart();
-            $loot_tier_chart->load(route("chart.home.tier_averages"));
-            $loot_tier_chart->export(true, "Download");
-            $loot_tier_chart->displayAxes(true);
-            $loot_tier_chart->height(400);
-            $loot_tier_chart->labels(["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5"]);
-            $loot_tier_chart->theme(ThemeController::getChartTheme());
-            $loot_tier_chart->displayLegend(true);
+            $chart = new BellChart1(0,150);
 
-            return $loot_tier_chart;
+            $chart->export(true, "Download");
+            $chart->height("400");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->load(route("chart.home.distribution.cruisers"));
+            $options = $chart->options;
+            $options["xAxis"] = [];
+            $chart->options($options, true);
+            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
+
+            return $chart;
+        }
+
+
+        /**
+         * @return BellChart1
+         */
+        public function getHomeLootAveragesFrigates() : BellChart2
+        {
+            $chart = new BellChart2(0,250);
+
+            $chart->export(true, "Download");
+            $chart->height("400");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->load(route("chart.home.distribution.frigates"));
+            $options = $chart->options;
+            $options["xAxis"] = [];
+            $chart->options($options, true);
+            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
+
+            return $chart;
         }
 
         /**
@@ -89,7 +133,7 @@
         public function getHomeDailyRunCounts() : object
         {
 
-            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", 15, function () {
+            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
 
             $run_date = [];
             $count_unknown = [];
@@ -195,7 +239,7 @@
             $isCruiser = DB::table("ship_lookup")
                        ->where("ID", $data->SHIP_ID ?? 17715)
                        ->value("IS_CRUISER");
-            $otherCharts = new RunBetter();
+            $otherCharts = new PersonalDaily();
             $averageLootForTierType = DB::table("runs")
                 ->where("TIER", $data->TIER)
                 ->where("TYPE", $data->TYPE)

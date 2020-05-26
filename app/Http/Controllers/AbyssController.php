@@ -11,7 +11,7 @@
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
-    use App\Charts\RunBetter;
+    use App\Charts\BellChart1;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use App\Http\Controllers\Loot\LootCacheController;
@@ -74,7 +74,8 @@
             $lootTypesChart = $this->graphContainerController->getHomeLootTypesChart();
             $tierLevelsChart = $this->graphContainerController->getHomeLootTierLevels();
             $survival_chart = $this->graphContainerController->getHomeSurvivalLevels();
-            $loot_tier_chart = $this->graphContainerController->getHomeLootAverages();
+            $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
+            $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
             $last_runs = $this->homeQueriesController->getLastRuns();
             $drops = $this->homeQueriesController->getCommonDrops();
             $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
@@ -89,7 +90,8 @@
                 'loot_types_chart'  => $lootTypesChart,
                 'tier_levels_chart' => $tierLevelsChart,
                 'survival_chart'    => $survival_chart,
-                'loot_tier_chart'   => $loot_tier_chart,
+                'lootDistributionCruiser'   => $lootDistributionCruiser,
+                'lootDistributionFrigate'   => $lootDistributionfrigate,
                 'abyss_num'         => $count,
                 'today_num'         => $today_num,
                 'items'             => $last_runs,
@@ -309,9 +311,11 @@ from (`abyss`.`lost_items` `dl`
 
             $fit_name = $all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit";
 
+            $bell = $this->graphContainerController->getLootBellGraphs($data->TIER, 1, $all_data->LOOT_ISK);
             return view("run", [
                 "id"                   => $id,
                 "run"                  => $data,
+                "bell"                  => $bell,
                 "other"                => $otherCharts,
                 "loot_table"           => $loot,
                 "lost_table"           => $lost,

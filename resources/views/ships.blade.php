@@ -8,7 +8,7 @@
         <div class="col-md-6 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Most used cruisers</h5>
-                <div style="height: 400px">{!! $cruiser_chart->container() !!}</div>
+                <div class="graph-container h-400px">{!! $cruiser_chart->container() !!}</div>
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold mb-2">List of used cruisers</h5>
@@ -31,7 +31,7 @@
         <div class="col-md-6 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Most used frigates</h5>
-                <div style="height: 400px">{!! $frigate_chart->container() !!}</div>
+                <div class="graph-container h-400px">{!! $frigate_chart->container() !!}</div>
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold mb-2">List of used frigates</h5>

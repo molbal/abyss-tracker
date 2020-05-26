@@ -226,6 +226,18 @@
                 return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
             }
 
+            $tables = Cache::remember("aft.dump-tablelist", now()->addHour(), function () {
+               return DB::table("previous_dumps_tables")->orderBy("ORDER_ASC", "ASC")->get();
+            });
+
+            foreach ($tables as $table) {
+                if (DB::table($table->TABLE_NAME)->where("typeName",'=', $fullName)) {
+//                    dd($table->TABLE_NAME, $fullName);
+                    return DB::table($table->TABLE_NAME)->where("typeName",'=', $fullName)->value("typeID");
+
+                }
+            }
+
             $response = $this->simplePost(null, "universe/ids", json_encode([$fullName]));
 
             if (isset($response->inventory_types[0]->id)) {

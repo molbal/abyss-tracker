@@ -20,9 +20,11 @@
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
         "phpoffice/phpspreadsheet": "^1.11",
-        "sayorus/eveonline-socialite": "^0.6.1"
+        "sayorus/eveonline-socialite": "^0.6.1",
+      "ext-http": "*"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.3",
         "facade/ignition": "^1.4",
         "fzaninotto/faker": "^1.4",
         "laravel/dusk": "^5.9",

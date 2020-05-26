@@ -176,6 +176,34 @@ text-align: center;">
 
         </div>
     </div>
+
+
+    <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
+        <h4 class="font-weight-bold">{{$fit->NAME}} usage</h4>
+    </div>
+    <div class="row mt-3">
+        <div class="col-xs-12 col-sm-8">
+            @component("components.runs.list", ['title' => "Runs with this fit", 'items' => $runs]) @endcomponent
+        </div>
+
+        <div class="col-xs-12 col-sm-4">
+
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold">Fit performance</h5>
+                <p class="mb-0">The information below was calculated from {{$runs->count()}} user submitted runs (displayed left).</p>
+            </div>
+            @forelse($breaksEven as $info)
+                @component("components.fits.ds.break-even", ['info'=>$info, 'price' => $fit->PRICE]) @endcomponent
+            @empty
+                <div class="card card-body border-0 shadow-sm text-center text-justify mt-3">
+                    <p class="mb-0">Nothing submitted yet to calculate stats from.</p>
+                </div>
+            @endforelse
+
+        </div>
+    </div>
+
+
     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
     <div class="row mt-5">
         <div class="card card-body border-danger shadow-sm text-center mt-3">

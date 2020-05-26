@@ -8,6 +8,7 @@
     use App\Http\Controllers\Cache\DBCacheController;
     use App\Http\Controllers\EFT\Constants\DogmaAttribute;
     use App\Http\Controllers\EFT\Exceptions\NotAnItemException;
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
@@ -60,6 +61,7 @@
             }
 
             // Is cached?
+
             if (DB::table("item_slot")->where("ITEM_ID", $itemID)->exists()) {
                 return DB::table("item_slot")->where("ITEM_ID", $itemID)->value("ITEM_SLOT");
             }
@@ -277,7 +279,12 @@
 
                 // Let's get before the comma: strip ammo
                 $ammo = trim(explode(',', $line, 2)[1] ?? "");
-                $ammo_id = DB::table("item_prices")->where("NAME", $ammo)->value("ITEM_ID");
+                $ammo_id = Cache::remember("aft.item-price.".md5($line), now()->addHour(), function() use ($ammo) {
+                    return DB::table("item_prices")
+                             ->where("NAME", $ammo)
+                             ->value("ITEM_ID");
+                });
+
                 $line = explode(',', $line, 2)[0];
 
                 $count = 1;
@@ -288,22 +295,28 @@
                 }
 
                 try {
-                    $price = (DB::table("item_prices")
+                    $price = Cache::remember("aft.item-price.".md5($line), now()->addHour(), function() use ($line) {
+                        return DB::table("item_prices")
                             ->where("NAME", $line)
                             ->value("PRICE_BUY") + DB::table("item_prices")
                                                      ->where("NAME", $line)
-                                                     ->value("PRICE_SELL")) / 2;
+                                                     ->value("PRICE_SELL") / 2;
+                    });
                 }
                 catch (\Exception $e) {
                     $price = 0;
                 }
                 try {
-                    $itemID = $this->getItemID($line);
+                    $itemID = Cache::remember("aft.item-id-from-line.".md5($line), now()->addHour(), function () use ($line) {
+                        return $this->getItemID($line);
+                    });
                 }
                 catch (NotAnItemException $ignored) {
                     continue;
                 }
-                $slot = $this->getItemSlot($itemID);
+                $slot = Cache::remember("aft.item-slot-from-id.".$itemID, now()->addHour(), function () use ($itemID) {
+                    return $this->getItemSlot($itemID);
+                });
 
                 $struct[$slot][] = [
                     'name' => $line,

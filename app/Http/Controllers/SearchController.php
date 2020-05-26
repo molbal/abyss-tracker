@@ -82,11 +82,12 @@ class SearchController extends Controller
             $scb->addCondition(new SearchCriteria(($request->get("hull_size") ? "Cruiser" : "Frigate")." size ships", "ship_lookup", "IS_CRUISER", "=", $request->get("hull_size")));
         }
         if ($request->get("run_date_start")) {
-            $scb->addCondition(new SearchCriteria("Runs from ".$request->get("run_date_start"), "runs", "RUN_DATE", "<=", $request->get("run_date_start")));
+            $scb->addCondition(new SearchCriteria("Runs from ".$request->get("run_date_start"), "runs", "RUN_DATE", ">=", $request->get("run_date_start")));
         }
         if ($request->get("run_date_start")) {
-            $scb->addCondition(new SearchCriteria("Runs until ".$request->get("run_date_end"), "runs", "RUN_DATE", ">=", $request->get("run_date_end")));
+            $scb->addCondition(new SearchCriteria("Runs until ".$request->get("run_date_end"), "runs", "RUN_DATE", "<=", $request->get("run_date_end")));
         }
+//        dd($scb);
         if ($request->get("min_run_length_m")) {
             $sec = ($request->get("min_run_length_m")*60)+($request->get("min_run_length_s"));
             $scb->addCondition(new SearchCriteria("Longer than ".$request->get("min_run_length_m").":".$request->get("min_run_length_s"), "runs", "RUNTIME_SECONDS", ">=", $sec));

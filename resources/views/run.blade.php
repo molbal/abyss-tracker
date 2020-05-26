@@ -364,11 +364,30 @@ $lost_buy = 0;
             </div>
         </div>
     @endif
+
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h4 class="font-weight-bold">Average loot values</h4>
-                {!! $other->container(); !!}
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="tab-head-bell" data-toggle="tab" href="#tab-bell" role="tab" aria-controls="home" aria-selected="true">Tier {{$all_data->TIER}} loot distribution</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-head-legacy" data-toggle="tab" href="#tab-legacy" role="tab" aria-controls="profile" aria-selected="false">Legacy averages graph</a>
+                </li>
+            </ul>
+            <div class="card card-body border-0 shadow-sm top-left-no-round">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tab-bell" role="tabpanel" aria-labelledby="tab-head-bell">
+                            <div class="graph-container h-400px">
+                                {!! $bell->container(); !!}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab-legacy" role="tabpanel" aria-labelledby="tab-head-legacy">
+                            <div class="graph-container h-400px">
+                                {!! $other->container(); !!}
+                            </div>
+                        </div>
+                </div>
             </div>
         </div>
     </div>
@@ -379,7 +398,7 @@ $lost_buy = 0;
                 <a href="{{route('run.change_privacy', ['id' => $id, 'privacy' => $all_data->PUBLIC ? 'private' : 'public'])}}" class="text-dark"><img
                         src="https://img.icons8.com/officexs/16/000000/key-security.png"> Make run {{$all_data->PUBLIC ? 'private' : 'public'}}</a> &centerdot;
                 <a href="{{route('run_delete', ['id' => $id])}}" class="text-danger"><img
-                        src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a> &centerdot;
+                        src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a>
             @elseif(!$reported)
                 <a href="javascript:void(0)" id="flag" class="text-danger"><img
                         src="https://img.icons8.com/officexs/16/000000/filled-flag2.png"> Flag for review</a>
@@ -395,6 +414,7 @@ $lost_buy = 0;
 
     @component("components.flag_modal", ["id" => $id])
     @endcomponent
+    {!! $bell->script(); !!}
     {!! $other->script(); !!}
 
     <script type="text/javascript">
@@ -404,6 +424,15 @@ $lost_buy = 0;
 
         $(function () {
             $("#flag").click(flag);
+        });
+
+        $('#tab-head-bell').on('shown.bs.tab', function (e) {
+            console.log("tab-bell", "shown.bs.tab");
+            window.{{$bell->id}}.resize();
+        });
+        $('#tab-head-legacy').on('shown.bs.tab', function (e) {
+            console.log("tab-legacy", "shown.bs.tab");
+            window.{{$other->id}}.resize();
         });
     </script>
 @endsection

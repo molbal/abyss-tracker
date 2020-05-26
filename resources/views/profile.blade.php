@@ -143,7 +143,7 @@
                 @component("components.restricted", ["title" => "Most used ships","public" => $access["SHIPS"]])
                     <div class="card card-body border-0 shadow-sm mt-3">
                         <h5 class="font-weight-bold mb-2">Favorite ships</h5>
-                        <div style="height: 400px">
+                        <div class="graph-container h-400px">
                         {!! $favoriteShipsChart->container(); !!}
                         </div>
                     </div>

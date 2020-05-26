@@ -18,7 +18,7 @@
         }
 
         public static function getChartTheme():string {
-            return self::isDarkTheme() ? 'dark' : 'light';
+            return self::isDarkTheme() ? 'dark' : 'walden';
         }
 
         public static function getThemedIconColor():string {
