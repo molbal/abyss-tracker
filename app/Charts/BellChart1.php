@@ -26,7 +26,9 @@ class BellChart1 extends Chart
 
     public function formatOptions(bool $strict = false, bool $noBraces = false) {
         $options =  parent::formatOptions($strict, $noBraces);
-        $extra = ",min:".$this->min??"'dataMin'".", max:".$this->max??"'dataMax'";
+//        $extra = ",min:".$this->min??"'dataMin'".", max:".$this->max??"'dataMax'";
+//        $extra = ",min:".$this->min??"'dataMin'".", max:".$this->max??"'dataMax'";
+        $extra = "";
         // Workaround!
         $options = str_ireplace('"xAxis":{"data":[]}', '"xAxis":{type: \'value\''.$extra.', axisLabel: {formatter: \'{value} M ISK\'}}', $options);
         $options = str_ireplace('"yAxis":{"show":true}', '"yAxis":{"show":false}', $options);
