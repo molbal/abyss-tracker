@@ -24,6 +24,21 @@
             </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.5.1</strong> 'Ligature' release</h4>
+                <small class="mt-0">2020 may 26</small>
+                <p class="text-justify">
+                    New features
+                </p>
+                <ul>
+                    <li>Lots of small bugfixes</li>
+                    <li>Changes to new type bell graphs</li>
+                    <li>"Unbreaks" old fits with pre-2020.05.26 patch module names</li>
+                    <li>Improves site performance by caching fit related datasets</li>
+                    <li>Adds runs to a fit's page</li>
+                </ul>
+            </div>
+            <div class="card card-body border-danger shadow-sm mb-3">
+                <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                 <h4 class="mb-0 pb-0"><strong>1.5.0</strong> 'Command' release</h4>
                 <small class="mt-0">2020 may 17</small>
                 <p class="text-justify">

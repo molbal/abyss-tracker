@@ -190,12 +190,12 @@ text-align: center;">
 
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Fit performance</h5>
-                <p class="mb-0">The information below was calculated from {{$runs->count()}} user submitted runs.</p>
+                <p class="mb-0">The information below was calculated from {{$runs->count()}} user submitted runs (displayed left).</p>
             </div>
             @forelse($breaksEven as $info)
                 @component("components.fits.ds.break-even", ['info'=>$info, 'price' => $fit->PRICE]) @endcomponent
             @empty
-                <div class="card card-body border-0 shadow-sm text-center text-justify">
+                <div class="card card-body border-0 shadow-sm text-center text-justify mt-3">
                     <p class="mb-0">Nothing submitted yet to calculate stats from.</p>
                 </div>
             @endforelse

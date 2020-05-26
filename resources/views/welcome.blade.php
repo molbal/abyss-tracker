@@ -13,7 +13,8 @@
 ">
             <div class="card card-body border-0 pb-2">
                 <p class="h5">Big update info</p>
-                <p class="mb-0">Abyss Tracker was updated to 1.5.0 which includes fits and lots of other changes. If you find a bug or have feedback you can find me in the Abyssal Lurkers discord's #abyssal-tracker channel, or on Twitter. If you like the new updates please consider donating to the project</p>
+                <p class="mb-0">Abyss Tracker was updated to 1.5.1 which includes mostly bugfixes, improved fit pages, and better data presentation. If you find a bug or have feedback you can find me in the Abyssal Lurkers discord's #abyssal-tracker channel, or on Twitter. If you like the new updates please consider donating to the project.
+                </p>
             </div>
             <div class="card-footer">
                 <div class="btn-group">
