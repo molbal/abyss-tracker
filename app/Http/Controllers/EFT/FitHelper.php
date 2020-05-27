@@ -17,15 +17,20 @@
         /** @var ResourceLookupService */
         protected $resourceLookup;
 
+        /** @var ItemPriceCalculator */
+        protected $priceCalculator;
 
         /**
          * FitHelper constructor.
          *
          * @param ResourceLookupService $resourceLookup
+         * @param ItemPriceCalculator   $priceCalculator
          */
-        public function __construct(ResourceLookupService $resourceLookup) {
+        public function __construct(ResourceLookupService $resourceLookup, ItemPriceCalculator $priceCalculator) {
             $this->resourceLookup = $resourceLookup;
+            $this->priceCalculator = $priceCalculator;
         }
+
 
         /**
          * @param string $itemName
@@ -277,6 +282,8 @@
 
                 if ($line == "") continue;
 
+                $price = 0;
+
                 // Let's get before the comma: strip ammo
                 $ammo = trim(explode(',', $line, 2)[1] ?? "");
                 $ammo_id = Cache::remember("aft.item-price.".md5($line), now()->addHour(), function() use ($ammo) {
@@ -295,13 +302,7 @@
                 }
 
                 try {
-                    $price = Cache::remember("aft.item-price.".md5($line), now()->addHour(), function() use ($line) {
-                        return DB::table("item_prices")
-                            ->where("NAME", $line)
-                            ->value("PRICE_BUY") + DB::table("item_prices")
-                                                     ->where("NAME", $line)
-                                                     ->value("PRICE_SELL") / 2;
-                    });
+                    $price = $this->priceCalculator->getFromItemName($line);
                 }
                 catch (\Exception $e) {
                     $price = 0;
@@ -332,4 +333,5 @@
             return $struct;
 
         }
+
     }

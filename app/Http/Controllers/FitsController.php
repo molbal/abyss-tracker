@@ -294,13 +294,15 @@
             $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
             $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
 
+            $eftParsed = $this->fitHelper->quickParseEft($fit->RAW_EFT);
+        dd($eftParsed);
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
                 'char_name' => $char_name,
                 'ship_type' => $ship_type,
                 'ship_price' => $ship_price,
-                'fit_quicklook' => $this->fitHelper->quickParseEft($fit->RAW_EFT),
+                'fit_quicklook' => $eftParsed,
                 'description' => $description,
                 'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),
                 'embed' => $embed,
