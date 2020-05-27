@@ -32,7 +32,7 @@
                 ->orderBy("CREATED_AT", "DESC")
                 ->orderBy("RUN_DATE", "DESC")
                 ->limit(1)
-                ->get()->get(0);
+                ->first();
             return $prev;
         }
 

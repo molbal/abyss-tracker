@@ -27,75 +27,92 @@
         }
 
 
+        /**
+         * Handles the fit search backend
+         * @param int    $shipId
+         * @param string $nameOrId
+         *
+         * @return array
+         */
         public function getFitsForNewRunDropdown(int $shipId, string $nameOrId="") {
 
             $return = [];
+            $shipName = Cache::remember("aft.ship-name..$shipId", now()->addHour(), function () use ($shipId) {
+               return DB::table('ship_lookup')
+                        ->where('ID', $shipId)
+                        ->value('NAME');
+            });
 
-            $return[] = [
-                "text" => "Don't remember or secret",
-                "children" => [$this->getFitSelect(null, false, "No fit or don't remember", 0)]
-            ];
-            $shipName = DB::table('ship_lookup')
-                           ->where('ID', $shipId)
-                           ->value('NAME');
+            $lastShipId = DB::table("runs")
+                            ->where("CHAR_ID", session()->get("login_id", null))
+                            ->where("SHIP_ID", $shipId)
+                            ->whereNotNull("FIT_ID")
+                            ->orderBy("ID", 'DESC')
+                            ->limit(1)
+                            ->value("FIT_ID") ?? null;
 
-
-            // Last viewed fit
-            if (session()->has("login_id")) {
-                if (Cache::has("aft.fit.last-seen-" . session()->get("login_id"))) {
-                    try {
-                        DB::enableQueryLog();
-                        $query = DB::table("fits")
-                                   ->where("ID", Cache::get("aft.fit.last-seen-" . session()->get("login_id")))
-                                   ->orWhere("NAME", 'LIKE', "%" . $nameOrId . "%")
+            if ($lastShipId) {
+                $lastUsedFit = DB::table("fits")
+                                   ->where("ID", $lastShipId)
                                    ->first();
-//                        dd(DB::getQueryLog());
-                        $return[] = [
-                            "text" => sprintf("Last viewed %s fit", $nameOrId),
-                            "children" => [
-                                $this->getFitSelect($query)
-                            ]
-                        ];
-                    }catch (\Exception $ignored) {
-                    }
-                }
+                $return[] = [
+                    "text" => "Last used $shipName fit",
+                    "children" => [$this->getFitSelect($lastUsedFit, false, null, null, true)]
+                ];
             }
 
             // My fits
-            $myFits = DB::table("fits")->where("SHIP_ID", $shipId)->where("CHAR_ID", session()->get("login_id"))->get();
+            $loggedInCharId = session()->get("login_id");
+            $myFits = DB::table("fits")
+                        ->where("SHIP_ID", $shipId)
+                        ->where("CHAR_ID", $loggedInCharId)
+                        ->where(function ($query) use ($nameOrId) {
+                            $query->where("ID", $nameOrId)
+                                  ->orWhere("NAME", 'LIKE', "%" . $nameOrId . "%");
+                        })
+                        ->get();
+            $groupPostFix = $nameOrId ? " ($nameOrId name or id)" : "";
             if ($myFits->count() > 0) {
                 $list = [];
                 foreach ($myFits as $myFit) {
                     $list[] = $this->getFitSelect($myFit);
                 }
                 $return[] = [
-                    "text" => sprintf("My %s fits", $shipName),
+                    "text" => sprintf("My %s fits", $shipName). $groupPostFix,
                     "children" => $list
                 ];
             }
             else {
                 $return[] = [
-                    "text" => sprintf("My %s fits", $shipName),
-                    "children" => [$this->getFitSelect(null, true, "You don't have any $shipName fits", -1)]
+                    "text" => sprintf("My %s fits", $shipName).($groupPostFix),
+                    "children" => [$this->getFitSelect(null, true, "You don't have any $shipName fits".($groupPostFix), -1)]
                 ];
             }
 
             // Public & anonym fits
-            $myFits = DB::table("fits")->where("SHIP_ID", $shipId)->whereIn("PRIVACY", ["public", "incognito"])->where("CHAR_ID",'<>', session()->get("login_id"))->get();
+            $myFits = DB::table("fits")
+                        ->where("SHIP_ID", $shipId)
+                        ->whereIn("PRIVACY", ["public", "incognito"])
+                        ->where("CHAR_ID",'<>', $loggedInCharId)
+                        ->where(function ($query) use ($nameOrId) {
+                            $query->where("ID", $nameOrId)
+                                  ->orWhere("NAME", 'LIKE', "%" . $nameOrId . "%");
+                        })
+                        ->get();
             if ($myFits->count() > 0) {
                 $list = [];
                 foreach ($myFits as $myFit) {
                     $list[] = $this->getFitSelect($myFit);
                 }
                 $return[] = [
-                    "text" => sprintf("Public and anonym %s fits", $shipName),
+                    "text" => sprintf("Public and anonym %s fits", $shipName).($groupPostFix),
                     "children" => $list
                 ];
             }
             else {
                 $return[] = [
-                    "text" => sprintf("Public and anonym  %s fits", $shipName),
-                    "children" => [$this->getFitSelect(null, true, "No public or anyonym $shipName fits", -1)]
+                    "text" => sprintf("Public and anonym  %s fits", $shipName).($groupPostFix),
+                    "children" => [$this->getFitSelect(null, true, "No public or anyonym $shipName fits".($groupPostFix), -1)]
                 ];
             }
 
@@ -108,13 +125,16 @@
          * @param string|null $nameOverride
          * @param int|null    $idOverride
          *
+         * @param bool|null   $isSelected
+         *
          * @return array
          */
-        private function getFitSelect($thing, bool $disabled = false, string $nameOverride = null, int $idOverride=null) {
+        private function getFitSelect($thing, bool $disabled = false, string $nameOverride = null, int $idOverride=null, bool $isSelected = null) {
             return [
                 'id' => $idOverride ?? intval($thing->ID),
                 'text' => $nameOverride ?? sprintf("%s (Fit #%s)", trim($thing->NAME), $thing->ID),
-                'disabled' => $disabled
+                'disabled' => $disabled,
+                'selected' => $isSelected
             ];
         }
 
