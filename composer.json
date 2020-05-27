@@ -21,7 +21,7 @@
         "laravel/tinker": "^2.0",
         "phpoffice/phpspreadsheet": "^1.11",
         "sayorus/eveonline-socialite": "^0.6.1",
-      "ext-http": "*"
+        "ext-http": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",

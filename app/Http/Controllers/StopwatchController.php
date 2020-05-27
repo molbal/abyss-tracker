@@ -132,7 +132,7 @@
             $preAbyss = $var->IN_ABYSS ? true : false;
 
             if (!$loc)  {
-                throw new \Exception("Could not location for user $charId");
+                throw new \Exception("Could check not location for user $charId");
             }
             $nowAbyss = $this->isAbyssSystem($loc->solar_system_name);
             //Log::info(sprintf("Comparsion for %s pre: %s now: %s", $charId, $preAbyss ? "in" : "out", $nowAbyss ? "in" : "out"));
