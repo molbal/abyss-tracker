@@ -124,6 +124,8 @@
     Route::get("/maintenance/flagged/{secret}", 'Maintenance\MaintenanceController@showFlaggedRuns');
     Route::get("/maintenance/flagged/delete/{id}/{secret}", 'Maintenance\MaintenanceController@deleteFlaggedRun');
     Route::get("/maintenance/db/{secret}", 'Maintenance\MaintenanceController@runMigrations');
+    Route::get("/maintenance/routes/{secret}", 'Maintenance\MaintenanceController@getRoutes');
+    Route::get("/maintenance/optimize/{secret}", 'Maintenance\MaintenanceController@resetAndCache');
     Route::get("/maintenance/test-login/{login_id}/{secret}", 'Maintenance\MaintenanceController@debugLogin');
     Route::get("/maintenance/recalc-fit/{id}/{secret}", 'Maintenance\MaintenanceController@recalculateSingleFit');
     Route::get("/maintenance/recalc-fits/{secret}", 'Maintenance\MaintenanceController@recalculateQueuedFits');
