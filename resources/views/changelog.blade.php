@@ -24,6 +24,16 @@
             </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.5.2</strong> '' release</h4>
+                <small class="mt-0">2020 </small>
+                <p class="text-justify">
+                    New features
+                </p>
+                <ul>
+                    <li>Upgrades the loot value estimator, removes Evepraisal data source and adds Fuzzwork Marketdata and EVE Workbench data source</li>
+                </ul>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.5.1</strong> 'Ligature' release</h4>
                 <small class="mt-0">2020 may 26</small>
                 <p class="text-justify">
