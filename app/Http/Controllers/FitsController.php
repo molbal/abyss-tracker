@@ -295,7 +295,14 @@
             $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
 
             $eftParsed = $this->fitHelper->quickParseEft($fit->RAW_EFT);
-//        dd($eftParsed);
+            $price = $ship_price;
+            foreach ($eftParsed as $slot) {
+                foreach ($slot as $item) {
+                    $price += $item['price']->getAveragePrice();
+                }
+            }
+            $fit->PRICE = $price;
+            DB::table("fits")->where("ID", $id)->update(['PRICE' => $price]);
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,

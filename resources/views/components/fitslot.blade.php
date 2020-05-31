@@ -1,13 +1,13 @@
 <tr>
     <td style="width: 36px;">
         @if($item["id"])
-            <img src="https://imageserver.eveonline.com/Type/{{$item["id"]}}_32.png" alt="{{$item["name"]}} icon" style="width: 32px;height: 32px;">
+            <img src="https://imageserver.eveonline.com/Type/{{$item["id"]}}_32.png" alt="{{$item["price"]->getAveragePrice()}} icon" style="width: 32px;height: 32px;">
         @else
 
         @endif
     </td>
     <td>
-        {{$item["name"]}}
+        {{$item["price"]->getName()}}
         @if ($item["ammo"] != "" )
             <sub class="bringupper">with <img src="https://imageserver.eveonline.com/Type/{{$item["ammo_id"]}}_32.png" alt="{{$item["name"]}} icon" style="width: 16px;height: 16px;"> {{$item["ammo"]}}</sub>
         @endif

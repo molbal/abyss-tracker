@@ -48,8 +48,11 @@
          * @return int
          * @throws \Exception
          */
-        public function getFromItemName(string $name): ItemObject {
+        public function getFromItemName(string $name): ?ItemObject {
             $typeId = $this->resourceLookup->itemNameToId($name);
+            if (!$typeId) {
+                return null;
+            }
             return $this->getFromTypeId($typeId);
         }
 

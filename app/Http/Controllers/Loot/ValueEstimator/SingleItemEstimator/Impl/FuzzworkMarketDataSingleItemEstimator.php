@@ -58,7 +58,7 @@
             $resourceLookup = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
             $itemObj = new ItemObject();
             $itemObj->setTypeId($this->typeId)
-                    ->setName($resourceLookup->getStationName($this->typeId))
+                    ->setName($resourceLookup->generalNameLookup($this->typeId) ?? "[Unknown item name for type {$this->typeId}]")
                     ->setBuyPrice($resp[$this->typeId]["buy"]["max"])
                     ->setSellPrice($resp[$this->typeId]["sell"]["min"]);
 
