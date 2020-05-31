@@ -53,20 +53,34 @@
             return $this->getFromTypeId($typeId);
         }
 
+        /**
+         * Updates item prices table
+         * @param ItemObject $itemObj
+         */
         private function updateItemPricesTable(ItemObject $itemObj):void {
             try {
 
+                DB::beginTransaction();
                 if (DB::table("item_prices")->where("ITEM_ID", $itemObj->getTypeId())->exists()) {
                     DB::table("item_prices")->where("ITEM_ID", $itemObj->getTypeId())->update([
-                        "NAME"
+                        "NAME" => $itemObj->getName(),
+                        "PRICE_BUY" => $itemObj->getBuyPrice(),
+                        "PRICE_SELL" => $itemObj->getSellPrice()
                     ]);
                 }
                 else{
-
+                    DB::table("item_prices")->insert([
+                        "ITEM_ID" => $itemObj->getTypeId(),
+                        "NAME" => $itemObj->getName(),
+                        "PRICE_BUY" => $itemObj->getBuyPrice(),
+                        "PRICE_SELL" => $itemObj->getSellPrice()
+                    ]);
                 }
+                DB::commit();
             }
             catch (\Exception $exc) {
-                Log::channel("itempricecalculator")->warning("Could not persist ".$itemObj->serialize().": ".$exc->getMessage()."\n".$exc->getTraceAsString());
+                DB::rollBack();
+                Log::channel("itempricecalculator")->warning("Transaction rolled back - Could not persist ".$itemObj->serialize().": ".$exc->getMessage()."\n".$exc->getTraceAsString());
             }
         }
 
@@ -77,7 +91,7 @@
          */
         private function appraise(int $typeId): ItemObject {
             $estimators = $this->getSingleItemEstimators();
-            foreach ($estimators as $estimator) {
+            foreach ($estimators as $i => $estimator) {
 
                 /** @var ISingleItemEstimator $estimatorImpl */
                 $estimatorImpl = resolve($estimator, ["typeId" => $typeId]);
@@ -85,6 +99,9 @@
                 try {
                     $itemObj = $estimatorImpl->getPrice();
                     if ($itemObj != null) {
+                        if ($i>0) {
+                            $this->updateItemPricesTable($itemObj);
+                        }
                         return $itemObj;
                     }
                 }

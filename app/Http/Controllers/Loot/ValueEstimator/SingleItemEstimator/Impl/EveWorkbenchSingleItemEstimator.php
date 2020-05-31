@@ -7,7 +7,7 @@
 	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
-    use App\Http\Controllers\EFT\Tags\ISingleItemEstimator;
+    use App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\ISingleItemEstimator;
     use GuzzleHttp\Client;
 
     class EveWorkbenchSingleItemEstimator implements ISingleItemEstimator {
@@ -28,7 +28,7 @@
          * @return ItemObject
          * @throws RemoteAppraisalToolException
          */
-        public function getPrice() : ItemObject {
+        public function getPrice() : ?ItemObject {
 
             /** @var ResourceLookupService $resourceLookup */
             $resourceLookup = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');

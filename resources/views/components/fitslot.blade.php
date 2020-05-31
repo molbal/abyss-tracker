@@ -15,8 +15,8 @@
             <sub class="bringupper">x{{$item["count"]}}</sub>
         @endif
     </td>
-    <td class="text-right">
-        {{number_format($item["count"]*$item["price"], 0, ",", " ")}} ISK
+    <td class="text-right" data-toggle="tooltip"  data-html="true" title="Buy price: {{number_format($item["count"]*$item["price"]->getBuyPrice(), 0, ",", " ")}} ISK<br/>Sell price: {{number_format($item["count"]*$item["price"]->getSellPrice(), 0, ",", " ")}} ISK">
+        {{number_format($item["count"]*$item["price"]->getAveragePrice(), 0, ",", " ")}} ISK
     </td>
 </tr>
 {{--<tr>--}}

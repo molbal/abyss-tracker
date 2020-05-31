@@ -295,7 +295,7 @@
             $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
 
             $eftParsed = $this->fitHelper->quickParseEft($fit->RAW_EFT);
-        dd($eftParsed);
+//        dd($eftParsed);
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,

@@ -7,6 +7,7 @@
 	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\Cache\DBCacheController;
     use App\Http\Controllers\EFT\Constants\DogmaAttribute;
+    use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\NotAnItemException;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -263,75 +264,65 @@
          */
         public function quickParseEft(string $eft) {
 
-            $struct = [
-                'high' =>[],
-                'mid' =>[],
-                'low' =>[],
-                'rig' =>[],
-                'drone' =>[],
-                'ammo' =>[],
-                'cargo' =>[],
-                'booster' =>[],
-                'implant' =>[]
-            ];
+            return Cache::remember("aft.fit-parsed.".md5($eft), now()->addHour(1), function () use ($eft) {
 
-            $lines = explode("\n", $eft);
-            array_shift($lines);
-            foreach ($lines as $line) {
-                $line = trim($line);
+                $struct = ['high' => [], 'mid' => [], 'low' => [], 'rig' => [], 'drone' => [], 'ammo' => [], 'cargo' => [], 'booster' => [], 'implant' => []];
 
-                if ($line == "") continue;
+                $lines = explode("\n", $eft);
+                array_shift($lines);
+                foreach ($lines as $line) {
+                    $line = trim($line);
 
-                $price = 0;
+                    if ($line == "") continue;
 
-                // Let's get before the comma: strip ammo
-                $ammo = trim(explode(',', $line, 2)[1] ?? "");
-                $ammo_id = Cache::remember("aft.item-price.".md5($line), now()->addHour(), function() use ($ammo) {
-                    return DB::table("item_prices")
-                             ->where("NAME", $ammo)
-                             ->value("ITEM_ID");
-                });
-
-                $line = explode(',', $line, 2)[0];
-
-                $count = 1;
-                if (preg_match('/^.+x\d{0,4}$/m', $line)) {
-                    $words = explode(' ', $line);
-                    $count = intval(str_replace("x", "",array_pop($words)));
-                    $line = implode(" ",$words);
-                }
-
-                try {
-                    $price = $this->priceCalculator->getFromItemName($line);
-                }
-                catch (\Exception $e) {
                     $price = 0;
-                }
-                try {
-                    $itemID = Cache::remember("aft.item-id-from-line.".md5($line), now()->addHour(), function () use ($line) {
-                        return $this->getItemID($line);
+
+                    // Let's get before the comma: strip ammo
+                    $ammo = trim(explode(',', $line, 2)[1] ?? "");
+                    $ammo_id = Cache::remember("aft.item-price." . md5($line), now()->addHour(), function () use ($ammo) {
+                        return DB::table("item_prices")
+                                 ->where("NAME", $ammo)
+                                 ->value("ITEM_ID");
                     });
+
+                    $line = explode(',', $line, 2)[0];
+
+                    $count = 1;
+                    if (preg_match('/^.+x\d{0,4}$/m', $line)) {
+                        $words = explode(' ', $line);
+                        $count = intval(str_replace("x", "", array_pop($words)));
+                        $line = implode(" ", $words);
+                    }
+
+                    try {
+                        $price = $this->priceCalculator->getFromItemName($line);
+                        if ($price == null) {
+                            throw new \Exception("Item price calculator got 0 ISK result for [$line]");
+                        }
+                    } catch (\Exception $e) {
+                        Log::warning($e);
+                        $price = (new ItemObject())->setTypeId(0)
+                                                   ->setName($line)
+                                                   ->setSellPrice(0)
+                                                   ->setSellPrice(0);
+                    }
+                    try {
+                        $itemID = Cache::remember("aft.item-id-from-line." . md5($line), now()->addHour(), function () use ($line) {
+                            return $this->getItemID($line);
+                        });
+                    } catch (NotAnItemException $ignored) {
+                        continue;
+                    }
+                    $slot = Cache::remember("aft.item-slot-from-id." . $itemID, now()->addHour(), function () use ($itemID) {
+                        return $this->getItemSlot($itemID);
+                    });
+
+                    $struct[$slot][] = ['name' => $line, 'id' => $itemID, 'ammo' => $ammo, 'count' => $count, 'price' => $price, 'ammo_id' => $ammo_id ?? null, 'slot' => $slot];
                 }
-                catch (NotAnItemException $ignored) {
-                    continue;
-                }
-                $slot = Cache::remember("aft.item-slot-from-id.".$itemID, now()->addHour(), function () use ($itemID) {
-                    return $this->getItemSlot($itemID);
-                });
 
-                $struct[$slot][] = [
-                    'name' => $line,
-                    'id' => $itemID,
-                    'ammo' => $ammo,
-                    'count' => $count,
-                    'price' => $price,
-                    'ammo_id' => $ammo_id ?? null,
-                    'slot' => $slot
-                ];
-            }
+                return $struct;
 
-            return $struct;
-
+            });
         }
 
     }

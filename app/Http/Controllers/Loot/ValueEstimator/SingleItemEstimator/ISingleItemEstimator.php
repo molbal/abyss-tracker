@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace App\Http\Controllers\EFT\Tags;
+	namespace App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator;
 
 
 	use App\Http\Controllers\EFT\DTO\ItemObject;
@@ -20,6 +20,6 @@
          * @return ItemObject
          * @throws RemoteAppraisalToolException
          */
-        public function getPrice(): ItemObject;
+        public function getPrice(): ?ItemObject;
 
 	}

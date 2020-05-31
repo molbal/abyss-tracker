@@ -3,12 +3,9 @@
 
 	namespace App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl;
 
-
-	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
-    use App\Http\Controllers\EFT\Tags\ISingleItemEstimator;
-    use GuzzleHttp\Client;
+    use App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\ISingleItemEstimator;
     use Illuminate\Support\Facades\DB;
 
     class ItemPriceTableSingleItemEstimator implements ISingleItemEstimator {
@@ -28,7 +25,7 @@
          * @return ItemObject
          * @throws RemoteAppraisalToolException
          */
-        public function getPrice() : ItemObject {
+        public function getPrice() : ?ItemObject {
             if (!DB::table("item_prices")
                   ->where("ITEM_ID", $this->typeId)
                   ->where("PRICE_LAST_UPDATED", ">", now()->subDay())->exists()) {
