@@ -37,6 +37,8 @@
                                 DPS is calculated if the weapons have loaded ammunition. This is written in the EFT after the weapons, divided by a comma.
                                 <br>
                                 Abyssal modules are currently not supported. <a target="_blank" href="https://github.com/molbal/abyss-tracker/issues/17">Bugtracker link</a>
+                                <br>
+                                <u>Module renames with the 2020.05.28 release are not yet supported. I'm working on it!</u>
                             </div>
                             <textarea name="eft" id="eft" class="w-100 form-control" rows="10" required></textarea>
                         </div>

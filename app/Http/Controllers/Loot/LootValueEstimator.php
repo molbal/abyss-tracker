@@ -5,6 +5,7 @@
 
 
     use App\Connector\EveAPI\Universe\ResourceLookupService;
+    use App\Exceptions\FitFatalException;
     use Carbon\Carbon;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -114,6 +115,9 @@
             return ["gainedItems" => $gainedItems, "lostItems" => $lostItems, "totalPrice" => round($total_price)];
         }
 
+        /**
+         * @throws FitFatalException
+         */
         private function process() {
             if ($this->rawData == "") {
                 $this->totalPrice = 0;
@@ -145,6 +149,10 @@
                             $item->typeID = $res->itemNameToId($item->name);
                             Log::warning("Fix: " . $item->typeID);
                         }
+
+                        if (!$item->typeID) {
+                            throw new FitFatalException("Unable to recognize module '$item->name'.");
+                        }
                         $eveItem = new EveItem();
                         $eveItem->setItemName($item->name)
                                 ->setItemId($item->typeID)
@@ -165,6 +173,10 @@
                         $this->items[] = $eveItem;
                     }
                 }
+            }
+            catch (FitFatalException $e) {
+                Log::error($e);
+                throw $e;
             } catch (\Exception $e) {
                 Log::warning($e);
                 $this->totalPrice = 0;
