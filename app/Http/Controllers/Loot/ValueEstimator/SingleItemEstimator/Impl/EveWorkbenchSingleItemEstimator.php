@@ -36,7 +36,7 @@
             $client = new Client();
             $response = null;
             try {
-                $response = $client->request('POST', env('EVEWORKBENCH_API_ROOT') . "appraisal?Station=60003760&Type=1", [
+                $response = $client->request('POST', env('EVEWORKBENCH_API_ROOT') . "appraisal?Station=6003760&Type=1", [
                     'auth' => [
                         env('EVEWORKBENCH_API_CLIENT_ID'),
                         env('EVEWORKBENCH_API_APP_KEY')],
@@ -74,7 +74,6 @@
 
                 return $itemObj;
             } catch (\Exception $e) {
-                dd($e);
                 throw new RemoteAppraisalToolException("EVE Workbench connection error: " . $e->getMessage());
             }
 

@@ -5,7 +5,11 @@
 
 
     use App\Connector\EveAPI\Universe\ResourceLookupService;
+    use App\Http\Controllers\EFT\DTO\ItemObject;
+    use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
+    use App\Http\Controllers\EFT\ItemPriceCalculator;
     use Carbon\Carbon;
+    use GuzzleHttp\Client;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
@@ -19,6 +23,10 @@
         /** @var int */
         private $totalPrice;
 
+        /** @var ItemPriceCalculator */
+        private $priceEstimator;
+
+
         /**
          * LootValueEstimator constructor.
          *
@@ -29,6 +37,7 @@
             $this->items = [];
             $this->totalPrice = null;
             $this->process();
+
         }
 
         public function getItems() {
@@ -100,16 +109,9 @@
             }
 
             $total_price = 0;
-
             foreach ($gainedItems as $gainedItem) {
-                $total_price += $gainedItem->getCount() * (($gainedItem->getSellValue() + $gainedItem->getBuyValue()) / 2);
+                $total_price += $gainedItem->getStackAverageValue();
             }
-
-//            Log::info("newItems: " . print_r($newItems, 1));
-//            Log::info("oldItems: " . print_r($oldItems, 1));
-//            Log::info("gainedItems: " . print_r($gainedItems, 1));
-//            Log::info("lostItems: " . print_r($lostItems, 1));
-
 
             return ["gainedItems" => $gainedItems, "lostItems" => $lostItems, "totalPrice" => round($total_price)];
         }
@@ -118,22 +120,21 @@
             if ($this->rawData == "") {
                 $this->totalPrice = 0;
                 $this->items = [];
-
                 return;
             }
+
+
             try {
+                $data = $this->sendToEveWorkbench();
 
-                $data = $this->sendToEvePraisal();
-                Log::channel("lootvalue")->info("Regualar loot for evepraisal. Sent: ".print_r($this->rawData, 1)." - returned: ".print_r($data, 1));
-
-                $this->totalPrice = round(($data->totals->buy + $data->totals->sell) / 2);
-
+                $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+                $this->totalPrice = 0;
                 foreach ($data->items as $item) {
                     $ex = false;
                     foreach ($this->items as $eitem) {
                         if ($eitem->getItemId() == $item->typeID) {
                             $ex = true;
-                            $eitem->setCount($eitem->getCount() + $item->quantity);
+                            $eitem->setCount($eitem->getCount() + $item->amount);
                             break;
                         }
                     }
@@ -145,22 +146,38 @@
                             $item->typeID = $res->itemNameToId($item->name);
                             Log::warning("Fix: " . $item->typeID);
                         }
+
+
                         $eveItem = new EveItem();
                         $eveItem->setItemName($item->name)
                                 ->setItemId($item->typeID)
-                                ->setBuyValue($item->prices->buy->max)
-                                ->setSellValue($item->prices->sell->min)
-                                ->setCount($item->quantity);
-
-
-                        if (stripos($eveItem->getItemName(), "blueprint") !== false) {
-                            $eveItem->setSellValue(0)
-                                    ->setBuyValue(0);
-                        }
+                                ->setCount($item->amount);
 
                         // Burnt in value for red loot
                         if ($eveItem->getItemId() == 48121) {
                             $eveItem->setBuyValue(100000);
+                            $eveItem->setSellValue(100000);
+                        }
+                        else {
+                            if (stripos($eveItem->getItemName(), "blueprint") !== false) {
+                                $eveItem->setSellValue(0)
+                                        ->setBuyValue(0);
+                            }
+                            else {
+
+                                /** @var ItemObject $itemObj */
+                                $itemObj = $this->priceEstimator->getFromTypeId($item->typeID);
+                                if ($itemObj) {
+                                    $eveItem->setBuyValue($itemObj->getBuyPrice())
+                                            ->setSellValue($itemObj->getSellPrice());
+                                } else {
+                                    Log::channel("itempricecalculator could not find for typeID ".$item->typeID);
+                                    $eveItem->setBuyValue($item->buyPrice)
+                                            ->setSellValue($item->sellPrice);
+
+                                }
+
+                            }
                         }
                         $this->items[] = $eveItem;
                     }
@@ -170,36 +187,47 @@
                 $this->totalPrice = 0;
                 $this->items = [];
             }
+
+            foreach ($this->items as $item) {
+                $this->totalPrice+=$item->getStackAverageValue();
+            }
         }
 
         /**
          * Sends the raw data from eve praisal and returns
          *
          * @return mixed
+         * @throws RemoteAppraisalToolException
          */
-        private function sendToEvePraisal() {
+        private function sendToEveWorkbench() {
 
-            $ch = curl_init("http://evepraisal.com/appraisal");
-            curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_USERAGENT => "Abyss Loot Tracker (https://abyss.eve-nt.uk)", CURLOPT_POST => true, CURLOPT_POSTFIELDS => http_build_query(['visibility' => "private", 'persist' => "yes", 'price_percentage' => "100", 'expire_after' => "3m", 'raw_textarea' => $this->rawData, 'market' => "jita",]), CURLOPT_VERBOSE => true, CURLOPT_HEADER => true]);
-            $response = curl_exec($ch);
+            $client = new Client();
+            $response = null;
+            try {
+                $response = $client->request('POST', env('EVEWORKBENCH_API_ROOT') . "appraisal?Type=1", [
+                    'auth' => [
+                        env('EVEWORKBENCH_API_CLIENT_ID'),
+                        env('EVEWORKBENCH_API_APP_KEY')],
+                    'body' => $this->rawData,
+                    'timeout' => 12
+                ]);
 
-            $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-            $header = substr($response, 0, $header_size);
-            $body = substr($response, $header_size);
-
-            $headers = explode("\r\n", $header);
-            $id = "";
-            foreach ($headers as $hdr) {
-                $hdd = explode(":", $hdr, 2);
-                if ($hdd[0] == "X-Appraisal-Id") {
-                    $id = trim($hdd[1]);
-                    break;
-                }
+            } catch (\Exception $e) {
+                throw new RemoteAppraisalToolException("EVE Workbench connection error: " . $e->getMessage());
             }
 
-            $json = @file_get_contents("http://evepraisal.com/a/$id.json");
+            $item = json_decode($response->getBody()->getContents());
 
-            return json_decode($json);
+            if ($item->error != false) {
+                dd("error: ", $item);
+                throw new RemoteAppraisalToolException("EVE Workbench returned an error: " . $item->message);
+            }
+            if ($item->resultCount == 0) {
+                throw new RemoteAppraisalToolException("EVE Workbench returned an invalid result count: " . $item->resultCount . ", 0+ expected.");
+            }
+
+//            dd($this->rawData, $item);
+            return $item->result;
         }
 
         public static function getEvePraisalItem(int $itemId) {

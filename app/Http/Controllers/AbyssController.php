@@ -184,15 +184,17 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 Validator::make($request->all(), ['LOOT_DETAILED' => 'required'], ['required' => "Please fill :attribute before saving your request"])->validate();
             }
 
-            if (trim($request->get("LOOT_DETAILED_BEFORE")) != "") {
-
-                $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
-                $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
-            }
-            else {
-                $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
-                $id = $this->runsController->storeNewRun($request, $lootEstimator);
-            }
+//            if (trim($request->get("LOOT_DETAILED_BEFORE")) != "") {
+//
+//                $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
+//                $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
+//            }
+//            else {
+//                $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
+//                $id = $this->runsController->storeNewRun($request, $lootEstimator);
+//            }
+            $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
+            $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
 
             Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addHour());
 

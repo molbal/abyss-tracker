@@ -7,8 +7,7 @@
 	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
-    use App\Http\Controllers\EFT\Tags\ISingleItemEstimator;
-    use GuzzleHttp\Client;
+    use App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\ISingleItemEstimator;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -105,6 +104,8 @@
                         if ($i>0) {
                             $this->updateItemPricesTable($itemObj);
                         }
+
+                        Cache::put("aft.singleitemestimator." . $typeId, now()->addMinutes(30), $itemObj->serialize());
                         return $itemObj;
                     }
                 }
@@ -125,6 +126,7 @@
          */
         private function getSingleItemEstimators() {
             return [
+              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\CacheSingleItemEstimator',
               'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\ItemPriceTableSingleItemEstimator',
               'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\FuzzworkMarketDataSingleItemEstimator',
               'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\EveWorkbenchSingleItemEstimator'
