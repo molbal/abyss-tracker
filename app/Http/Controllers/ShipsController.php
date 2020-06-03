@@ -516,7 +516,12 @@
             $shipFrigateChart->labels($dataset);
             $shipFrigateChart->dataset("Frigates", "pie", $values)->options([
                 "radius"   => self::PIE_RADIUS,
-                "roseType" => "radius"
+                "roseType" => "radius",
+                'label' => [
+                    'position' => 'outer',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 5
+                ]
             ]);
             $shipFrigateChart->displayLegend(false);
             return [$query_frig, $shipFrigateChart];
@@ -552,7 +557,12 @@
             $shipCruiserChart->labels($dataset);
             $shipCruiserChart->dataset("Cruisers", "pie", $values)->options([
                 "radius"   => self::PIE_RADIUS,
-                "roseType" => "radius"
+                "roseType" => "radius",
+                'label' => [
+                    'position' => 'outer',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 5
+                ]
             ]);
             $shipCruiserChart->displayLegend(false);
             return [$query_cruiser, $shipCruiserChart];
