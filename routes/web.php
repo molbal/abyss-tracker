@@ -105,6 +105,11 @@
     Route::any("/search/execute", 'SearchController@search')->name("search.do");
 
     /**
+     * Donor routes
+     */
+    Route::get("/donors", 'Misc\DonorController@index')->name("donors.index");
+
+    /**
      * EVE Authentication routes
      */
     Route::get("/eve/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-start");

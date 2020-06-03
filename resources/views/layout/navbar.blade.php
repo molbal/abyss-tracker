@@ -43,7 +43,7 @@
                 </a>
                 <div class="dropdown-menu shadow" aria-labelledby="newsDropdown">
                     <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img src="https://img.icons8.com/ios-filsled/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
-                    <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/like.png"> Donors</a>
+                    <a href="{{route("donors.index")}}" class="dropdown-item pl-2"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/like.png"> Donors</a>
                     <div class="dropdown-divider"></div>
                     <a href="https://github.com/molbal/abyss-tracker/issues" class="dropdown-item pl-2" target="_blank"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/github.png"> Issue tracker</a>
                     <a href="https://patreon.com/veetor" class="dropdown-item pl-2" target="_blank"><img src="https://img.icons8.com/material-sharp/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png"> Patreon</a>

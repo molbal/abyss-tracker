@@ -2,7 +2,7 @@
 @section("browser-title", "Changes")
 @section("content")
     <div class="row mt-5">
-        <div class="col-sm-6 mb-3">
+        <div class="col-sm-6 mb-3 offset-md-3">
             <div class="card card-body border-warning shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-dark pt-0">IN DEVELOPMENT / PLANNED</small>
                 <h4 class="mb-0 pb-0">Future releases</h4>
@@ -31,6 +31,11 @@
                 </p>
                 <ul>
                     <li>Upgrades the loot value estimator, removes Evepraisal data source and adds Fuzzwork Marketdata and EVE Workbench data source</li>
+                    <li>Fixes bug: <em>Incorrect item price displayed in fit view <a href="https://github.com/molbal/abyss-tracker/issues/31" target="_blank">#31</a></em></li>
+                    <li>Fixes bug: <em>Fit Picker not respecting fit privacy setting <a href="https://github.com/molbal/abyss-tracker/issues/30" target="_blank">#30</a></em></li>
+                    <li>Fixes bug: <em>Fit picker: "Last viewed fit" not updating correctly <a href="https://github.com/molbal/abyss-tracker/issues/29" target="_blank">#29</a></em></li>
+                    <li>Fixes bug: <em>Different detailed table ISK total and the summary total ISK show a different value <a href="https://github.com/molbal/abyss-tracker/issues/25" target="_blank">#25</a></em></li>
+                    <li>Fixes bug: <em>Cargo parsing of before repackaged / after unpackaged items <a href="https://github.com/molbal/abyss-tracker/issues/14" target="_blank">#14</a></em></li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">
@@ -337,17 +342,6 @@
                 <p>
                     This was the initial release of the website.
                 </p>
-            </div>
-        </div>
-        <div class="col-sm-6 mb-3">
-            <div class="card card-body border-warning shadow-sm mb-3">
-
-                <div class="card card-body border-danger border-0 shadow-sm p-0">
-                    <h4 class="mb-0 pb-0"><img src="https://img.icons8.com/plasticine/48/000000/filled-like.png" class="bringupper"/> Patreon supporters</h4>
-                    <p>
-                        Your support is appreciated!
-                    </p>
-                </div>
             </div>
         </div>
     </div>
