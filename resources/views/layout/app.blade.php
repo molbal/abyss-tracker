@@ -131,6 +131,34 @@
             font-size: 26px;
         }
 
+
+
+        @media (min-width: 992px) {
+            .animate {
+                animation-duration: 0.1s;
+                -webkit-animation-duration: 0.1s;
+                animation-fill-mode: both;
+                -webkit-animation-fill-mode: both;
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-1rem) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform:translateY(0rem) scale(1);
+                opacity: 1;
+            }
+            0% {
+                transform: translateY(-1rem) scale(0.9);
+                opacity: 0;
+            }
+        }
+        .slideIn {
+            animation-name: slideIn;
+        }
     </style>
 
     @yield('styles')

@@ -41,9 +41,10 @@
                 <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> News + Support <sup>(1.5.2)</sup></a>
                 </a>
-                <div class="dropdown-menu shadow" aria-labelledby="newsDropdown">
-                    <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img src="https://img.icons8.com/ios-filsled/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
+                <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
+                    <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img src="https://img.icons8.com/ios-filled/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
                     <a href="{{route("donors.index")}}" class="dropdown-item pl-2"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/like.png"> Donors</a>
+                    <a href="https://discord.gg/FyNsM5k" class="dropdown-item pl-2"><img src="https://img.icons8.com/material-sharp/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/discord-logo.png"> Join Discord</a>
                     <div class="dropdown-divider"></div>
                     <a href="https://github.com/molbal/abyss-tracker/issues" class="dropdown-item pl-2" target="_blank"><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/github.png"> Issue tracker</a>
                     <a href="https://patreon.com/veetor" class="dropdown-item pl-2" target="_blank"><img src="https://img.icons8.com/material-sharp/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png"> Patreon</a>
@@ -55,7 +56,7 @@
                 <li class="nav-item dropdown" style="list-style: none">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="https://images.evetech.net/characters/{{session()->get("login_id")}}/portrait?size=32" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm"> {{session()->get('login_name')}}</a>
-                    <div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
+                    <div class="dropdown-menu shadow animate slideIn" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item pl-2 {{"new" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("new")}}" ><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == Route::currentRouteName())}}/new-by-copy.png" class="mr-1"/> Add run</a>
                         <a class="dropdown-item pl-2 {{"fit_new" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("fit_new")}}" ><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit_new" == Route::currentRouteName())}}.png" class="mr-1"> New fit</a>
                         <a class="dropdown-item pl-2 {{"runs_mine" == Route::currentRouteName() ? "active text-dark" : ""}}" href="{{route("runs_mine")}}" ><img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs_mine" == Route::currentRouteName())}}/bulleted-list.png" class="mr-1"/> My runs</a>
