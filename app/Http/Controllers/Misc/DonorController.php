@@ -8,6 +8,7 @@
     use App\Http\Controllers\Misc\DTO\PatreonDonor;
     use Illuminate\Contracts\Filesystem\FileNotFoundException;
     use Illuminate\Support\Facades\Cache;
+    use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Storage;
 
 
@@ -50,8 +51,19 @@
             });
         }
 
+        /**
+         * Gets the donations
+         * @param int $limit
+         *
+         * @return \Illuminate\Support\Collection
+         */
+        public function getDonations(int $limit) {
+            return DB::table("donors")->orderBy("DATE", "DESC")->limit($limit)->get();
+        }
+
         public function index() {
             $donors  = $this->getPatreonList();
-            dd($donors);
+            $ingameDonors = $this->getDonations(100);
+            dd($donors, $ingameDonors);
         }
 	}

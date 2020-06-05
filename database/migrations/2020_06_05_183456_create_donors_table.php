@@ -17,8 +17,8 @@ class CreateDonorsTable extends Migration
             $table->unsignedBigInteger("ID")->primary();
             $table->unsignedBigInteger("CHAR_ID");
             $table->string("NAME", 128);
-            $table->float("AMOUNT");
-            $table->date("DATE")->index();
+            $table->unsignedBigInteger("AMOUNT");
+            $table->dateTime("DATE")->index();
             $table->string("REASON")->nullable();
         });
     }

@@ -7,6 +7,7 @@
 	use App\Connector\EveAPI\EveAPICore;
     use App\Exceptions\ESIAuthException;
     use App\Http\Controllers\ESITokenController;
+    use App\Http\Controllers\Misc\DTO\IngameDonor;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\Log;
 
@@ -39,14 +40,11 @@
             curl_close($ch);
 
             if (!$esiResponse) {
-//                Log::error("Could not get access token!");
                 return null;
             }
 
             /** @var array $esiResponseDecoded */
             $esiResponseDecoded = @json_decode($esiResponse, true);
-            /** @var int $expiresInMinutes */
-//            $expiresInMinutes = floor($esiResponseDecoded["expires_in"] ?? 0/60);
             /** @var string $newAccessToken */
             $accessToken = $esiResponseDecoded["access_token"] ?? null;
 
@@ -70,12 +68,13 @@
 
             $list = json_decode($ret, 1);
             $donators = collect([]);
+
             foreach ($list as $item) {
                 if ($item["ref_type"] == "player_donation" && $item["amount"] > 0) {
-                    $donators->add($item);
+                    $donators->add(IngameDonor::fromEsiResponse($item));
                 }
             }
-
+//            dd($donators);
             return $donators;
         }
 	}

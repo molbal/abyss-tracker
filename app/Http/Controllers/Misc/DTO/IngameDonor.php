@@ -4,7 +4,8 @@
 	namespace App\Http\Controllers\Misc\DTO;
 
 
-	use Illuminate\Support\Facades\DB;
+	use Carbon\Carbon;
+    use Illuminate\Support\Facades\DB;
 
     class IngameDonor {
 
@@ -26,12 +27,31 @@
         /** @var string */
         private $reason;
 
+        /**
+         * Saves the entry in the database
+         */
         public function persist() {
             DB::table("donors")->insertOrIgnore([
-
+                "ID" => $this->id,
+                "CHAR_ID" => $this->donorId,
+                "NAME" => $this->donorName,
+                "AMOUNT" => ceil($this->amount),
+                "DATE" => Carbon::make($this->date),
+                "REASON" => $this->reason
             ]);
         }
 
+        public static function fromEsiResponse(array $item): IngameDonor {
+            $donor = new IngameDonor();
+            $donor
+                ->setId($item["id"])
+                ->setAmount($item["amount"])
+                ->setDate($item["date"])
+                ->setDonorId($item["first_party_id"])
+                ->setDonorName(str_ireplace(" deposited cash into Veetor Nara's account", "", $item["description"]))
+                ->setReason($item["reason"]);
+            return $donor;
+        }
 
         /**
          * @return int
