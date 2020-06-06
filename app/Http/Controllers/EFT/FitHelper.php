@@ -297,7 +297,8 @@
                     try {
                         $price = $this->priceCalculator->getFromItemName($line);
                         if ($price == null) {
-                            throw new \Exception("Item price calculator got 0 ISK result for [$line]");
+//                            throw new \Exception("Item price calculator got 0 ISK result for [$line]");
+                            Log::warning("Item price calculator got 0 ISK result for [$line]");
                         }
                     } catch (\Exception $e) {
                         Log::warning($e);
