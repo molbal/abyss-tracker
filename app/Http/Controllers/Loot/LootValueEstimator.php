@@ -10,6 +10,7 @@
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
     use Carbon\Carbon;
+    use GuzzleHttp\Client;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
