@@ -64,6 +64,9 @@
         public function index() {
             $donors  = $this->getPatreonList();
             $ingameDonors = $this->getDonations(100);
-            dd($donors, $ingameDonors);
+            return view("donors", [
+                'patreon' => $donors,
+                'ingameDonors' => $ingameDonors
+            ]);
         }
 	}
