@@ -24,10 +24,10 @@
             </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
-                <h4 class="mb-0 pb-0"><strong>1.5.2</strong> '' release</h4>
-                <small class="mt-0">2020 </small>
+                <h4 class="mb-0 pb-0"><strong>1.5.2</strong> 'Smokescreen' release</h4>
+                <small class="mt-0">2020 june 6</small>
                 <p class="text-justify">
-                    New features
+                    This is a bugfix and stability release.
                 </p>
                 <ul>
                     <li>Upgrades the loot value estimator, removes Evepraisal data source and adds Fuzzwork Marketdata and EVE Workbench data source</li>

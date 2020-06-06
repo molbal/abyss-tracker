@@ -39,7 +39,7 @@
             </li>
             <li class="nav-item dropdown" style="list-style: none">
                 <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> News + Support <sup>(1.5.2)</sup></a>
+                    <img src="https://img.icons8.com/ios-glyphs/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Community <sup>(1.5.2)</sup></a>
                 </a>
                 <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
                     <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img src="https://img.icons8.com/ios-filled/16/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
