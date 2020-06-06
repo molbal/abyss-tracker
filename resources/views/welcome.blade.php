@@ -5,28 +5,7 @@
         <h4 class="font-weight-bold">Welcome to Veetor's Abyss Loot Tracker</h4>
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
-    <div class="row mt-3">
-        <div class="col-sm-12">
-            <div class="shadow-sm border-info" style="
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-">
-            <div class="card card-body border-0 pb-2">
-                <p class="h5">Big update info</p>
-                <p class="mb-0">Abyss Tracker was updated to 1.5.1 which includes mostly bugfixes, improved fit pages, and better data presentation. If you find a bug or have feedback you can find me in the Abyssal Lurkers discord's #abyssal-tracker channel, or on Twitter. If you like the new updates please consider donating to the project.
-                </p>
-            </div>
-            <div class="card-footer">
-                <div class="btn-group">
-                    <a href="{{route("changelog")}}" class="px-3 btn btn-sm btn-primary" target="_blank">Changelog</a>
-                    <a href="https://github.com/molbal/abyss-tracker/issues" class="px-3 btn btn-sm btn-secondary" target="_blank">Issue tracker</a>
-                    <a href="https://discord.gg/FyNsM5k" class="px-3 btn btn-sm btn-secondary" target="_blank">Discord</a>
-                    <a href="https://patreon.com/veetor" class="px-3 btn btn-sm btn-secondary" target="_blank">Patreon</a>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
+
     <div class="row mt-3">
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
