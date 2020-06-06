@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('abyss:recalc')->cron('0 12 * * *')->withoutOverlapping()->runInBackground();
         $schedule->command('abyss:checksys')->everyMinute()->withoutOverlapping()->runInBackground();
+        $schedule->command('abyss:igdonations')->hourly()->withoutOverlapping()->runInBackground();
     }
 
     /**

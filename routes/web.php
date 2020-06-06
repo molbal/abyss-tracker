@@ -135,13 +135,5 @@
     Route::get("/maintenance/recalc-fits/{secret}", 'Maintenance\MaintenanceController@recalculateQueuedFits');
 
     Route::get("/tst2", function()  {
-       $js = new \App\Connector\EveAPI\Journal\JournalService();
 
-       $data = $js->getCharJournal(env("ID_VEETOR"), env("RT_VEETOR"));
-
-        foreach ($data as $donation) {
-
-            /** @var $donation \App\Http\Controllers\Misc\DTO\IngameDonor  */
-            $donation->persist();
-       }
     });
