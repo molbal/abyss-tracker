@@ -56,7 +56,7 @@
                     'ship_lookup.ID as SHIP_ID',
                     'ship_lookup.GROUP as SHIP_GROUP',
                     'ship_lookup.IS_CRUISER as IS_CRUISER'
-                ])->leftJoin("ship_lookup", "runs.SHIP_ID", "=", "ship_lookup.ID");
+                ])->leftJoin("ship_lookup", "runs.SHIP_ID", "=", "ship_lookup.ID")->orderBy("runs.ID", "DESC");
             /** @var SearchCriteria $condition */
             foreach ($this->conditions as $condition) {
                 $builder->where(sprintf("%s.%s", $condition->getTable(), $condition->getField()), $condition->getRelation(), $condition->getValue());

@@ -40,7 +40,8 @@ nav.bg-white {
 
 .dropdown-item:hover, .dropdown-item:focus {
     color: #fff;
-    background-color: #060606;
+    background-color: #333;
+    transition: all 100ms;
 }
 
 

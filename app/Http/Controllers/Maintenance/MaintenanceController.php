@@ -76,6 +76,41 @@
             return redirect(\route("fit_single", ["id" => $id]));
         }
 
+        public function getRoutes($secret) {
+            if ($secret != env("MAINTENANCE_TOKEN")) {
+                abort(403, "Invalid maintenance token: " .  env("MAINTENANCE_TOKEN"));
+            }
+
+            $routes = [];
+            foreach (\Route::getRoutes()->getIterator() as $route){
+                $routes[] = $route->uri;
+            }
+            dd(compact('routes'));
+//                return view('sp_message', [compact('routes'));
+
+
+        }
+
+        public function resetAndCache($secret) {
+//            if ($secret != env("MAINTENANCE_TOKEN")) {
+//                abort(403, "Invalid maintenance token.");
+//            }
+
+            try {
+            echo Artisan::call('config:clear');
+            echo Artisan::call('route:clear');
+
+//            echo Artisan::call('optimize');
+
+//            echo Artisan::call('config:cache');
+//            echo Artisan::call('route:cache');
+            }
+            catch (\Exception $e) {
+                dd($e);
+            }
+
+        }
+
         function recalculateQueuedFits($secret) {
             if ($secret != env("MAINTENANCE_TOKEN")) {
                 abort(403, "Invalid maintenance token.");

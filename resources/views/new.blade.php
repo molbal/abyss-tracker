@@ -106,8 +106,10 @@
                                 <label for="">What fit did you pick? @component('components.info-toggle')This list automatically updates when you select a ship.@endcomponent</label>
 
                                 <select name="FIT_ID" id="FIT_ID" class="form-control select2-fit">
-                                    <option {{($prev->FIT_ID ?? "") == "" ? "selected" : ""}} value="">I don't remember / secret
-                                    </option>
+                                    @if($last_fit_name)
+                                        <option value="{{$prev->FIT_ID}}">{{$last_fit_name}}</option>
+                                    @endif
+                                    <option value="">I don't remember / secret</option>
                                 </select>
                             </div>
                         </div>

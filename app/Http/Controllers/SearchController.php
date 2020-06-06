@@ -120,7 +120,7 @@ class SearchController extends Controller
         }
 
 //        DB::enableQueryLog();
-        $query = $scb->getQuery()->limit(250)->get();
+        $query = $scb->getQuery()->limit(350)->get();
 //        dd(DB::getQueryLog(), $query);
         return view("results", [
             'results' => $query,

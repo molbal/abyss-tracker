@@ -10,7 +10,9 @@
     "require": {
         "php": "^7.3",
         "ext-curl": "*",
+        "ext-http": "*",
         "ext-json": "*",
+        "arcanedev/log-viewer": "~5",
         "chriskonnertz/open-graph": "^2.0",
         "consoletvs/charts": "6.*",
         "doctrine/dbal": "^2.10",
@@ -20,8 +22,7 @@
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
         "phpoffice/phpspreadsheet": "^1.11",
-        "sayorus/eveonline-socialite": "^0.6.1",
-      "ext-http": "*"
+        "sayorus/eveonline-socialite": "^0.6.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",

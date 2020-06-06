@@ -131,6 +131,34 @@
             font-size: 26px;
         }
 
+
+
+        @media (min-width: 992px) {
+            .animate {
+                animation-duration: 0.1s;
+                -webkit-animation-duration: 0.1s;
+                animation-fill-mode: both;
+                -webkit-animation-fill-mode: both;
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-1rem) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform:translateY(0rem) scale(1);
+                opacity: 1;
+            }
+            0% {
+                transform: translateY(-1rem) scale(0.9);
+                opacity: 0;
+            }
+        }
+        .slideIn {
+            animation-name: slideIn;
+        }
     </style>
 
     @yield('styles')
@@ -204,7 +232,7 @@
         integrity="sha256-oNtUmAZAsXy3Pg53xwfYE1YYgfdktOImDPd57g6Ldek=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
         integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts-en.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.8.0/echarts-en.min.js" charset="utf-8"></script>
 <script src="/js/echart.theme.dark.js" charset="utf-8"></script>
 <script src="/js/echart.theme.light.js" charset="utf-8"></script>
 

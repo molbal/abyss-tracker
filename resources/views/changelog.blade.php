@@ -2,7 +2,7 @@
 @section("browser-title", "Changes")
 @section("content")
     <div class="row mt-5">
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
+        <div class="col-sm-6 mb-3 offset-md-3">
             <div class="card card-body border-warning shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-dark pt-0">IN DEVELOPMENT / PLANNED</small>
                 <h4 class="mb-0 pb-0">Future releases</h4>
@@ -24,6 +24,21 @@
             </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.5.2</strong> '' release</h4>
+                <small class="mt-0">2020 </small>
+                <p class="text-justify">
+                    New features
+                </p>
+                <ul>
+                    <li>Upgrades the loot value estimator, removes Evepraisal data source and adds Fuzzwork Marketdata and EVE Workbench data source</li>
+                    <li>Fixes bug: <em>Incorrect item price displayed in fit view <a href="https://github.com/molbal/abyss-tracker/issues/31" target="_blank">#31</a></em></li>
+                    <li>Fixes bug: <em>Fit Picker not respecting fit privacy setting <a href="https://github.com/molbal/abyss-tracker/issues/30" target="_blank">#30</a></em></li>
+                    <li>Fixes bug: <em>Fit picker: "Last viewed fit" not updating correctly <a href="https://github.com/molbal/abyss-tracker/issues/29" target="_blank">#29</a></em></li>
+                    <li>Fixes bug: <em>Different detailed table ISK total and the summary total ISK show a different value <a href="https://github.com/molbal/abyss-tracker/issues/25" target="_blank">#25</a></em></li>
+                    <li>Fixes bug: <em>Cargo parsing of before repackaged / after unpackaged items <a href="https://github.com/molbal/abyss-tracker/issues/14" target="_blank">#14</a></em></li>
+                </ul>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.5.1</strong> 'Ligature' release</h4>
                 <small class="mt-0">2020 may 26</small>
                 <p class="text-justify">
@@ -48,7 +63,8 @@
                     <li>Updates item table to Surgical Strike</li>
                     <li>Adds new metadata for fits: Linked fit and T5 bonus room</li>
                     <li>Lotts of little visibility improvements in the dark theme - which is now default</li>
-                    <li>Tweaked the layout for ship display, adding search and fit links and switched the popularity graph to use 7 day averages which makes seeing trends easier</li>
+                    <li>Tweaked the layout for ship display, adding search and fit links and switched the popularity graph to use 7 day averages which makes seeing trends easier
+                    </li>
                     <li>Added new privacy selector for new run and new ship forms</li>
                     <li>Added run length to my runs table (xbigxgrizzlyx's request)</li>
                     <li>Reduced stopwatch location update frequency from 10 seconds to 7 seconds</li>
@@ -58,8 +74,10 @@
                 <h4 class="mb-0 pb-0"><strong>1.4.2</strong> 'Wetu' release</h4>
                 <small class="mt-0">2020 april 28</small>
                 <p class="text-justify">
-                    As you can see this project took a 2 weeks pause, that's because I prepared a different project to serve the Abyss Tracker with calculating the fits capabilities. If you are interested you can see that
-                    <a href="https://svcfitstat.eve-nt.uk/" target="_blank">project</a>. During this time some issues were found so this is just a quick bugfix release we'll use as a stepping stone.
+                    As you can see this project took a 2 weeks pause, that's because I prepared a different project to serve the Abyss Tracker with calculating the fits
+                    capabilities. If you are interested you can see that
+                    <a href="https://svcfitstat.eve-nt.uk/" target="_blank">project</a>. During this time some issues were found so this is just a quick bugfix release we'll use as
+                    a stepping stone.
                     <br>
                     Little enhanchements and bugfixes:
                 </p>
@@ -67,7 +85,8 @@
                     <li>Fixed drop rate calculation bug <a href="https://github.com/molbal/abyss-tracker/issues/10" target="_blank">(Issue 10)</a></li>
                     <li>Added a way to remove and reset the ESI token in settings <a href="https://github.com/molbal/abyss-tracker/issues/11" target="_blank">(Issue 11)</a></li>
                     <li>Automatic open of before/after cargo panels <a href="https://github.com/molbal/abyss-tracker/issues/9" target="_blank">(Issue 9)</a></li>
-                    <li>If the last run had an after cargo and it was maximum 60 minutes ago, its after cargo will pre-fill the before-cargo text box<a href="https://github.com/molbal/abyss-tracker/issues/12" target="_blank">(Issue 12)</a></li>
+                    <li>If the last run had an after cargo and it was maximum 60 minutes ago, its after cargo will pre-fill the before-cargo text box<a
+                            href="https://github.com/molbal/abyss-tracker/issues/12" target="_blank">(Issue 12)</a></li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">
@@ -117,7 +136,7 @@
                 <ul>
                     <li>Improved list displays: Tiers, Types and ship names are clickable, link goes to the general search results</li>
                     <li>Added export options for the item drop table and search results</li>
-                    <li>Reorganized the menu </li>
+                    <li>Reorganized the menu</li>
                 </ul>
                 </p>
             </div>
@@ -178,7 +197,7 @@
                 </ul>
                 </p>
             </div>
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.2.3</strong> 'Agility' release</h4>
                 <small class="mt-0">2020 february 11</small>
                 <p>
@@ -197,9 +216,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.2.2</strong> 'Declutter' release</h4>
                 <small class="mt-0">2020 february 7</small>
                 <p>
@@ -212,9 +229,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.2.1</strong> 'Acumen' release</h4>
                 <small class="mt-0">2020 february 6</small>
                 <p>
@@ -238,9 +253,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.2</strong> 'Nocturnal' release</h4>
                 <small class="mt-0">2020 february 4</small>
                 <p>
@@ -250,9 +263,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.1.3</strong> 'Hoarder' release</h4>
                 <small class="mt-0">2020 february 2</small>
                 <p>
@@ -263,9 +274,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.1.2</strong> 'Retrospection' release</h4>
                 <small class="mt-0">2020 february 2</small>
                 <p>
@@ -278,9 +287,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.1.1</strong> Drops rate release</h4>
                 <small class="mt-0">2020 february 2</small>
                 <p>
@@ -291,9 +298,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.1</strong> Feature extension release</h4>
                 <small class="mt-0">2020 january 31</small>
                 <p>
@@ -310,9 +315,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.0.9</strong> Partial feature extension release</h4>
                 <small class="mt-0">2020 january 30</small>
                 <p>
@@ -333,9 +336,7 @@
                 </ul>
                 </p>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 mb-3">
-            <div class="card card-body border-danger border-0 shadow-sm">
+            <div class="card card-body border-danger border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.0</strong> Initial release</h4>
                 <small class="mt-0">2020 january 27</small>
                 <p>

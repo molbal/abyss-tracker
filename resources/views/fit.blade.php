@@ -26,7 +26,7 @@
                             $price = 0;
                             foreach ($fit_quicklook as $section) {
                             	foreach($section as $item) {
-                            		$price += $item["count"]*$item["price"];
+                            		$price += $item["count"]*$item["price"]->getAveragePrice();
                             	}
                             }
                             $fit_price = $price;

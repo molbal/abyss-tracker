@@ -67,9 +67,8 @@
     Route::get("/ship/{id}", 'ShipsController@get_single')->name("ship_single");
     Route::get("/fits/new", 'FitsController@new')->name("fit_new");
     Route::post("/fits/new/submit", 'FitsController@new_store')->name("fit_new_store");
-    Route::get("/fit/{id}", 'FitsController@get')->name('fit_single');
-    Route::get("/fit/{id}/delete", 'FitsController@delete')->name('fit.delete');
     Route::get("/fit/{id}/change-privacy/{privacySetting}", 'FitsController@changePrivacy')->name('fit.change_privacy');
+    Route::get("/fit/{id}}", 'FitsController@get')->name('fit_single');
     Route::get("/fits", 'FitSearchController@index')->name("fit.index");
     Route::any("/fits/search", 'FitSearchController@search')->name("fit.search");
     Route::post("/fits/search/ajax", 'FitSearchController@searchAjax')->name("fit.search.ajax");
@@ -105,6 +104,11 @@
     Route::any("/search/execute", 'SearchController@search')->name("search.do");
 
     /**
+     * Donor routes
+     */
+    Route::get("/donors", 'Misc\DonorController@index')->name("donors.index");
+
+    /**
      * EVE Authentication routes
      */
     Route::get("/eve/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-start");
@@ -124,6 +128,9 @@
     Route::get("/maintenance/flagged/{secret}", 'Maintenance\MaintenanceController@showFlaggedRuns');
     Route::get("/maintenance/flagged/delete/{id}/{secret}", 'Maintenance\MaintenanceController@deleteFlaggedRun');
     Route::get("/maintenance/db/{secret}", 'Maintenance\MaintenanceController@runMigrations');
+    Route::get("/maintenance/routes/{secret}", 'Maintenance\MaintenanceController@getRoutes');
+    Route::get("/maintenance/optimize/{secret}", 'Maintenance\MaintenanceController@resetAndCache');
     Route::get("/maintenance/test-login/{login_id}/{secret}", 'Maintenance\MaintenanceController@debugLogin');
     Route::get("/maintenance/recalc-fit/{id}/{secret}", 'Maintenance\MaintenanceController@recalculateSingleFit');
     Route::get("/maintenance/recalc-fits/{secret}", 'Maintenance\MaintenanceController@recalculateQueuedFits');
+

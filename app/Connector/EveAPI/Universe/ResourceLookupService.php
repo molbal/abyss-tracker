@@ -220,24 +220,26 @@
          * @throws \Exception
          */
         public function itemNameToId(string $fullName) {
-
             $fullName = trim($fullName);
+
+            // Try from item prices table
             if(DB::table("item_prices")->where("NAME", $fullName)->exists()) {
                 return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
             }
 
+            // Get old dumps
             $tables = Cache::remember("aft.dump-tablelist", now()->addHour(), function () {
                return DB::table("previous_dumps_tables")->orderBy("ORDER_ASC", "ASC")->get();
             });
 
+            // Try old dumps
             foreach ($tables as $table) {
                 if (DB::table($table->TABLE_NAME)->where("typeName",'=', $fullName)) {
-//                    dd($table->TABLE_NAME, $fullName);
                     return DB::table($table->TABLE_NAME)->where("typeName",'=', $fullName)->value("typeID");
-
                 }
             }
 
+            // Try ESI
             $response = $this->simplePost(null, "universe/ids", json_encode([$fullName]));
 
             if (isset($response->inventory_types[0]->id)) {

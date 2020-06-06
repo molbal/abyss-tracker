@@ -103,6 +103,10 @@
             return $this;
         }
 
+        public function getStackAverageValue() {
+            return $this->count*(($this->buyValue+$this->sellValue)/2);
+        }
+
         /**
          * @return int
          */

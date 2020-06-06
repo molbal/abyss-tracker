@@ -184,15 +184,17 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 Validator::make($request->all(), ['LOOT_DETAILED' => 'required'], ['required' => "Please fill :attribute before saving your request"])->validate();
             }
 
-            if (trim($request->get("LOOT_DETAILED_BEFORE")) != "") {
-
-                $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
-                $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
-            }
-            else {
-                $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
-                $id = $this->runsController->storeNewRun($request, $lootEstimator);
-            }
+//            if (trim($request->get("LOOT_DETAILED_BEFORE")) != "") {
+//
+//                $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
+//                $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
+//            }
+//            else {
+//                $lootEstimator = new LootValueEstimator($request->get("LOOT_DETAILED") ?? "");
+//                $id = $this->runsController->storeNewRun($request, $lootEstimator);
+//            }
+            $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
+            $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
 
             Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addHour());
 
@@ -239,6 +241,7 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 try {
                     $prev = $this->runsController->getPreviousRun();
                     $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
+                    $last_fit_name = $prev->FIT_ID ? DB::table("fits")->where("ID", $prev->FIT_ID)->value("NAME") : null;
                 }
                 catch (\Exception $e) {
                     $advanced_open = false;
@@ -249,7 +252,8 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                     "prev"  => $prev,
                     "stopwatch" => $stopwatch_enabled,
                     "last_loot" => $last_loot,
-                    "advanced_open" => $advanced_open
+                    "advanced_open" => $advanced_open,
+                    "last_fit_name" => $last_fit_name
                 ]);
             }
             else {
@@ -310,8 +314,11 @@ from (`abyss`.`lost_items` `dl`
             $reported_message = DB::table("run_report")->where("RUN_ID", $id)->value("MESSAGE");
 
             $fit_name = $all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit";
+            $fit_privacy = DB::table("fits")->where("ID", $all_data->FIT_ID)->value("PRIVACY");
 
             $bell = $this->graphContainerController->getLootBellGraphs($data->TIER, 1, $all_data->LOOT_ISK);
+
+
             return view("run", [
                 "id"                   => $id,
                 "run"                  => $data,
@@ -328,7 +335,8 @@ from (`abyss`.`lost_items` `dl`
                 "count_same_ship" => $count_same_ship,
                 "reported" => $reported,
                 "reported_message" => $reported_message,
-                'fit_name' => $fit_name
+                'fit_name' => $fit_name,
+                'fit_privacy' => $fit_privacy
             ]);
         }
 
