@@ -178,3 +178,68 @@ ul.pagination {
     //border-bottom-color: rgb(245, 249, 250);
     //border-left-color: rgb(222, 226, 230);
 }
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.card-toggle {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.card-toggle:hover {
+    opacity: 1;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.hover-underline:hover {
+    text-decoration: underline !important;
+}
+
+
+#banner {
+    background: url("/profile.jpg");
+    background-size: cover;
+    display: flex;
+    height: 86px;
+    border-radius: 8px;
+    align-items: center;
+}
+
+#banner > img {
+    border: 3px solid  #fff;
+    position: relative;
+    top: 0;
+    left: 32px;
+    z-index: 50;
+}
+
+#banner > h4 {
+    color: #fff;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+    position: relative;
+    top: 10px;
+    left: 64px;
+    text-transform: uppercase;
+    font-size: 26px;
+}
+
+
+.animate {
+    animation-duration: 0.1s;
+    -webkit-animation-duration: 0.1s;
+    animation-fill-mode: both;
+    -webkit-animation-fill-mode: both;
+}

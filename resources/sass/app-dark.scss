@@ -4,6 +4,8 @@ $body-bg: #030303;
 $tab-active-color: #fff;
 $tab-active-bg: #212529;
 
+$footer-up-bg: #0f1113;
+$footer-down-bg: #191d21;
 // Bootstrap
 @import "~@forevolve/bootstrap-dark/scss/bootstrap-dark";
 @import "layout";
@@ -16,6 +18,7 @@ $tab-active-bg: #212529;
 @import "badge";
 @import "tags";
 @import "fit";
+@import "footer";
 
 @import "all_styles";
 @import "dark_only";

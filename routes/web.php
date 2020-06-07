@@ -124,6 +124,11 @@
     Route::get("/customize/dark-theme/{isDark}", 'ThemeController@setTheme')->name("customize_set_dark");
 
     /**
+     * Aggregator routes
+     */
+    Route::get('/info-page/tier/{tier}', 'InfopageController@tier')->name("infopage.tier");
+
+    /**
      * Maintenance routes
      */
     Route::get("/maintenance/flagged/{secret}", 'Maintenance\MaintenanceController@showFlaggedRuns');

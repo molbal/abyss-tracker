@@ -253,7 +253,7 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                     "stopwatch" => $stopwatch_enabled,
                     "last_loot" => $last_loot,
                     "advanced_open" => $advanced_open,
-                    "last_fit_name" => $last_fit_name
+                    "last_fit_name" => $last_fit_name ?? ""
                 ]);
             }
             else {

@@ -74,74 +74,6 @@
             font-weight: normal;
             font-style: normal;
         }
-        .noselect {
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none; /* Safari */
-            -khtml-user-select: none; /* Konqueror HTML */
-            -moz-user-select: none; /* Old versions of Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-        }
-
-        .card-toggle {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            opacity: 0.7;
-        }
-
-        .card-toggle:hover {
-            opacity: 1;
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-
-        .hover-underline:hover {
-            text-decoration: underline !important;
-        }
-
-
-        #banner {
-            background: url("/profile.jpg");
-            background-size: cover;
-            display: flex;
-            height: 86px;
-            border-radius: 8px;
-            align-items: center;
-        }
-
-        #banner > img {
-            border: 3px solid  #fff;
-            position: relative;
-            top: 0;
-            left: 32px;
-            z-index: 50;
-        }
-
-        #banner > h4 {
-            color: #fff;
-            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
-            position: relative;
-            top: 10px;
-            left: 64px;
-            text-transform: uppercase;
-            font-size: 26px;
-        }
-
-
-
-        @media (min-width: 992px) {
-            .animate {
-                animation-duration: 0.1s;
-                -webkit-animation-duration: 0.1s;
-                animation-fill-mode: both;
-                -webkit-animation-fill-mode: both;
-            }
-        }
-
         @keyframes slideIn {
             0% {
                 transform: translateY(-1rem) scale(0.9);
@@ -159,6 +91,7 @@
         .slideIn {
             animation-name: slideIn;
         }
+
     </style>
 
     @yield('styles')
@@ -178,41 +111,68 @@
     @endif
     @yield('content')
 </div>
-<footer class="footer mt-auto py-3 mt-5">
-    <div class="container mt-5">
-        <div class="col-sm-12 mt-5">
-            <p class="mt-5 text-center">Abyss Tracker is an open source application created by <a
-                    href="https://twitter.com/veetor_in_eve">Veetor Nara</a> - <a
-                    href="https://github.com/molbal/abyss-tracker"><img
-                        src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/github.png">
-                    source code here</a> - Set <a href="{{route("customize_set_dark", true)}}">dark theme</a> or <a
-                    href="{{route("customize_set_dark", 0)}}">bright theme</a></p>
-            <p class="text-justify mt-3 text-small text-black-50"><small>
-                    All images are material are property of CCP Games: EVE Online and the EVE logo are the registered
-                    trademarks
-                    of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their
-                    respective
-                    owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual
-                    property
-                    of
-                    CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other
-                    recognizable
-                    features of the intellectual property relating to these trademarks are likewise the intellectual
-                    property of
-                    CCP hf. CCP hf. has granted permission to evewho.com to use EVE Online and all associated logos and
-                    designs
-                    for promotional and zKillboard.com purposes on its website but does not endorse, and is not in any
-                    way
-                    affiliated with, zKillboard.com. CCP is in no way responsible for the content on or functioning of
-                    this
-                    website, nor can it be liable for any damage arising from the use of this website. The website uses
-                    cookies for Google Analytics reporting.
-                    Some icons were provided by <a href="https://icons8.com" rel="nofollow"
-                                                   target="_blank">Icons8</a>
-                    Thank you <a href="http://evepraisal.com" rel="follow" target="_blank">EVEpraisal</a> for loot
-                    estimation and market data
-                </small>
-            </p>
+<!-- Footer -->
+
+<footer class="mt-5">
+    <div class="footer-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 footer-about">
+                    <img class="logo-footer" src="icon.png" alt="logo-footer">
+                    <p class="text-justify">
+                        The Abyss Tracker is a "killboard" for your Abyssal Deadspace runs - you can save your exact loot saved, aggregated and compared with others.
+                    </p>
+                    <p><img src="https://img.icons8.com/small/24/ffffff/github.png" class="tinyicon bringupper mr-1">
+                        <a href="https://github.com/molbal/abyss-tracker" class="text-white" target="_blank">
+                            Open source
+                        </a>
+                    </p>
+                </div>
+                <div class="col-md-4 footer-contact">
+                    <h5 class="font-weight-bold text-white">Themes</h5>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/light.png"/><a class="text-white" href="{{route("customize_set_dark", 0)}}">Light theme</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/partly-cloudy-night.png"/><a class="text-white" href="{{route("customize_set_dark", true)}}">Dark theme</a></p>
+
+                    <h5 class="font-weight-bold text-white mt-3">Supporters</h5>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/charity.png"/><a class="text-white" href="{{route("donors.index")}}">Patreon and ISK donors</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/icons8-new-logo.png"/><a class="text-white" href="https://icons8.com" target="_blank" rel="nofollow">Icons8</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/settings-3.png"/><a class="text-white" href="https://eveworkbench.com" target="_blank" rel="nofollow">EVE Workbench</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/settings-3.png"/><a class="text-white" href="https://market.fuzzwork.co.uk/" target="_blank" rel="nofollow">Fuzzwork Market Data</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/idea.png"/><a class="text-white" href="https://www.jetbrains.com/community/opensource/" target="_blank" rel="nofollow">JetBrains (IDE license)</a></p>
+                </div>
+                <div class="col-md-4 footer-links">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="font-weight-bold text-white">Runs</h5>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/database.png"/><a class="text-white" href="{{route("runs")}}">All runs</a></p>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/search.png"/><a class="text-white" href="{{route("search.index")}}">Search runs</a></p>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/empty-box.png"/><a class="text-white" href="{{route("item_all")}}">Loot table</a></p>
+                            <h5 class="font-weight-bold text-white mt-3">Fits</h5>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/job.png"/><a class="text-white" href="{{route("fit.index")}}">Fits</a></p>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/rocket.png"/><a class="text-white" href="{{route('ships_all')}}">Ships</a></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="font-weight-bold text-white">Info pages</h5>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 1])}}">Calm <small class="bringupper">(Tier 1)</small></a></p>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 2])}}">Agitated <small class="bringupper">(Tier 2)</small></a></p>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 3])}}">Fierce <small class="bringupper">(Tier 3)</small></a></p>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 4])}}">Raging <small class="bringupper">(Tier 4)</small></a></p>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 5])}}">Chaotic <small class="bringupper">(Tier 5)</small></a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 footer-copyright">
+                    <p class="text-justify text-small py-1 my-1">
+                        All images are material are property of CCP Games: EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to evewho.com to use EVE Online and all associated logos and designs for promotional and zKillboard.com purposes on its website but does not endorse, and is not in any way affiliated with, zKillboard.com. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </footer>
