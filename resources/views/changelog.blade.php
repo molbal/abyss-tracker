@@ -18,6 +18,7 @@
                     <li>Add filtering for loot table drop rates</li>
                     <li>'Was the loot nerfed or am I just unlucky?' - info graphs</li>
                     <li>Aggregator pages for types/tiers</li>
+                    <li>[Done] Upgrade of my stats screen</li>
                 </ul>
 
                 </p>

@@ -115,27 +115,51 @@
                 return view("error", ["error" => "Please log in to access this page"]);
             }
 
-            [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio, $data] = $this->homeQueriesController->getPersonalStats();
+            [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio] = $this->homeQueriesController->getPersonalStats();
 
-            $labels = [];
-            foreach ($data as $type) {
-                $labels[] = date("m.d", strtotime($type->RUN_DATE));
-            }
-            [$personalDaily, $iskPerHour] = $this->graphContainerController->getPersonalStatsCharts($labels);
+            $loginId = session()->get("login_id");
+//            $data =  DB::table("runs")
+//                       ->where("CHAR_ID", '=', $loginId)
+//                       ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
+//                       ->select("RUN_DATE")
+//                       ->groupBy("RUN_DATE")
+//                       ->get();
+//            $labels = [];
+//            foreach ($data as $type) {
+//                $labels[] = date("m.d", strtotime($type->RUN_DATE));
+//            }
+            $personalDaily = $this->graphContainerController->getPersonalStatsCharts();
 
             $table = [];
-            for($i=0;$i>-31;$i--) {
+            for($i=0; $i>-31; $i--) {
                 $date = date("Y-m-d", strtotime("now $i days"));
                 $val = DB::select("select
-    COUNT(*) as COUNT,
-    AVG(LOOT_ISK) as AVG,
-    SUM(LOOT_ISK) as SUM,
-    '$date' as RUN_DATE
-       from runs
-where CHAR_ID=? and RUN_DATE=?" ,[
-                    session()->get("login_id"), $date
+                        COUNT(*) as COUNT,
+                        AVG(LOOT_ISK) as AVG,
+                        SUM(LOOT_ISK) as SUM,
+                        '$date' as RUN_DATE
+                           from runs
+                    where CHAR_ID=? and RUN_DATE=?" ,[$loginId, $date
                 ]);
+
+                $seconds = DB::table("runs")
+                    ->select("RUNTIME_SECONDS")
+                    ->where("CHAR_ID", $loginId)
+                    ->where("RUN_DATE", $date)->get();
+
+                $totalSeconds = 0;
+                foreach ($seconds as $second) {
+                    $totalSeconds += $second->RUNTIME_SECONDS ?? 1200;
+                }
+                $totalSeconds = max($totalSeconds, 3600);
+
+                $val[0]->IPH = $val[0]->SUM/($totalSeconds/3600);
+                $val[0]->TOTAL_SECONDS = $totalSeconds;
+                $val[0]->TOTAL_HOURS = $totalSeconds/3600;
+//                if ($date == "2020-06-01")
+//                    dd($val);
                 $table[]= $val;
+
             }
 
 
@@ -145,7 +169,6 @@ where CHAR_ID=? and RUN_DATE=?" ,[
                 'my_sum_loot'           => $my_sum_loot,
                 'my_survival_ratio'     => $my_survival_ratio,
                 'personal_chart_loot'   => $personalDaily,
-                'personal_isk_per_hour' => $iskPerHour,
                 'activity_daily' => $table
             ]);
         }

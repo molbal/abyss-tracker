@@ -151,7 +151,7 @@
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/job.png"/><a class="text-white" href="{{route("fit.index")}}">Fits</a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/rocket.png"/><a class="text-white" href="{{route('ships_all')}}">Ships</a></p>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 d-none">
                             <h5 class="font-weight-bold text-white">Info pages</h5>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 1])}}">Calm <small class="bringupper">(Tier 1)</small></a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 2])}}">Agitated <small class="bringupper">(Tier 2)</small></a></p>

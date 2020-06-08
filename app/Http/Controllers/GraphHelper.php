@@ -290,30 +290,52 @@
                 return view("error", ["error" => "Please log in to access this page"]);
             }
 
-            $id = session()->get("login_id");
-
-            $data = DB::table("runs")
-                ->where("CHAR_ID", '=', $id)
-                ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
-                ->select("RUN_DATE")
-                ->selectRaw("SUM(LOOT_ISK) AS SUM_ISK")
-                ->selectRaw("AVG(LOOT_ISK) AS AVG_ISK")
-                ->groupBy("RUN_DATE")
-                ->get();
-
-            $chart = new PersonalDaily();
+            $loginId = session()->get("login_id");
 
             $dataset = [];
             $values = [];
             $values2 = [];
-            foreach ($data as $type) {
-                $dataset[] = $type->RUN_DATE;
-                $values[] = round($type->SUM_ISK/1000000, 2);
-                $values2[] = round($type->AVG_ISK/1000000, 2);
+            $values3 = [];
+            for($i=-30; $i<=0; $i++) {
+                $date = date("Y-m-d", strtotime("now $i days"));
+                $dataset[] = date("m.d", strtotime("now $i days"));
+
+                $val = DB::select("select
+                        COUNT(*) as COUNT,
+                        AVG(LOOT_ISK) as AVG,
+                        SUM(LOOT_ISK) as SUM,
+                        '$date' as RUN_DATE
+                           from runs
+                    where CHAR_ID=? and RUN_DATE=?" ,[$loginId, $date
+                ]);
+
+                $seconds = DB::table("runs")
+                             ->select("RUNTIME_SECONDS")
+                             ->where("CHAR_ID", $loginId)
+                             ->where("RUN_DATE", $date)->get();
+
+                $totalSeconds = 0;
+                foreach ($seconds as $second) {
+                    $totalSeconds += $second->RUNTIME_SECONDS ?? 1200;
+                }
+                $totalSeconds = max($totalSeconds, 3600);
+
+                $val[0]->IPH = $val[0]->SUM/($totalSeconds/3600);
+                $val[0]->TOTAL_SECONDS = $totalSeconds;
+                $val[0]->TOTAL_HOURS = $totalSeconds/3600;
+                $table[]= $val;
+
+                $values[]  = round($val[0]->SUM/1000000, 2);
+                $values2[] = round($val[0]->AVG/1000000, 2);
+                $values3[] = round($val[0]->SUM/($totalSeconds/3600)/1000000, 2);
             }
+
+            $chart = new PersonalDaily();
             $chart->labels($dataset);
-            $chart->dataset('Sum loot / day (Million ISK)', 'bar', $values);
-            $chart->dataset('Average loot / day (Million ISK)', 'bar', $values2);
+            $chart->dataset('Sum loot / day (M ISK)', 'bar', $values);
+            $chart->dataset('Average loot / day (M ISK)', 'bar', $values2);
+            $chart->dataset('Efficiency (M ISK/Hour)', 'bar', $values3);
+
             return $chart->api();
         }
 

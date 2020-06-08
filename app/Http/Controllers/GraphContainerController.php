@@ -206,9 +206,9 @@
         /**
          * Returns charts for the Personal Stats screen
          * @param array $labels
-         * @return array
+         * @return PersonalDaily
          */
-        public function getPersonalStatsCharts(array $labels): array {
+        public function getPersonalStatsCharts(): PersonalDaily {
             $personalDaily = new PersonalDaily();
             $personalDaily->load(route("chart.personal.loot"));
             $personalDaily->displayAxes(true);
@@ -216,17 +216,15 @@
             $personalDaily->export(true, "Download");
             $personalDaily->height("400");
             $personalDaily->theme(ThemeController::getChartTheme());
+
+
+            $labels = [];
+            for($i=-30; $i<=0; $i++) {
+                $labels[] = date("m.d", strtotime("now $i days"));
+            }
             $personalDaily->labels($labels);
 
-            $iskPerHour = new IskPerHourChart();
-            $iskPerHour->load(route("chart.personal.ihp"));
-            $iskPerHour->displayAxes(true);
-            $iskPerHour->displayLegend(true);
-            $iskPerHour->export(true, "Download");
-            $iskPerHour->height("400");
-            $iskPerHour->theme(ThemeController::getChartTheme());
-            $iskPerHour->labels($labels);
-            return [$personalDaily, $iskPerHour];
+            return $personalDaily;
         }
 
 

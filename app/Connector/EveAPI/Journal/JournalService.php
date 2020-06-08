@@ -49,7 +49,7 @@
             /** @var string $newAccessToken */
             $accessToken = $esiResponseDecoded["access_token"] ?? null;
 
-            Log::error("Esirepsonse1: ".$esiResponse);
+//            Log::error("Esirepsonse1: ".$esiResponse);
             if (!$accessToken) {
                 throw new \Exception("Unable to get Access token");
             }
@@ -66,7 +66,7 @@
             ]);
 //            Log::error("4");
             $ret = curl_exec($curl);
-            Log::error("Esirepsonse2: ".$ret);
+//            Log::error("Esirepsonse2: ".$ret);
             curl_close($curl);
 
             $list = json_decode($ret, 1);
