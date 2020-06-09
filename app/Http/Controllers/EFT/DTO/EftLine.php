@@ -4,7 +4,9 @@
 	namespace App\Http\Controllers\EFT\DTO;
 
 
-	class EftLine {
+	use Illuminate\Support\Facades\DB;
+
+    class EftLine {
 
 	    private $typeId;
 
@@ -66,5 +68,31 @@
             return $this;
         }
 
+        /**
+         * @param $dbLine
+         *
+         * @return EftLine
+         */
+        public static function fromDb($dbLine): EftLine {
+            $line = new EftLine();
+            $line->setTypeId($dbLine->ITEM_ID)
+                ->setCount($dbLine->COUNT)
+                ->setAmmoTypeId($dbLine->AMMO_ID);
+
+            return $line;
+        }
+
+        /**
+         * Saves this line.
+         * @param int $fitId
+         */
+        public function persistToFit(int $fitId):void {
+            DB::table("parsed_fit_items")->insert([
+                'FIT_ID' => $fitId,
+                'ITEM_ID' => $this->typeId,
+                'COUNT' => $this->count,
+                'AMMO_ID' => $this->ammoTypeId
+            ]);
+        }
 
 	}

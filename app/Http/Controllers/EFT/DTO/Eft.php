@@ -4,7 +4,9 @@
 	namespace App\Http\Controllers\EFT\DTO;
 
 
-	use Illuminate\Support\Collection;
+	use App\Http\Controllers\EFT\Exceptions\FitNotFoundException;
+    use Illuminate\Support\Collection;
+    use Illuminate\Support\Facades\DB;
 
     class Eft {
 
@@ -71,6 +73,51 @@
             return $this;
         }
 
+        /**
+         * Persists all lines
+         * @param int $fitId
+         */
+        public function persistLines(int $fitId):void {
+            $this->lines->map(function ($item, $key) use ($fitId) {
+                /** @var EftLine $item */
+                $item->persistToFit($fitId);
+            });
+        }
 
+        /**
+         * @param int $fitId
+         *
+         * @throws FitNotFoundException Fit not found
+         */
+        public function load(int $fitId):void {
 
+            if (!DB::table("fits")->where("ID", $fitId)->exists()) {
+                throw new FitNotFoundException("No fit found with ID $fitId");
+            }
+
+            $tmp = DB::table("fits")->where("ID", $fitId)->first();
+            $this->shipId = $tmp->SHIP_ID;
+            $this->fitName = $tmp->NAME;
+
+            $dbLines = DB::table("parsed_fit_items")
+                            ->where("FIT_ID", $fitId)
+                            ->get();
+
+            $this->lines = collect([]);
+            $dbLines->each(function ($item, $key) {
+               $this->lines->add(EftLine::fromDb($item));
+            });
+        }
+
+        /**
+         * @param int $fitId
+         *
+         * @return Eft
+         * @throws FitNotFoundException Fit not found
+         */
+        public static function loadFromId(int $fitId):Eft {
+            $eft = new Eft();
+            $eft->load($fitId);
+            return $eft;
+        }
 	}
