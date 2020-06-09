@@ -2,7 +2,7 @@
 @section("browser-title", "Error")
 @section("content")
     <div class="row mt-5">
-        <div class="col-sm-12 col-md-8 offset-md-2">
+        <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
             <h4 class="font-weight-bold"><img src="https://img.icons8.com/cotton/64/000000/cancel--v1.png"> The capacitor is empty</h4>
             @if(isset($error))
                 <div class="card card-body border-danger border-danger shadow-sm">

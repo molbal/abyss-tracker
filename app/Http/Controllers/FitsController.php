@@ -7,6 +7,7 @@
 	use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\EFT\FitHelper;
+    use App\Http\Controllers\EFT\FitParser;
     use App\Http\Controllers\EFT\Tags\TagsController;
     use App\Http\Controllers\Loot\EveItem;
     use App\Http\Controllers\Loot\LootValueEstimator;
@@ -25,13 +26,18 @@
         /** @var FitHelper */
         protected $fitHelper;
 
+        /** @var FitParser */
+        protected $fitParser;
+
         /**
          * FitsController constructor.
          *
          * @param FitHelper $fitHelper
+         * @param FitParser $fitParser
          */
-        public function __construct(FitHelper $fitHelper) {
+        public function __construct(FitHelper $fitHelper, FitParser $fitParser) {
             $this->fitHelper = $fitHelper;
+            $this->fitParser = $fitParser;
         }
 
 
@@ -149,28 +155,32 @@
                 if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {
                     throw new \Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
                 }
+//                $fitName = $this->getFitName($eft);
 
-                $shipName = $this->getFitName($eft);
 
-                // Get price
-                $lootEstimator = new LootValueEstimator(preg_replace('/^\[Empty.+slot\]$/im', '', $eft) ?? "");
 
-                // Update each price
-                /** @var EveItem[] $items */
-                $items = $lootEstimator->getItems();
-                foreach ($items as $item) {
-                    LootValueEstimator::setItemPrice($item);
-                }
+//                // Get price
+//                $lootEstimator = new LootValueEstimator(preg_replace('/^\[Empty.+slot\]$/im', '', $eft) ?? "");
+//
+//                // Update each price
+//                /** @var EveItem[] $items */
+//                $items = $lootEstimator->getItems();
+//                foreach ($items as $item) {
+//                    LootValueEstimator::setItemPrice($item);
+//                }
+                $fitObj = $this->fitParser->getFitTypes($eft);
+                $totalPrice = $fitObj->getFitValue(); // Let's get this before the DB transaction starts
+
                 $hash = $this->fitHelper->getFitFFH($eft);
                 DB::beginTransaction();
                 $id = DB::table("fits")->insertGetId([
                     'CHAR_ID' => session()->get("login_id"),
                     'SHIP_ID' => $shipId,
-                    'NAME' => $shipName,
-                    'DESCRIPTION' => $request->get("description"),
+                    'NAME' => $fitObj->getFitName(),
+                    'DESCRIPTION' => $request->get("description") ?? "",
                     'STATS' => json_encode([]),
                     'STATUS' => 'queued',
-                    'PRICE' => $lootEstimator->getTotalPrice(),
+                    'PRICE' => $totalPrice,
                     'RAW_EFT' => $eft,
                     'SUBMITTED' => now(),
                     'VIDEO_LINK' => $request->get("video_link") ?? '',
@@ -190,6 +200,8 @@
                     'FIRESTORM' => $request->get("FIRESTORM"),
                     'GAMMA' => $request->get("GAMMA")
                 ]);
+
+                $fitObj->persistLines($id);
                 DB::commit();
             }
             catch (\Exception $e) {

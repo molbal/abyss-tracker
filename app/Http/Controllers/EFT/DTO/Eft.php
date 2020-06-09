@@ -5,8 +5,10 @@
 
 
 	use App\Http\Controllers\EFT\Exceptions\FitNotFoundException;
+    use App\Http\Controllers\EFT\ItemPriceCalculator;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
 
     class Eft {
 
@@ -119,5 +121,34 @@
             $eft = new Eft();
             $eft->load($fitId);
             return $eft;
+        }
+
+
+        /**
+         * Gets the value of the entire fit
+         * @return int
+         */
+        public function getFitValue():int {
+            $value = 0;
+
+            /** @var ItemPriceCalculator $priceEstimator */
+            $priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+            $itemObject = $priceEstimator->getFromTypeId($this->getShipId());
+            if ($itemObject) {
+                $value += $itemObject->getAveragePrice();
+            }
+            else {
+                return 0;
+            }
+
+            /** @var EftLine $line */
+            foreach ($this->lines as $line) {
+                $itemObject = $priceEstimator->getFromTypeId($line->getTypeId());
+                if ($itemObject) {
+                    $value += $itemObject->getAveragePrice();
+                }
+            }
+
+            return $value;
         }
 	}

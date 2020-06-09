@@ -60,7 +60,7 @@
             }
             try {
                 $fitName = explode("]", explode(",", $first, 2)[1])[0];
-                $eftObj->setFitName($this->getItemID($fitName));
+                $eftObj->setFitName($fitName);
             } catch (\Exception $e) {
                 throw new MalformedEFTException("Could not extract fit name from line <$fitName>: ".$e->getMessage());
             }

@@ -50,6 +50,10 @@
             return $this;
         }
 
+//        public function getItemName() {
+//            if ($this->typeId)
+//        }
+
         /**
          * @return mixed
          */
