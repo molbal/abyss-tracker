@@ -17,7 +17,7 @@
                     </tr>
                     @foreach($patreon as $patreonDonor)
                         <tr>
-                            <td><a  href="https://www.patreon.com/user?u={{$patreonDonor->getPatreonId()}}" target="_blank">{{$patreonDonor->getName()}}</a></td>
+                            <td><a class="text-dark" href="https://www.patreon.com/user?u={{$patreonDonor->getPatreonId()}}" target="_blank">{{$patreonDonor->getName()}}</a></td>
                             <td class="text-right">{{number_format($patreonDonor->getTotalAmount(), 2, ",", "")}} €</td>
                             <td>{!! $patreonDonor->isActivePatron() ? "Current patron" : "<span class='text-muted'>Former patron</span>" !!}</td>
                         </tr>
@@ -59,8 +59,8 @@
                         @else
                             <tr>
                                 <td>
-                                    <a href="{{route("profile.index", ["id" => $donation->CHAR_ID])}}" target="_blank">
-                                        <img src="https://images.evetech.net/characters/{{$donation->CHAR_ID}}/portrait?size=64" style="height: 24px;width: 24px;border: 2px solid #fff;" class="rounded-circle shadow-sm mr-2" alt="">
+                                    <img src="https://images.evetech.net/characters/{{$donation->CHAR_ID}}/portrait?size=64" style="height: 24px;width: 24px;border: 2px solid #fff;" class="rounded-circle shadow-sm mr-2" alt="">
+                                    <a href="{{route("profile.index", ["id" => $donation->CHAR_ID])}}" class="text-dark" target="_blank">
                                         {{$donation->NAME}}
                                     </a>
                                 </td>
@@ -68,7 +68,7 @@
                                 @if ($donation->REASON == "")
                                     <td><span class="text-muted">No message</span></td>
                                 @else
-                                    <td>{{$donation->REASON}}</td>
+                                    <td class="w-25">{{$donation->REASON}}</td>
                                 @endif
                                 <td>{{$donation->DATE}}</td>
                             </tr>
