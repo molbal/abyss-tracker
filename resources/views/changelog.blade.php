@@ -34,7 +34,7 @@
                     <li>Updates site style (Footer, icons)</li>
                     <li>Improves "My stats" page layout</li>
                     <li>Fixes bug: <em>server error uploading fit <a href="https://github.com/molbal/abyss-tracker/issues/35" target="_blank">#35</a></em></li>
-                    <li>Fixes bug: <em>Abyssal modules breaking import <a href="https://github.com/molbal/abyss-tracker/issues/30" target="_blank">#17</a></em></li>
+                    <li>Fixes bug: <em>Abyssal modules breaking import <a href="https://github.com/molbal/abyss-tracker/issues/17" target="_blank">#17</a></em></li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">
