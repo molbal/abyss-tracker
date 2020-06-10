@@ -25,6 +25,20 @@
             </div>
             <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                <h4 class="mb-0 pb-0"><strong>1.5.3</strong> 'Depot' release</h4>
+                <small class="mt-0">2020 june 10</small>
+                <p class="text-justify">
+                    New features
+                </p>
+                <ul>
+                    <li>Updates site style (Footer, icons)</li>
+                    <li>Improves "My stats" page layout</li>
+                    <li>Fixes bug: <em>server error uploading fit <a href="https://github.com/molbal/abyss-tracker/issues/35" target="_blank">#35</a></em></li>
+                    <li>Fixes bug: <em>Abyssal modules breaking import <a href="https://github.com/molbal/abyss-tracker/issues/30" target="_blank">#17</a></em></li>
+                </ul>
+            </div>
+            <div class="card card-body border-danger shadow-sm mb-3">
+                <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                 <h4 class="mb-0 pb-0"><strong>1.5.2</strong> 'Smokescreen' release</h4>
                 <small class="mt-0">2020 june 6</small>
                 <p class="text-justify">
