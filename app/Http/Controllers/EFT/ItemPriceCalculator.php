@@ -8,7 +8,7 @@
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\ISingleItemEstimator;
-    use DebugBar\DebugBar;
+//    use DebugBar\DebugBar;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -37,11 +37,11 @@
         public function getFromTypeId(int $typeId): ?ItemObject {
             if ($typeId == 0) return null;
             try {
-                \debugbar()->startMeasure("Appraisal for $typeId");
+//                \debugbar()->startMeasure("Appraisal for $typeId");
                 $dto = Cache::remember("app.ipc.".$typeId, now()->addMinute(), function() use ($typeId) {
                    return  $this->appraise($typeId);
                 });
-                \debugbar()->stopMeasure("Appraisal for $typeId");
+//                \debugbar()->stopMeasure("Appraisal for $typeId");
             }
             catch (RemoteAppraisalToolException $exc) {
                 \debugbar()->warning("Could not appraise typeId $typeId ".$exc->getMessage());

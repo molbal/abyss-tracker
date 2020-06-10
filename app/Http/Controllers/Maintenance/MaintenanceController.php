@@ -22,6 +22,7 @@
             /** @var FitParser $fp */
             $fp = resolve('App\Http\Controllers\EFT\FitParser');
             foreach ($items as $item) {
+                set_time_limit(1800);
                 try {
 
                 $eft = $fit = $fp->getFitTypes($item->RAW_EFT);
