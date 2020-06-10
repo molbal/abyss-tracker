@@ -222,6 +222,8 @@
         public function itemNameToId(string $fullName) {
             $fullName = trim($fullName);
 
+
+
             // Try from item prices table
             if(DB::table("item_prices")->where("NAME", $fullName)->exists()) {
                 return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
@@ -234,7 +236,7 @@
 
             // Try old dumps
             foreach ($tables as $table) {
-                if (DB::table($table->TABLE_NAME)->where("typeName",'=', $fullName)) {
+                if (DB::table($table->TABLE_NAME)->where("typeName",'=', $fullName)->exists()) {
                     return DB::table($table->TABLE_NAME)->where("typeName",'=', $fullName)->value("typeID");
                 }
             }
@@ -243,11 +245,12 @@
             $response = $this->simplePost(null, "universe/ids", json_encode([$fullName]));
 
             if (isset($response->inventory_types[0]->id)) {
-                $systemId = $response->inventory_types[0]->id;
+                $invType = $response->inventory_types[0]->id;
             } else {
                 throw new \InvalidArgumentException("Cannot find the Eve ID number for this name: $fullName. ".print_r($response, 1));
             }
-            return $systemId;
+
+            return $invType;
         }
 
 
@@ -259,17 +262,19 @@
          * @throws \Exception
          */
         public function generalNameLookup(int $id): string {
-            if ($this->forevercacheHas($id)) {
-                return $this->forevercacheGet($id);
-            }
-            $resp = $this->simplePost(null, "universe/names", json_encode([$id]));
+            return Cache::remember("aft.general-name-lookup".$id, now()->addMinutes(30), function() use ($id) {
+                if ($this->forevercacheHas($id)) {
+                    return $this->forevercacheGet($id);
+                }
+                $resp = $this->simplePost(null, "universe/names", json_encode([$id]));
 
-            $name = $resp[0]->name;
-            if (isset($name)) {
-                $this->forevercachePut($id, $name);
-                return $name;
-            }
-            throw new \InvalidArgumentException("No item ID with name $id found in ESI");
+                $name = $resp[0]->name;
+                if (isset($name)) {
+                    $this->forevercachePut($id, $name);
+                    return $name;
+                }
+                throw new \InvalidArgumentException("No item ID with name $id found in ESI");
+            });
         }
 
         /**

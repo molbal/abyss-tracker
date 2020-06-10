@@ -5,12 +5,10 @@
 
 
 	use App\Http\Controllers\DS\FitBreakEvenCalculator;
-    use App\Http\Controllers\DS\MedianController;
+    use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\FitParser;
-    use App\Http\Controllers\EFT\Tags\TagsController;
-    use App\Http\Controllers\Loot\EveItem;
-    use App\Http\Controllers\Loot\LootValueEstimator;
+    use App\Http\Controllers\EFT\ItemPriceCalculator;
     use App\Http\Controllers\Partners\EveWorkbench;
     use App\Http\Controllers\Youtube\YoutubeController;
     use ChrisKonnertz\OpenGraph\OpenGraph;
@@ -29,15 +27,20 @@
         /** @var FitParser */
         protected $fitParser;
 
+        /** @var ItemPriceCalculator */
+        protected $sipc;
+
         /**
          * FitsController constructor.
          *
-         * @param FitHelper $fitHelper
-         * @param FitParser $fitParser
+         * @param FitHelper           $fitHelper
+         * @param FitParser           $fitParser
+         * @param ItemPriceCalculator $sipc
          */
-        public function __construct(FitHelper $fitHelper, FitParser $fitParser) {
+        public function __construct(FitHelper $fitHelper, FitParser $fitParser, ItemPriceCalculator $sipc) {
             $this->fitHelper = $fitHelper;
             $this->fitParser = $fitParser;
+            $this->sipc = $sipc;
         }
 
 
@@ -155,19 +158,7 @@
                 if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {
                     throw new \Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
                 }
-//                $fitName = $this->getFitName($eft);
 
-
-
-//                // Get price
-//                $lootEstimator = new LootValueEstimator(preg_replace('/^\[Empty.+slot\]$/im', '', $eft) ?? "");
-//
-//                // Update each price
-//                /** @var EveItem[] $items */
-//                $items = $lootEstimator->getItems();
-//                foreach ($items as $item) {
-//                    LootValueEstimator::setItemPrice($item);
-//                }
                 $fitObj = $this->fitParser->getFitTypes($eft);
                 $totalPrice = $fitObj->getFitValue(); // Let's get this before the DB transaction starts
 
@@ -229,16 +220,12 @@
          * @throws \Exception
          */
         public function get(int $id) {
-            if (!DB::table("fits")
-                   ->where("ID", $id)
-                   ->exists()) {
+            if (!DB::table("fits")->where("ID", $id)->exists()) {
                 return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
             }
 
             $fit = Cache::remember("aft.fit-full.".$id, now()->addMinutes(5), function () use ($id) {
-                return DB::table("fits")
-                         ->where("ID", $id)
-                         ->first();
+                return DB::table("fits")->where("ID", $id)->first();
             });
 
 
@@ -253,16 +240,9 @@
                            ->value('NAME');
 
 
-            $description = (new \Parsedown())->setSafeMode(true)
-                                             ->parse($fit->DESCRIPTION);
-            $ship_type = DB::table("ship_lookup")
-                           ->where("ID", $fit->SHIP_ID)
-                           ->value("GROUP") ?? "Unknown type";
-            $ship_price = (DB::table("item_prices")
-                             ->where("ITEM_ID", $fit->SHIP_ID)
-                             ->value("PRICE_BUY") + DB::table("item_prices")
-                                                      ->where("ITEM_ID", $fit->SHIP_ID)
-                                                      ->value("PRICE_SELL") / 2) ?? 0;
+            $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
+            $ship_type = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
+            $ship_price = $this->sipc->getFromTypeId($fit->SHIP_ID)->getAveragePrice() ?? 0.0;
 
             if (trim($fit->VIDEO_LINK)) {
                 try {
@@ -271,13 +251,9 @@
                     Log::warning(sprintf("Could not generate embed for %s", $fit->VIDEO_LINK));
                     $embed = "<div class='alert alert-warning'>Could not generate embed for link: " . htmlentities($fit->VIDEO_LINK) . '</div>';
                 }
-            } else {
-                $embed = "";
-            }
+            } else { $embed = "";}
 
-            $recommendations = DB::table("fit_recommendations")
-                                 ->where("FIT_ID", $id)
-                                 ->first();
+            $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
 
             $og = new OpenGraph();
             $og->title(sprintf("%s fit - %s", $ship_name, env("APP_NAME")))
@@ -291,12 +267,6 @@
                ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
             $og->profile(["first_name" => trim($fit->NAME)]);
 
-            if (session()->has("login_id")) {
-                if (Cache::has("aft.fit.last-seen-".session()->get("login_id"))) {
-                    Cache::forget("aft.fit.last-seen-".session()->get("login_id"));
-                }
-                Cache::put("aft.fit.last-seen-".session()->get("login_id"),  $id,now()->addHour());
-            }
 
             $runs = DB::table("runs")
               ->where("FIT_ID", $id)
@@ -306,21 +276,15 @@
             $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
             $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
 
-            $eftParsed = $this->fitHelper->quickParseEft($fit->RAW_EFT);
-            $price = $ship_price;
-            foreach ($eftParsed as $slot) {
-                foreach ($slot as $item) {
-                    $price += $item['price']->getAveragePrice();
-                }
-            }
-            $fit->PRICE = $price;
-            DB::table("fits")->where("ID", $id)->update(['PRICE' => $price]);
+            $eftObj = Eft::loadFromId($id);
+            $eftParsed = $eftObj->getStructuredDisplay();
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
                 'char_name' => $char_name,
                 'ship_type' => $ship_type,
                 'ship_price' => $ship_price,
+                'items_price' => $eftObj->getItemsValue(),
                 'fit_quicklook' => $eftParsed,
                 'description' => $description,
                 'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),

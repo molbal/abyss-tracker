@@ -5,6 +5,7 @@
 
 
 	use App\Http\Controllers\EFT\Exceptions\FitNotFoundException;
+    use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\DB;
@@ -123,13 +124,28 @@
             return $eft;
         }
 
+        public function getStructuredDisplay() {
+            $struct = ['high' => [], 'mid' => [], 'low' => [], 'rig' => [], 'drone' => [], 'ammo' => [], 'cargo' => [], 'booster' => [], 'implant' => []];
+            /** @var FitHelper $helper */
+            $helper = resolve('App\Http\Controllers\EFT\FitHelper');
+            foreach ($this->lines as $line) {
+                /** @var EftLine $line */
+                try {
+                    $struct[$helper->getItemSlot($line->getTypeId())][] = $line;
+                } catch (\Exception $e) {
+                    $struct['cargo'][] = $line;
+                }
+            }
+            return $struct;
+        }
+
 
         /**
          * Gets the value of the entire fit
          * @return int
          */
         public function getFitValue():int {
-            $value = 0;
+            $value = $this->getItemsValue();
 
             /** @var ItemPriceCalculator $priceEstimator */
             $priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
@@ -137,10 +153,19 @@
             if ($itemObject) {
                 $value += $itemObject->getAveragePrice();
             }
-            else {
-                return 0;
-            }
 
+            return $value;
+        }
+
+        /**
+         * Gets the value of all items
+         * @return float|int
+         */
+        public function getItemsValue() {
+            $value =  0;
+
+            /** @var ItemPriceCalculator $priceEstimator */
+            $priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
             /** @var EftLine $line */
             foreach ($this->lines as $line) {
                 $itemObject = $priceEstimator->getFromTypeId($line->getTypeId());
@@ -151,4 +176,4 @@
 
             return $value;
         }
-	}
+    }

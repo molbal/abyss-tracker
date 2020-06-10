@@ -1,24 +1,26 @@
 <tr>
     <td style="width: 36px;">
-        @if($item["id"])
-            <img src="https://imageserver.eveonline.com/Type/{{$item["id"]}}_32.png" alt="{{$item["price"]->getAveragePrice()}} icon" style="width: 32px;height: 32px;">
+        @if($item->getTypeId())
+            <img src="https://imageserver.eveonline.com/Type/{{$item->getTypeId()}}_32.png" alt="{{$item->getItemName()}} icon" style="width: 32px;height: 32px;">
         @else
 
         @endif
     </td>
     <td>
-        {{$item["price"]->getName()}}
-        @if ($item["ammo"] != "" )
-            <sub class="bringupper">with <img src="https://imageserver.eveonline.com/Type/{{$item["ammo_id"]}}_32.png" alt="{{$item["name"]}} icon" style="width: 16px;height: 16px;"> {{$item["ammo"]}}</sub>
+        {{$item->getItemName() ?? '[Unknown item - typeId: '.$item->getTypeId().']'}}
+        @if ($item->hasAmmo())
+            <sub class="bringupper">with <img src="https://imageserver.eveonline.com/Type/{{$item->getAmmoTypeId()}}_32.png" alt="{{$item->getAmmoName()}} icon"
+                                              style="width: 16px;height: 16px;"> {{$item->getAmmoName()}}</sub>
         @endif
-        @if ($item["count"] != "" && $item["count"] != 1)
-            <sub class="bringupper">x{{$item["count"]}}</sub>
+        @if ($item->getCount() > 1)
+            <sub class="bringupper">x{{$item->getCount()}}</sub>
         @endif
     </td>
-    <td class="text-right" data-toggle="tooltip"  data-html="true" title="Buy price: {{number_format($item["count"]*$item["price"]->getBuyPrice(), 0, ",", " ")}} ISK<br/>Sell price: {{number_format($item["count"]*$item["price"]->getSellPrice(), 0, ",", " ")}} ISK">
-        {{number_format($item["count"]*$item["price"]->getAveragePrice(), 0, ",", " ")}} ISK
-    </td>
+    @if ($item->getAveragePrice() > 0)
+        <td class="text-right" >
+            {{number_format($item->getCount()*$item->getAveragePrice(), 0, ",", " ")}} ISK
+        </td>
+    @else
+        <td class="text-right"><span class="text-muted">??? ISK</span></td>
+    @endif
 </tr>
-{{--<tr>--}}
-{{--    <td colspan="3"><pre>{{print_r($item, 1)}}</pre></td>--}}
-{{--</tr>--}}

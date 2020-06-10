@@ -22,27 +22,16 @@
                     <div id="home" class="tab-pane active">
                         <h5 class="font-weight-bold">Fit's modules</h5>
                         <table class="table table-responsive-sm table-sm w-100 mb-4">
-                            @php
-                            $price = 0;
-                            foreach ($fit_quicklook as $section) {
-                            	foreach($section as $item) {
-                            		$price += $item["count"]*$item["price"]->getAveragePrice();
-                            	}
-                            }
-                            $fit_price = $price;
-                            $price += $ship_price;
-                            @endphp
                             @component("components.fit_group", ["items" => $fit_quicklook["high"], "section" => "High slot modules"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["mid"], "section" => "Mid slot modules"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["low"], "section" => "Low slot modules"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["rig"], "section" => "Rigs"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["drone"], "section" => "Drones"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["ammo"], "section" => "Ammunition"])@endcomponent
-                                @component("components.fit_group", ["items" => $fit_quicklook["booster"], "section" => "Boosters"])@endcomponent
+                            @component("components.fit_group", ["items" => $fit_quicklook["booster"], "section" => "Boosters"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["cargo"], "section" => "Other cargo and implants"])@endcomponent
-{{--                            @component("components.fit_group", ["welitems" => $fit_quicklook["implant"], "section" => "Implants"])@endcomponent--}}
                             <tr>
-                                <td colspan="3" class="font-weight-bold text-right">Total without ship: {{number_format($fit_price, 0, ","," ")}} ISK</td>
+                                <td colspan="3" class="font-weight-bold text-right">Total without ship: {{number_format($items_price, 0, ","," ")}} ISK</td>
                             </tr>
                             <tr>
                                 <td colspan="3" class="text-left text-uppercase font-weight-bold">Ship</td>
@@ -59,7 +48,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3" class="font-weight-bold text-right">Total: {{number_format($price, 0, ","," ")}} ISK</td>
+                                <td colspan="3" class="font-weight-bold text-right">Total: {{number_format($ship_price+$items_price, 0, ","," ")}} ISK</td>
                             </tr>
                         </table>
                     </div>

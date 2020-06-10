@@ -68,12 +68,15 @@
             $eftLines = collect([]);
 
             foreach ($lines as $line) {
+                Log::info("Processing <$line>");
                 $line = trim($line);
                 if ($line == "") continue;
                 $eftLine = new EftLine();
 
                 // Let's get before the comma: strip ammo
+//                Log::info("Processing for ammo: <$line>");
                 $ammo_id = $this->getAmmoIdFromLine($line);
+//                Log::info("AmmoId: <$ammo_id>");
 
                 $line = explode(',', $line, 2)[0];
 
@@ -86,9 +89,10 @@
 
                 $itemID = null;
                 try {
-                    $itemID = Cache::remember("aft.item-id-from-line." . md5($line), now()->addHour(), function () use ($line) {
-                        return $this->getItemID($line);
-                    });
+//                    $itemID = Cache::remember("aft.item-id-from-line." . md5($line), now()->addHour(), function () use ($line) {
+//                        return $this->getItemID($line);
+//                    });
+                    $itemID = $this->getItemID($line);
                 } catch (NotAnItemException $ignored) {
                     continue;
                 }
@@ -97,6 +101,7 @@
                         ->setTypeId($itemID)
                         ->setCount($count);
                 $eftLines->add($eftLine);
+//                Log::info("Processed: ".print_r($eftLine, 1));
             }
 
             $eftObj->setLines($eftLines);
@@ -154,11 +159,6 @@
             if (preg_match('/^\[Empty.+slot\]$/i',trim($itemName))) {
                 throw new NotAnItemException("Item $itemName is not an EVE item");
             }
-
-            // Get local
-            if (DB::table("item_prices")->where("NAME", $itemName)->exists())
-                return DB::table("item_prices")->where("NAME", $itemName)->value("ITEM_ID");
-
             // Call the API
             return intval($this->resourceLookup->itemNameToId($itemName));
         }
@@ -171,9 +171,11 @@
          */
         private function getAmmoIdFromLine(string $line) : ?int {
             $ammo = trim(explode(',', $line, 2)[1] ?? "");
+            if ($ammo == "") return null;
             try {
                 $ammoObj = $this->priceCalculator->getFromItemName($ammo);
             } catch (\Exception $e) {
+//                dd($e);
                 $ammoObj = null;
             }
             if ($ammoObj) {

@@ -66,33 +66,34 @@
                 throw new NotAnItemException("This is not an EVE Item and has no slot");
             }
 
-            // Is cached?
-
-            if (DB::table("item_slot")->where("ITEM_ID", $itemID)->exists()) {
-                return DB::table("item_slot")->where("ITEM_ID", $itemID)->value("ITEM_SLOT");
-            }
-
-            /** @var ItemClassifier $itemClassifier */
-            $itemClassifier = resolve("App\Http\Controllers\EFT\ItemClassifier");
-            $itemSlot =  $itemClassifier->classify($itemID);
-            if ($itemSlot) {
-
-                if (!DB::table("item_prices")->where("ITEM_ID", $itemID)->exists()) {
-                    DB::table("item_prices")->insertOrIgnore([
-                        'ITEM_ID' => $itemID,
-                        'PRICE_BUY' => 0,
-                        'PRICE_SELL' => 0,
-                        'PRICE_LAST_UPDATED' => now(),
-                        'DESCRIPTION' => '',
-                        'GROUP_ID' => 0,
-                        'GROUP_NAME' => '',
-                        'NAME' => '',
-                    ]);
+           return Cache::remember("aft.item-slot.$itemID", now()->addMinutes(15), function () use ($itemID) {
+                if (DB::table("item_slot")->where("ITEM_ID", $itemID)->exists()) {
+                    return DB::table("item_slot")->where("ITEM_ID", $itemID)->value("ITEM_SLOT");
                 }
+
+                /** @var ItemClassifier $itemClassifier */
+                $itemClassifier = resolve("App\Http\Controllers\EFT\ItemClassifier");
+                $itemSlot =  $itemClassifier->classify($itemID);
+                if ($itemSlot) {
+
+                    if (!DB::table("item_prices")->where("ITEM_ID", $itemID)->exists()) {
+                        DB::table("item_prices")->insertOrIgnore([
+                            'ITEM_ID' => $itemID,
+                            'PRICE_BUY' => 0,
+                            'PRICE_SELL' => 0,
+                            'PRICE_LAST_UPDATED' => now(),
+                            'DESCRIPTION' => '',
+                            'GROUP_ID' => 0,
+                            'GROUP_NAME' => '',
+                            'NAME' => '',
+                        ]);
+                    }
                     DB::table("item_slot")
                       ->insert(["ITEM_ID" => $itemID, "ITEM_SLOT" => $itemSlot]);
-            }
-            return $itemSlot;
+                }
+                return $itemSlot;
+            });
+
         }
 
         /**

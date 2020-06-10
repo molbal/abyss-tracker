@@ -8,6 +8,7 @@
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\ISingleItemEstimator;
+    use DebugBar\DebugBar;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -28,14 +29,27 @@
         }
 
 
-        public function getFromTypeId(int $typeId): ItemObject {
+        /**
+         * @param int $typeId
+         *
+         * @return ItemObject|null
+         */
+        public function getFromTypeId(int $typeId): ?ItemObject {
+            if ($typeId == 0) return null;
             try {
-                $dto = $this->appraise($typeId);
+                \debugbar()->startMeasure("Appraisal for $typeId");
+                $dto = Cache::remember("app.ipc.".$typeId, now()->addMinute(), function() use ($typeId) {
+                   return  $this->appraise($typeId);
+                });
+                \debugbar()->stopMeasure("Appraisal for $typeId");
             }
             catch (RemoteAppraisalToolException $exc) {
+                \debugbar()->warning("Could not appraise typeId $typeId ".$exc->getMessage());
+                Log::channel("itempricecalculator")->warning("Could not appraise typeId $typeId ".$exc->getMessage()."\n".$exc->getTraceAsString());
                 $dto = null;
             }
 
+            if ($dto == null) Log::channel("itempricecalculator")->warning("Could not appraise typeId $typeId");
             return $dto;
         }
 
@@ -75,7 +89,10 @@
                         "ITEM_ID" => $itemObj->getTypeId(),
                         "NAME" => $itemObj->getName(),
                         "PRICE_BUY" => $itemObj->getBuyPrice(),
-                        "PRICE_SELL" => $itemObj->getSellPrice()
+                        "PRICE_SELL" => $itemObj->getSellPrice(),
+                        "DESCRIPTION" => "",
+                        "GROUP_ID" => 0,
+                        "GROUP_NAME" => "TBD"
                     ]);
                 }
                 DB::commit();
@@ -100,7 +117,13 @@
 
                 try {
                     $itemObj = $estimatorImpl->getPrice();
+
                     if ($itemObj != null) {
+
+                        if ($itemObj->getAveragePrice() == 0 && stripos($itemObj->getName(), "blueprint") === false) {
+                            continue;
+                        }
+
                         if ($i>0) {
                             $this->updateItemPricesTable($itemObj);
                         }
