@@ -132,6 +132,7 @@
      * Maintenance routes
      */
     Route::get("/maintenance/flagged/{secret}", 'Maintenance\MaintenanceController@showFlaggedRuns');
+    Route::get("/maintenance/convert-eft/{secret}", 'Maintenance\MaintenanceController@convertOldFits');
     Route::get("/maintenance/flagged/delete/{id}/{secret}", 'Maintenance\MaintenanceController@deleteFlaggedRun');
     Route::get("/maintenance/db/{secret}", 'Maintenance\MaintenanceController@runMigrations');
     Route::get("/maintenance/routes/{secret}", 'Maintenance\MaintenanceController@getRoutes');

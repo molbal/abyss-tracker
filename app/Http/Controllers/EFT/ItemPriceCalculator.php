@@ -108,7 +108,7 @@
          *
          * @return ItemObject
          */
-        private function appraise(int $typeId): ItemObject {
+        private function appraise(int $typeId): ?ItemObject {
             $estimators = $this->getSingleItemEstimators();
             foreach ($estimators as $i => $estimator) {
 

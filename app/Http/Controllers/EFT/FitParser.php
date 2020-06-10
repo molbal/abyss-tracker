@@ -74,9 +74,7 @@
                 $eftLine = new EftLine();
 
                 // Let's get before the comma: strip ammo
-//                Log::info("Processing for ammo: <$line>");
                 $ammo_id = $this->getAmmoIdFromLine($line);
-//                Log::info("AmmoId: <$ammo_id>");
 
                 $line = explode(',', $line, 2)[0];
 
@@ -89,9 +87,6 @@
 
                 $itemID = null;
                 try {
-//                    $itemID = Cache::remember("aft.item-id-from-line." . md5($line), now()->addHour(), function () use ($line) {
-//                        return $this->getItemID($line);
-//                    });
                     $itemID = $this->getItemID($line);
                 } catch (NotAnItemException $ignored) {
                     continue;
@@ -101,7 +96,6 @@
                         ->setTypeId($itemID)
                         ->setCount($count);
                 $eftLines->add($eftLine);
-//                Log::info("Processed: ".print_r($eftLine, 1));
             }
 
             $eftObj->setLines($eftLines);

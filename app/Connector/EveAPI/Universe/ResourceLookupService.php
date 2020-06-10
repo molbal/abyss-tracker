@@ -222,8 +222,6 @@
         public function itemNameToId(string $fullName) {
             $fullName = trim($fullName);
 
-
-
             // Try from item prices table
             if(DB::table("item_prices")->where("NAME", $fullName)->exists()) {
                 return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
@@ -247,7 +245,8 @@
             if (isset($response->inventory_types[0]->id)) {
                 $invType = $response->inventory_types[0]->id;
             } else {
-                throw new \InvalidArgumentException("Cannot find the Eve ID number for this name: $fullName. ".print_r($response, 1));
+                Log::warning("Cannot find the Eve ID number for this name: <$fullName>"." response: <".print_r($response, 1).">");
+                throw new \InvalidArgumentException("Cannot find the Eve ID number for this name: <$fullName>");
             }
 
             return $invType;

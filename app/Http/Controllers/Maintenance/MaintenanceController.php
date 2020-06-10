@@ -5,10 +5,37 @@
 
 
 	use App\Http\Controllers\Controller;
+    use App\Http\Controllers\EFT\FitParser;
     use Illuminate\Support\Facades\Artisan;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
 
     class MaintenanceController extends Controller {
+
+        function convertOldFits($secret) {
+            if ($secret != env("MAINTENANCE_TOKEN")) {
+                abort(403, "Invalid maintenance token.");
+            }
+
+            $items = DB::select('select ID, RAW_EFT from fits where (select count(*) from parsed_fit_items where parsed_fit_items.FIT_ID=fits.ID)=0;');
+
+            /** @var FitParser $fp */
+            $fp = resolve('App\Http\Controllers\EFT\FitParser');
+            foreach ($items as $item) {
+                try {
+
+                $eft = $fit = $fp->getFitTypes($item->RAW_EFT);
+                $eft->persistLines($item->ID);
+
+                    Log::info("Persisted fit: ".$item->ID);
+                }
+                catch (\Exception $e) {
+                    Log::error($e);
+                }
+            }
+            return ["Ok"];
+        }
+
 
         function showFlaggedRuns($secret) {
             if ($secret != env("MAINTENANCE_TOKEN")) {
