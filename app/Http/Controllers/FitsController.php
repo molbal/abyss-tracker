@@ -224,7 +224,7 @@
                 return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
             }
 
-            $fit = Cache::remember("aft.fit-full.".$id, now()->addMinutes(5), function () use ($id) {
+            $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
                 return DB::table("fits")->where("ID", $id)->first();
             });
 

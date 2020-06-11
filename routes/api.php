@@ -14,4 +14,4 @@
     */
 
 
-    Route::post("fit/callback", 'App\Http\Controllers\EFT\FitCallbackController@handleFitCallback');
+    Route::post("fit/callback", 'EFT\FitCallbackController@handleFitCallback');
