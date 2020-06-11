@@ -28,6 +28,10 @@
             return self::isDarkTheme() ? "#191d21" : "#fff";
         }
 
+        public static function getShipSizeIconPath(string $class):string {
+            return "_icons/ship-class/" . (self::isDarkTheme() ? "ffffff" : "000000") ."/".$class."_64.png";
+        }
+
         public static function getThemedNavBarIconColor(bool $active):string {
             if ($active) {
                 return self::isDarkTheme() ? "ffffff" : "e3342f";

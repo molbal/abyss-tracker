@@ -4,7 +4,9 @@
 	namespace App\Http\Controllers;
 
 
-	class InfopageController extends Controller {
+	use Illuminate\Support\Facades\DB;
+
+    class InfopageController extends Controller {
 
         /**
          * Handles the tier thing
@@ -13,6 +15,9 @@
          * @return array
          */
         public function tier(int $tier) {
-            return ["yo" => $tier];
+
+            return view("infopages.infopage", [
+                'tier' => $tier
+            ]);
 	    }
 	}

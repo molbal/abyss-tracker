@@ -92,6 +92,13 @@
             animation-name: slideIn;
         }
 
+        .footer-about img.logo-footer {
+            width: 96px;
+            max-width: 96px;
+            height: 96px;
+            max-height: 96px;
+        }
+
     </style>
 
     @yield('styles')
