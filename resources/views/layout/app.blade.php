@@ -176,7 +176,7 @@
             <div class="row">
                 <div class="col-md-12 footer-copyright">
                     <p class="text-justify text-small py-1 my-1">
-                        All images are material are property of CCP Games: EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to evewho.com to use EVE Online and all associated logos and designs for promotional and zKillboard.com purposes on its website but does not endorse, and is not in any way affiliated with, zKillboard.com. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
+                        Material related to EVE-Online is used with limited permission of CCP Games hf by using official Toolkit. No official affiliation or endorsement by CCP Games hf is stated or implied.
                     </p>
                 </div>
             </div>

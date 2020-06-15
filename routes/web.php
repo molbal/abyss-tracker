@@ -88,6 +88,7 @@
      * Chart APIs
      */
     Route::get("/api/chart/home/types", 'GraphHelper@homeType')->name("chart.home.type");
+    Route::get("/api/chart/home/types/tier/{tier}", 'GraphHelper@typeTier')->name("chart.home.type.tier");
     Route::get("/api/chart/home/tiers", 'GraphHelper@homeTier')->name("chart.home.tier");
     Route::get("/api/chart/home/loot_levels", 'GraphHelper@homeLootLevels')->name("chart.home.loot_levels");
     Route::get("/api/chart/home/survival", 'GraphHelper@homeSurvival')->name("chart.home.survival");

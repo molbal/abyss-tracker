@@ -47,6 +47,37 @@
             return $chart->api();
         }
 
+        public function typeTier(Request $request, $tier) {
+            $request->headers->set('Accept', 'application/json');
+
+
+//            $tier = $request;
+//            dd($tier);
+            $chart = Cache::remember("aft.tiers.type-". $tier, now()->addMinutes(15), function() use ($tier) {
+                return  DB::table("runs")
+                          ->where("TIER", $tier)
+                          ->groupBy("TYPE")
+                          ->select("TYPE")
+                          ->selectRaw("COUNT(type) AS CNT")->get();
+            });
+
+            $dataset = [];
+            $values = [];
+            foreach ($chart as $type) {
+                $dataset[] = $type->TYPE;
+                $values[] = $type->CNT;
+            }
+
+            $chart = new LootAveragesChart();
+
+            $chart->labels($dataset);
+            $chart->dataset('Filament types', 'pie', $values)->options([
+                "radius" => self::HOME_PIE_RADIUS
+            ]);
+            return $chart->api();
+        }
+
+
         public function homeTier(Request $request) {
             $request->headers->set('Accept', 'application/json');
             if (Cache::has("home.levels")) {
