@@ -11,7 +11,7 @@
                 <br>
                 @lang("tiers.".$tier) runs overview
                 <br>
-                <small class="subtitle">based on 6 013 user submissions</small>
+                <small class="subtitle">based on {{number_format($count, 0, ",", " ")}} user submissions</small>
             </h2>
         </div>
     </div>
@@ -98,8 +98,14 @@
         <div class="col-md-4">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">@lang("tiers.".$tier) filament popularity</h5>
-                <div class="graph-container h-400px">
-                    {!! $charTypes->container(); !!}
+                <div class="graph-container h-300px">
+                    {!! $chartTypes->container(); !!}
+                </div>
+            </div>
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <h5 class="font-weight-bold mb-2">@lang("tiers.".$tier) survival</h5>
+                <div class="graph-container h-300px">
+                    {!! $chartSurvival->container(); !!}
                 </div>
             </div>
         </div>
@@ -118,20 +124,27 @@
         <p>Who has completed more tier {{$tier}} runs than anyone else?</p>
     </div>
     <div class="row mt-2">
-        @for($i=0;$i<6;$i++)
-        <div class="col-md-4">
-            <div class="card card-body border-0 shadow-sm mb-3">
-                <div class="row">
-                    <img src="https://images.evetech.net/characters/1/portrait?size=64"
-                         class="pull-left ml-2 rounded-circle shadow-sm b2w">
-                    <div class="col">
-                        <h2 class="font-weight-bold mb-0">Test Person</h2>
-                        <small class="text-muted font-weight-bold">999 @lang("tiers.".$tier) runs</small>
+        @foreach($heroes as $hero)
+            <div class="col-md-4">
+                <div class="card card-body border-0 shadow-sm mb-3">
+                    <div class="row">
+                        <img src="https://images.evetech.net/characters/{{$hero->CHAR_ID}}/portrait?size=64"
+                             class="pull-left ml-2 rounded-circle shadow-sm b2w">
+                        <div class="col">
+                            <h2 class="font-weight-bold mb-0"><a class="text-dark" href="{{route("profile.index", ["id" => $hero->CHAR_ID])}}">{{$hero->NAME}}</a></h2>
+                            <small class="text-muted font-weight-bold">{{number_format($hero->CNT, 0, ","," ")}} @lang("tiers.".$tier) runs</small>
+                        </div>
                     </div>
                 </div>
             </div>
+        @endforeach
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-body shadow-sm border-0 text-center mb-3">
+                <p class="mb-0">If you have a question you will probably get it answered in the Abyssal Lurkers discord or ingame in the <b>Abyssal Lurkers</b> channel.</p>
+            </div>
         </div>
-            @endfor
     </div>
 
     <div class="d-flex justify-content-between align-items-start mt-2">
@@ -187,7 +200,8 @@
 
 
 @section("scripts")
-    {!! $charTypes->script(); !!}
+    {!! $chartTypes->script(); !!}
+    {!! $chartSurvival->script(); !!}
 @endsection
 
 @section('styles')

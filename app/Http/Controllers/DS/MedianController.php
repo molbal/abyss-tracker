@@ -20,6 +20,8 @@
          */
         public static function getLootAtThreshold(int $tier, int $percent, bool $isCruiser) {
 
+            return Cache::remember(sprintf("aft.loot-threshold-tier.%d.%d.%d", $tier, $percent, $isCruiser ? 1 : 0), now()->addHour(), function () use ($tier, $percent, $isCruiser) {
+
             DB::statement("SET SQL_MODE=''");
             $rank = DB::select("
             select count(*) as CNT from runs r WHERE
@@ -45,6 +47,7 @@ SELECT a.LI FROM (
 
 ",
                 [$isCruiser ? 1 : 0, $tier, round($rank*$percent*0.01)])[0]->LI;
+            });
         }
 
         /**
@@ -55,7 +58,9 @@ SELECT a.LI FROM (
          * @return int
          */
         public static function getTierMedian(int $tier, bool $isCruiser):int {
-            return DB::select("
+
+            return Cache::remember(sprintf("aft.loot-median-tier.%d.%d", $tier, $isCruiser ? 1 : 0), now()->addHour(), function () use ($tier, $isCruiser) {
+                return DB::select("
              SELECT AVG(dd.LOOT_ISK) as MEDIAN_ISK
                 FROM (
                 SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
@@ -68,6 +73,7 @@ SELECT a.LI FROM (
                 ) as dd
                 WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );
             ", [$tier, $isCruiser ? 1 : 0])[0]->MEDIAN_ISK;
+            });
         }
 
         /**

@@ -84,7 +84,7 @@
                                     @else
                                         <span class="estimate-confident">{{min(100,round($drops[$type][$tier]->DROPPED_COUNT/$drops[$type][$tier]->RUNS_COUNT*100, 2))}}% </span>
                                         <br>
-                                        <span class="text-small">{{$drops[$type][$tier]->DROPPED_COUNT}} / {{$drops[$type][$tier]->RUNS_COUNT}}</span>
+                                        <span class="text-small">{{min($drops[$type][$tier]->RUNS_COUNT, $drops[$type][$tier]->DROPPED_COUNT)}} / {{$drops[$type][$tier]->RUNS_COUNT}}</span>
                                     @endif
                                 </td>
                                 @endfor
@@ -108,7 +108,7 @@
     <div class="row mt-3">
         <div class="col-sm-12">
             <p>
-                Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates were last updated <strong>{{$ago_drop}}</strong> with data from the run loot data. Every run submission triggers a price update for its loot items older than 24 hours. Drop rates are updated every 3 hours.
+                Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates are updated every 24 hours.
             </p>
         </div>
     </div>

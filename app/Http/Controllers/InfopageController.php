@@ -5,7 +5,9 @@
 
 
 	use App\Charts\LootTypesChart;
+    use App\Charts\SurvivalLevelChart;
     use App\Http\Controllers\DS\MedianController;
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
     class InfopageController extends Controller {
@@ -46,10 +48,22 @@
             $lootTypesChart->displayAxes(false);
             $lootTypesChart->displayLegend(false);
             $lootTypesChart->export(true, "Download");
-            $lootTypesChart->height("400");
+            $lootTypesChart->height("300");
             $lootTypesChart->theme(ThemeController::getChartTheme());
 
-            $query = $this->fitSearchController->getStartingQuery()->whereRaw("(
+
+            $survivalChart = new SurvivalLevelChart();
+            $survivalChart->load(route("chart.home.survival.tier", ["tier" => $tier]));
+            $survivalChart->displayAxes(false);
+            $survivalChart->displayLegend(false);
+            $survivalChart->export(true, "Download");
+            $survivalChart->height("300");
+            $survivalChart->theme(ThemeController::getChartTheme());
+
+
+            $popularFits = Cache::remember("aft.infopage.tier.$tier.fits", now()->addMinutes(15), function() use ($tier) {
+                $query = $this->fitSearchController->getStartingQuery()
+                                                   ->whereRaw("(
             (
 	fit_recommendations.DARK		 = $tier AND
 	fit_recommendations.ELECTRICAL	<= $tier AND
@@ -89,11 +103,16 @@ OR
 	fit_recommendations.FIRESTORM	<= $tier AND
 	fit_recommendations.GAMMA		 = $tier
 )
-)")->limit(5)->orderByDesc("RUNS_COUNT");
-            $popularFits = $query->get();
-            foreach ($popularFits as $i => $result) {
-                $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
-            }
+)")
+                                                   ->limit(7)
+                                                   ->orderByDesc("RUNS_COUNT");
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
+                }
+
+                return $popularFits;
+            });
 
             $runs =  DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->where("TIER", $tier)->limit(20)->get();
             $drops = DB::select("SELECT          ip.ITEM_ID,
@@ -114,6 +133,24 @@ GROUP BY ip.ITEM_ID
 ORDER BY 6 DESC LIMIT ?;
 ", [$tier, $tier, 10]);
 
+            $count = Cache::remember("aft.infopage.tier.$tier.count", now()->addMinutes(15), function() use ($tier) {
+                return DB::table("runs")->where("TIER", $tier)->count();
+            });
+
+
+            $heroes = Cache::remember("aft.infopage.tier.$tier.people", now()->addMinutes(15), function() use ($tier) {
+                return DB::table("runs")
+                         ->where("runs.TIER", $tier)
+                         ->where("runs.PUBLIC", true)
+                         ->groupBy("runs.CHAR_ID")
+                         ->groupBy("chars.NAME")
+                         ->select(["runs.CHAR_ID", DB::raw("COUNT(runs.ID) as CNT"), "chars.NAME"])
+                         ->orderBy('CNT', "DESC")
+                         ->join("chars", "runs.CHAR_ID","=","chars.CHAR_ID")
+                         ->limit(6)
+                         ->get();
+            });
+
 
             return view("infopages.infopage", [
                 'medianCruiser' => $medianCruiser,
@@ -123,11 +160,15 @@ ORDER BY 6 DESC LIMIT ?;
                 'atLoFrigate' => $atLoFrigate,
                 'atHiFrigate' => $atHiFrigate,
 
-                'charTypes' => $lootTypesChart,
+                'chartTypes' => $lootTypesChart,
+                'chartSurvival' => $survivalChart,
                 'popularFits' => $popularFits,
 
                 'runs' => $runs,
+                'count' => $count,
                 'drops'=> $drops,
+
+                'heroes' => $heroes,
 
                 'tier' => $tier
             ]);
