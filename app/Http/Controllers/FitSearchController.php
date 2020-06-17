@@ -294,6 +294,11 @@
                                         ->value('NAME') . " fits");
             }
 
+
+            if ($request->filled("SHIP_IS_CRUISER")) {
+                $query->where("ship_lookup.IS_CRUISER", '=', $request->get("SHIP_IS_CRUISER"));
+                $filters_display->add(($request->get("SHIP_IS_CRUISER")=="1" ? "Cruiser" : "Frigate")." size ships");
+            }
             if ($request->filled("SHIP_GROUP")) {
                 $query->where("ship_lookup.GROUP", '=', $request->get("SHIP_GROUP"));
                 $filters_display->add($request->get("SHIP_GROUP")." class");
