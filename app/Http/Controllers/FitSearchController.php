@@ -37,6 +37,10 @@
         public function getFitsForNewRunDropdown(int $shipId, string $nameOrId="") {
 
             $return = [];
+            $return[] = [
+                "text" => "No selection",
+                "children" => [$this->getFitSelect(null, false, "No selection", "", false)]
+            ];
             $shipName = Cache::remember("aft.ship-name..$shipId", now()->addHour(), function () use ($shipId) {
                return DB::table('ship_lookup')
                         ->where('ID', $shipId)
@@ -129,7 +133,7 @@
          *
          * @return array
          */
-        private function getFitSelect($thing, bool $disabled = false, string $nameOverride = null, int $idOverride=null, bool $isSelected = null) {
+        private function getFitSelect($thing, bool $disabled = false, string $nameOverride = null, $idOverride=null, bool $isSelected = null) {
             return [
                 'id' => $idOverride ?? intval($thing->ID),
                 'text' => $nameOverride ?? sprintf("%s (Fit #%s)", trim($thing->NAME), $thing->ID),
