@@ -59,10 +59,12 @@
                 $lastUsedFit = DB::table("fits")
                                    ->where("ID", $lastShipId)
                                    ->first();
-                $return[] = [
-                    "text" => "Last used $shipName fit",
-                    "children" => [$this->getFitSelect($lastUsedFit, false, null, null, true)]
-                ];
+                if (isset($lastUsedFit->ID)) {
+                    $return[] = [
+                        "text" => "Last used $shipName fit",
+                        "children" => [$this->getFitSelect($lastUsedFit, false, null, null, true)]
+                    ];
+                }
             }
 
             // My fits
