@@ -23,7 +23,7 @@
 
                 </p>
             </div>
-            <div class="card card-body border-0 shadow-sm mb-3">
+            <div class="card card-body border-danger shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                 <h4 class="mb-0 pb-0"><strong>1.5.4</strong> 'Circadian' release</h4>
                 <small class="mt-0">2020 june 6</small>
