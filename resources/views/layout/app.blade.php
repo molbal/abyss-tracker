@@ -214,6 +214,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 @yield('scripts')
 <script>
+    window.onunload = function(){};
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
 
