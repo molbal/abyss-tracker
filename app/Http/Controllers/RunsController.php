@@ -91,8 +91,13 @@
          * @return int
          */
         public function storeNewRunWithAdvancedLoot(Request $request, array $lootDifference): int {
-            if ($request->get("RUN_LENGTH_M")) {
-                $runtime = (intval($request->get("RUN_LENGTH_M")) * 60) + intval($request->get("RUN_LENGTH_S"));
+
+
+
+            if ($request->filled("RUN_LENGTH_M") || $request->filled("RUN_LENGTH_S")) {
+                $runtime_m = $request->filled("RUN_LENGTH_M") ? $request->get("RUN_LENGTH_M") : 20;
+                $runtime_s = $request->filled("RUN_LENGTH_S") ? $request->get("RUN_LENGTH_S") : 0;
+                $runtime = ($runtime_m*60)+$runtime_s;
             }
             else {
                 $runtime = null;

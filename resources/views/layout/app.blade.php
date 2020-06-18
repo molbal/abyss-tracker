@@ -92,6 +92,13 @@
             animation-name: slideIn;
         }
 
+        .footer-about img.logo-footer {
+            width: 96px;
+            max-width: 96px;
+            height: 96px;
+            max-height: 96px;
+        }
+
     </style>
 
     @yield('styles')
@@ -151,7 +158,7 @@
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/job.png"/><a class="text-white" href="{{route("fit.index")}}">Fits</a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/rocket.png"/><a class="text-white" href="{{route('ships_all')}}">Ships</a></p>
                         </div>
-                        <div class="col-md-6 d-none">
+                        <div class="col-md-6">
                             <h5 class="font-weight-bold text-white">Info pages</h5>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 1])}}">Calm <small class="bringupper">(Tier 1)</small></a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 2])}}">Agitated <small class="bringupper">(Tier 2)</small></a></p>
@@ -169,7 +176,7 @@
             <div class="row">
                 <div class="col-md-12 footer-copyright">
                     <p class="text-justify text-small py-1 my-1">
-                        All images are material are property of CCP Games: EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to evewho.com to use EVE Online and all associated logos and designs for promotional and zKillboard.com purposes on its website but does not endorse, and is not in any way affiliated with, zKillboard.com. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
+                        Material related to EVE-Online is used with limited permission of CCP Games hf by using official Toolkit. No official affiliation or endorsement by CCP Games hf is stated or implied.
                     </p>
                 </div>
             </div>
@@ -207,6 +214,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 @yield('scripts')
 <script>
+    window.onunload = function(){};
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
 

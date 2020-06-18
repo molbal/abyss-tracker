@@ -34,7 +34,16 @@
          * @param string $rawData
          */
         public function __construct(string $rawData) {
+
+            $rawData = collect(explode("\n", $rawData))->reject(function ($value, $key) {
+                 return trim($value) == "" ? true : false;
+            })->implode("\n");
+
+
             $this->rawData = $rawData;
+
+
+
             $this->items = [];
             $this->totalPrice = null;
             $this->process();

@@ -47,6 +47,37 @@
             return $chart->api();
         }
 
+        public function typeTier(Request $request, $tier) {
+            $request->headers->set('Accept', 'application/json');
+
+
+//            $tier = $request;
+//            dd($tier);
+            $chart = Cache::remember("aft.tiers.type-". $tier, now()->addMinutes(15), function() use ($tier) {
+                return  DB::table("runs")
+                          ->where("TIER", $tier)
+                          ->groupBy("TYPE")
+                          ->select("TYPE")
+                          ->selectRaw("COUNT(type) AS CNT")->get();
+            });
+
+            $dataset = [];
+            $values = [];
+            foreach ($chart as $type) {
+                $dataset[] = $type->TYPE;
+                $values[] = $type->CNT;
+            }
+
+            $chart = new LootAveragesChart();
+
+            $chart->labels($dataset);
+            $chart->dataset('Filament types', 'pie', $values)->options([
+                "radius" => self::HOME_PIE_RADIUS
+            ]);
+            return $chart->api();
+        }
+
+
         public function homeTier(Request $request) {
             $request->headers->set('Accept', 'application/json');
             if (Cache::has("home.levels")) {
@@ -202,7 +233,7 @@
 
         public function homeSurvival(Request $request) {
             $request->headers->set('Accept', 'application/json');
-            $data = Cache::remember("home.survival", 15, function () {
+            $data = Cache::remember("home.survival", now()->addHour(), function () {
                 return [
                     "survived" => DB::table("runs")->where("SURVIVED", '=', true)->whereRaw("RUN_DATE > NOW() - INTERVAL 90 DAY")->count(),
                     "died" => DB::table("runs")->where("SURVIVED", '=', false)->whereRaw("RUN_DATE > NOW() - INTERVAL 90 DAY")->count()];
@@ -220,10 +251,30 @@
 
         }
 
+        public function homeSurvivalTier(Request $request, int $tier) {
+            $request->headers->set('Accept', 'application/json');
+            $data = Cache::remember("home.survival", now()->addHour(), function () use ($tier) {
+                return [
+                    "survived" => DB::table("runs")->where("SURVIVED", '=', true)->where('TIER', $tier)->whereRaw("RUN_DATE > NOW() - INTERVAL 180 DAY")->count(),
+                    "died" => DB::table("runs")->where("SURVIVED", '=', false)->where('TIER', $tier)->whereRaw("RUN_DATE > NOW() - INTERVAL 180 DAY")->count()];
+            });
+
+            $dataset = ["Survived", "Died"];
+            $values = [$data["survived"], $data["died"]];
+            $chart = new SurvivalLevelChart();
+
+            $chart->labels($dataset);
+            $chart->dataset('Survival', 'pie', $values)->options([
+                "radius" => self::HOME_PIE_RADIUS
+            ]);
+            return $chart->api();
+
+        }
+
         public function tierAverages(Request $request) {
             $request->headers->set('Accept', 'application/json');
 
-            $data = Cache::remember("home.tier_averages", 15, function () {
+            $data = Cache::remember("home.tier_averages", now()->addHour(), function () {
                 return DB::table("runs")
                     ->select("TIER")
                     ->selectRaw("AVG(LOOT_ISK) as AVG")
@@ -233,7 +284,7 @@
                     ->get();
             });
 
-            $data_cruiser = Cache::remember("home.tier_averages_cruiser", 15, function () {
+            $data_cruiser = Cache::remember("home.tier_averages_cruiser", now()->addHour(), function () {
                 return DB::table("runs")
                     ->select("runs.TIER")
                     ->selectRaw("AVG(runs.LOOT_ISK) as AVG")
@@ -246,7 +297,7 @@
                     ->get();
             });
 
-            $data_frigate = Cache::remember("home.tier_averages_frigate", 15, function () {
+            $data_frigate = Cache::remember("home.tier_averages_frigate", now()->addHour(), function () {
                 return DB::table("runs")
                     ->select("runs.TIER")
                     ->selectRaw("AVG(runs.LOOT_ISK) as AVG")

@@ -449,8 +449,5 @@ $lost_buy = 0;
         td {
             border:0!important;
         }
-        .b2w {
-            border: 2px solid #fff;
-        }
     </style>
 @endsection

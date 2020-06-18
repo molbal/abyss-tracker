@@ -37,14 +37,26 @@
                    href="{{route("fit.index")}}">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.index" == Route::currentRouteName())}}/job.png"> Fits</a>
             </li>
+            <li class="nav-item dropdown {{"infopage.tier" == Route::currentRouteName() ? "active" : ""}}" style="list-style: none">
+                <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == Route::currentRouteName())}}/info.png"> Overview</a>
+                </a>
+                <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
+                    <a href="{{route("infopage.tier", ['tier' => 1])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Calm <small class="bringupper">(Tier 1)</small></a>
+                    <a href="{{route("infopage.tier", ['tier' => 2])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Agitated <small class="bringupper">(Tier 2)</small></a>
+                    <a href="{{route("infopage.tier", ['tier' => 3])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Fierce <small class="bringupper">(Tier 3)</small></a>
+                    <a href="{{route("infopage.tier", ['tier' => 4])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Raging <small class="bringupper">(Tier 4)</small></a>
+                    <a href="{{route("infopage.tier", ['tier' => 5])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Chaotic <small class="bringupper">(Tier 5)</small></a>
+                </div>
+            </li>
             <li class="nav-item dropdown" style="list-style: none">
                 <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Community <sup>(1.5.3)</sup></a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Community <sup>(1.5.4)</sup></a>
                 </a>
                 <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
                     <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
                     <a href="{{route("donors.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/like.png"> Donors</a>
-                    <a href="https://discord.gg/FyNsM5k" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/discord-logo.png"> Join Abyssal Lurker <sup>(Discord)</sup></a>
+                    <a href="https://discord.gg/FyNsM5k" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/discord-logo.png"> Join Abyssal Lurkers <sup>(Discord)</sup></a>
                     <div class="dropdown-divider"></div>
                     <a href="https://github.com/molbal/abyss-tracker/issues" class="dropdown-item pl-2" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/github.png"> Issue tracker</a>
                     <a href="https://patreon.com/veetor" class="dropdown-item pl-2" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png"> Patreon</a>
