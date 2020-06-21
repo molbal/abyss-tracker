@@ -22,7 +22,7 @@
     </div>
     <div class="row mt-2">
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="20th percentile value">
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/more-than.png" class="pull-left ml-2"/>
                     <div class="col">
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="Median loot value">
                 <div class="row">
                     <img src="{{\App\Http\Controllers\ThemeController::getShipSizeIconPath("cruiser")}}" class="pull-left ml-2">
                     <div class="col">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="80th percentile value">
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/less-than.png" class="pull-left ml-2"/>
                     <div class="col">
@@ -57,7 +57,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="20th percentile value">
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/more-than.png" class="pull-left ml-2"/>
                     <div class="col">
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="Median loot value">
                 <div class="row">
                     <img src="{{\App\Http\Controllers\ThemeController::getShipSizeIconPath("frigate")}}" class="pull-left ml-2">
                     <div class="col">
@@ -79,7 +79,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="80th percentile value">
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/less-than.png" class="pull-left ml-2"/>
                     <div class="col">

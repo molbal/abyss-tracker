@@ -158,9 +158,9 @@
 
 
         /**
-         * @return mixed
+         * @return int|null
          */
-        public function getAmmoTypeId() {
+        public function getAmmoTypeId(): ?int {
             return $this->ammoTypeId;
         }
 
@@ -197,6 +197,22 @@
         public function persistToFit(int $fitId) : void {
             DB::table("parsed_fit_items")
               ->insert(['FIT_ID' => $fitId, 'ITEM_ID' => $this->typeId, 'COUNT' => $this->count, 'AMMO_ID' => $this->ammoTypeId]);
+        }
+
+        /**
+         * Gets this entity as legit formatted EFT line
+         * @return string|null
+         */
+        public function toEftLine() {
+            if ($this->hasAmmo()) {
+                return sprintf("%s, %s", $this->getItemName(), $this->getAmmoName());
+            }
+            else if ($this->count>1) {
+                return sprintf("%s x%d", $this->getItemName(), $this->getCount());
+            }
+            else {
+                return $this->getItemName();
+            }
         }
 
     }
