@@ -10,10 +10,10 @@
     <td><span class="h6 font-weight-bold mb-0 moveabitdown" style="vertical-align: bottom">
             <a href="{{route("fit_single", ["id" => $row->ID])}}" data-toggle="tooltip" title="Click to open fit" class="text-dark">{{$row->NAME}}
             </a></span></td>
-    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->offense->totalDps)}} <small>dps</small></span></td>
-    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->defense->reps->burst->total)}} <small>ehp/s</small></span></td>
-    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->defense->ehp->total/1000)}} <small>k ehp</small></span></td>
-    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->misc->maxSpeed)}} <small>m/s</small></span></td>
+    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->offense->totalDps ?? 0)}} <small>dps</small></span></td>
+    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->defense->reps->burst->total ?? 0)}} <small>ehp/s</small></span></td>
+    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round(($stats->defense->ehp->total ?? 0)/1000)}} <small>k ehp</small></span></td>
+    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->misc->maxSpeed ?? 0)}} <small>m/s</small></span></td>
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{number_format($row->PRICE/1000000, 0, ",", " ")}} M <small>ISK</small></span>
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{number_format($row->RUNS_COUNT, 0, ",", " ")}} </span>
     </td>
