@@ -126,6 +126,11 @@
                 @component("components.fits.filter.tag-selector") TagMicrowarpdrive @endcomponent
             @endcomponent
 
+{{--            @component("components.collapse.collapsible-card", ["title" => "Propulsion", 'icon' => 'propulsion'])--}}
+{{--                @component("components.fits.filter.tag-selector") TagAfterburner @endcomponent--}}
+{{--                @component("components.fits.filter.tag-selector") TagMicrowarpdrive @endcomponent--}}
+{{--            @endcomponent--}}
+
                 <div class="card card-body border-0 shadow-sm mt-3 p-0">
                     <button type="button" class="btn btn-primary" id="doFilter">Filter this list</button>
                 </div>

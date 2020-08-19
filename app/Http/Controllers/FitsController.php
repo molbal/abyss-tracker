@@ -220,12 +220,12 @@
          * @throws \Exception
          */
         public function get(int $id) {
-            if (!DB::table("fits")->where("ID", $id)->exists()) {
+            if (!$this->getFitsQB($id)->exists()) {
                 return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
             }
 
             $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
-                return DB::table("fits")->where("ID", $id)->first();
+                return $this->getFitsQB($id)->first();
             });
 
 
@@ -241,8 +241,8 @@
 
 
             $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
-            $ship_type = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
-            $ship_price = $this->sipc->getFromTypeId($fit->SHIP_ID)->getAveragePrice() ?? 0.0;
+            $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
+            $shipPrice = $this->sipc->getFromTypeId($fit->SHIP_ID)->getAveragePrice() ?? 0.0;
 
             if (trim($fit->VIDEO_LINK)) {
                 try {
@@ -278,12 +278,14 @@
 
             $eftObj = Eft::loadFromId($id);
             $eftParsed = $eftObj->getStructuredDisplay();
+            $fit->PRICE = $eftObj->getFitValue();
+            $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
                 'char_name' => $char_name,
-                'ship_type' => $ship_type,
-                'ship_price' => $ship_price,
+                'ship_type' => $shipType,
+                'ship_price' => $shipPrice,
                 'items_price' => $eftObj->getItemsValue(),
                 'fit_quicklook' => $eftParsed,
                 'description' => $description,
@@ -397,6 +399,15 @@
             return $shipId;
 	    }
 
+        /**
+         * @param int $id
+         *
+         * @return \Illuminate\Database\Query\Builder
+         */
+        private function getFitsQB(int $id) : \Illuminate\Database\Query\Builder {
+            return DB::table("fits")
+                     ->where("ID", $id);
+        }
 
 
     }

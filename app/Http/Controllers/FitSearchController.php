@@ -149,7 +149,7 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function index() {
-            $ships = Cache::remember("aft.ships", now()->addHour(), function() {return DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();});
+            $ships = Cache::remember("aft.ships", now()->addHour(), function() {return DB::table("ship_lookup")->whereRaw("ship_lookup.ID in (select SHIP_ID from fits)")->orderBy("NAME", "ASC")->get();});
             $groups = Cache::remember("aft.ship.groups", now()->addHour(), function () {return DB::select("select distinct `GROUP` from ship_lookup order by 1 asc");});
             $results = $this->getStartingQuery()->orderByDesc("RUNS_COUNT")->paginate();
 
