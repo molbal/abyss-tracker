@@ -7,6 +7,30 @@
     </div>
 
     <div class="row mt-3">
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            <div class="card card-body border-0 shadow-sm p-0">
+                <img src="{{asset('home/news.jpg')}}" alt="News" class="w-100 rounded-top">
+                <div class="p-3">
+                    <a href="#" class="font-weight-bold h4 text-white">News</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="card card-body border-0 shadow-sm p-0">
+                    <img src="{{asset('home/alliance-open.jpg')}}" alt="News" class="w-100 rounded-top">
+                    <div class="p-3">
+                        <a href="#" class="font-weight-bold h4 text-white">Alliance <strike>Tournament</strike> Open</a>
+                    </div>
+                </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            <div class="card card-body border-0 shadow-sm">
+                Last donations
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
         <div class="col-md-4 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Top 10 (last 90 days)</h5>

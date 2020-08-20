@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePatreonDonorDisplaysTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreatePatreonDonorDisplaysTable extends Migration
      */
     public function up()
     {
-        Schema::create('patreon_donor_displays', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string("name", "32");
-            $table->float("monthly_donation");
-            $table->date("joined");
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ class CreatePatreonDonorDisplaysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('patreon_donor_displays');
+        Schema::dropIfExists('users');
     }
 }
