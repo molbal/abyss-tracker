@@ -16,8 +16,10 @@
     use App\Charts\TierLevelsChart;
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
+    use App\Http\Controllers\Misc\DonorController;
     use App\Http\Controllers\Profile\LeaderboardController;
     use App\Mail\RunFlagged;
+    use App\PatreonDonorDisplay;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -45,6 +47,9 @@
         /** @var LeaderboardController */
         private $leaderboardController;
 
+        /** @var DonorController */
+        private $donationController;
+
         /**
          * AbyssController constructor.
          *
@@ -54,14 +59,16 @@
          * @param RunsController           $runsController
          * @param BarkController           $barkController
          * @param LeaderboardController    $leaderboardController
+         * @param DonorController          $donationController
          */
-        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController) {
+        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController, DonorController $donationController) {
             $this->lootCacheController = $lootCacheController;
             $this->graphContainerController = $graphContainerController;
             $this->homeQueriesController = $homeQueriesController;
             $this->runsController = $runsController;
             $this->barkController = $barkController;
             $this->leaderboardController = $leaderboardController;
+            $this->donationController = $donationController;
         }
 
 
@@ -86,6 +93,10 @@
             $leaderboard_30 = $this->leaderboardController->getLeaderboard("-30 day", "", 10);
             $leaderboard_07 = $this->leaderboardController->getLeaderboard("-7 day", "", 10);
 
+            $lastPatreon = PatreonDonorDisplay::orderBy("joined", 'DESC')->limit(1)->first();
+            $lastDonation = $this->donationController->getDonations(1, 1000000)->first();
+
+//            dd($lastDonation);
             return view("welcome", [
                 'loot_types_chart'  => $lootTypesChart,
                 'tier_levels_chart' => $tierLevelsChart,
@@ -100,6 +111,8 @@
                 'leaderboard_90' => $leaderboard_90,
                 'leaderboard_30' => $leaderboard_30,
                 'leaderboard_07' => $leaderboard_07,
+                'patreon_last' => $lastPatreon,
+                'ingame_last' => $lastDonation
             ]);
         }
 

@@ -11,6 +11,7 @@
     use App\Charts\BellChart1;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
+    use App\Http\Controllers\DS\MedianController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -108,29 +109,15 @@
          * @return string
          */
         public function getHomeRunBellGraphsCruisers(Request $request) {
-            $million = 1000000;
-
-            $meansCruiser = collect([]);
-            $sdevsCruiser = collect([]);
-            $ndataCruiser = collect([]);
-
-            $datasets = collect([]);
-
-
             $chart = new BellChart1();
 
-            for ($i=1;$i<=5;$i++) {
-                $meansCruiser->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->avg("runs.LOOT_ISK"))/$million);
-                $sdevsCruiser->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 1)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million);
-                $ndataCruiser->add($this->getCruiserBaseDataForTier($i));
 
-                $datasets->add($this->buildDataSet($ndataCruiser->last(), $million, $meansCruiser->last(), $sdevsCruiser->last()));
-                $chart->dataset("Cruisers Tier $i", "line", $datasets->last())->options([
-                    "smooth" => 0.3,
-                    "showSymbol" => false,
-                    "hoverAnimation" => false
-                ]);
+            $data = collect([]);
+            for ($i = 1; $i<=5; $i++) {
+                $data->add(MedianController::getTierMedian($i, true));
             }
+
+            $chart->dataset("Median loot values (Most probable)", "bar", $data);
             $request->headers->set('Accept', 'application/json');
             return $chart->api();
         }

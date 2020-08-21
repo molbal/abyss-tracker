@@ -7,6 +7,7 @@
     use App\Charts\AbyssSurvivalType;
     use App\Charts\BellChart2;
     use App\Charts\DailyAdds;
+    use App\Charts\HomeCruiserMedian;
     use App\Charts\IskPerHourChart;
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
@@ -91,19 +92,29 @@
         /**
          * @return BellChart1
          */
-        public function getHomeLootAveragesCruisers() : BellChart1
+        public function getHomeLootAveragesCruisers() : HomeCruiserMedian
         {
-            $chart = new BellChart1(0,150);
+//            $chart = new BellChart1(0,150);
+//
+//            $chart->export(true, "Download");
+//            $chart->height("400");
+//            $chart->theme(ThemeController::getChartTheme());
+//            $chart->load(route("chart.home.distribution.cruisers"));
+//            $options = $chart->options;
+//            $options["xAxis"] = [];
+//            $chart->options($options, true);
+//            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
 
+            $chart = new HomeCruiserMedian();
             $chart->export(true, "Download");
             $chart->height("400");
             $chart->theme(ThemeController::getChartTheme());
             $chart->load(route("chart.home.distribution.cruisers"));
-            $options = $chart->options;
-            $options["xAxis"] = [];
-            $chart->options($options, true);
-            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
-
+            $labels = collect([]);
+            for ($i = 1; $i<=5; $i++) {
+                $labels->add("Tier {$i} cruisers");
+            }
+            $chart->labels($labels);
             return $chart;
         }
 

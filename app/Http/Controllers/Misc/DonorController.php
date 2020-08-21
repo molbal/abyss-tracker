@@ -57,8 +57,14 @@
          *
          * @return \Illuminate\Support\Collection
          */
-        public function getDonations(int $limit) {
-            return DB::table("donors")->orderBy("DATE", "DESC")->limit($limit)->get();
+        public function getDonations(int $limit, int $minimumAmount = 0, bool $opsecSkipped = false) {
+            $builder = DB::table("donors")
+                         ->where("AMOUNT", ">=", $minimumAmount);
+
+            if ($opsecSkipped) {
+                $builder->whereRaw("UPPER(REASON)<>'PRIVATE'");
+            }
+            return $builder->orderBy("DATE", "DESC")->limit($limit)->get();
         }
 
         public function index() {
