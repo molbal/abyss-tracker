@@ -23,8 +23,22 @@
 
                 </p>
             </div>
-            <div class="card card-body border-danger shadow-sm mb-3">
-                <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+            <div class="card card-body border-danger shadow-sm mb-3 p-0">
+                <img src="{{asset("home/1.5.5.jpg")}}" alt="1.5.5 release" class="w-100 shadow">
+                <div class="p-3">
+                    <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                    <h4 class="mb-0 pb-0"><strong>1.5.5</strong> 'Bolt' release</h4>
+                    <small class="mt-0">2020 august 22</small>
+                    <p class="text-justify">
+                        This is a combined bugfix and new features release.
+                    </p>
+                    <ul>
+                        <li>Infrastructure changes: Database version update to MariaDB 10.2.33, PHP version update to 7.4, Laravel update to 7.22. Host VPS increased to 4 vCPU cores (was 1) and 8GB (was 1.5GB) memory.</li>
+                        <li>Adds EDENCOM ships to the supported ships list: Stormbringer and Skybreaker</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3">
                 <h4 class="mb-0 pb-0"><strong>1.5.4</strong> 'Circadian' release</h4>
                 <small class="mt-0">2020 june 6</small>
                 <p class="text-justify">
@@ -35,7 +49,7 @@
                     <li>Fixes bug: <em>Cannot unselect fit when adding new run <a href="https://github.com/molbal/abyss-tracker/issues/42" target="_blank">#42</a></em></li>
                     <li>Fixes bug: <em>Only filling the run minutes sets the duration as Unknown <a href="https://github.com/molbal/abyss-tracker/issues/40" target="_blank">#40</a></em></li>
                     <li>Fixes bug: <em>Http Error 500 on new run with emtpy rows <a href="https://github.com/molbal/abyss-tracker/issues/43" target="_blank">#43</a></em></li>
-{{--                    <li>Fixes bug: <em>Fitting filter not re-applied after using browser "back" <a href="https://github.com/molbal/abyss-tracker/issues/34" target="_blank">#34</a></em></li>--}}
+                    {{--                    <li>Fixes bug: <em>Fitting filter not re-applied after using browser "back" <a href="https://github.com/molbal/abyss-tracker/issues/34" target="_blank">#34</a></em></li>--}}
                     <li>Fixes bug: <em>Ship size filter doesn't work <a href="https://github.com/molbal/abyss-tracker/issues/36" target="_blank">#36</a></em></li>
                     <li>Fixes bug: <em>Cant select a fit when trying to "add a new run" <a href="https://github.com/molbal/abyss-tracker/issues/41" target="_blank">#41</a></em></li>
                 </ul>
