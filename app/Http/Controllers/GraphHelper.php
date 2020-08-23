@@ -112,12 +112,16 @@
             $chart = new BellChart1();
 
 
-            $data = collect([]);
+            $dataCruiser = collect([]);
+            $dataFrigate = collect([]);
+
             for ($i = 1; $i<=5; $i++) {
-                $data->add(MedianController::getTierMedian($i, true));
+                $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
+                $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
             }
 
-            $chart->dataset("Median loot values (Most probable)", "bar", $data);
+            $chart->dataset("Cruiser median loot values (Most probable)", "bar", $dataCruiser);
+            $chart->dataset("Frigate median loot values (Most probable)", "bar", $dataFrigate);
             $request->headers->set('Accept', 'application/json');
             return $chart->api();
         }

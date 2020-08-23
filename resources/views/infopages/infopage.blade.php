@@ -142,7 +142,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-body shadow-sm border-0 text-center mb-3">
-                <p class="mb-0">If you have a question you will probably get it answered in the Abyssal Lurkers discord or ingame in the <b>Abyssal Lurkers</b> channel.</p>
+                <p class="mb-0">If you have a question you will probably get it answered in the <a class="text-dark" href="{{route('community.discord')}}">Abyssal Lurkers discord</a> or ingame in the <b>Abyssal Lurkers</b> channel.</p>
             </div>
         </div>
     </div>

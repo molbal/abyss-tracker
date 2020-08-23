@@ -4,8 +4,21 @@ blockquote.donation {
     padding: 2px 0 2px 0.5rem;
     margin: 0;
 }
+div.donor {
+    text-align: center;
 
-img.portrait {
-    height: 24px;width: 24px;
-    border: 1px solid #fff;
+    img.portrait {
+        height: 96px;
+        width: 96px;
+        border: 2px solid #fff;
+        display: block;
+        position: relative;
+        top: -48px;
+        //margin-bottom: -48px;
+        //margin-left: auto;
+        //margin-right: auto;
+        margin: 0 auto -48px auto;
+    }
 }
+
+

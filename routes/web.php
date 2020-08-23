@@ -143,3 +143,8 @@
     Route::get("/maintenance/recalc-fit/{id}/{secret}", 'Maintenance\MaintenanceController@recalculateSingleFit');
     Route::get("/maintenance/recalc-fits/{secret}", 'Maintenance\MaintenanceController@recalculateQueuedFits');
 
+    /**
+     * Community Controller
+     */
+    Route::get("/discord", 'CommunityController@discord')->name("community.discord");
+
