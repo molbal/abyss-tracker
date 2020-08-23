@@ -50,6 +50,9 @@
         /** @var DonorController */
         private $donationController;
 
+        /** @var FitSearchController */
+        private $fitSearchController;
+
         /**
          * AbyssController constructor.
          *
@@ -60,8 +63,9 @@
          * @param BarkController           $barkController
          * @param LeaderboardController    $leaderboardController
          * @param DonorController          $donationController
+         * @param FitSearchController      $fitSearchController
          */
-        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController, DonorController $donationController) {
+        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController, DonorController $donationController, FitSearchController $fitSearchController) {
             $this->lootCacheController = $lootCacheController;
             $this->graphContainerController = $graphContainerController;
             $this->homeQueriesController = $homeQueriesController;
@@ -69,6 +73,7 @@
             $this->barkController = $barkController;
             $this->leaderboardController = $leaderboardController;
             $this->donationController = $donationController;
+            $this->fitSearchController = $fitSearchController;
         }
 
 
@@ -96,7 +101,27 @@
             $lastPatreon = PatreonDonorDisplay::orderBy("joined", 'DESC')->limit(1)->first();
             $lastDonation = $this->donationController->getDonations(1, 1000000)->first();
 
-//            dd($lastDonation);
+
+            $popularFits = Cache::remember("aft.home.fits.popular", now()->addMinutes(15), function() {
+                $query = $this->fitSearchController->getStartingQuery()
+                                                   ->limit(config('tracker.homepage.fits.count'))
+                                                   ->orderByDesc("RUNS_COUNT");
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
+                }
+                return $popularFits;
+            });
+            $newFits = Cache::remember("aft.home.fits.new", now()->addMinutes(15), function() {
+                $query = $this->fitSearchController->getStartingQuery()
+                                                   ->limit(config('tracker.homepage.fits.count'))
+                                                   ->orderBy('SUBMITTED', 'ASC');
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
+                }
+                return $popularFits;
+            });
             return view("welcome", [
                 'loot_types_chart'  => $lootTypesChart,
                 'tier_levels_chart' => $tierLevelsChart,
@@ -112,7 +137,9 @@
                 'leaderboard_30' => $leaderboard_30,
                 'leaderboard_07' => $leaderboard_07,
                 'patreon_last' => $lastPatreon,
-                'ingame_last' => $lastDonation
+                'ingame_last' => $lastDonation,
+                'popularFits' => $popularFits,
+                'newFits' => $newFits
             ]);
         }
 

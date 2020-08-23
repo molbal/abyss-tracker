@@ -241,7 +241,8 @@
                                "fit_recommendations.ELECTRICAL as Electrical",
                                "fit_recommendations.EXOTIC as Exotic",
                                "fit_recommendations.FIRESTORM as Firestorm",
-                               "fit_recommendations.GAMMA as Gamma"])
+                               "fit_recommendations.GAMMA as Gamma",
+                               "fits.SUBMITTED as Submitted"])
                      ->distinct("fits.ID");
         }/**
      * @param Request $request

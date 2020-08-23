@@ -24,7 +24,8 @@
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
                     <img src="{{asset('home/alliance-open.jpg')}}" alt="Alliance Open" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
                     <div class="p-3 text-center">
-                        <a href="https://open.eve-nt.uk" target="_blank" class="font-weight-bold h5 text-dark" data-toggle="tooltip" title="We made our own Alliance Tournament - with blackjack and hookers - and more than 200000 PLEX in the prize pool">Alliance Open</a>
+                        <a href="https://open.eve-nt.uk" target="_blank" class="font-weight-bold h5 text-dark">EVE-NT Alliance Open</a>
+                        <p class="mb-0">We made our own Alliance Tournament with 200000+ PLEX in the prizes</p>
                     </div>
                 </div>
             </div>
@@ -41,9 +42,6 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="tab-head-activity" data-toggle="tab" href="#tab-activity" role="tab" aria-controls="profile" aria-selected="false">Abyss activity (daily)</a>
                     </li>
-{{--                    <li class="nav-item" role="presentation">--}}
-{{--                        <a class="nav-link" id="tab-head-distribution-frig" data-toggle="tab" href="#tab-distribution-frig" role="tab" aria-controls="home" aria-selected="true">Abyss activity (hourly)</a>--}}
-{{--                    </li>--}}
                 </ul>
                 <div class="card card-body border-0 shadow-sm top-left-no-round">
                     <div class="tab-content" id="myTabContent">
@@ -52,11 +50,6 @@
                                 {!! $lootDistributionCruiser->container(); !!}
                             </div>
                         </div>
-{{--                        <div class="tab-pane fade show" id="tab-distribution-frig" role="tabpanel" aria-labelledby="tab-head-distribution-frig">--}}
-{{--                            <div class="graph-container h-400px">--}}
-{{--                                {!! $lootDistributionFrigate->container(); !!}--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
                         <div class="tab-pane fade" id="tab-activity" role="tabpanel" aria-labelledby="tab-head-activity">
                             <div class="graph-container h-400px">
                                 {!! $daily_add_chart->container(); !!}
@@ -96,13 +89,13 @@
 
 
             <div class="mt-3 card card-body border-0 shadow-sm text-center">
-                <h4 class="font-weight-bold"><img class="smallicon bringupper mr-1" src="https://img.icons8.com/small/32/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"/> Info pages</h4>
+                <h4 class="font-weight-bold"><img class="smallicon bringupper mr-1" src="https://img.icons8.com/small/32/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"/> Overview pages</h4>
 {{--                <img src="{{asset("home/infopage.jpg")}}" alt="Information pages" class="w-100 shadow-sm rounded-top mb-2">--}}
                 <table class="ml-auto mr-auto">
                 @for($i = 1; $i <=5; $i++)
                     <tr cellpadding="1">
                         <td><a href="{{route('infopage.tier',['tier' => $i])}}" class="text-dark"><img class="smallicon" src="{{asset("tiers/{$i}.png")}}" alt=""></a></td>
-                        <td class="text-left"><a href="{{route('infopage.tier',['tier' => $i])}}" class="text-dark">@lang('tiers.'.$i) information page</a></td>
+                        <td class="text-left"><a href="{{route('infopage.tier',['tier' => $i])}}" class="text-dark">@lang('tiers.'.$i) difficulty overview</a></td>
                     </tr>
                 @endfor
                 </table>
@@ -114,19 +107,45 @@
         <h4 class="font-weight-bold">Active contributors</h4>
         <a class="text-dark"
            href="{{route("leaderboard.index")}}">
-            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/trophy.png"> Leaderboard</a>
+            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/trophy.png" class="tinyicon bringupper mr-1">Leaderboard</a>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-4">
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Top 10 (last 90 days)</h5>
+            <div class="d-flex justify-content-between">
+                <h5 class="font-weight-bold mb-2">Top 10</h5>
+                <small>(last 90 days)</small>
+            </div>
+            <div class="card card-body border-0 shadow-sm leaderboard">
+                @if(count($leaderboard_90)>0)
+                    @component("components.leaderboard_top", ['item' => $leaderboard_90[0]])@endcomponent
+                @endif
                 <table class="table table-sm table-responsive-sm mb-0">
                     <thead>
-                    <tr>
-                        <th>Character</th>
-                        <th class="text-right">Runs</th>
-                    </tr>
-                    @forelse($leaderboard_90 as $l)
+                    @forelse($leaderboard_90 as $i => $l)
+                        @if ($i ==0) @continue @endif
+                        @component("components.leaderboard_char", ['item' => $l]) @endcomponent
+                    @empty
+                        <tr>
+                            <td colspan="2"><p class="text-center py-3">Noone here yet!</p></td>
+                        </tr>
+                    @endforelse
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="d-flex justify-content-between">
+                <h5 class="font-weight-bold mb-2">Top 10</h5>
+                <small>(last 30 days)</small>
+            </div>
+            <div class="card card-body border-0 shadow-sm leaderboard">
+                @if(count($leaderboard_30)>0)
+                    @component("components.leaderboard_top", ['item' => $leaderboard_30[0]])@endcomponent
+                @endif
+                <table class="table table-sm table-responsive-sm mb-0">
+                    <thead>
+                    @forelse($leaderboard_30 as  $i => $l)
+                        @if ($i ==0) @continue @endif
                         @component("components.leaderboard_char", ['item' => $l])@endcomponent
                     @empty
                         <tr>
@@ -138,35 +157,18 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Top 10 (last 30 days)</h5>
-                <table class="table table-sm table-responsive-sm mb-0">
-                    <thead>
-                    <tr>
-                        <th>Character</th>
-                        <th class="text-right">Runs</th>
-                    </tr>
-                    @forelse($leaderboard_30 as $l)
-                        @component("components.leaderboard_char", ['item' => $l])@endcomponent
-                    @empty
-                        <tr>
-                            <td colspan="2"><p class="text-center py-3">Noone here yet!</p></td>
-                        </tr>
-                    @endforelse
-                    </thead>
-                </table>
+            <div class="d-flex justify-content-between">
+                <h5 class="font-weight-bold mb-2">Top 10</h5>
+                <small>(last 7 days)</small>
             </div>
-        </div>
-        <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">Top 10 (last 7 days)</h5>
+            <div class="card card-body border-0 shadow-sm leaderboard">
+                @if(count($leaderboard_07)>0)
+                    @component("components.leaderboard_top", ['item' => $leaderboard_07[0]])@endcomponent
+                @endif
                 <table class="table table-sm table-responsive-sm mb-0">
                     <thead>
-                    <tr>
-                        <th>Character</th>
-                        <th class="text-right">Runs</th>
-                    </tr>
-                    @forelse($leaderboard_07 as $l)
+                    @forelse($leaderboard_07 as $i => $l)
+                        @if ($i ==0) @continue @endif
                         @component("components.leaderboard_char", ['item' => $l])@endcomponent
                     @empty
                         <tr>
@@ -179,11 +181,71 @@
         </div>
     </div>
 
+
+
+
+
+
+
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">Ship fits for the Abyss</h4>
+        <a class="text-dark"
+           href="{{route("fit.index")}}">
+            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/job.png" class="tinyicon bringupper mr-1">All fits</a>
+    </div>
+
+<div class="row mt-3">
+    <div class="col-xs-12 col-sm-12 col-md-3">
+        <div class="card card-body border-0 shadow-sm">
+            <h5 class="font-weight-bold mb-2">Most popular hulls</h5>
+            <div class="graph-container h-300px">
+            </div>
+        </div>
+        <div class="card card-body border-0 shadow-sm mt-3">
+            <h5 class="font-weight-bold mb-2">Most popular classes</h5>
+            <div class="graph-container h-300px">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9 col-sm-12 col-xs-12">
+        <ul class="nav nav-tabs" id="fits-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="tab-head-fits-popular" data-toggle="tab" href="#tab-fits-popular" role="tab" aria-controls="home" aria-selected="true">Most popular fits</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-head-fits-new" data-toggle="tab" href="#tab-fits-new" role="tab" aria-controls="profile" aria-selected="false">Newest fits</a>
+            </li>
+        </ul>
+        <div class="card card-body border-0 shadow-sm top-left-no-round">
+            <div class="tab-content" id="fits-tab-content">
+                <div class="tab-pane fade show active" id="tab-fits-popular" role="tabpanel" aria-labelledby="tab-head-distribution">
+                    @component("components.fits.filter.result-list", ["results" => $popularFits])@endcomponent
+                    <div class="">
+                        <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'RUNS_COUNT', 'DIRECTION' => 'DESC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more popular fits</a>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab-fits-new" role="tabpanel" aria-labelledby="tab-head-activity">
+                    @component("components.fits.filter.result-list", ["results" => $newFits])@endcomponent
+                    <div class="">
+                        <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'SUBMITTED', 'DIRECTION' => 'ASC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more new fits</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">Last added submissions</h4>
         <a class="text-dark"
            href="{{route("runs")}}">
-            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/database.png"> All runs</a>
+            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/database.png" class="tinyicon bringupper mr-1">All runs</a>
     </div>
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-8">
@@ -204,7 +266,7 @@
                 </table>
             </div>
             <div class="card-footer">
-                <a class="btn btn-outline-secondary" href="{{route("runs")}}">View all runs</a>
+                <a class="text-dark" href="{{route("runs")}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/database.png">View all runs</a>
             </div>
         </div>
         <div class="col-xs-12 col-sm-4">
@@ -215,7 +277,7 @@
                         <img src="https://imageserver.eveonline.com/Type/{{$drop->ITEM_ID}}_32.png"
                              style="width: 32px;height: 32px;" class="mr-2" alt="">
                         <div class="text-left">
-                            <span class="font-weight-bold"><a
+                            <span class="font-weight-bold"><a class="text-dark"
                                     href="{{route("item_single", ["item_id" => $drop->ITEM_ID])}}">{{$drop->NAME}}</a></span><br>
                             <small>{{number_format($drop->PRICE_BUY, 0, ",", " ")}} ISK
                                 - {{number_format($drop->PRICE_SELL, 0, ",", " ")}} ISK</small><br>
@@ -225,7 +287,7 @@
                 @endforeach
             </div>
             <div class="card-footer">
-                <a class="text-dark" href="{{route("item_all")}}">View drop table</a>
+                <a class="text-dark" href="{{route("item_all")}}"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/empty-box.png">View drop table</a>
             </div>
         </div>
     </div>

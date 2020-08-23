@@ -21,4 +21,36 @@ div.donor {
     }
 }
 
+div.leaderboard {
 
+    div.leaderboard-first {
+        text-align: center;
+        img.portrait {
+            height: 72px;
+            width: 72px;
+            border: 2px solid #fff;
+            display: block;
+            position: relative;
+            top: -48px;
+            margin: 0 auto -48px auto;
+        }
+
+        img.crown {
+            height: 48px;
+            width: 48px;
+            display: block;
+            position: relative;
+            top: -109px;
+            margin: 0 auto -48px auto;
+
+        }
+    }
+}
+
+
+div.d-flex.justify-content-between {
+    small {
+        position: relative;
+        top: 5px;
+    }
+}
