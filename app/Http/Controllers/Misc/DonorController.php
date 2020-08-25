@@ -58,13 +58,15 @@
          * @return \Illuminate\Support\Collection
          */
         public function getDonations(int $limit, int $minimumAmount = 0, bool $opsecSkipped = false) {
-            $builder = DB::table("donors")
-                         ->where("AMOUNT", ">=", $minimumAmount);
+            return Cache::remember(sprintf("aft.donations.ingame.%d.%d.%s",$limit,$minimumAmount, $opsecSkipped ? "t" : "f"), now()->addMinutes(5), function () use ($limit, $minimumAmount, $opsecSkipped) {
+                $builder = DB::table("donors")
+                                    ->where("AMOUNT", ">=", $minimumAmount);
+                if ($opsecSkipped) {
+                    $builder->whereRaw("UPPER(REASON)<>'PRIVATE'");
+                }
+                return $builder->orderBy("DATE", "DESC")->limit($limit)->get();
+            });
 
-            if ($opsecSkipped) {
-                $builder->whereRaw("UPPER(REASON)<>'PRIVATE'");
-            }
-            return $builder->orderBy("DATE", "DESC")->limit($limit)->get();
         }
 
         public function index() {

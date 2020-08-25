@@ -83,49 +83,27 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function home() {
-            $lootTypesChart = $this->graphContainerController->getHomeLootTypesChart();
-            $tierLevelsChart = $this->graphContainerController->getHomeLootTierLevels();
-            $survival_chart = $this->graphContainerController->getHomeSurvivalLevels();
+
             $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
             $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
             $last_runs = $this->homeQueriesController->getLastRuns();
             $drops = $this->homeQueriesController->getCommonDrops();
             $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
-            $today_num = DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();
-            $count = DB::table("runs")->count();
+            $today_num = Cache::remember("aft.home.todayruns", now()->addMinutes(5), function () {return DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();});
+            $count =  Cache::remember("aft.home.count", now()->addMinutes(5), function () {return DB::table("runs")->count();});
 
             $leaderboard_90 = $this->leaderboardController->getLeaderboard("-90 day", "", 10);
             $leaderboard_30 = $this->leaderboardController->getLeaderboard("-30 day", "", 10);
             $leaderboard_07 = $this->leaderboardController->getLeaderboard("-7 day", "", 10);
 
-            $lastPatreon = PatreonDonorDisplay::orderBy("joined", 'DESC')->limit(1)->first();
-            $lastDonation = $this->donationController->getDonations(1, 1000000)->first();
+            $lastPatreon = PatreonDonorDisplay::getLatestDonorForHomepage();
+            $lastDonation = $this->donationController->getDonations(1, 1000000, true)->first();
+
+            $popularFits = $this->fitSearchController->getHomepagePopularFits();
+            $newFits = $this->fitSearchController->getHomepageNewFits();
 
 
-            $popularFits = Cache::remember("aft.home.fits.popular", now()->addMinutes(15), function() {
-                $query = $this->fitSearchController->getStartingQuery()
-                                                   ->limit(config('tracker.homepage.fits.count'))
-                                                   ->orderByDesc("RUNS_COUNT");
-                $popularFits = $query->get();
-                foreach ($popularFits as $i => $result) {
-                    $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
-                }
-                return $popularFits;
-            });
-            $newFits = Cache::remember("aft.home.fits.new", now()->addMinutes(15), function() {
-                $query = $this->fitSearchController->getStartingQuery()
-                                                   ->limit(config('tracker.homepage.fits.count'))
-                                                   ->orderBy('SUBMITTED', 'ASC');
-                $popularFits = $query->get();
-                foreach ($popularFits as $i => $result) {
-                    $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
-                }
-                return $popularFits;
-            });
             return view("welcome", [
-                'loot_types_chart'  => $lootTypesChart,
-                'tier_levels_chart' => $tierLevelsChart,
-                'survival_chart'    => $survival_chart,
                 'lootDistributionCruiser'   => $lootDistributionCruiser,
                 'lootDistributionFrigate'   => $lootDistributionfrigate,
                 'abyss_num'         => $count,
@@ -250,7 +228,7 @@
             $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
             $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
 
-            Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addHour());
+            Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
 
             DB::table("stopwatch")->where("CHAR_ID", session()->get("login_id"))->delete();
             return redirect(route("view_single", ["id" => $id]));

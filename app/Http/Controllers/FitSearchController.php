@@ -319,6 +319,41 @@
         }
 
         /**
+         * @return mixed
+         */
+        public function getHomepagePopularFits() {
+            return Cache::remember("aft.home.fits.popular", now()->addMinutes(15), function() {
+                $query = $this->getStartingQuery()
+                                                   ->limit(config('tracker.homepage.fits.count'))
+                                                   ->orderByDesc("RUNS_COUNT");
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->getFitTags($result->ID);
+                }
+                return $popularFits;
+            });
+        }
+
+
+        /**
+         * @return mixed
+         */
+        public function getHomepageNewFits() {
+            return Cache::remember("aft.home.fits.new", now()->addMinutes(15), function() {
+                $query = $this->getStartingQuery()
+                                                   ->limit(config('tracker.homepage.fits.count'))
+                                                   ->orderBy('SUBMITTED', 'ASC');
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->getFitTags($result->ID);
+                }
+                return $popularFits;
+            });
+        }
+
+
+
+        /**
          * Creates a join for a specified tag
          * @param string  $tagName Tag name
          * @param Request $request Entire request

@@ -7,5 +7,9 @@
             'fits' => [
                 'count' => 8
             ]
+        ],
+
+        'cargo' => [
+            'saveTime' => 60
         ]
     ];

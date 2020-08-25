@@ -210,8 +210,7 @@
                                         items you used up/lost.
                                     </div>
                                     <div class="text-muted">
-                                        Please only copy items here that you looted from the Abyss. If you went into the
-                                        Proving conduit and destroyed another player's ship, do not paste his loot here!
+                                        Please only copy items here that you looted from the Abyss.
                                     </div>
                                     <strong class="mt-2 adv">Before cargo:</strong>
                                     <textarea name="LOOT_DETAILED_BEFORE" id="LOOT_DETAILED_BEFORE" rows="4"
@@ -257,8 +256,8 @@
                                 <div class="form-group">
                                     <label for="">Did the Proving Conduit spawn?</label>
                                     <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
-                                        <option value="">I don't remember</option>
-                                        <option value="1">Yes, it spawned</option>
+{{--                                        <option value="">I don't remember</option>--}}
+{{--                                        <option value="1">Yes, it spawned</option>--}}
                                         <option value="0">No, it did not</option>
                                     </select>
                                 </div>
@@ -267,8 +266,8 @@
                                 <div class="form-group">
                                     <label for="">Did you go into the PVP room?</label>
                                     <select name="PVP_CONDUIT_USED" class="form-control select2-nosearch">
-                                        <option value="">I don't remember</option>
-                                        <option value="1">Yes, I went into the PVP room</option>
+{{--                                        <option value="">I don't remember</option>--}}
+{{--                                        <option value="1">Yes, I went into the PVP room</option>--}}
                                         <option value="0" selected>No, I did not go into the PVP room</option>
                                     </select>
                                 </div>
@@ -345,9 +344,15 @@
 
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3">
-                    <p>Thank you for your contribution, {{session()->get("login_name")}}</p>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-outline-success">Save run</button>
+                    <div class="d-flex justify-content-start asslicker">
+                        <img src="https://images.evetech.net/characters/{{session()->get("login_id")}}/portrait?size=64" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm portrait-new-run">
+                        <p class="mb-0 asslicker-new-run"><span class="lead d-inline-block mr-1">o7</span>Thank you for your contribution, great <strong>{{session()->get("login_name")}}</strong></p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-outline-success">Save run and view details</button>
+                        <button type="submit" class="btn btn-outline-success">Save run and return to this screen</button>
                     </div>
                 </div>
             </div>
@@ -523,6 +528,23 @@
     <style type="text/css">
         .adv {
             display: none;
+        }
+
+        div.asslicker {
+            height: 18px;
+        }
+        p.asslicker-new-run {
+            height: 1rem;
+            line-height: 1rem;
+        }
+        img.portrait-new-run {
+            position: relative;
+            top: -20px;
+            left: -35px;
+            margin-right: -24px;
+            border: 2px solid #fff;
+            height: 48px;
+            width: 48px;
         }
     </style>
 @endsection

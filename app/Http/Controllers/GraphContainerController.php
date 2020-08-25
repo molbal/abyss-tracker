@@ -143,51 +143,50 @@
 
             [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
 
-            $run_date = [];
-            $count_unknown = [];
-            $count_cruiser = [];
-            $count_frigate = [];
-            $rolling_avg_week = [];
-            $rolling_avg_month = [];
-            for ($days = -60; $days<=0; $days++) {
+                $run_date = [];
+                $count_unknown = [];
+                $count_cruiser = [];
+                $count_frigate = [];
+                $rolling_avg_week = [];
+                $rolling_avg_month = [];
+                for ($days = -60; $days <= 0; $days++) {
+                    $timestamp = strtotime("now $days days");
+                    $timestamp_week_older = strtotime("now " . ($days - 7) . " days");
+                    $timestamp_month_older = strtotime("now " . ($days - 30) . " days");
+                    $run_date[] = date("m. d.", $timestamp);
+                    $count_unknown[] = DB::table("runs")
+                                         ->whereNull("SHIP_ID")
+                                         ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                                         ->groupBy("RUN_DATE")
+                                         ->count();
 
-                $timestamp = strtotime("now $days days");
-                $timestamp_week_older = strtotime("now ".($days-7)." days");
-                $timestamp_month_older = strtotime("now ".($days-30)." days");
-                $run_date[] = date("m. d.", $timestamp);
-                $count_unknown[] = DB::table("runs")
-                    ->whereNull("SHIP_ID")
-                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
-                    ->groupBy("RUN_DATE")
-                    ->count();
+                    $count_cruiser[] = DB::table("runs")
+                                         ->whereNotNull("runs.SHIP_ID")
+                                         ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                                         ->where("ship_lookup.IS_CRUISER", "1")
+                                         ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                                         ->groupBy("RUN_DATE")
+                                         ->count();
 
-                $count_cruiser[] = DB::table("runs")
-                    ->whereNotNull("runs.SHIP_ID")
-                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                    ->where("ship_lookup.IS_CRUISER", "1")
-                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
-                    ->groupBy("RUN_DATE")
-                    ->count();
+                    $count_frigate[] = DB::table("runs")
+                                         ->whereNotNull("runs.SHIP_ID")
+                                         ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                                         ->where("ship_lookup.IS_CRUISER", "0")
+                                         ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                                         ->groupBy("RUN_DATE")
+                                         ->count();
 
-                $count_frigate[] = DB::table("runs")
-                    ->whereNotNull("runs.SHIP_ID")
-                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                    ->where("ship_lookup.IS_CRUISER", "0")
-                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
-                    ->groupBy("RUN_DATE")
-                    ->count();
+                    $rolling_avg_week[] = round(DB::table("runs")
+                                                  ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
+                                                  ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_week_older))
+                                                  ->count() / 7, 2);
+                    $rolling_avg_month[] = round(DB::table("runs")
+                                                   ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
+                                                   ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_month_older))
+                                                   ->count() / 30, 2);
+                }
 
-                $rolling_avg_week[] = round(DB::table("runs")
-                                         ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
-                                         ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_week_older))
-                                         ->count()/7,2);
-                $rolling_avg_month[] = round(DB::table("runs")
-                                         ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
-                                         ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_month_older))
-                                         ->count()/30,2);
-            }
-
-            return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month];
+                return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month];
             });
 
             $daily_add_chart = new DailyAdds();

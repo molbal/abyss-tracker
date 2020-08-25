@@ -8,9 +8,9 @@
         </div>
         <div class="col-md-6">
             <form action="{{route('settings.save')}}" method="post">
-                <div class="card card-body border-0 mt-3">
+                <div class="card card-body border-0">
                     <h5 class="font-weight-bold">Privacy</h5>
-                    <p class="font-italic">The settings below control which part of your public profile is visible and which part is hidden</p>
+                    <p class="">The settings below control which part of your public profile is visible and which part is hidden</p>
 
                     {{csrf_field()}}
                     <div class="form-group">
@@ -71,11 +71,49 @@
                             Stopwatch is enabled. To disable it and remove the ESI integration from your account use the button below. Doing this will disable the stopwatch
                             function for you.
                         </p>
+                        </div>
+                        <div class="card-footer">
                         <input type="submit" value="Revoke ESI tokens" class="btn btn-outline-danger">
                     @else
                         <div class="alert alert-info my-2">To use the stopwatch function, please go to the <a href="{{route('new')}}">new run</a> page and turn it on there</div>
                     @endif
 
+                </div>
+            </form>
+
+
+            <form action="{{route("settings.save-cargo")}}" method="post">
+
+                <div class="card card-body border-0 shadow-sm container mt-3">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h5 class="font-weight-bold">Remembering cargo</h5>
+                            <p class="text-justify mb-0">Would you like to automatically copy your 'after cargo' loot in the 'before cargo' field of your next run if it starts within {{config("tracker.cargo.saveTime")}} minutes after finishing the last one?</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 py-0 px-3">
+                            @component("components.toggles.inputpicker", [
+                              'name' => "save_cargo",
+                              'value' => "1",
+                              'checked' => true,
+                              'title' => "Remember cargo",
+                              'description' => "This is recommended if you do more runs without dropping your cargo.",
+                           ]) @endcomponent
+                        </div>
+                        <div class="col-sm-12 py-0 px-3">
+                            @component("components.toggles.inputpicker", [
+                              'name' => "save_cargo",
+                              'value' => "0",
+                              'checked' => false,
+                              'title' => "Forget cargo",
+                              'description' => "Use this if you usually drop your cargo between runs",
+                           ]) @endcomponent
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-outline-primary" type="submit">Save</button>
                 </div>
             </form>
         </div>
