@@ -231,7 +231,17 @@
             Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
 
             DB::table("stopwatch")->where("CHAR_ID", session()->get("login_id"))->delete();
-            return redirect(route("view_single", ["id" => $id]));
+
+            if ($request->get("submit") == "view-details") {
+                return redirect(route("view_single", ["id" => $id]));
+            }
+            else {
+                return view("autoredirect", [
+                    'title' => "Run saved!",
+                    'message' => "Its ID is $id. You will be redirected back to the previous screen in a few seconds.",
+                    'redirect' => route("new"),
+                ]);
+            }
         }
 
         /**

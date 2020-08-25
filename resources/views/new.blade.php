@@ -351,8 +351,8 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group">
-                        <button type="submit" class="btn btn-outline-success">Save run and view details</button>
-                        <button type="submit" class="btn btn-outline-success">Save run and return to this screen</button>
+                        <button type="submit" name="submit" value="view-details" class="btn btn-outline-success">Save run and view details</button>
+                        <button type="submit" name="submit" value="new-run" class="btn btn-outline-success">Save run and return to this screen</button>
                     </div>
                 </div>
             </div>

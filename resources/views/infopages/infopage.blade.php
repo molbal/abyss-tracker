@@ -162,7 +162,7 @@
                         <th>Abyss type</th>
                         <th>Abyss tier</th>
                         <th class="text-right">Loot value</th>
-                        <th class="text-right" colspan="2">Submitted</th>
+                        <th class="text-right" colspan="2">Duration</th>
                     </tr>
                     @foreach($runs as $item)
                         @component("components.runs.row-homepage", ['item' => $item]) @endcomponent
@@ -170,7 +170,7 @@
                 </table>
             </div>
             <div class="card-footer">
-                <a class="btn btn-outline-secondary" href="{{route("search.do", ["tier" => $tier])}}">View all @lang("tiers.".$tier) runs</a>
+                <a class="text-dark" href="{{route("search.do", ["tier" => $tier])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/database.png">View all @lang("tiers.".$tier) runs</a>
             </div>
         </div>
         <div class="col-xs-12 col-sm-4">
@@ -191,7 +191,7 @@
                 @endforeach
             </div>
             <div class="card-footer">
-                <a class="btn btn-outline-secondary" href="{{route("item_all")}}">View all drops</a>
+                <a class="text-dark" href="{{route("item_all")}}"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/empty-box.png">View drop table</a>
             </div>
         </div>
     </div>

@@ -258,7 +258,7 @@
                         <th>Abyss type</th>
                         <th>Abyss tier</th>
                         <th class="text-right">Loot value</th>
-                        <th class="text-right" colspan="2">Submitted</th>
+                        <th class="text-right" colspan="2">Duration</th>
                     </tr>
                     @foreach($items as $item)
                         @component("components.runs.row-homepage", ['item' => $item]) @endcomponent

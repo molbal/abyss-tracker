@@ -7,6 +7,7 @@
 	use DateTime;
 
     class TimeHelper {
+
         public static function timeElapsedString($datetime, $full = false) {
             if ($datetime == "never") return "never";
             $now = new DateTime;
@@ -47,5 +48,14 @@
                 $return = "last week";
             }
             return $return;
+        }
+
+        /**
+         * @param int $seconds
+         *
+         * @return string
+         */
+        public static function formatSecondsToMMSS(int $seconds):string {
+            return sprintf("%02d:%02d",$seconds/60,$seconds%60);
         }
 	}

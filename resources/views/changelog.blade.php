@@ -36,6 +36,7 @@
                         <li>Infrastructure changes: Database version update to MariaDB 10.2.33, PHP version update to 7.4, Laravel update to 7.22. Host VPS increased to 4 vCPU cores (was 1) and 8GB (was 1.5GB) memory.</li>
                         <li>Adds EDENCOM ships to the supported ships list: Stormbringer and Skybreaker</li>
                         <li>Fixes broken icon pointing to 'My profile' in the navigation bar</li>
+                        <li>On the homepage and infopages, the last runs section will now show run duration instead of submission time</li>
                     </ul>
                 </div>
             </div>
