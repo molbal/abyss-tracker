@@ -4,6 +4,8 @@
     namespace App\Http\Controllers;
 
 
+    use App\Charts\HomePagePopularClasses;
+    use App\Charts\HomePagePopularHulls;
     use App\Charts\IskPerHourChart;
     use App\Charts\LootAveragesChart;
     use App\Charts\LootTierChart;
@@ -20,137 +22,209 @@
 
         const HOME_PIE_RADIUS = [50, 90];
 
-        public function homeType(Request $request) {
+//
+//
+//        public function homeType(Request $request) {
+//            $request->headers->set('Accept', 'application/json');
+//            if (Cache::has("home.types")) {
+//                $chart = Cache::get("home.types");
+//            } else {
+//                $chart = DB::table("runs")
+//                           ->groupBy("TYPE")
+//                           ->select("TYPE")
+//                           ->selectRaw("COUNT(type) AS CNT")->get();
+//                Cache::put("home.types", $chart, 15);
+//            }
+//
+//            $dataset = [];
+//            $values = [];
+//            foreach ($chart as $type) {
+//                $dataset[] = $type->TYPE;
+//                $values[] = $type->CNT;
+//            }
+//
+//            $chart = new LootAveragesChart();
+//
+//            $chart->labels($dataset);
+//            $chart->dataset('Filament types', 'pie', $values)->options([
+//                "radius" => self::HOME_PIE_RADIUS
+//            ]);
+//            return $chart->api();
+//        }
+//
+//        public function typeTier(Request $request, $tier) {
+//            $request->headers->set('Accept', 'application/json');
+//
+//
+////            $tier = $request;
+////            dd($tier);
+//            $chart = Cache::remember("aft.tiers.type-". $tier, now()->addMinutes(15), function() use ($tier) {
+//                return  DB::table("runs")
+//                          ->where("TIER", $tier)
+//                          ->groupBy("TYPE")
+//                          ->select("TYPE")
+//                          ->selectRaw("COUNT(type) AS CNT")->get();
+//            });
+//
+//            $dataset = [];
+//            $values = [];
+//            foreach ($chart as $type) {
+//                $dataset[] = $type->TYPE;
+//                $values[] = $type->CNT;
+//            }
+//
+//            $chart = new LootAveragesChart();
+//
+//            $chart->labels($dataset);
+//            $chart->dataset('Filament types', 'pie', $values)->options([
+//                "radius" => self::HOME_PIE_RADIUS
+//            ]);
+//            return $chart->api();
+//        }
+//
+//
+//        public function homeTier(Request $request) {
+//            $request->headers->set('Accept', 'application/json');
+//            if (Cache::has("home.levels")) {
+//                $chart = Cache::get("home.levels");
+//            } else {
+//                $chart = DB::table("runs")->groupBy("TIER")->select("TIER")->selectRaw("COUNT(TIER) AS CNT")->get();
+//                Cache::put("home.levels", $chart, 15);
+//            }
+//
+//            $dataset = [];
+//            $values = [];
+//            foreach ($chart as $type) {
+//                $dataset[] = "Tier ".$type->TIER;
+//                $values[] = $type->CNT;
+//            }
+//
+//            $chart = new TierLevelsChart();
+//
+//            $chart->labels($dataset);
+//            $chart->dataset('Tier levels', 'pie', $values)->options([
+//                "radius" => self::HOME_PIE_RADIUS
+//            ]);
+//            return $chart->api();
+//
+//        }
+//
+//        /**
+//         * @return string
+//         */
+//        public function getHomeRunBellGraphsCruisers(Request $request) {
+//            $chart = new BellChart1();
+//
+//
+//            $dataCruiser = collect([]);
+//            $dataFrigate = collect([]);
+//
+//            for ($i = 1; $i<=5; $i++) {
+//                $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
+//                $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
+//            }
+//
+//            $chart->dataset("Cruiser median loot values (Most probable)", "bar", $dataCruiser);
+//            $chart->dataset("Frigate median loot values (Most probable)", "bar", $dataFrigate);
+//            $request->headers->set('Accept', 'application/json');
+//            return $chart->api();
+//        }
+//
+//        public function getHomeRunBellGraphsFrigates(Request $request) {
+//            $million = 1000000;
+//
+//            $meansFrigate = collect([]);
+//            $sdevsFrigate = collect([]);
+//            $ndataFrigate = collect([]);
+//
+//            $datasets = collect([]);
+//
+//
+//            $chart = new BellChart1();
+//
+//            for ($i=1;$i<=5;$i++) {
+//                $meansFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->avg("runs.LOOT_ISK"))/$million);
+//                $sdevsFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million);
+//                $ndataFrigate->add($this->getFrigateBaseDataForTier($i));
+//
+//                $datasets->add($this->buildDataSet($ndataFrigate->last(), $million, $meansFrigate->last(), $sdevsFrigate->last()));
+//                $chart->dataset("Frigates Tier $i", "line", $datasets->last())->options([
+//                    "smooth" => 0.3,
+//                    "showSymbol" => false,
+//                    "hoverAnimation" => false
+//                ]);
+//            }
+//            $request->headers->set('Accept', 'application/json');
+//            return $chart->api();
+//        }
+
+
+        public function popularHulls(Request $request) {
             $request->headers->set('Accept', 'application/json');
-            if (Cache::has("home.types")) {
-                $chart = Cache::get("home.types");
-            } else {
-                $chart = DB::table("runs")
-                           ->groupBy("TYPE")
-                           ->select("TYPE")
-                           ->selectRaw("COUNT(type) AS CNT")->get();
-                Cache::put("home.types", $chart, 15);
-            }
 
-            $dataset = [];
-            $values = [];
-            foreach ($chart as $type) {
-                $dataset[] = $type->TYPE;
-                $values[] = $type->CNT;
-            }
-
-            $chart = new LootAveragesChart();
-
-            $chart->labels($dataset);
-            $chart->dataset('Filament types', 'pie', $values)->options([
-                "radius" => self::HOME_PIE_RADIUS
-            ]);
-            return $chart->api();
-        }
-
-        public function typeTier(Request $request, $tier) {
-            $request->headers->set('Accept', 'application/json');
-
-
-//            $tier = $request;
-//            dd($tier);
-            $chart = Cache::remember("aft.tiers.type-". $tier, now()->addMinutes(15), function() use ($tier) {
-                return  DB::table("runs")
-                          ->where("TIER", $tier)
-                          ->groupBy("TYPE")
-                          ->select("TYPE")
-                          ->selectRaw("COUNT(type) AS CNT")->get();
+            $chart = Cache::remember("aft.home.popular.hulls", now()->addMinutes(15), function() {
+                return  DB::select("
+                    select f.SHIP_ID, sl.NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max(cj.cf)*100, 1) as PERCENTAGE
+                    from fits f
+                    join ship_lookup sl on f.SHIP_ID = sl.ID
+                    cross join (select count(cf.ID) as cf from fits cf) as cj
+                    group by f.SHIP_ID, sl.NAME, sl.`GROUP`
+                    having  PERCENTAGE>3.0
+                    order by 3 desc;");
             });
-
             $dataset = [];
             $values = [];
+            $other = 100.0;
             foreach ($chart as $type) {
-                $dataset[] = $type->TYPE;
-                $values[] = $type->CNT;
+                $dataset[] = $type->NAME;
+                $values[] = $type->PERCENTAGE;
+                $other -= $type->PERCENTAGE;
             }
 
-            $chart = new LootAveragesChart();
-
+            if ($other >= 0.5) {
+                $dataset[] = "Other";
+                $values[] = round($other, 1);
+            }
+            $chart = new HomePagePopularHulls();
             $chart->labels($dataset);
-            $chart->dataset('Filament types', 'pie', $values)->options([
-                "radius" => self::HOME_PIE_RADIUS
+            $chart->dataset('Popular hulls (%)', 'pie', $values)->options([
+                "radius" => [12,46]
             ]);
             return $chart->api();
         }
 
-
-        public function homeTier(Request $request) {
+        public function popularClasses(Request $request) {
             $request->headers->set('Accept', 'application/json');
-            if (Cache::has("home.levels")) {
-                $chart = Cache::get("home.levels");
-            } else {
-                $chart = DB::table("runs")->groupBy("TIER")->select("TIER")->selectRaw("COUNT(TIER) AS CNT")->get();
-                Cache::put("home.levels", $chart, 15);
-            }
 
+            $chart = Cache::remember("aft.home.popular.classes", now()->addMinutes(15), function() {
+                return  DB::select("
+
+select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max(cj.cf)*100, 1) as PERCENTAGE
+                    from fits f
+                    join ship_lookup sl on f.SHIP_ID = sl.ID
+                    cross join (select count(cf.ID) as cf from fits cf) as cj
+                    group by sl.GROUP, sl.`GROUP`
+                    having  PERCENTAGE>3.0
+                    order by 2 desc;");
+            });
             $dataset = [];
             $values = [];
+            $other = 100.0;
             foreach ($chart as $type) {
-                $dataset[] = "Tier ".$type->TIER;
-                $values[] = $type->CNT;
+                $dataset[] = $type->NAME;
+                $values[] = $type->PERCENTAGE;
+                $other -= $type->PERCENTAGE;
             }
 
-            $chart = new TierLevelsChart();
-
+            if ($other >= 0.5) {
+                $dataset[] = "Other";
+                $values[] = round($other, 1);
+            }
+            $chart = new HomePagePopularClasses();
             $chart->labels($dataset);
-            $chart->dataset('Tier levels', 'pie', $values)->options([
-                "radius" => self::HOME_PIE_RADIUS
+            $chart->dataset('Popular classes (%)', 'pie', $values)->options([
+                "radius" => [12,46]
             ]);
-            return $chart->api();
-
-        }
-
-        /**
-         * @return string
-         */
-        public function getHomeRunBellGraphsCruisers(Request $request) {
-            $chart = new BellChart1();
-
-
-            $dataCruiser = collect([]);
-            $dataFrigate = collect([]);
-
-            for ($i = 1; $i<=5; $i++) {
-                $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
-                $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
-            }
-
-            $chart->dataset("Cruiser median loot values (Most probable)", "bar", $dataCruiser);
-            $chart->dataset("Frigate median loot values (Most probable)", "bar", $dataFrigate);
-            $request->headers->set('Accept', 'application/json');
-            return $chart->api();
-        }
-
-        public function getHomeRunBellGraphsFrigates(Request $request) {
-            $million = 1000000;
-
-            $meansFrigate = collect([]);
-            $sdevsFrigate = collect([]);
-            $ndataFrigate = collect([]);
-
-            $datasets = collect([]);
-
-
-            $chart = new BellChart1();
-
-            for ($i=1;$i<=5;$i++) {
-                $meansFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->avg("runs.LOOT_ISK"))/$million);
-                $sdevsFrigate->add((DB::table("runs")->where("runs.LOOT_ISK", '>', 0)->where("runs.SURVIVED", true)->where("runs.TIER", $i)->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')->where("ship_lookup.IS_CRUISER", 0)->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million);
-                $ndataFrigate->add($this->getFrigateBaseDataForTier($i));
-
-                $datasets->add($this->buildDataSet($ndataFrigate->last(), $million, $meansFrigate->last(), $sdevsFrigate->last()));
-                $chart->dataset("Frigates Tier $i", "line", $datasets->last())->options([
-                    "smooth" => 0.3,
-                    "showSymbol" => false,
-                    "hoverAnimation" => false
-                ]);
-            }
-            $request->headers->set('Accept', 'application/json');
             return $chart->api();
         }
 

@@ -85,7 +85,7 @@
         public function home() {
 
             $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
-            $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
+//            $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
             $last_runs = $this->homeQueriesController->getLastRuns();
             $drops = $this->homeQueriesController->getCommonDrops();
             $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
@@ -100,12 +100,15 @@
             $lastDonation = $this->donationController->getDonations(1, 1000000, true)->first();
 
             $popularFits = $this->fitSearchController->getHomepagePopularFits();
+            $popularShipsGraph = $this->graphContainerController->getPopularShipsGraph();
             $newFits = $this->fitSearchController->getHomepageNewFits();
+            $popularClassesGraph = $this->graphContainerController->getPopularShipsClasses();
+
 
 
             return view("welcome", [
                 'lootDistributionCruiser'   => $lootDistributionCruiser,
-                'lootDistributionFrigate'   => $lootDistributionfrigate,
+//                'lootDistributionFrigate'   => $lootDistributionfrigate,
                 'abyss_num'         => $count,
                 'today_num'         => $today_num,
                 'items'             => $last_runs,
@@ -117,6 +120,8 @@
                 'patreon_last' => $lastPatreon,
                 'ingame_last' => $lastDonation,
                 'popularFits' => $popularFits,
+                'popularShipsGraph' => $popularShipsGraph,
+                'popularClassesGraph' => $popularClassesGraph,
                 'newFits' => $newFits
             ]);
         }

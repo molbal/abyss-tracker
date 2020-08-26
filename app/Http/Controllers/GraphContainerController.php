@@ -8,6 +8,8 @@
     use App\Charts\BellChart2;
     use App\Charts\DailyAdds;
     use App\Charts\HomeCruiserMedian;
+    use App\Charts\HomePagePopularClasses;
+    use App\Charts\HomePagePopularHulls;
     use App\Charts\IskPerHourChart;
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
@@ -40,54 +42,54 @@
             return $chart;
         }
 
-
-        /**
-         * @return LootTypesChart
-         */
-        public function getHomeLootTypesChart() : LootTypesChart
-        {
-            $lootTypesChart = new LootTypesChart();
-            $lootTypesChart->load(route("chart.home.type"));
-            $lootTypesChart->displayAxes(false);
-            $lootTypesChart->displayLegend(false);
-            $lootTypesChart->export(true, "Download");
-            $lootTypesChart->height("400");
-            $lootTypesChart->theme(ThemeController::getChartTheme());
-
-            return $lootTypesChart;
-        }
-
-        /**
-         * @return TierLevelsChart
-         */
-        public function getHomeLootTierLevels() : TierLevelsChart
-        {
-            $tierLevelsChart = new TierLevelsChart();
-            $tierLevelsChart->load(route("chart.home.tier"));
-            $tierLevelsChart->displayAxes(false);
-            $tierLevelsChart->displayLegend(false);
-            $tierLevelsChart->export(true, "Download");
-            $tierLevelsChart->height("400");
-            $tierLevelsChart->theme(ThemeController::getChartTheme());
-
-            return $tierLevelsChart;
-        }
-
-        /**
-         * @return SurvivalLevelChart
-         */
-        public function getHomeSurvivalLevels() : SurvivalLevelChart
-        {
-            $survival_chart = new SurvivalLevelChart();
-            $survival_chart->load(route("chart.home.survival"));
-            $survival_chart->export(true, "Download");
-            $survival_chart->displayAxes(false);
-            $survival_chart->height(400);
-            $survival_chart->theme(ThemeController::getChartTheme());
-            $survival_chart->displayLegend(false);
-
-            return $survival_chart;
-        }
+//
+//        /**
+//         * @return LootTypesChart
+//         */
+//        public function getHomeLootTypesChart() : LootTypesChart
+//        {
+//            $lootTypesChart = new LootTypesChart();
+//            $lootTypesChart->load(route("chart.home.type"));
+//            $lootTypesChart->displayAxes(false);
+//            $lootTypesChart->displayLegend(false);
+//            $lootTypesChart->export(true, "Download");
+//            $lootTypesChart->height("400");
+//            $lootTypesChart->theme(ThemeController::getChartTheme());
+//
+//            return $lootTypesChart;
+//        }
+//
+//        /**
+//         * @return TierLevelsChart
+//         */
+//        public function getHomeLootTierLevels() : TierLevelsChart
+//        {
+//            $tierLevelsChart = new TierLevelsChart();
+//            $tierLevelsChart->load(route("chart.home.tier"));
+//            $tierLevelsChart->displayAxes(false);
+//            $tierLevelsChart->displayLegend(false);
+//            $tierLevelsChart->export(true, "Download");
+//            $tierLevelsChart->height("400");
+//            $tierLevelsChart->theme(ThemeController::getChartTheme());
+//
+//            return $tierLevelsChart;
+//        }
+//
+//        /**
+//         * @return SurvivalLevelChart
+//         */
+//        public function getHomeSurvivalLevels() : SurvivalLevelChart
+//        {
+//            $survival_chart = new SurvivalLevelChart();
+//            $survival_chart->load(route("chart.home.survival"));
+//            $survival_chart->export(true, "Download");
+//            $survival_chart->displayAxes(false);
+//            $survival_chart->height(400);
+//            $survival_chart->theme(ThemeController::getChartTheme());
+//            $survival_chart->displayLegend(false);
+//
+//            return $survival_chart;
+//        }
 
         /**
          * @return BellChart1
@@ -116,24 +118,24 @@
         }
 
 
-        /**
-         * @return BellChart1
-         */
-        public function getHomeLootAveragesFrigates() : BellChart2
-        {
-            $chart = new BellChart2(0,250);
-
-            $chart->export(true, "Download");
-            $chart->height("400");
-            $chart->theme(ThemeController::getChartTheme());
-            $chart->load(route("chart.home.distribution.frigates"));
-            $options = $chart->options;
-            $options["xAxis"] = [];
-            $chart->options($options, true);
-            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
-
-            return $chart;
-        }
+//        /**
+//         * @return BellChart1
+//         */
+//        public function getHomeLootAveragesFrigates() : BellChart2
+//        {
+//            $chart = new BellChart2(0,250);
+//
+//            $chart->export(true, "Download");
+//            $chart->height("400");
+//            $chart->theme(ThemeController::getChartTheme());
+//            $chart->load(route("chart.home.distribution.frigates"));
+//            $options = $chart->options;
+//            $options["xAxis"] = [];
+//            $chart->options($options, true);
+//            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
+//
+//            return $chart;
+//        }
 
         /**
          * @return array
@@ -363,5 +365,55 @@ WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );",
 
             return [$otherCharts, $medianLootForTier];
 
+        }
+
+        /**
+         * Returns the homepage's most popular ship classes graph container
+         * @return HomePagePopularHulls
+         */
+        public function getPopularShipsGraph() {
+            $chart = new HomePagePopularHulls();
+            $chart->load(route("chart.home.popular-hulls"));
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->export(true, "Download");
+            $chart->height("300");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->options([
+                "roseType" => "radius",
+                'label' => [
+                    'position' => 'inside',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 5
+                ],
+                'tooltip'=> [
+                    'confine' => true
+                ]
+            ]);
+
+            return $chart;
+        }
+
+        public function getPopularShipsClasses() {
+            $chart = new HomePagePopularClasses();
+            $chart->load(route("chart.home.popular-classes"));
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->export(true, "Download");
+            $chart->height("300");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->options([
+                "roseType" => "radius",
+                'label' => [
+                    'position' => 'inside',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 5
+                ],
+                'tooltip'=> [
+                    'confine' => true
+                ]
+            ]);
+
+            return $chart;
         }
     }

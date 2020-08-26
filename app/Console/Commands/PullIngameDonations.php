@@ -39,7 +39,7 @@
             /** @var JournalService $js */
             $js = resolve('\App\Connector\EveAPI\Journal\JournalService');
 
-            Log::info("Resolved js");
+//            Log::info("Resolved js");
             try {
                 $data = $js->getCharJournal(env("ID_VEETOR"), env("RT_VEETOR"));
 //                Log::info("Data:".print_r($data,1)." for ".env("ID_VEETOR")." and ".env("RT_VEETOR"));

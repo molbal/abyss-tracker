@@ -199,11 +199,13 @@
         <div class="card card-body border-0 shadow-sm">
             <h5 class="font-weight-bold mb-2">Most popular hulls</h5>
             <div class="graph-container h-300px">
+                {!! $popularShipsGraph->container(); !!}
             </div>
         </div>
         <div class="card card-body border-0 shadow-sm mt-3">
             <h5 class="font-weight-bold mb-2">Most popular classes</h5>
             <div class="graph-container h-300px">
+                {!! $popularClassesGraph->container(); !!}
             </div>
         </div>
     </div>
@@ -346,15 +348,14 @@
 
 @section("scripts")
 {{--    {!! $loot_types_chart->script(); !!}--}}
-{{--    {!! $tier_levels_chart->script(); !!}--}}
+    {!! $popularShipsGraph->script(); !!}
+    {!! $popularClassesGraph->script(); !!}
 {{--    {!! $survival_chart->script(); !!}--}}
     {!! $lootDistributionCruiser->script(); !!}
-{{--    {!! $lootDistributionFrigate->script(); !!}--}}
     {!! $daily_add_chart->script(); !!}
     <script type="text/javascript">
 
         $('#tab-head-distribution').on('shown.bs.tab', function (e) {window.{{$lootDistributionCruiser->id}}.resize();});
-        $('#tab-head-distribution-frig').on('shown.bs.tab', function (e) {window.{{$lootDistributionFrigate->id}}.resize();});
         $('#tab-head-activity').on('shown.bs.tab', function (e) {window.{{$daily_add_chart->id}}.resize();});
     </script>
 @endsection
