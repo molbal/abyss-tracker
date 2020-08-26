@@ -37,6 +37,11 @@
                         <li>Adds EDENCOM ships to the supported ships list: Stormbringer and Skybreaker</li>
                         <li>Fixes broken icon pointing to 'My profile' in the navigation bar</li>
                         <li>On the homepage and infopages, the last runs section will now show run duration instead of submission time</li>
+                        <li>Removed proving conduit from new run screen</li>
+                        <li>Added "Remember cargo" toggle and made it clear in <a href="{{route("settings.index")}}">Settings</a></li>
+                        <li>Added auto-redirect function for messages</li>
+                        <li>Added "return immediately to new run after saving" button</li>
+                        <li>Added donations display to homescreen</li>
                     </ul>
                 </div>
             </div>

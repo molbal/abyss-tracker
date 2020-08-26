@@ -417,6 +417,8 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
             return $chartDataSet;
         }
 
+
+
         /**
          * @param int $tier
          *
@@ -451,7 +453,6 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
          * @return array
          */
         protected function getFrigateBaseDataForTier(int $tier) : array {
-
             return Cache::remember("aft.bellgraph.cruiser.t" . $tier, now()->addMinutes(15), function () use ($tier) {
                 return $this->executeBaseDataForTier($tier, false);
             });

@@ -80,10 +80,40 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 d-none">
                                 <div class="form-group">
                                     <label for="">Which day did you do this run?</label>
                                     <input type="text" class="form-control datepicker" name="RUN_DATE" required>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="">Which cans did you loot?</label>
+                                    <select name="LOOT_TYPE" id="" class="form-control select2-nosearch">
+                                        <option {{($prev->LOOT_TYPE ?? "") == "" ? "selected" : ""}} value="">I don't
+                                            remember / secret
+                                        </option>
+                                        <option
+                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_ONLY" ? "selected" : ""}} value="BIOADAPTIVE_ONLY">
+                                            Just the bioadaptive cache
+                                        </option>
+                                        <option
+                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_SOME_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_SOME_CANS">
+                                            Bioadaptive cache + some extraction
+                                            nodes
+                                        </option>
+                                        <option
+                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_MOST_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_MOST_CANS">
+                                            Bioadaptive cache + most extraction
+                                            nodes
+                                        </option>
+                                        <option
+                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_ALL_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_ALL_CANS">
+                                            Bioadaptive cache + all extraction
+                                            nodes
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -120,8 +150,8 @@
                 <div class="card card-body border-0 shadow-sm mt-3">
                     <h5 class="font-weight-bold">Timing
                         <img
-                            class="float-right"
-                            src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" data-toggle="tooltip"
+                            class="float-right tinyicon"
+                            src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png"  data-toggle="tooltip"
                             title="The EVE Api can return which system you are in. If you start the
                                     stopwatch the site will look up your location every 10 seconds. This way we will
                                     know the last time you were outside Abyss space, and also the first time when you
@@ -186,31 +216,24 @@
                 </div>
             </div>
             <div class="col-sm-12">
-                <div class="card card-body border-0 shadow-sm mt-3">
+                <div class="card card-body border-0 shadow-sm mt-3 pb-2">
                     <h5 class="font-weight-bold">Loot questions <span class="float-right text-small">
-                                            <a href="/how-to-loot.gif" target="_blank">How to use?</a>
-                                        <img
-                                            src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png"
+{{--                                            <a href="/how-to-loot.gif" target="_blank">How to use?</a>                                        <img--}}
+                                            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" class="tinyicon"
                                             data-toggle="tooltip"
                                             title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language.">
                                         </span></h5>
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="" class="d-flex justify-content-between">
-                                        <span>How much loot did you return with? <a href="javascript:void(0)"
-                                                                                    id="advanced-loot-view">My cargo
-                                            is not empty!</a>
-                                            </span>
-                                        </label>
+                                <div class="form-group mb-0 pb-0">
                                     <div class="alert alert-info border-0 shadow-sm adv">
                                         Please copy and paste your cargohold contents before and after running the
                                         filament. The site will compare the two to get which items you looted and which
                                         items you used up/lost.
                                     </div>
-                                    <div class="text-muted">
-                                        Please only copy items here that you looted from the Abyss.
+                                    <div class="text-dark">
+                                        Please only copy items here that you looted from the Abyss. Make sure to copy from list view, not grid view.
                                     </div>
                                     <strong class="mt-2 adv">Before cargo:</strong>
                                     <textarea name="LOOT_DETAILED_BEFORE" id="LOOT_DETAILED_BEFORE" rows="4"
@@ -218,42 +241,13 @@
                                     <strong class="mt-2 adv">After cargo:</strong>
                                     <textarea name="LOOT_DETAILED" id="LOOT_DETAILED" rows="4"
                                               class="form-control"></textarea>
-                                    <p class="text-right">Total value is approximately <strong
+                                    <p class="text-right pt-1 mb-0">Total value is approximately <strong
                                             id="loot_value">0</strong> ISK
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="">How much did you loot?</label>
-                                    <select name="LOOT_TYPE" id="" class="form-control select2-nosearch">
-                                        <option {{($prev->LOOT_TYPE ?? "") == "" ? "selected" : ""}} value="">I don't
-                                            remember / secret
-                                        </option>
-                                        <option
-                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_ONLY" ? "selected" : ""}} value="BIOADAPTIVE_ONLY">
-                                            Just the bioadaptive cache
-                                        </option>
-                                        <option
-                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_SOME_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_SOME_CANS">
-                                            Bioadaptive cache + some extraction
-                                            nodes
-                                        </option>
-                                        <option
-                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_MOST_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_MOST_CANS">
-                                            Bioadaptive cache + most extraction
-                                            nodes
-                                        </option>
-                                        <option
-                                            {{($prev->LOOT_TYPE ?? "") == "BIOADAPTIVE_PLUS_ALL_CANS" ? "selected" : ""}} value="BIOADAPTIVE_PLUS_ALL_CANS">
-                                            Bioadaptive cache + all extraction
-                                            nodes
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-4 proving">
-                                <div class="form-group">
+                            <div class="col-sm-4 proving d-none">
+                                <div class="form-group d-none">
                                     <label for="">Did the Proving Conduit spawn?</label>
                                     <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
 {{--                                        <option value="">I don't remember</option>--}}
@@ -262,8 +256,8 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-4 proving">
-                                <div class="form-group">
+                            <div class="col-sm-4 proving d-none">
+                                <div class="form-group d-none">
                                     <label for="">Did you go into the PVP room?</label>
                                     <select name="PVP_CONDUIT_USED" class="form-control select2-nosearch">
 {{--                                        <option value="">I don't remember</option>--}}
@@ -274,6 +268,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-footer">
+                    <a href="javascript:void(0)" id="advanced-loot-view" class="text-dark"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/empty-box.png" class="mr-1 tinyicon"/>My cargo is not empty!</a><span id="middot-1" class="d-inline-block mx-2">&middot;</span>
+                    <a href="{{route("settings.index")}}" class="text-dark" data-toggle="tooltip" title="1.5.5 brought a new Remember Cargo toggle" target="_blank"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/settings.png" class="mr-1 tinyicon"/>Open settings</a>
                 </div>
             </div>
 
@@ -413,8 +411,12 @@
         });
 
         function advancedView() {
-            $("#advanced-loot-view").hide();
-            $(".adv").slideDown(230);
+            $("#advanced-loot-view, #middot-1").removeClass("d-inline-block").hide();
+            $(".adv").slideDown(115);
+            // $(".adv").animate({
+            //     height: 'toggle',
+            //
+            // });
         }
 
         function switch_to_manual() {

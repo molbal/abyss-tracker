@@ -18,6 +18,7 @@
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Misc\DonorController;
     use App\Http\Controllers\Profile\LeaderboardController;
+    use App\Http\Controllers\Profile\SettingController;
     use App\Mail\RunFlagged;
     use App\PatreonDonorDisplay;
     use Illuminate\Http\Request;
@@ -141,16 +142,6 @@
             [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio] = $this->homeQueriesController->getPersonalStats();
 
             $loginId = session()->get("login_id");
-//            $data =  DB::table("runs")
-//                       ->where("CHAR_ID", '=', $loginId)
-//                       ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
-//                       ->select("RUN_DATE")
-//                       ->groupBy("RUN_DATE")
-//                       ->get();
-//            $labels = [];
-//            foreach ($data as $type) {
-//                $labels[] = date("m.d", strtotime($type->RUN_DATE));
-//            }
             $personalDaily = $this->graphContainerController->getPersonalStatsCharts();
 
             $table = [];
@@ -233,7 +224,12 @@
             $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
             $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
 
-            Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
+            if (SettingController::getBooleanSetting((int)session()->get("login_id"), "remember_cargo", true)) {
+                Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
+            }
+            else {
+                Cache::forget(sprintf("at.last_dropped.%s", session()->get("login_id")));
+            }
 
             DB::table("stopwatch")->where("CHAR_ID", session()->get("login_id"))->delete();
 

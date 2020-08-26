@@ -83,7 +83,7 @@
 
 
             <form action="{{route("settings.save-cargo")}}" method="post">
-
+                @csrf
                 <div class="card card-body border-0 shadow-sm container mt-3">
                     <div class="row">
                         <div class="col-sm-12">
@@ -96,7 +96,7 @@
                             @component("components.toggles.inputpicker", [
                               'name' => "save_cargo",
                               'value' => "1",
-                              'checked' => true,
+                              'checked' => $cargo == true,
                               'title' => "Remember cargo",
                               'description' => "This is recommended if you do more runs without dropping your cargo.",
                            ]) @endcomponent
@@ -105,7 +105,7 @@
                             @component("components.toggles.inputpicker", [
                               'name' => "save_cargo",
                               'value' => "0",
-                              'checked' => false,
+                              'checked' => $cargo == false,
                               'title' => "Forget cargo",
                               'description' => "Use this if you usually drop your cargo between runs",
                            ]) @endcomponent
