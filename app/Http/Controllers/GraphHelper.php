@@ -109,27 +109,27 @@
 //
 //        }
 //
-//        /**
-//         * @return string
-//         */
-//        public function getHomeRunBellGraphsCruisers(Request $request) {
-//            $chart = new BellChart1();
-//
-//
-//            $dataCruiser = collect([]);
-//            $dataFrigate = collect([]);
-//
-//            for ($i = 1; $i<=5; $i++) {
-//                $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
-//                $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
-//            }
-//
-//            $chart->dataset("Cruiser median loot values (Most probable)", "bar", $dataCruiser);
-//            $chart->dataset("Frigate median loot values (Most probable)", "bar", $dataFrigate);
-//            $request->headers->set('Accept', 'application/json');
-//            return $chart->api();
-//        }
-//
+        /**
+         * @return string
+         */
+        public function getHomeRunBellGraphsCruisers(Request $request) {
+            $chart = new BellChart1();
+
+
+            $dataCruiser = collect([]);
+            $dataFrigate = collect([]);
+
+            for ($i = 1; $i<=5; $i++) {
+                $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
+                $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
+            }
+
+            $chart->dataset("Cruiser median loot values (Most probable)", "bar", $dataCruiser);
+            $chart->dataset("Frigate median loot values (Most probable)", "bar", $dataFrigate);
+            $request->headers->set('Accept', 'application/json');
+            return $chart->api();
+        }
+
 //        public function getHomeRunBellGraphsFrigates(Request $request) {
 //            $million = 1000000;
 //
