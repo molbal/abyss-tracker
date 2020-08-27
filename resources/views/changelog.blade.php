@@ -42,6 +42,7 @@
                         <li>Added auto-redirect function for messages</li>
                         <li>Added "return immediately to new run after saving" button</li>
                         <li>Added donations display to homescreen</li>
+                        <li>Adds ordering for fit search</li>
                     </ul>
                 </div>
             </div>
