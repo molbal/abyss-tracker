@@ -126,6 +126,24 @@
                 @component("components.fits.filter.tag-selector") TagMicrowarpdrive @endcomponent
             @endcomponent
 
+            @component("components.collapse.collapsible-card", ["title" => "Ordering", 'icon' => 'order-by'])
+                    <div class="form-group">
+                        <label for="ORDER_BY">Ship size</label>
+                        <select name="ORDER_BY" class="form-control select2-default">
+                            <option value="RUNS_COUNT" selected>Popularity</option>
+                            <option value="fits.PRICE">Price</option>
+                            <option value="Submitted">Upload time</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ORDER_BY_ORDER">Direction</label>
+                        <select name="ORDER_BY_ORDER" class="form-control select2-default">
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                    </div>
+            @endcomponent
+
                 <div class="card card-body border-0 shadow-sm mt-3 p-0">
                     <button type="button" class="btn btn-primary" id="doFilter">Filter this list</button>
                 </div>

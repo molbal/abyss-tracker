@@ -7,6 +7,9 @@
     use App\Charts\AbyssSurvivalType;
     use App\Charts\BellChart2;
     use App\Charts\DailyAdds;
+    use App\Charts\HomeCruiserMedian;
+    use App\Charts\HomePagePopularClasses;
+    use App\Charts\HomePagePopularHulls;
     use App\Charts\IskPerHourChart;
     use App\Charts\LootTierChart;
     use App\Charts\LootTypesChart;
@@ -39,93 +42,100 @@
             return $chart;
         }
 
-
-        /**
-         * @return LootTypesChart
-         */
-        public function getHomeLootTypesChart() : LootTypesChart
-        {
-            $lootTypesChart = new LootTypesChart();
-            $lootTypesChart->load(route("chart.home.type"));
-            $lootTypesChart->displayAxes(false);
-            $lootTypesChart->displayLegend(false);
-            $lootTypesChart->export(true, "Download");
-            $lootTypesChart->height("400");
-            $lootTypesChart->theme(ThemeController::getChartTheme());
-
-            return $lootTypesChart;
-        }
-
-        /**
-         * @return TierLevelsChart
-         */
-        public function getHomeLootTierLevels() : TierLevelsChart
-        {
-            $tierLevelsChart = new TierLevelsChart();
-            $tierLevelsChart->load(route("chart.home.tier"));
-            $tierLevelsChart->displayAxes(false);
-            $tierLevelsChart->displayLegend(false);
-            $tierLevelsChart->export(true, "Download");
-            $tierLevelsChart->height("400");
-            $tierLevelsChart->theme(ThemeController::getChartTheme());
-
-            return $tierLevelsChart;
-        }
-
-        /**
-         * @return SurvivalLevelChart
-         */
-        public function getHomeSurvivalLevels() : SurvivalLevelChart
-        {
-            $survival_chart = new SurvivalLevelChart();
-            $survival_chart->load(route("chart.home.survival"));
-            $survival_chart->export(true, "Download");
-            $survival_chart->displayAxes(false);
-            $survival_chart->height(400);
-            $survival_chart->theme(ThemeController::getChartTheme());
-            $survival_chart->displayLegend(false);
-
-            return $survival_chart;
-        }
+//
+//        /**
+//         * @return LootTypesChart
+//         */
+//        public function getHomeLootTypesChart() : LootTypesChart
+//        {
+//            $lootTypesChart = new LootTypesChart();
+//            $lootTypesChart->load(route("chart.home.type"));
+//            $lootTypesChart->displayAxes(false);
+//            $lootTypesChart->displayLegend(false);
+//            $lootTypesChart->export(true, "Download");
+//            $lootTypesChart->height("400");
+//            $lootTypesChart->theme(ThemeController::getChartTheme());
+//
+//            return $lootTypesChart;
+//        }
+//
+//        /**
+//         * @return TierLevelsChart
+//         */
+//        public function getHomeLootTierLevels() : TierLevelsChart
+//        {
+//            $tierLevelsChart = new TierLevelsChart();
+//            $tierLevelsChart->load(route("chart.home.tier"));
+//            $tierLevelsChart->displayAxes(false);
+//            $tierLevelsChart->displayLegend(false);
+//            $tierLevelsChart->export(true, "Download");
+//            $tierLevelsChart->height("400");
+//            $tierLevelsChart->theme(ThemeController::getChartTheme());
+//
+//            return $tierLevelsChart;
+//        }
+//
+//        /**
+//         * @return SurvivalLevelChart
+//         */
+//        public function getHomeSurvivalLevels() : SurvivalLevelChart
+//        {
+//            $survival_chart = new SurvivalLevelChart();
+//            $survival_chart->load(route("chart.home.survival"));
+//            $survival_chart->export(true, "Download");
+//            $survival_chart->displayAxes(false);
+//            $survival_chart->height(400);
+//            $survival_chart->theme(ThemeController::getChartTheme());
+//            $survival_chart->displayLegend(false);
+//
+//            return $survival_chart;
+//        }
 
         /**
          * @return BellChart1
          */
-        public function getHomeLootAveragesCruisers() : BellChart1
+        public function getHomeLootAveragesCruisers() : HomeCruiserMedian
         {
-            $chart = new BellChart1(0,150);
 
+            $chart = new HomeCruiserMedian();
             $chart->export(true, "Download");
             $chart->height("400");
             $chart->theme(ThemeController::getChartTheme());
             $chart->load(route("chart.home.distribution.cruisers"));
-            $options = $chart->options;
-            $options["xAxis"] = [];
-            $chart->options($options, true);
-            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
-
+            $labels = collect([]);
+            for ($i = 1; $i<=5; $i++) {
+                $labels->add("Tier {$i}");
+            }
+            $chart->labels($labels);
+            $chart->options([
+                'yAxis' =>  [
+                    'axisLabel' => [
+                        'formatter' => '{value} M ISK'
+                    ]
+                ]
+            ]);
             return $chart;
         }
 
 
-        /**
-         * @return BellChart1
-         */
-        public function getHomeLootAveragesFrigates() : BellChart2
-        {
-            $chart = new BellChart2(0,250);
-
-            $chart->export(true, "Download");
-            $chart->height("400");
-            $chart->theme(ThemeController::getChartTheme());
-            $chart->load(route("chart.home.distribution.frigates"));
-            $options = $chart->options;
-            $options["xAxis"] = [];
-            $chart->options($options, true);
-            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
-
-            return $chart;
-        }
+//        /**
+//         * @return BellChart1
+//         */
+//        public function getHomeLootAveragesFrigates() : BellChart2
+//        {
+//            $chart = new BellChart2(0,250);
+//
+//            $chart->export(true, "Download");
+//            $chart->height("400");
+//            $chart->theme(ThemeController::getChartTheme());
+//            $chart->load(route("chart.home.distribution.frigates"));
+//            $options = $chart->options;
+//            $options["xAxis"] = [];
+//            $chart->options($options, true);
+//            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
+//
+//            return $chart;
+//        }
 
         /**
          * @return array
@@ -135,51 +145,50 @@
 
             [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
 
-            $run_date = [];
-            $count_unknown = [];
-            $count_cruiser = [];
-            $count_frigate = [];
-            $rolling_avg_week = [];
-            $rolling_avg_month = [];
-            for ($days = -60; $days<=0; $days++) {
+                $run_date = [];
+                $count_unknown = [];
+                $count_cruiser = [];
+                $count_frigate = [];
+                $rolling_avg_week = [];
+                $rolling_avg_month = [];
+                for ($days = -60; $days <= 0; $days++) {
+                    $timestamp = strtotime("now $days days");
+                    $timestamp_week_older = strtotime("now " . ($days - 7) . " days");
+                    $timestamp_month_older = strtotime("now " . ($days - 30) . " days");
+                    $run_date[] = date("m. d.", $timestamp);
+                    $count_unknown[] = DB::table("runs")
+                                         ->whereNull("SHIP_ID")
+                                         ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                                         ->groupBy("RUN_DATE")
+                                         ->count();
 
-                $timestamp = strtotime("now $days days");
-                $timestamp_week_older = strtotime("now ".($days-7)." days");
-                $timestamp_month_older = strtotime("now ".($days-30)." days");
-                $run_date[] = date("m. d.", $timestamp);
-                $count_unknown[] = DB::table("runs")
-                    ->whereNull("SHIP_ID")
-                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
-                    ->groupBy("RUN_DATE")
-                    ->count();
+                    $count_cruiser[] = DB::table("runs")
+                                         ->whereNotNull("runs.SHIP_ID")
+                                         ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                                         ->where("ship_lookup.IS_CRUISER", "1")
+                                         ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                                         ->groupBy("RUN_DATE")
+                                         ->count();
 
-                $count_cruiser[] = DB::table("runs")
-                    ->whereNotNull("runs.SHIP_ID")
-                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                    ->where("ship_lookup.IS_CRUISER", "1")
-                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
-                    ->groupBy("RUN_DATE")
-                    ->count();
+                    $count_frigate[] = DB::table("runs")
+                                         ->whereNotNull("runs.SHIP_ID")
+                                         ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                                         ->where("ship_lookup.IS_CRUISER", "0")
+                                         ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                                         ->groupBy("RUN_DATE")
+                                         ->count();
 
-                $count_frigate[] = DB::table("runs")
-                    ->whereNotNull("runs.SHIP_ID")
-                    ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                    ->where("ship_lookup.IS_CRUISER", "0")
-                    ->where("RUN_DATE", date("Y-m-d", $timestamp))
-                    ->groupBy("RUN_DATE")
-                    ->count();
+                    $rolling_avg_week[] = round(DB::table("runs")
+                                                  ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
+                                                  ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_week_older))
+                                                  ->count() / 7, 2);
+                    $rolling_avg_month[] = round(DB::table("runs")
+                                                   ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
+                                                   ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_month_older))
+                                                   ->count() / 30, 2);
+                }
 
-                $rolling_avg_week[] = round(DB::table("runs")
-                                         ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
-                                         ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_week_older))
-                                         ->count()/7,2);
-                $rolling_avg_month[] = round(DB::table("runs")
-                                         ->where("RUN_DATE", '<=', date("Y-m-d", $timestamp))
-                                         ->where("RUN_DATE", '>', date("Y-m-d", $timestamp_month_older))
-                                         ->count()/30,2);
-            }
-
-            return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month];
+                return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month];
             });
 
             $daily_add_chart = new DailyAdds();
@@ -356,5 +365,55 @@ WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );",
 
             return [$otherCharts, $medianLootForTier];
 
+        }
+
+        /**
+         * Returns the homepage's most popular ship classes graph container
+         * @return HomePagePopularHulls
+         */
+        public function getPopularShipsGraph() {
+            $chart = new HomePagePopularHulls();
+            $chart->load(route("chart.home.popular-hulls"));
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->export(true, "Download");
+            $chart->height("300");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->options([
+                "roseType" => "radius",
+                'label' => [
+                    'position' => 'inside',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 5
+                ],
+                'tooltip'=> [
+                    'confine' => true
+                ]
+            ]);
+
+            return $chart;
+        }
+
+        public function getPopularShipsClasses() {
+            $chart = new HomePagePopularClasses();
+            $chart->load(route("chart.home.popular-classes"));
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->export(true, "Download");
+            $chart->height("300");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->options([
+                "roseType" => "radius",
+                'label' => [
+                    'position' => 'inside',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 5
+                ],
+                'tooltip'=> [
+                    'confine' => true
+                ]
+            ]);
+
+            return $chart;
         }
     }

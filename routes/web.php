@@ -53,6 +53,7 @@
     Route::get('/settings', 'Profile\SettingController@index')->name('settings.index');
     Route::post('/settings/update', 'Profile\SettingController@save')->name('settings.save');
     Route::post('/settings/remove-esi', 'Profile\SettingController@removeEsi')->name('settings.remove-esi');
+    Route::post('/settings/save-cargo', 'Profile\SettingController@saveCargo')->name('settings.save-cargo');
 
     /**
      * Stopwatch
@@ -87,11 +88,10 @@
     /**
      * Chart APIs
      */
-    Route::get("/api/chart/home/types", 'GraphHelper@homeType')->name("chart.home.type");
     Route::get("/api/chart/home/types/tier/{tier}", 'GraphHelper@typeTier')->name("chart.home.type.tier");
-    Route::get("/api/chart/home/tiers", 'GraphHelper@homeTier')->name("chart.home.tier");
+    Route::get("/api/chart/home/fits/popular/hull", 'GraphHelper@popularHulls')->name("chart.home.popular-hulls");
+    Route::get("/api/chart/home/fits/popular/class", 'GraphHelper@popularClasses')->name("chart.home.popular-classes");
     Route::get("/api/chart/home/loot_levels", 'GraphHelper@homeLootLevels')->name("chart.home.loot_levels");
-    Route::get("/api/chart/home/survival", 'GraphHelper@homeSurvival')->name("chart.home.survival");
     Route::get("/api/chart/home/survival/tier/{tier}", 'GraphHelper@homeSurvivalTier')->name("chart.home.survival.tier");
     Route::get("/api/chart/home/tiers/averages", 'GraphHelper@tierAverages')->name("chart.home.tier_averages");
     Route::get("/api/chart/personal/loot", 'GraphHelper@personalLoot')->name("chart.personal.loot");
@@ -142,4 +142,9 @@
     Route::get("/maintenance/test-login/{login_id}/{secret}", 'Maintenance\MaintenanceController@debugLogin');
     Route::get("/maintenance/recalc-fit/{id}/{secret}", 'Maintenance\MaintenanceController@recalculateSingleFit');
     Route::get("/maintenance/recalc-fits/{secret}", 'Maintenance\MaintenanceController@recalculateQueuedFits');
+
+    /**
+     * Community Controller
+     */
+    Route::get("/discord", 'CommunityController@discord')->name("community.discord");
 

@@ -16,8 +16,11 @@
     use App\Charts\TierLevelsChart;
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
+    use App\Http\Controllers\Misc\DonorController;
     use App\Http\Controllers\Profile\LeaderboardController;
+    use App\Http\Controllers\Profile\SettingController;
     use App\Mail\RunFlagged;
+    use App\PatreonDonorDisplay;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -45,6 +48,12 @@
         /** @var LeaderboardController */
         private $leaderboardController;
 
+        /** @var DonorController */
+        private $donationController;
+
+        /** @var FitSearchController */
+        private $fitSearchController;
+
         /**
          * AbyssController constructor.
          *
@@ -54,14 +63,18 @@
          * @param RunsController           $runsController
          * @param BarkController           $barkController
          * @param LeaderboardController    $leaderboardController
+         * @param DonorController          $donationController
+         * @param FitSearchController      $fitSearchController
          */
-        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController) {
+        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController, DonorController $donationController, FitSearchController $fitSearchController) {
             $this->lootCacheController = $lootCacheController;
             $this->graphContainerController = $graphContainerController;
             $this->homeQueriesController = $homeQueriesController;
             $this->runsController = $runsController;
             $this->barkController = $barkController;
             $this->leaderboardController = $leaderboardController;
+            $this->donationController = $donationController;
+            $this->fitSearchController = $fitSearchController;
         }
 
 
@@ -71,27 +84,32 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function home() {
-            $lootTypesChart = $this->graphContainerController->getHomeLootTypesChart();
-            $tierLevelsChart = $this->graphContainerController->getHomeLootTierLevels();
-            $survival_chart = $this->graphContainerController->getHomeSurvivalLevels();
+
             $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
-            $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
+//            $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
             $last_runs = $this->homeQueriesController->getLastRuns();
             $drops = $this->homeQueriesController->getCommonDrops();
             $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
-            $today_num = DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();
-            $count = DB::table("runs")->count();
+            $today_num = Cache::remember("aft.home.todayruns", now()->addMinutes(5), function () {return DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();});
+            $count =  Cache::remember("aft.home.count", now()->addMinutes(5), function () {return DB::table("runs")->count();});
 
             $leaderboard_90 = $this->leaderboardController->getLeaderboard("-90 day", "", 10);
             $leaderboard_30 = $this->leaderboardController->getLeaderboard("-30 day", "", 10);
             $leaderboard_07 = $this->leaderboardController->getLeaderboard("-7 day", "", 10);
 
+            $lastPatreon = PatreonDonorDisplay::getLatestDonorForHomepage();
+            $lastDonation = $this->donationController->getDonations(1, 1000000, true)->first();
+
+            $popularFits = $this->fitSearchController->getHomepagePopularFits();
+            $popularShipsGraph = $this->graphContainerController->getPopularShipsGraph();
+            $newFits = $this->fitSearchController->getHomepageNewFits();
+            $popularClassesGraph = $this->graphContainerController->getPopularShipsClasses();
+
+
+
             return view("welcome", [
-                'loot_types_chart'  => $lootTypesChart,
-                'tier_levels_chart' => $tierLevelsChart,
-                'survival_chart'    => $survival_chart,
                 'lootDistributionCruiser'   => $lootDistributionCruiser,
-                'lootDistributionFrigate'   => $lootDistributionfrigate,
+//                'lootDistributionFrigate'   => $lootDistributionfrigate,
                 'abyss_num'         => $count,
                 'today_num'         => $today_num,
                 'items'             => $last_runs,
@@ -100,6 +118,12 @@
                 'leaderboard_90' => $leaderboard_90,
                 'leaderboard_30' => $leaderboard_30,
                 'leaderboard_07' => $leaderboard_07,
+                'patreon_last' => $lastPatreon,
+                'ingame_last' => $lastDonation,
+                'popularFits' => $popularFits,
+                'popularShipsGraph' => $popularShipsGraph,
+                'popularClassesGraph' => $popularClassesGraph,
+                'newFits' => $newFits
             ]);
         }
 
@@ -118,16 +142,6 @@
             [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio] = $this->homeQueriesController->getPersonalStats();
 
             $loginId = session()->get("login_id");
-//            $data =  DB::table("runs")
-//                       ->where("CHAR_ID", '=', $loginId)
-//                       ->whereRaw("RUN_DATE > NOW() - INTERVAL 30 DAY")
-//                       ->select("RUN_DATE")
-//                       ->groupBy("RUN_DATE")
-//                       ->get();
-//            $labels = [];
-//            foreach ($data as $type) {
-//                $labels[] = date("m.d", strtotime($type->RUN_DATE));
-//            }
             $personalDaily = $this->graphContainerController->getPersonalStatsCharts();
 
             $table = [];
@@ -210,10 +224,25 @@
             $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
             $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
 
-            Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addHour());
+            if (SettingController::getBooleanSetting((int)session()->get("login_id"), "remember_cargo", true)) {
+                Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
+            }
+            else {
+                Cache::forget(sprintf("at.last_dropped.%s", session()->get("login_id")));
+            }
 
             DB::table("stopwatch")->where("CHAR_ID", session()->get("login_id"))->delete();
-            return redirect(route("view_single", ["id" => $id]));
+
+            if ($request->get("submit") == "view-details") {
+                return redirect(route("view_single", ["id" => $id]));
+            }
+            else {
+                return view("autoredirect", [
+                    'title' => "Run saved!",
+                    'message' => "Its ID is $id. You will be redirected back to the previous screen in a few seconds.",
+                    'redirect' => route("new"),
+                ]);
+            }
         }
 
         /**

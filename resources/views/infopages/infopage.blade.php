@@ -22,7 +22,7 @@
     </div>
     <div class="row mt-2">
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="20th percentile value">
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/more-than.png" class="pull-left ml-2"/>
                     <div class="col">
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="Median loot value">
                 <div class="row">
                     <img src="{{\App\Http\Controllers\ThemeController::getShipSizeIconPath("cruiser")}}" class="pull-left ml-2">
                     <div class="col">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="80th percentile value">
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/less-than.png" class="pull-left ml-2"/>
                     <div class="col">
@@ -57,7 +57,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="20th percentile value">
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/more-than.png" class="pull-left ml-2"/>
                     <div class="col">
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="Median loot value">
                 <div class="row">
                     <img src="{{\App\Http\Controllers\ThemeController::getShipSizeIconPath("frigate")}}" class="pull-left ml-2">
                     <div class="col">
@@ -79,7 +79,7 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="80th percentile value">
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/less-than.png" class="pull-left ml-2"/>
                     <div class="col">
@@ -142,7 +142,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-body shadow-sm border-0 text-center mb-3">
-                <p class="mb-0">If you have a question you will probably get it answered in the Abyssal Lurkers discord or ingame in the <b>Abyssal Lurkers</b> channel.</p>
+                <p class="mb-0">If you have a question you will probably get it answered in the <a class="text-dark" href="{{route('community.discord')}}">Abyssal Lurkers discord</a> or ingame in the <b>Abyssal Lurkers</b> channel.</p>
             </div>
         </div>
     </div>
@@ -162,7 +162,7 @@
                         <th>Abyss type</th>
                         <th>Abyss tier</th>
                         <th class="text-right">Loot value</th>
-                        <th class="text-right" colspan="2">Submitted</th>
+                        <th class="text-right" colspan="2">Duration</th>
                     </tr>
                     @foreach($runs as $item)
                         @component("components.runs.row-homepage", ['item' => $item]) @endcomponent
@@ -170,7 +170,7 @@
                 </table>
             </div>
             <div class="card-footer">
-                <a class="btn btn-outline-secondary" href="{{route("search.do", ["tier" => $tier])}}">View all @lang("tiers.".$tier) runs</a>
+                <a class="text-dark" href="{{route("search.do", ["tier" => $tier])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/database.png">View all @lang("tiers.".$tier) runs</a>
             </div>
         </div>
         <div class="col-xs-12 col-sm-4">
@@ -191,7 +191,7 @@
                 @endforeach
             </div>
             <div class="card-footer">
-                <a class="btn btn-outline-secondary" href="{{route("item_all")}}">View all drops</a>
+                <a class="text-dark" href="{{route("item_all")}}"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/empty-box.png">View drop table</a>
             </div>
         </div>
     </div>

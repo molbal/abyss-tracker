@@ -29,7 +29,64 @@
                                ->where("CHAR_ID", session()->get("login_id"))
                                ->value("REFRESH_TOKEN") ?? "") > 0;
 
-            return view('settings', ['access' => $access, 'esi_on' => $esi_on]);
+            $rememberCargo = self::getBooleanSetting((int)session()->get("login_id"), 'remember_cargo', true);
+//            dd($rememberCargo);
+            return view('settings', ['access' => $access, 'esi_on' => $esi_on, 'cargo' => $rememberCargo]);
+        }
+
+        public function saveCargo(Request $request) {
+            if (!session()->has("login_id")) {
+                return view("error", ["error" => "Please log in to access this page"]);
+            }
+
+            try {
+                $new_cargo = $request->get("save_cargo") == "1";
+                self::setBooleanSetting((int)session()->get("login_id"), 'remember_cargo', $new_cargo);
+            } catch (\Exception $e) {
+                Log::error($e->getMessage() . " " . $e->getFile() . "@" . $e->getLine());
+
+                return view("error", ["error" => "Something went wrong: " . $e->getMessage()]);
+            }
+
+
+            return view("autoredirect", [
+                'title' => "Setting saved!",
+                'message' => "Abyss Tracker will ".($new_cargo ? "" : "not ")." remember your cargo between runs, for up to ".config("tracker.cargo.saveTime")." minutes.",
+                'redirect' => route("settings.index"),
+            ]);
+        }
+
+        /**
+         * Returns a boolean setting stored in DB, cached for up to 20 seconds.
+         * @param int    $userId
+         * @param string $setting
+         * @param bool   $default
+         *
+         * @return bool|mixed
+         */
+        public static function getBooleanSetting(int $userId, string $setting, bool $default = false) {
+            $dbValue = Cache::remember("aft.setting.bool.{$userId}.{$setting}", now()->addMinute(), function () use ($userId, $setting) {
+                return DB::table("preferences")->where("CHAR_ID", $userId)->where("SETTING", strtoupper($setting))->exists() ?
+                    DB::table("preferences")->where("CHAR_ID", $userId)->where("SETTING", strtoupper($setting))->first()->VALUE_BOOLEAN :
+                    null;
+            });
+
+            return $dbValue === null ? $default : $dbValue;
+        }
+
+        /**
+         * Updates DB
+         * @param int    $userId
+         * @param string $setting
+         * @param bool   $newval
+         */
+        public static function setBooleanSetting(int $userId, string $setting, bool $newval = false) {
+            DB::table("preferences")->updateOrInsert([
+                'CHAR_ID' => $userId, 'SETTING' =>strtoupper($setting)
+            ], [
+                'VALUE_BOOLEAN' => $newval
+            ]);
+            Cache::forget("aft.setting.bool.{$userId}.{$setting}");
         }
 
         public function removeEsi() {
@@ -47,7 +104,11 @@
                 return view("error", ["error" => "Something went wrong: " . $e->getMessage()]);
             }
 
-            return view('sp_message', ['title' => 'ESI token revoked', 'message' => 'The ESI token was removed from your account.']);
+            return view("sp_message", [
+                'title' => "ESI token revoked",
+                'message' => "The ESI token was removed from your account.",
+                'redirect' => route("settings.index"),
+            ]);
 
         }
 
@@ -77,7 +138,11 @@
                 return view("error", ["error" => "Something went wrong: " . $e->getMessage()]);
             }
 
-            return view('sp_message', ['title' => 'Settings saved', 'message' => 'Your settings were updated.']);
+            return view("autoredirect", [
+                'title' => "Settings saved",
+                'message' => "Your privacy settings were updated.",
+                'redirect' => route("settings.index"),
+            ]);
         }
 
 

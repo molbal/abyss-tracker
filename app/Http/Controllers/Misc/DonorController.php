@@ -57,13 +57,21 @@
          *
          * @return \Illuminate\Support\Collection
          */
-        public function getDonations(int $limit) {
-            return DB::table("donors")->orderBy("DATE", "DESC")->limit($limit)->get();
+        public function getDonations(int $limit, int $minimumAmount = 0, bool $opsecSkipped = false) {
+            return Cache::remember(sprintf("aft.donations.ingame.%d.%d.%s",$limit,$minimumAmount, $opsecSkipped ? "t" : "f"), now()->addMinutes(5), function () use ($limit, $minimumAmount, $opsecSkipped) {
+                $builder = DB::table("donors")
+                                    ->where("AMOUNT", ">=", $minimumAmount);
+                if ($opsecSkipped) {
+                    $builder->whereRaw("UPPER(REASON)<>'PRIVATE'");
+                }
+                return $builder->orderBy("DATE", "DESC")->limit($limit)->get();
+            });
+
         }
 
         public function index() {
             $donors  = $this->getPatreonList();
-            $ingameDonors = $this->getDonations(100);
+            $ingameDonors = $this->getDonations(100, 50000);
             return view("donors", [
                 'patreon' => $donors,
                 'ingameDonors' => $ingameDonors

@@ -25,14 +25,22 @@
                 </table>
             </div>
         </div>
+
         <div class="col-md-4">
-            <div class="card card-body border-0 mt-3">
+            <img src="{{asset('veetor-sanders.jpg')}}" alt="" class="w-100 mt-3 mb-0 rounded-top">
+
+            <div class="card card-body border-0 rounded-bottom mt-0" style="
+            border-top-left-radius: 0rem !important;
+            border-top-right-radius: 0rem !important;">
                 <h5 class="font-weight-bold">How to donate?</h5>
-                <p>You can use <a href="https://www.patreon.com/veetor" target="_blank">Patreon</a> to set up donations.</p>
+                <p>You can use <a href="https://www.patreon.com/veetor" class="text-dark" target="_blank">Patreon</a> to set up donations.</p>
                 <h5 class="font-weight-bold">What are donations used for?</h5>
-                <p class="text-justify">Monthly hosting bills are between 30 and 60€ depending on exchange rate and site usage. Recurring donations cover a large part of that. It also allows me to experiment with new features that require a budget normally outside of a single person's hobby project.</p>
+                <p class="text-justify">Monthly hosting bills are approximately 48€. Recurring donations cover a large part of that. It also allows me to experiment with new features that require a budget normally outside of a single person's hobby project.</p>
                 <h5 class="font-weight-bold">How often does this list update?</h5>
-                <p class="text-justify">I haven't automated it yet, around the 5th of each month I manually update this list.</p>
+                <p class="text-justify pb-0 mb-0">I haven't automated it yet, around the 5th of each month I manually update this list.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://patreon.com/veetor" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png">Donate on Patreon</a>
             </div>
         </div>
         <div class="col-md-8">
@@ -85,7 +93,7 @@
                 <h5 class="font-weight-bold">What are donations used for?</h5>
                 <p class="text-justify">I like playing the game and the less time I have to grind for ISK the more time I can spend improving this site.</p>
                 <h5 class="font-weight-bold">How often does this list update?</h5>
-                <p class="text-justify">Every hour, this is automated</p>
+                <p class="text-justify">Every hour, this is automated. To avoid flooding this list only donations over 50 000 ISK are showing up in this list. On the home page the latest donation shows up with the limit of 1M ISK.</p>
                 <h5 class="font-weight-bold">OPSEC?</h5>
                 <p>If you type "PRIVATE" in the reason field of the "Transfer ISK" window, it will show up in this list without your character name listed.</p>
             </div>

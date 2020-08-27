@@ -2,8 +2,14 @@
 @section("browser-title", "All runs")
 @section("content")
     <div class="row mt-5">
+        <div class="col-xs-12 col-sm-8 offset-md-2">
+            <div class="alert alert-warning">
+                This view is past its usefulness. I recommend you use <a class="btn btn-sm btn-secondary"
+                                                                          href="{{route("search.index")}}">
+                    <img src="https://img.icons8.com/small/32/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("search.index" == Route::currentRouteName() || "search.index" == Route::currentRouteName())}}/search.png" class="smallicon mr-1">Search</a> as it might be removed in a future version.
+            </div>
+        </div>
         <div class="col-sm-12">
-
             <h4 class="font-weight-bold">Here you find a list of all recorded runs</h4>
             <p class="text-small">Displaying results <strong>{{$order_type}}</strong> by <strong>{{$order_by}}</strong></p>
         </div>

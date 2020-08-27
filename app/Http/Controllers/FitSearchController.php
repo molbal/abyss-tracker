@@ -149,7 +149,7 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function index() {
-            $ships = Cache::remember("aft.ships", now()->addHour(), function() {return DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();});
+            $ships = Cache::remember("aft.ships", now()->addHour(), function() {return DB::table("ship_lookup")->whereRaw("ship_lookup.ID in (select SHIP_ID from fits)")->orderBy("NAME", "ASC")->get();});
             $groups = Cache::remember("aft.ship.groups", now()->addHour(), function () {return DB::select("select distinct `GROUP` from ship_lookup order by 1 asc");});
             $results = $this->getStartingQuery()->orderByDesc("RUNS_COUNT")->paginate();
 
@@ -241,7 +241,8 @@
                                "fit_recommendations.ELECTRICAL as Electrical",
                                "fit_recommendations.EXOTIC as Exotic",
                                "fit_recommendations.FIRESTORM as Firestorm",
-                               "fit_recommendations.GAMMA as Gamma"])
+                               "fit_recommendations.GAMMA as Gamma",
+                               "fits.SUBMITTED as Submitted"])
                      ->distinct("fits.ID");
         }/**
      * @param Request $request
@@ -249,7 +250,7 @@
      * @return array
      */
         protected function getSearchQuery(Request $request) : array {
-            DB::enableQueryLog();
+//            DB::enableQueryLog();
             /** @var Builder $query */
             $query = $this->getStartingQuery();
             $filters_display = collect([]);
@@ -306,6 +307,14 @@
                 $filters_display->add($request->get("SHIP_GROUP")." class");
             }
 
+            if ($request->filled("ORDER_BY")) {
+                $query->orderBy($request->get("ORDER_BY"), $request->get("ORDER_BY_ORDER") ?? "ASC");
+                $filters_display->add("Order by ".__("fits.order-by.".strtolower($request->get("ORDER_BY")))." in ".($request->get("ORDER_BY_ORDER") == "desc" ? "descending" : "ascending")." order");
+            }
+            else {
+                $filters_display->add("Most popular first");
+            }
+
             $tagList = $this->tags->getTagList();
             foreach ($tagList as $tag) {
                 if ($request->filled($tag)) {
@@ -316,6 +325,41 @@
 
             return [$query, $filters_display];
         }
+
+        /**
+         * @return mixed
+         */
+        public function getHomepagePopularFits() {
+            return Cache::remember("aft.home.fits.popular", now()->addMinutes(15), function() {
+                $query = $this->getStartingQuery()
+                                                   ->limit(config('tracker.homepage.fits.count'))
+                                                   ->orderByDesc("RUNS_COUNT");
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->getFitTags($result->ID);
+                }
+                return $popularFits;
+            });
+        }
+
+
+        /**
+         * @return mixed
+         */
+        public function getHomepageNewFits() {
+            return Cache::remember("aft.home.fits.new", now()->addMinutes(15), function() {
+                $query = $this->getStartingQuery()
+                                                   ->limit(config('tracker.homepage.fits.count'))
+                                                   ->orderBy('SUBMITTED', 'ASC');
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->getFitTags($result->ID);
+                }
+                return $popularFits;
+            });
+        }
+
+
 
         /**
          * Creates a join for a specified tag

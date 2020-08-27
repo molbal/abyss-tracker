@@ -44,7 +44,7 @@
                                     @if($item->SHIP_ID === null)
                                         <em class="font-italic text-black-50 ">Unknown</em>
                                     @else
-                                        <img src="https://imageserver.eveonline.com/Type/{{$item->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" height="24px" width="24px"
+                                        <img src="https://imageserver.eveonline.com/Type/{{$item->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" style="border: 1px solid #fff;" height="24px" width="24px"
                                              alt="">&nbsp;
                                         <a class="text-dark" href="{{route("search.do", ["ship_id" => $item->SHIP_ID])}}">{{$item->SHIP_NAME}}</a>
                                     @endif

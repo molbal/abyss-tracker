@@ -131,7 +131,7 @@
 //            echo Artisan::call('optimize');
 
 //            echo Artisan::call('config:cache');
-//            echo Artisan::call('route:cache');
+            echo Artisan::call('route:cache');
             }
             catch (\Exception $e) {
                 dd($e);

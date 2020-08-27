@@ -101,7 +101,7 @@
                                 <h2 class="mb-0">Private fit</h2>
                             @else
                                 @if($all_data->FIT_ID)
-                                    <h2 class="mb-0"><a href="{{route("fit_single", ["id" => $all_data->FIT_ID])}}">{{$fit_name}}</a></h2>
+                                    <h2 class="mb-0"><a href="{{route("fit_single", ["id" => $all_data->FIT_ID])}}" class="text-dark">{{$fit_name}}</a></h2>
                                 @else
                                     <h2 class="mb-0">Unknown fit</h2>
                                 @endif
@@ -154,8 +154,7 @@
                             @if($all_data->RUNTIME_SECONDS == 0)
                                 <span class="">Unknown</span>
                             @else
-                                {{sprintf("%02d", $all_data->RUNTIME_SECONDS/60)}}
-                                :{{sprintf("%02d", $all_data->RUNTIME_SECONDS%60)}}
+                                {{\App\Http\Controllers\TimeHelper::formatSecondsToMMSS($all_data->RUNTIME_SECONDS)}}
                             @endif</h2>
                         <small class="text-muted font-weight-bold">Run duration</small>
                     </div>

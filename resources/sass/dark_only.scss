@@ -45,6 +45,52 @@ nav.bg-white {
 }
 
 
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: $tab-active-color !important;
+    background-color: $tab-active-bg !important;
+    border-color: $tab-active-bg !important;
+    //border-bottom-color: rgb(245, 249, 250);
+    //border-left-color: rgb(222, 226, 230);
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+    color:#e3342f;
+    border:0;
+    border-width:0 !important;
+    -webkit-box-shadow:inset 0 3px 0 0 #e3342f;
+    box-shadow:inset 0 3px 0 0 #e3342f;
+}
+
+
+.navbar-light .navbar-nav {
+    position: relative;
+    top: 0;
+
+    .nav-link {
+        color: $text-lighter-1;
+        font-weight: 700;
+        //border-radius: 25rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        &:hover:not(.active) {
+            background: $gray-900;
+            box-shadow:inset 0 2px 0 0 $gray-700;
+            color: $white;
+        }
+
+        &.active {
+            color: $red;
+            border: 0 solid $red;
+            border-width: 2px 0 0 0;
+
+        }
+    }
+}
+
+
+
 /**
  *   Bootstrap 4 theme for Select2.
  *   https://github.com/nitishrajuprety/bootstrap4-select2-theme
