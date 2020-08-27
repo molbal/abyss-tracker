@@ -250,7 +250,7 @@
      * @return array
      */
         protected function getSearchQuery(Request $request) : array {
-            DB::enableQueryLog();
+//            DB::enableQueryLog();
             /** @var Builder $query */
             $query = $this->getStartingQuery();
             $filters_display = collect([]);
@@ -305,6 +305,14 @@
             if ($request->filled("SHIP_GROUP")) {
                 $query->where("ship_lookup.GROUP", '=', $request->get("SHIP_GROUP"));
                 $filters_display->add($request->get("SHIP_GROUP")." class");
+            }
+
+            if ($request->filled("ORDER_BY")) {
+                $query->orderBy($request->get("ORDER_BY"), $request->get("ORDER_BY_ORDER") ?? "ASC");
+                $filters_display->add("Order by ".__("fits.order-by.".strtolower($request->get("ORDER_BY")))." in ".($request->get("ORDER_BY_ORDER") == "desc" ? "descending" : "ascending")." order");
+            }
+            else {
+                $filters_display->add("Most popular first");
             }
 
             $tagList = $this->tags->getTagList();

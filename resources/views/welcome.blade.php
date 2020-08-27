@@ -229,7 +229,7 @@
                 <div class="tab-pane fade" id="tab-fits-new" role="tabpanel" aria-labelledby="tab-head-activity">
                     @component("components.fits.filter.result-list", ["results" => $newFits])@endcomponent
                     <div class="">
-                        <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'SUBMITTED', 'DIRECTION' => 'ASC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more new fits</a>
+                        <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'Submitted', 'ORDER_BY_ORDER' => 'ASC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more new fits</a>
                     </div>
                 </div>
             </div>

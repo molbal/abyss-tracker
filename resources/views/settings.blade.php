@@ -88,7 +88,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <h5 class="font-weight-bold">Remembering cargo</h5>
-                            <p class="text-justify mb-0">Would you like to automatically copy your 'after cargo' loot in the 'before cargo' field of your next run if it starts within {{config("tracker.cargo.saveTime")}} minutes after finishing the last one?</p>
+                            <p class="text-justify mb-0">Would you like to automatically copy your 'after cargo' loot in the 'before cargo' field of your next run?<br><span class="text-muted">The site will only remember the cargo for {{config("tracker.cargo.saveTime")}} minutes.</span></p>
                         </div>
                     </div>
                     <div class="row">
