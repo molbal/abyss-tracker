@@ -224,6 +224,8 @@
                 return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
             }
 
+            try {
+
             $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
                 return $this->getFitsQB($id)->first();
             });
@@ -297,6 +299,12 @@
                 'runs' => $runs,
                 "breaksEven" => $breaksEven
             ]);
+
+            }
+            catch (\Exception $e)  {
+                Log::error("Error viewing fit: ".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString());
+                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit."]);
+            }
 	    }
 
         /**

@@ -51,10 +51,10 @@
             </li>
             <li class="nav-item dropdown" style="list-style: none">
                 <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Community <sup>({{config("tracker.version")}})</sup></a>
+                    <img src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == Route::currentRouteName())}}/medical-id.png"> Community <sup>({{config("tracker.version")}})</sup></a>
                 </a>
                 <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
-                    <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
+                    <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
                     <a href="{{route("donors.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/like.png"> Donations</a>
                     <a href="{{route('community.discord')}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/discord-logo.png"> Join Abyssal Lurkers</a>
                     <div class="dropdown-divider"></div>

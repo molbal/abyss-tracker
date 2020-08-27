@@ -28,7 +28,7 @@
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                     <h4 class="mb-0 pb-0"><strong>1.5.5</strong> 'Bolt' release</h4>
-                    <small class="mt-0">2020 august 22</small>
+                    <small class="mt-0">2020 august 28</small>
                     <p class="text-justify">
                         This is a combined bugfix and new features release.
                     </p>
