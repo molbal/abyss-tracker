@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class VideoTutorial extends Model
 {
-    protected $casts = [
-        'timestamps' => 'collection',
-    ];
+
+    function creator() {
+        return $this->belongsTo('App\ContentCreator');
+    }
 }
