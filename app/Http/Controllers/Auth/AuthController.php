@@ -30,13 +30,13 @@
         public function redirectToScopedProvider() {
 
             config(['services.eveonline' => [
-                'client_id'     => env('EVEONLINE_SCOPED_CLIENT_ID'),
-                'client_secret' => env('EVEONLINE_SCOPED_CLIENT_SECRET'),
-                'redirect'      => env('EVEONLINE_SCOPED_REDIRECT'),
+                'client_id'     => config("tracker.scoped.client_id"),
+                'client_secret' => config("tracker.scoped.client_secret"),
+                'redirect'      => config("tracker.scoped.redirect"),
             ]]);
 
             return Socialite::driver('eveonline')
-                ->setScopes(explode(' ', env('EVEONLINE_SCOPED_CLIENT_SCOPES')))
+                ->setScopes(explode(' ', config("tracker.scoped.client_scopes")))
                 ->redirect();
         }
 
@@ -70,15 +70,15 @@
         /**
          * Obtain the user information from Eve Online.
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
          */
         public function handleScopedProviderCallback() {
             try {
 
                 config(['services.eveonline' => [
-                    'client_id'     => env('EVEONLINE_SCOPED_CLIENT_ID'),
-                    'client_secret' => env('EVEONLINE_SCOPED_CLIENT_SECRET'),
-                    'redirect'      => env('EVEONLINE_SCOPED_REDIRECT'),
+                    'client_id'     => config("tracker.scoped.client_id"),
+                    'client_secret' => config("tracker.scoped.client_secret"),
+                    'redirect'      => config("tracker.scoped.redirect"),
                 ]]);
 
 //                dd(config("services.eveonline"));

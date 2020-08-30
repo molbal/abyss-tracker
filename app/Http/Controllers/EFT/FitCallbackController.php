@@ -13,7 +13,7 @@
         function handleFitCallback(Request $request) {
 
             // This is your app secret
-            $app_secret = env("FIT_SERVICE_APP_SECRET");
+            $app_secret = config('fits.auth.secret');
 
             // This is the thing we will receive
             $expectedAuth = sha1($app_secret);
