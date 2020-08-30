@@ -14,7 +14,7 @@
          * @return bool
          */
         public static function isDarkTheme():bool {
-            return !(Cookie::has("bright-theme") && Cookie::get("bright-theme") == "true");
+            return  !(Cookie::get("bright-theme", "false") == "true");
         }
 
         public static function getChartTheme():string {
