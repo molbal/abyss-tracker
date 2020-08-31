@@ -56,6 +56,5 @@
                 Cookie::queue("bright-theme", "true", time()+60*60*24*60);
             }
             return redirect(url()->previous(route("home")));
-//            return redirect(route("home"));
         }
     }

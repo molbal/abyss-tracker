@@ -7,7 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class VideoTutorial extends Model
 {
 
-    function creator() {
-        return $this->belongsTo('App\ContentCreator');
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'video_tutorials';
+
+    function fits() {
+        return $this->hasMany("App\VideoTutorialFit");
+    }
+
+    function video_tutorial() {
+        return $this->belongsTo('App\VideoTutorial');
     }
 }

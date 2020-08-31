@@ -30,6 +30,11 @@ class AddRunsFitIdIndex extends Migration
      */
     public function down()
     {
-            @DB::statement("drop index runs_fit_id;");
+        try {
+            DB::statement("drop index `runs_fit_id`;");
+        }
+        catch (Exception $e) {
+            Log::warning("Could not add index on runs.FIT_ID: ".$e->getMessage());
+        }
     }
 }
