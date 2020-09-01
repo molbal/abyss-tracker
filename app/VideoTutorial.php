@@ -21,4 +21,17 @@ class VideoTutorial extends Model
     function video_tutorial() {
         return $this->belongsTo('App\VideoTutorial');
     }
+    function content_creator() {
+        return $this->belongsTo('App\ContentCreator');
+    }
+
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'video_bookmarks' => 'array',
+    ];
 }

@@ -3,7 +3,9 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\KeyValue;
 use Laravel\Nova\Fields\Markdown;
@@ -49,9 +51,11 @@ class VideoTutorial extends Resource
             Text::make("Youtube ID", 'youtube_id'),
             Select::make("Tier", "tier")->options(['1','2','3','4','5']),
             Select::make("Type", "type")->options(['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma']),
-            Markdown::make("Description",'description')->alwaysShow(),
+            Markdown::make("Description",'description')->alwaysShow()->required(true),
             KeyValue::make("Bookmarks", "video_bookmarks"),
-            HasMany::make("VideoTutorialFit")
+            BelongsTo::make("Content creator", "content_creator"),
+
+            HasMany::make("Related fits", "fits", "App\Nova\VideoTutorialFit")
         ];
     }
 

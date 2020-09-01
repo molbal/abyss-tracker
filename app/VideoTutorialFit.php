@@ -14,7 +14,7 @@ class VideoTutorialFit extends Model
     protected $table = 'video_tutorial_fits';
 
 
-    function creator() {
-        return $this->belongsTo('App\ContentCreator');
+    function video_tutorial() {
+        return $this->belongsTo('App\VideoTutorial');
     }
 }

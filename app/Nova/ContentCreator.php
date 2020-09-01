@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
@@ -22,7 +23,7 @@ class ContentCreator extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'NAME';
 
     /**
      * The columns that should be searched.
@@ -43,12 +44,13 @@ class ContentCreator extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make("Name", "name")->sortable()->required(true),
+            Text::make("Name", "NAME")->sortable()->required(true)->showOnIndex()->showOnDetail(),
             Number::make("EVE char ID", "CHAR_ID")->required(false),
             Text::make("Discord", "DISCORD")->sortable()->required(false),
             Text::make("Youtube", "YOUTUBE")->sortable()->required(false),
             Text::make("Twitter", "TWITTER")->sortable()->required(false),
 
+            HasMany::make("VideoTutorial", "video_tutorials")
         ];
     }
 

@@ -3,7 +3,10 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class VideoTutorialFit extends Resource
@@ -41,6 +44,10 @@ class VideoTutorialFit extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+
+            Number::make("Abyss Tracker Fit ID", "fit_id"),
+
+            BelongsTo::make("Parent tutorial", "video_tutorial", "App\Nova\VideoTutorial")
         ];
     }
 
