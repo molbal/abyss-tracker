@@ -16,6 +16,7 @@ class CreateVideoTutorialsTable extends Migration
         Schema::create('video_tutorials', function (Blueprint $table) {
             $table->id();
             $table->string("youtube_id", 32);
+            $table->string("name", 128);
             $table->unsignedBigInteger("content_creator_id")->nullable(false);
             $table->json("video_bookmarks");
             $table->enum("tier", ['1','2','3','4','5'])->nullable(true);

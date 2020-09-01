@@ -216,15 +216,15 @@ text-align: center;">
     </style>
 @endsection
 @section("scripts")
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
-    <script>
-        $(function () {
-            $('.inline-pie').sparkline('html', {
-                type: 'pie',
-                sliceColors: ['#78b7aa', 'rgba(0,0,0,0)'],
-                disableInteraction: true
-            });
-            $('.inline-pie').animate({'opacity': 1}, 1500);
-        });
-    </script>
+{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>--}}
+{{--    <script>--}}
+{{--        $(function () {--}}
+{{--            $('.inline-pie').sparkline('html', {--}}
+{{--                type: 'pie',--}}
+{{--                sliceColors: ['#78b7aa', 'rgba(0,0,0,0)'],--}}
+{{--                disableInteraction: true--}}
+{{--            });--}}
+{{--            $('.inline-pie').animate({'opacity': 1}, 1500);--}}
+{{--        });--}}
+{{--    </script>--}}
 @endsection

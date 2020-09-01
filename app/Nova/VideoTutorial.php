@@ -27,7 +27,7 @@ class VideoTutorial extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -49,8 +49,9 @@ class VideoTutorial extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make("Youtube ID", 'youtube_id'),
-            Select::make("Tier", "tier")->options(['1','2','3','4','5']),
-            Select::make("Type", "type")->options(['Electrical', 'Dark', 'Exotic', 'Firestorm', 'Gamma']),
+            Text::make("Name", 'name'),
+            Select::make("Tier", "tier")->options(['1' => '1','2' => '2','3' => '3','4' => '4','5' => '5']),
+            Select::make("Type", "type")->options(['Electrical' => 'Electrical', 'Dark' => 'Dark', 'Exotic' => 'Exotic', 'Firestorm' => 'Firestorm', 'Gamma' => 'Gamma']),
             Markdown::make("Description",'description')->alwaysShow()->required(true),
             KeyValue::make("Bookmarks", "video_bookmarks"),
             BelongsTo::make("Content creator", "content_creator"),

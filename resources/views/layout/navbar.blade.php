@@ -40,6 +40,11 @@
                    href="{{route("fit.index")}}">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.index" == $currentRoute)}}/job.png"> Fits</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{"tutorials.index" == $currentRoute ? "active" : ""}}"
+                   href="{{route("tutorials.index")}}">
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("tutorials.index" == $currentRoute)}}/signpost.png"> Tutorials</a>
+            </li>
             <li class="nav-item dropdown {{"infopage.tier" == $currentRoute ? "active" : ""}}" style="list-style: none">
                 <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == $currentRoute)}}/info.png"> Overview</a>
