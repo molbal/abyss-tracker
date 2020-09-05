@@ -4,37 +4,52 @@
     <div class="row mt-5">
         <div class="col-sm-12 col-md-9">
             <h4 class="font-weight-bold">{{$tutorial->name}}</h4>
-            <div id="video-placeholder" class="w-100">
+            <div id="video-placeholder" class="w-100 rounded shadow">
                 &nbsp;
             </div>
             <ol class="msform-steps">
                 <li class="is-completed">
-                    <a href="#">Alap adatok</a>
+                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
                 </li>
-                <li class="is-active">Káresemény
-                    <ul>
-                        <li>
-                            <a href="#!" class="msform-step-item is-active">
-                                <span>Károsult adatai</span>
-                                <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>
-                            </a>
-                        </li>
-                        <li>
-                                    <span class="msform-step-item">
-                                        <span>Részletek</span>
-                                            <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>
-                                    </span>
-                        </li>
-                        <li>
-                                    <span class="msform-step-item">
-                                        <span>Kárigények</span>
-                                        <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>
-                                    </span>
-                        </li>
-                    </ul>
+                <li class="is-completed">
+                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
                 </li>
-                <li>Csatolmányok</li>
-                <li>Áttekintés</li>
+                <li class="is-completed">
+                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
+                </li>
+                <li class="is-completed">
+                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
+                </li>
+                <li class="is-completed">
+                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
+                </li>
+                <li class="is-completed">
+                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
+                </li>
+{{--                <li class="is-active">Káresemény--}}
+{{--                    <ul>--}}
+{{--                        <li>--}}
+{{--                            <a href="#!" class="msform-step-item is-active">--}}
+{{--                                <span>Károsult adatai</span>--}}
+{{--                                <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                        <li>--}}
+{{--                                    <span class="msform-step-item">--}}
+{{--                                        <span>Részletek</span>--}}
+{{--                                            <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>--}}
+{{--                                    </span>--}}
+{{--                        </li>--}}
+{{--                        <li>--}}
+{{--                                    <span class="msform-step-item">--}}
+{{--                                        <span>Kárigények</span>--}}
+{{--                                        <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>--}}
+{{--                                    </span>--}}
+{{--                        </li>--}}
+{{--                    </ul>--}}
+{{--                </li>--}}
+{{--                <li>Csatolmányok</li>--}}
+{{--                <li>Áttekintés</li>--}}
             </ol>
         </div>
         <div class="col-sm-12 col-md-3">
@@ -63,17 +78,23 @@
     <script>
         $(function () {
 
-            player = new YT.Player('video-placeholder', {
-                // width: 600,
-                height: 400,
-                videoId: 'Xa0Q0J5tOP0',
-                playerVars: {
-                    color: 'white',
-                    playlist: 'taJ60kskkns,FG0fTKAqZ5g'
-                },
-                events: {
-                    onReady: initialize
-                }
+            window.YT.ready(function() {
+                player = new YT.Player('video-placeholder', {
+                    // width: 600,
+                    height: 400,
+                    videoId: 'r2G0TLTsQ9M',
+                    playerVars: {
+                        color: 'white',
+                        autoplay: 1,
+                        controls: 1,
+                        modestbranding: 1,
+                        enablejsapi: 1,
+                        playlist: '{{$tutorial->youtube_id}}'
+                    },
+                    events: {
+                        onReady: initialize
+                    }
+                });
             });
         });
 
