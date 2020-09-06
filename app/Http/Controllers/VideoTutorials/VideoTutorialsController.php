@@ -3,6 +3,7 @@
     namespace App\Http\Controllers\VideoTutorials;
 
     use App\Http\Controllers\Controller;
+    use App\Tracker\YoutubeEmbed;
     use App\VideoTutorial;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
@@ -40,7 +41,10 @@
             catch (\Exception $e) {
                 return view("error", ["message" => "Error displaying tutorial: ".$e->getMessage()]);
             }
-            return view("tutorial", ["tutorial" => $tutorial]);
+
+            $embed = new YoutubeEmbed($tutorial->youtube_id);
+            $embed->setBookmarks($tutorial->video_bookmarks);
+            return view("tutorial", ["tutorial" => $tutorial, 'embed' => $embed]);
         }
 
         public function creatorIndex(int $id, string $slug) {

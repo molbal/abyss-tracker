@@ -1,192 +1,60 @@
-$counter-size: 25px;
-$msform-border-radius: 1rem;
-$msform-corner-size: 65px;
-$msform-line-gap: 5px;
-$msform-content-color: #444c66;
-
-$step-bg: #F5F3FB;
-$step-100: darken($step-bg, 10%);
-$step-200: darken($step-bg, 20%);
-$step-300: darken($step-bg, 30%);
-$step-400: darken($step-bg, 40%);
-$step-500: darken($step-bg, 50%);
-$step-600: darken($step-bg, 60%);
-$step-700: darken($step-bg, 70%);
-$step-800: darken($step-bg, 80%);
-//
-//.msform-container {
-//    background-color: $step-bg;
-//    border-radius: $msform-border-radius;
-//    position: relative;
-//    overflow: hidden;
-//    border-bottom: 2px solid darken($step-bg, 5%);
-//    box-shadow: 0 1rem 1rem rgba(0, 25, 75, 0.05);
-//
-//    &:after {
-//        content: '';
-//        position: absolute;
-//        bottom: 0;
-//        left: 0;
-//        height: 0;
-//        width: 0;
-//        border-left: #{$msform-corner-size * 2} solid darken($step-bg, 5%);
-//        border-top: $msform-corner-size solid transparent;
-//        border-right: #{$msform-corner-size * 2} solid transparent;
-//        border-bottom: $msform-corner-size solid darken($step-bg, 5%);
-//    }
-//}
-
-.msform-steps {
-    list-style-type: none;
-    counter-reset: step;
-    font-weight: 700;
-    padding: 2rem;
+ul.bookmarks {
     margin-bottom: 0;
-    height: 100%;
+    margin-left: -53px;
 
-
-    & > li:before {
-        content: counter(step);
-        counter-increment: step;
-        display: inline-flex;
-        width: $counter-size;
-        height: $counter-size;
-        line-height: $counter-size;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        border: 2px solid $step-100;
-        font-size: 15px;
-        margin-right: 1rem;
-        letter-spacing: 0;
-    }
-
-    & li {
-        z-index: 2;
-    }
-
-    & > li {
-        color: $step-300;
-        font-size: 0.9em;
-        text-transform: uppercase;
-        margin-bottom: 1.5rem;
-        letter-spacing: 2px;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
+    li.bookmark {
+        list-style: none;
         position: relative;
+        padding-left: 30px;
 
-        &:last-child {
-            margin-bottom: 0;
+        span.bookmark-label {
+            position: relative;
+            top: -3px;
+            -webkit-transition: all 150ms ease-in-out;
+            -moz-transition: all 150ms ease-in-out;
+            -o-transition: all 150ms ease-in-out;
+            transition: all 150ms ease-in-out;
         }
-
-        &.is-completed {
-            color: $step-100;
-
-            &:not(:last-child):after {
-                content: '';
-                position: absolute;
-                top: calc(100% + #{$msform-line-gap});
-                left: 12px;
-                width: 2px;
-                height: calc(100% - #{$msform-line-gap * 2});
-                background-color: $success;
-            }
-
-            a {
-                color: $step-100;
-
-                &:hover {
-                    color: $step-200;
-                    text-decoration: none;
-                }
-            }
-
-            &:before {
-                content: '\E800';
-                font-size: 10px;
-                font-family: 'fontello', sans-serif;
-                border-color: $green;
-                background-color: $green;
-                color: $white;
-            }
+        span.bookmark-label.played {
+            opacity: 0.5;
         }
-
-        &.is-active {
-            color: $primary;
-
-            &:before {
-                border-color: $primary;
-            }
+        span.bookmark-label.playing {
+            opacity: 1;
+            //margin-left: 1rem;
+        }
+        span.bookmark-label.playing:before {
+            content: "▶";
+            margin-right: 0.3rem;
+        }
+        span.bookmark-label.upcoming {
+            opacity: 0.7;
         }
     }
-}
-
-.msform-steps ul {
-    counter-reset: step;
-    list-style-type: none;
-    margin: 1rem 0 0 0;
-    padding: 0 0 0 2.5rem;
-    width: 100%;
-    z-index: 2;
-
-    & .msform-step-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: $step-400;
-        font-weight: 400;
-        text-transform: none;
-        letter-spacing: 0;
-        margin-bottom: 0.5rem;
-
-        & ion-icon {
-            color: $step-100;
-            display: none;
-        }
-
-        &:hover {
-            text-decoration: none;
-        }
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        &.is-active {
-            font-weight: 700;
-            color: $step-500;
-
-            ion-icon {
-                display: block;
-            }
-        }
+    li.bookmark::after {
+        content: "";
+        top: calc((1em - 8px)/2);
+        left: 14.5px;
+        position: absolute;
+        display: inline-block;
+        box-sizing: border-box;
+        width: 8px;
+        height: 8px;
+        border: 1px solid $red;
+        border-radius: 50%;
+        background-color: $red;
+        flex-shrink: 0;
     }
-}
-
-.msform-content-container {
-    background-color: $white;
-    border-top-left-radius: $msform-border-radius;
-    border-bottom-left-radius: $msform-border-radius;
-    z-index: 1;
-}
-
-.msform-content {
-    transition: all 500ms ease-out;
-    opacity: 1;
-    transform: translateY(0);
-    color: $msform-content-color;
-
-    .form-group {
-        margin-bottom: 1.5rem;
+    li.bookmark:not(:last-of-type)::before {
+        content: "";
+        position: absolute;
+        height: 100%;
+        width: 1px;
+        left: 18px;
+        top: calc((1em - 8px)/2);
+        background-color: $red;
     }
 
-    .text-muted {
-        color: $step-200 !important;
-    }
-
-    &.hidden {
-        opacity: 0;
-        transform: translateY(2rem);
+    *, ::after, ::before {
+        box-sizing: inherit;
     }
 }

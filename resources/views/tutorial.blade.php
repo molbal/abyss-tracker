@@ -4,53 +4,31 @@
     <div class="row mt-5">
         <div class="col-sm-12 col-md-9">
             <h4 class="font-weight-bold">{{$tutorial->name}}</h4>
+            <div class="alert alert-info alert-dismissible fade show text-justify" role="alert">
+                <strong>A word of advice:</strong> Abyssal deadspace can be run in countless ways. A single tutorial cannot cover all methods.
+                There might be a solution better suited to your preferences, wallet, or skills so watch other tutorials or read other guides before you buy something expensive.
+                Don't fly a ship you cannot afford to lose and fly safe o7
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <div id="video-placeholder" class="w-100 rounded shadow">
                 &nbsp;
             </div>
-            <ol class="msform-steps">
-                <li class="is-completed">
-                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
-                </li>
-                <li class="is-completed">
-                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
-                </li>
-                <li class="is-completed">
-                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
-                </li>
-                <li class="is-completed">
-                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
-                </li>
-                <li class="is-completed">
-                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
-                </li>
-                <li class="is-completed">
-                    <a href="#">00:00</a><span class="mx-1">&middot;</span>Introcution
-                </li>
-{{--                <li class="is-active">Káresemény--}}
-{{--                    <ul>--}}
-{{--                        <li>--}}
-{{--                            <a href="#!" class="msform-step-item is-active">--}}
-{{--                                <span>Károsult adatai</span>--}}
-{{--                                <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-{{--                        <li>--}}
-{{--                                    <span class="msform-step-item">--}}
-{{--                                        <span>Részletek</span>--}}
-{{--                                            <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>--}}
-{{--                                    </span>--}}
-{{--                        </li>--}}
-{{--                        <li>--}}
-{{--                                    <span class="msform-step-item">--}}
-{{--                                        <span>Kárigények</span>--}}
-{{--                                        <ion-icon name="arrow-forward-outline" class="ion-icon-sm"></ion-icon>--}}
-{{--                                    </span>--}}
-{{--                        </li>--}}
-{{--                    </ul>--}}
-{{--                </li>--}}
-{{--                <li>Csatolmányok</li>--}}
-{{--                <li>Áttekintés</li>--}}
-            </ol>
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <h5 class="font-weight-bold">Bookmarks</h5>
+                <ul class="bookmarks">
+                    @forelse($embed->getParsedBookmarks() as $bookmark)
+                        <li class="bookmark">
+                            <span class="bookmark-label" data-second="{{$bookmark->timeSeconds}}" data-second-next="{{$bookmark->timeSecondsNext}}"><a href="javascript:void(0)" class="text-dark font-weight-bold seeker">{{$bookmark->timeFormatted}}<span class="mx-1">&middot;</span>{{$bookmark->label}}</a></span>
+                        </li>
+                        @empty
+                        <li class="bookmark">
+                            <span class="bookmark-label">This tutorial has no bookmarks</span>
+                        </li>
+                    @endforelse
+                </ul>
+            </div>
         </div>
         <div class="col-sm-12 col-md-3">
             <h4 class="font-weight-bold">Submit</h4>
@@ -67,7 +45,7 @@
 @section("styles")
     <style>
         #video-placeholder {
-
+            min-height: 500px;
         }
     </style>
 @endsection
@@ -80,41 +58,49 @@
 
             window.YT.ready(function() {
                 player = new YT.Player('video-placeholder', {
-                    // width: 600,
-                    height: 400,
-                    videoId: 'r2G0TLTsQ9M',
+                    height: 500,
+                    videoId: '{{$embed->getId()}}',
                     playerVars: {
                         color: 'white',
                         autoplay: 1,
                         controls: 1,
                         modestbranding: 1,
-                        enablejsapi: 1,
-                        playlist: '{{$tutorial->youtube_id}}'
+                        enablejsapi: 1
                     },
                     events: {
                         onReady: initialize
                     }
                 });
             });
+
+
+            $(".seeker").click(function () {
+                player.seekTo($(this).parent().data("second"));
+                setTimeout(updateBookmarks, 100);
+            });
+
         });
 
-
+        function updateBookmarks() {
+            var currentTime = player.getCurrentTime();
+            console.log(currentTime);
+            var hasPlaying = false;
+            $(".bookmark-label").each(function() {
+                var bookmarkTime = $(this).data("second");
+                var bookmarkTimeNext = $(this).data("second-next");
+                if (bookmarkTime < currentTime && bookmarkTimeNext < currentTime) {
+                    $(this).addClass("played").removeClass("playing").removeClass("upcoming");
+                }
+                else if (bookmarkTime < currentTime && bookmarkTimeNext >= currentTime) {
+                    $(this).removeClass("played").addClass("playing").removeClass("upcoming");
+                }
+                else {
+                    $(this).removeClass("played").removeClass("playing").addClass("upcoming");
+                }
+            })
+        }
         function initialize(e){
-            console.log("yt init", e);
-            // Update the controls on load
-            // updateTimerDisplay();
-            // updateProgressBar();
-
-            // Clear any old interval.
-            // clearInterval(time_update_interval);
-
-            // Start interval to update elapsed time display and
-            // the elapsed part of the progress bar every second.
-            // time_update_interval = setInterval(function () {
-            //     updateTimerDisplay();
-            //     updateProgressBar();
-            // }, 1000)
-
+            setInterval(updateBookmarks, 1000);
         }
     </script>
 @endsection
