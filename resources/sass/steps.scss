@@ -17,17 +17,27 @@ ul.bookmarks {
         }
         span.bookmark-label.played {
             opacity: 0.5;
+
+            img.bookmark-play-icon {
+                width: 0;
+                height: 0;
+            }
         }
         span.bookmark-label.playing {
             opacity: 1;
-            //margin-left: 1rem;
-        }
-        span.bookmark-label.playing:before {
-            content: "▶";
-            margin-right: 0.3rem;
+            font-size: 1.1rem;
+            img.bookmark-play-icon {
+                width: 16px;
+                height: 16px;
+            }
         }
         span.bookmark-label.upcoming {
             opacity: 0.7;
+
+            img.bookmark-play-icon {
+                width: 0;
+                height: 0;
+            }
         }
     }
     li.bookmark::after {
@@ -41,7 +51,7 @@ ul.bookmarks {
         height: 8px;
         border: 1px solid $red;
         border-radius: 50%;
-        background-color: $red;
+        background-color: $tab-active-bg;
         flex-shrink: 0;
     }
     li.bookmark:not(:last-of-type)::before {

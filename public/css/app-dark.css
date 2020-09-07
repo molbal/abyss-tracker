@@ -10543,15 +10543,24 @@ ul.bookmarks li.bookmark span.bookmark-label {
 ul.bookmarks li.bookmark span.bookmark-label.played {
   opacity: 0.5;
 }
+ul.bookmarks li.bookmark span.bookmark-label.played img.bookmark-play-icon {
+  width: 0;
+  height: 0;
+}
 ul.bookmarks li.bookmark span.bookmark-label.playing {
   opacity: 1;
+  font-size: 1.1rem;
 }
-ul.bookmarks li.bookmark span.bookmark-label.playing:before {
-  content: "\25B6";
-  margin-right: 0.3rem;
+ul.bookmarks li.bookmark span.bookmark-label.playing img.bookmark-play-icon {
+  width: 16px;
+  height: 16px;
 }
 ul.bookmarks li.bookmark span.bookmark-label.upcoming {
   opacity: 0.7;
+}
+ul.bookmarks li.bookmark span.bookmark-label.upcoming img.bookmark-play-icon {
+  width: 0;
+  height: 0;
 }
 ul.bookmarks li.bookmark::after {
   content: "";
@@ -10564,7 +10573,7 @@ ul.bookmarks li.bookmark::after {
   height: 8px;
   border: 1px solid #dc3545;
   border-radius: 50%;
-  background-color: #dc3545;
+  background-color: #212529;
   flex-shrink: 0;
 }
 ul.bookmarks li.bookmark:not(:last-of-type)::before {

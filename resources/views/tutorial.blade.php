@@ -20,7 +20,10 @@
                 <ul class="bookmarks">
                     @forelse($embed->getParsedBookmarks() as $bookmark)
                         <li class="bookmark">
-                            <span class="bookmark-label" data-second="{{$bookmark->timeSeconds}}" data-second-next="{{$bookmark->timeSecondsNext}}"><a href="javascript:void(0)" class="text-dark font-weight-bold seeker">{{$bookmark->timeFormatted}}<span class="mx-1">&middot;</span>{{$bookmark->label}}</a></span>
+                            <span class="bookmark-label" data-second="{{$bookmark->timeSeconds}}" data-second-next="{{$bookmark->timeSecondsNext}}">
+                                <a href="javascript:void(0)" class="text-dark font-weight-bold seeker">{{$bookmark->timeFormatted}}<span class="mx-1">&middot;</span>{{$bookmark->label}}</a>
+                                <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/circled-play.png" class="mx-1 bringupper bookmark-play-icon d-inline-block">
+                            </span>
                         </li>
                         @empty
                         <li class="bookmark">
@@ -31,7 +34,7 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-3">
-            <h4 class="font-weight-bold">Submit</h4>
+            <h4 class="font-weight-bold">Creator</h4>
             <div class="card card-body border-0 shadow-sm w-100">
                 <p class="text-justify mb-0 pb-0">If you know a tutorial that the community could benefit from, please submit it and I'll add it on my earliest convenience. Uploaders are always credited.</p>
             </div>
@@ -75,8 +78,8 @@
 
 
             $(".seeker").click(function () {
-                player.seekTo($(this).parent().data("second"));
-                setTimeout(updateBookmarks, 100);
+                player.seekTo($(this).parent().data("second")+1);
+                // setTimeout(updateBookmarks, 100);
             });
 
         });
@@ -100,7 +103,7 @@
             })
         }
         function initialize(e){
-            setInterval(updateBookmarks, 1000);
+            setInterval(updateBookmarks, 333);
         }
     </script>
 @endsection
