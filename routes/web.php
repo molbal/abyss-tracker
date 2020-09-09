@@ -116,6 +116,7 @@
      */
     Route::get("/tutorials", 'VideoTutorials\VideoTutorialsController@index')->name("tutorials.index");
     Route::get("/tutorial/{id}/{slug}", 'VideoTutorials\VideoTutorialsController@get')->name("tutorials.get");
+    Route::get("/tutorial/vote/{id}/{vote}", 'VideoTutorials\VideoTutorialsController@vote')->name("tutorials.vote");
     Route::get("/tutorial/creator/{id}/{slug}", 'VideoTutorials\VideoTutorialsController@creatorIndex')->name("tutorials.creator");
 
     /**

@@ -15,31 +15,68 @@
             <div id="video-placeholder" class="w-100 rounded shadow">
                 &nbsp;
             </div>
+            <div class="container p-0">
+                <div class="row">
+                    <div class="col-sm-12 col-lg-12">
+                        <div class="card card-body border-0 shadow-sm mt-3">
+                            <h5 class="font-weight-bold">Description</h5>
+                            {!! $description !!}
+                        </div>
+                        <div class="card card-body border-0 shadow-sm mt-3">
+                            <h5 class="font-weight-bold">Related fits</h5>
+                            @component("components.fits.filter.result-list", ["results" => $fits])@endcomponent
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <h4 class="font-weight-bold">Creator</h4>
+            <div class="card card-body border-0 shadow-sm pb-2">
+                <div class="donor">
+                    <img src="https://images.evetech.net/characters/{{$tutorial->content_creator->CHAR_ID ?? 1}}/portrait?size=128" class="portrait rounded-circle shadow-sm" alt="">
+                    <p class="h5 font-weight-bold mb-3 mt-2"><a href="{{route("tutorials.creator", ['id' =>$tutorial->content_creator->id, 'slug' => Str::slug($tutorial->content_creator->NAME)])}}" class="text-dark">{{$tutorial->content_creator->NAME}}</a></p>
+
+                    @if($tutorial->content_creator->DISCORD)
+                        <a class="text-dark w-100 text-left d-block" target="_blank" href="{{$tutorial->content_creator->DISCORD}}">
+                            <img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/discord-logo.png" class="ml-0 mr-2 bringupper tinyicon d-inline-block">Discord community</a>
+                    @endif
+                    @if($tutorial->content_creator->TWITTER)
+                        <a class="text-dark w-100 text-left d-block" target="_blank" href="{{$tutorial->content_creator->TWITTER}}">
+                            <img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/twitter.png" class="ml-0 mr-2 bringupper tinyicon d-inline-block">Twitter feed</a>
+                    @endif
+                    @if($tutorial->content_creator->YOUTUBE)
+                        <a class="text-dark w-100 text-left d-block" target="_blank" href="{{$tutorial->content_creator->YOUTUBE}}">
+                            <img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/youtube-play--v1.png" class="ml-0 mr-2 bringupper tinyicon d-inline-block">Youtube channel</a>
+                    @endif
+                </div>
+            </div>
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <h5 class="font-weight-bold">Votes</h5>
+                <div class="text-center">
+                    <a class="text-dark" href="{{route("tutorials.vote", ['id'=>$tutorial->id, 'vote' => 'plus'])}}" data-toggle="tooltip" title="Click to vote up"><img src="https://img.icons8.com/small/48/38c172/thumb-up.png" class="mr-1 bringupper smallicon">{{$tutorial->positive}}</a>
+                    <span class="mx-1">&middot;</span>
+                    <a class="text-dark" href="{{route("tutorials.vote", ['id'=>$tutorial->id, 'vote' => 'minus'])}}" data-toggle="tooltip" title="Click to vote down"><img src="https://img.icons8.com/small/48/f6993f/thumbs-down--v2.png" class="mr-1 bringupper smallicon">{{$tutorial->negative}}</a>
+                </div>
+            </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Bookmarks</h5>
                 <ul class="bookmarks">
                     @forelse($embed->getParsedBookmarks() as $bookmark)
                         <li class="bookmark">
-                            <span class="bookmark-label" data-second="{{$bookmark->timeSeconds}}" data-second-next="{{$bookmark->timeSecondsNext}}">
-                                <a href="javascript:void(0)" class="text-dark font-weight-bold seeker">{{$bookmark->timeFormatted}}<span class="mx-1">&middot;</span>{{$bookmark->label}}</a>
-                                <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/circled-play.png" class="mx-1 bringupper bookmark-play-icon d-inline-block">
-                            </span>
+                        <span class="bookmark-label" data-second="{{$bookmark->timeSeconds}}" data-second-next="{{$bookmark->timeSecondsNext}}">
+                            <a href="javascript:void(0)" class="text-dark font-weight-bold seeker">{{$bookmark->timeFormatted}}<span class="mx-1">&middot;</span>{{$bookmark->label}}</a>
+                            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/circled-play.png" class="mx-1 bringupper bookmark-play-icon d-inline-block">
+                        </span>
                         </li>
-                        @empty
+                    @empty
                         <li class="bookmark">
                             <span class="bookmark-label">This tutorial has no bookmarks</span>
                         </li>
                     @endforelse
                 </ul>
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-3">
-            <h4 class="font-weight-bold">Creator</h4>
-            <div class="card card-body border-0 shadow-sm w-100">
-                <p class="text-justify mb-0 pb-0">If you know a tutorial that the community could benefit from, please submit it and I'll add it on my earliest convenience. Uploaders are always credited.</p>
-            </div>
-            <div class="card-footer shadow-sm">
-                <a href="{{config("tracker.submit-tutorial")}}" target="_blank" class="text-dark"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/clock.png" class="mr-1 bringupper tinyicon">Submit new video</a>
             </div>
         </div>
 
