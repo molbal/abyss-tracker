@@ -21,8 +21,8 @@
 		 */
 		public function __construct()
 		{
-			$this->apiRoot = env("ESI_ROOT", "https://esi.evetech.net/latest/");
-			$this->userAgent = env("ESI_USERAGENT", "Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)");
+			$this->apiRoot = config('tracker.esi.api-root');
+			$this->userAgent = config('tracker.esi.useragent');
 		}
 
 		/**

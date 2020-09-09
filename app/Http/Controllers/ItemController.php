@@ -65,7 +65,7 @@
         {
             $items = DB::select("select ip.ITEM_ID, ip.NAME, ip.GROUP_NAME, ip.GROUP_ID, ip.PRICE_SELL, ip.PRICE_BUY, (
     select SUM(drp.DROPPED_COUNT)/SUM(GREATEST(1,drp.RUNS_COUNT)) from droprates_cache drp where drp.ITEM_ID=ip.ITEM_ID and drp.TYPE='All'
-    ) DROP_RATE from item_prices ip where ip.GROUP_ID=?
+    ) DROP_RATE from item_prices ip where ip.GROUP_ID=? and ip.ITEM_ID not in (".implode(",",config("tracker.items.items_blacklist")).")
 order by 2 ASC;", [intval($group_id)]);
 //            $items = DB::table("item_prices")->where("GROUP_ID", $group_id)->orderBy("NAME", "ASC")->paginate(25);
             $name = DB::table("item_prices")->where("GROUP_ID", $group_id)->exists() ? DB::table("item_prices")->where("GROUP_ID", $group_id)->limit(1)->get()->get(0)->GROUP_NAME : "Unknown group";
@@ -76,12 +76,13 @@ order by 2 ASC;", [intval($group_id)]);
         }
 
         function get_all() {
-            // TODO get whitelisted group ids out of here
-            $items = DB::select("select ip.ITEM_ID, ip.NAME, ip.GROUP_NAME, ip.GROUP_ID, ip.PRICE_SELL, ip.PRICE_BUY, (
+
+            $items = Cache::remember("aft.items.all", now()->addMinute(), function () {
+                return DB::select("select ip.ITEM_ID, ip.NAME, ip.GROUP_NAME, ip.GROUP_ID, ip.PRICE_SELL, ip.PRICE_BUY, (
     select SUM(drp.DROPPED_COUNT)/SUM(GREATEST(1,drp.RUNS_COUNT)) from droprates_cache drp where drp.ITEM_ID=ip.ITEM_ID and drp.TYPE='All'
     ) DROP_RATE from item_prices ip
-    where GROUP_ID in (1992,1993,105,255,2019,1964,1088,1990,257,1995,1977,1979,1996,489,107,106,487)
-order by 7 DESC;");
+    where GROUP_ID in (".implode(",",config("tracker.items.group_whitelist")).") and ip.ITEM_ID not in (".implode(",",config("tracker.items.items_blacklist")).") order by 7 DESC;");
+            }) ;
             $cnt = DB::select("select count(*) as c from (select 1 from `detailed_loot` group by `RUN_ID`) a")[0]->c;
             return view("all_items", [
                 "cnt" => $cnt,

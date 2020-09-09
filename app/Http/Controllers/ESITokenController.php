@@ -52,7 +52,7 @@
             ]));
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 "Content-Type:application/json",
-                "Authorization:Basic ".base64_encode(env("EVEONLINE_SCOPED_CLIENT_ID").":".env("EVEONLINE_SCOPED_CLIENT_SECRET"))
+                "Authorization:Basic ".base64_encode(config('tracker.scoped.client_id').":".config('tracker.scoped.client_secret'))
             ]);
 
             curl_setopt($ch,CURLOPT_VERBOSE ,true);

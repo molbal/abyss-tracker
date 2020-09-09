@@ -22,13 +22,9 @@
                     <tbody>
                     @foreach($items as $item)
                         <tr class="action-hover-only">
-                            <td class="text-center" style="width: 48px;"><img
-                                    src="https://imageserver.eveonline.com/Type/{{$item->ITEM_ID}}_32.png" alt=""></td>
-                            <td><a href="{{route("item_single", ["item_id" => $item->ITEM_ID])}}">{{$item->NAME}}</a>
-                            </td>
-                            <td>
-                                <a href="{{route("item_group", ["group_id" => $item->GROUP_ID])}}">{{$item->GROUP_NAME}}</a>
-                            </td>
+                            <td class="text-center"><img src="https://imageserver.eveonline.com/Type/{{$item->ITEM_ID}}_32.png" alt="" class="smallicon"></td>
+                            <td><a href="{{route("item_single", ["item_id" => $item->ITEM_ID])}}" class="text-dark">{{$item->NAME}}</a></td>
+                            <td><a href="{{route("item_group", ["group_id" => $item->GROUP_ID])}}" class="text-dark">{{$item->GROUP_NAME}}</a></td>
                             <td class="text-right" data-order="{{$item->PRICE_SELL}}">{{number_format($item->PRICE_SELL, 0, ",", " ")}} ISK</td>
                             <td class="text-right" data-order="{{$item->PRICE_BUY}}">{{number_format($item->PRICE_BUY, 0, ",", " ")}} ISK</td>
                             <td class="text-center">{{round($item->DROP_RATE*100,2)}}%</td>
@@ -37,9 +33,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="mt-3">
+{{--            <div class="mt-3">--}}
                 {{--                {{$items->links()}}--}}
-            </div>
+{{--            </div>--}}
         </div>
     </div>
 @endsection

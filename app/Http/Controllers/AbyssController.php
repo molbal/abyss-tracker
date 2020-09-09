@@ -450,7 +450,7 @@ from (`abyss`.`lost_items` `dl`
 
                 $text = "Run number $id was flagged by ".session()->get("login_name")." at ".date("Y-m-d H:i:s"). " because ".htmlentities($message);
 
-                Mail::to(env("FLAG_ADDRESS"))->send(new RunFlagged($id, $message));
+                Mail::to(config('tracker.flag-address'))->send(new RunFlagged($id, $message));
 
                 return view('sp_message', ['title' => 'Run flagged', 'message' => "You have flagged this run! It will be manually reviewed soon."]);
             }

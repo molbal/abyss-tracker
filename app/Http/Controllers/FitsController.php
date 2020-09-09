@@ -258,13 +258,13 @@
             $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
 
             $og = new OpenGraph();
-            $og->title(sprintf("%s fit - %s", $ship_name, env("APP_NAME")))
+            $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
                ->type('profile')
-               ->description(sprintf("%s fit - %s", $ship_name, env("APP_NAME")))
+               ->description(sprintf("%s fit - %s", $ship_name, config('app.name')))
                ->url()
                ->locale('en_US')
                ->localeAlternate(['en_UK'])
-               ->siteName(env('APP_NAME'))
+               ->siteName(config('app.name'))
                ->determiner('an')
                ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
             $og->profile(["first_name" => trim($fit->NAME)]);
@@ -317,9 +317,9 @@
         public function submitSvcFitService(string $eft, int $fitId) {
             $ch = curl_init();
 
-            curl_setopt($ch, CURLOPT_URL,env("FIT_SERVICE_URL"));
+            curl_setopt($ch, CURLOPT_URL,config('fits.service-url'));
             curl_setopt($ch, CURLOPT_POST, true);
-            $query = http_build_query(['fit' => $eft, 'appId' => env("FIT_SERVICE_APP_ID"), 'appSecret' => env('FIT_SERVICE_APP_SECRET'), 'fitId' => $fitId]);
+            $query = http_build_query(['fit' => $eft, 'appId' =>config('fits.auth.id'), 'appSecret' => config('fits.auth.secret'), 'fitId' => $fitId]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
             curl_setopt($ch, CURLOPT_VERBOSE, true);
             curl_setopt($ch,CURLOPT_STDERR ,fopen('./svcfitstat.log', 'w+'));

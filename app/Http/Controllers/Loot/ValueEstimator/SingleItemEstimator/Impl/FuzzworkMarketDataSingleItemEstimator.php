@@ -32,7 +32,7 @@
             $client = new Client();
             $response = null;
             try {
-                $uri = sprintf("%saggregates/?region=%d&types=%d", env('FUZZWORK_API_ROOT'), 60003760, $this->typeId);
+                $uri = sprintf("%s/aggregates/?region=%d&types=%d", config('tracker.market.fuzzwork-api-root'), config('tracker.market.jita-id', 60003760), $this->typeId);
                 $response = $client->request('GET', $uri, [
                     'timeout' => 12
                 ]);

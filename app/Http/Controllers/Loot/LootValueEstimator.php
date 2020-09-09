@@ -233,10 +233,10 @@
             $client = new Client();
             $response = null;
             try {
-                $response = $client->request('POST', env('EVEWORKBENCH_API_ROOT') . "appraisal?Type=1", [
+                $response = $client->request('POST', config('tracker.market.eveworkbench.service-root') . "appraisal?Type=1", [
                     'auth' => [
-                        env('EVEWORKBENCH_API_CLIENT_ID'),
-                        env('EVEWORKBENCH_API_APP_KEY')],
+                        config('tracker.market.eveworkbench.client-id'),
+                        config('tracker.market.eveworkbench.app-key')],
                     'body' => $this->rawData,
                     'timeout' => 12
                 ]);
