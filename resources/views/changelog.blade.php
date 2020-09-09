@@ -13,20 +13,31 @@
                     <li>Dynamically adding and removing search filters</li>
                     <li>Dynamically adding and removing fit search filters</li>
                     <li>General search</li>
-                    <li>Gank alert broadcast</li>
-                    <li>Leaderboard search and custom ranges</li>
-                    <li>Add filtering for loot table drop rates</li>
-                    <li>'Was the loot nerfed or am I just unlucky?' - info graphs</li>
-                    <li>Aggregator pages for types/tiers</li>
-                    <li>[Done] Upgrade of my stats screen</li>
                 </ul>
 
                 </p>
             </div>
             <div class="card card-body border-danger shadow-sm mb-3 p-0">
-                <img src="{{asset("home/1.5.5.jpg")}}" alt="1.5.5 release" class="w-100 shadow">
+                <img src="{{asset("home/1.5.6.jpg")}}" alt="1.5.6 release" class="w-100 shadow">
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                    <h4 class="mb-0 pb-0"><strong>1.5.6</strong> 'SOE' release</h4>
+                    <small class="mt-0">2020 sept 9</small>
+                    <p class="text-justify">
+                        Tutorials release
+                    </p>
+                    <ul>
+                        <li>Adds tutorials</li>
+                        <li>Fixes broken Youtube embeds on fits</li>
+                        <li>Switching light/dark themes will try to return you to the same page instead of the homepage</li>
+                        <li>Performance optimizations</li>
+                    </ul>
+                    <small>The next release will consist of bugfixes and user requested enhanchements.</small>
+                </div>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3 p-0">
+                <img src="{{asset("home/1.5.5.jpg")}}" alt="1.5.5 release" class="w-100 shadow">
+                <div class="p-3">
                     <h4 class="mb-0 pb-0"><strong>1.5.5</strong> 'Bolt' release</h4>
                     <small class="mt-0">2020 august 28</small>
                     <p class="text-justify">
