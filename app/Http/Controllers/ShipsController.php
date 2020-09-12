@@ -21,8 +21,8 @@
     use function Psy\debug;
 
     class ShipsController extends Controller {
-        const PIE_RADIUS = [45, 135];
-        const PIE_RADIUS_SMALL = [25, 95];
+        public const PIE_RADIUS = [45, 135];
+        public const PIE_RADIUS_SMALL = [25, 95];
 
         /** @var LootCacheController */
         private $lootCacheController;

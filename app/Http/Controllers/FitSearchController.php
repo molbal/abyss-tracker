@@ -211,7 +211,7 @@
          * @return mixed
          */
         public function getFitTags(int $id) {
-            return Cache::remember("aft.fits.tags.$id", now()->addSeconds(30), function () use ($id) {
+            return Cache::remember("aft.fits.tags.$id", now()->addSeconds(120), function () use ($id) {
                 return DB::table("fit_tags")
                          ->where("FIT_ID", $id)
                          ->get();

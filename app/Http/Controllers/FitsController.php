@@ -4,7 +4,8 @@
 	namespace App\Http\Controllers;
 
 
-	use App\Charts\PersonalDaily;
+	use App\Charts\LootAveragesChart;
+    use App\Charts\PersonalDaily;
     use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
@@ -23,9 +24,14 @@
 
     class FitsController extends Controller {
 
+        /** @var FitSearchController */
+        private $fitSearchController;
+
         /** @var FitHelper */
         protected $fitHelper;
 
+        /** @var BarkController */
+        private $barkController;
         /** @var FitParser */
         protected $fitParser;
 
@@ -35,12 +41,16 @@
         /**
          * FitsController constructor.
          *
+         * @param FitSearchController $fitSearchController
          * @param FitHelper           $fitHelper
+         * @param BarkController      $barkController
          * @param FitParser           $fitParser
          * @param ItemPriceCalculator $sipc
          */
-        public function __construct(FitHelper $fitHelper, FitParser $fitParser, ItemPriceCalculator $sipc) {
+        public function __construct(FitSearchController $fitSearchController, FitHelper $fitHelper, BarkController $barkController, FitParser $fitParser, ItemPriceCalculator $sipc) {
+            $this->fitSearchController = $fitSearchController;
             $this->fitHelper = $fitHelper;
+            $this->barkController = $barkController;
             $this->fitParser = $fitParser;
             $this->sipc = $sipc;
         }
@@ -288,6 +298,8 @@
             $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
             $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
             $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
+            $loots = $this->getFitLootStrategyChart($fitIdsAll);
+            $similars = $this->getFitsFromIds($fitIdsNonPrivate);
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
@@ -304,7 +316,11 @@
                 'id' => $id,
                 'runs' => $runs,
                 "breaksEven" => $breaksEven,
-                'popularity' => $popularity
+                'popularity' => $popularity,
+                'loots' => $loots,
+                'fitIdsAll' => $fitIdsAll,
+                'fitIdsNonPrivate' => $fitIdsNonPrivate,
+                'similars' => $similars,
             ]);
 
             }
@@ -513,5 +529,47 @@
             }
             $ids = $query->select("ID")->get();
             return \Arr::pluck($ids, "ID");
+        }
+
+
+        public function getFitsFromIds(array $ids) {
+            $fits = $this->fitSearchController->getStartingQuery()->whereIn("fits.ID", $ids)->get();
+
+            foreach ($fits as $i => $result) {
+                $fits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
+            }
+            return $fits;
+        }
+
+        /**
+         * @param int $id
+         * @return LootAveragesChart
+         */
+        public function getFitLootStrategyChart(array $ids): LootAveragesChart {
+            $loot_strategy = DB::table("runs")
+                               ->whereIn("FIT_ID", $ids)
+                               ->whereNotNull("LOOT_TYPE")
+                               ->where("SURVIVED", true)
+                               ->selectRaw("count(ID) as CNT, LOOT_TYPE")
+                               ->groupBy("LOOT_TYPE")
+                               ->get();
+
+            $labels = [];
+            $data = [];
+            foreach ($loot_strategy as $reason) {
+                $labels[] = ucfirst(trim(str_ireplace("Looted the", "", $this->barkController->getLootStrategyDescription($reason))));
+                $data[] = $reason->CNT;
+            }
+            $loot_chart = new LootAveragesChart();
+            $loot_chart->displayAxes(false);
+            $loot_chart->export(true, "Download");
+            $loot_chart->height(400);
+            $loot_chart->theme(ThemeController::getChartTheme());
+            $loot_chart->displayLegend(true);
+            $loot_chart->labels($labels);
+            $loot_chart->dataset("Looting strategy", "pie", $data)->options([
+                'radius' => ShipsController::PIE_RADIUS_SMALL
+            ]);
+            return $loot_chart;
         }
     }
