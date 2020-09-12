@@ -171,6 +171,14 @@ text-align: center;">
         <h4 class="font-weight-bold">{{$fit->NAME}} usage</h4>
     </div>
     <div class="row mt-3">
+        <div class="col-md-12 col-sm-12">
+            <div class="card card-body border-0 shadow-sm p-0">
+                <h5 class="font-weight-bold mb-2 p-3">Popularity over the last 3 months <small class="float-right">This graph shows the percentage of Abyss runs using/day using a this fit</small></h5>
+                <div class="h-300px graph-container">{!! $popularity->container() !!}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
         <div class="col-xs-12 col-sm-8">
             @component("components.runs.list", ['title' => "Runs with this fit", 'items' => $runs]) @endcomponent
         </div>
@@ -216,6 +224,7 @@ text-align: center;">
     </style>
 @endsection
 @section("scripts")
+    {!! $popularity->script() !!}
 {{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>--}}
 {{--    <script>--}}
 {{--        $(function () {--}}

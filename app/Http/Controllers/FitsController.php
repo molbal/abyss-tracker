@@ -4,13 +4,15 @@
 	namespace App\Http\Controllers;
 
 
-	use App\Http\Controllers\DS\FitBreakEvenCalculator;
+	use App\Charts\PersonalDaily;
+    use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\FitParser;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
     use App\Http\Controllers\Partners\EveWorkbench;
     use App\Http\Controllers\Youtube\YoutubeController;
+    use Carbon\Carbon;
     use ChrisKonnertz\OpenGraph\OpenGraph;
     use Cohensive\Embed\Embed;
     use Illuminate\Http\Request;
@@ -282,6 +284,10 @@
             $eftParsed = $eftObj->getStructuredDisplay();
             $fit->PRICE = $eftObj->getFitValue();
             $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
+
+            $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
+            $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
+            $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
@@ -297,13 +303,17 @@
                 'og' => $og,
                 'id' => $id,
                 'runs' => $runs,
-                "breaksEven" => $breaksEven
+                "breaksEven" => $breaksEven,
+                'popularity' => $popularity
             ]);
 
             }
             catch (\Exception $e)  {
+                if (config("app.debug")) {
+                    throw $e;
+                }
                 Log::error("Error viewing fit: ".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString());
-                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit."]);
+                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit.".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString()]);
             }
 	    }
 
@@ -418,4 +428,90 @@
         }
 
 
+        /**
+         * @param array $id
+         * @param     $name
+         * @return PersonalDaily
+         */
+        public function getFitPopularityChart(array $ids, $name): PersonalDaily {
+            [$dates, $values, $dead] = Cache::remember("ship.popularity-ffh.".implode("-", $ids), now()->addHour(), function() use ($ids, $name) {
+                $dates = [];
+                $values = [];
+                $dead = [];
+                for ($i = -90; $i <= 0; $i++) {
+                    $date = strtotime("now $i days");
+                    $query = "select
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=?) as 'ALL',
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids) . ")) as 'SHIP',
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids) . ") and SURVIVED=0) as 'DEAD';";
+                    $val = DB::select($query,
+                        [
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
+                        ]);
+                    $dates[] = date("M.d.", $date);
+                    if ($val[0]->ALL == 0) {
+                        $values[] = 0.0;
+                        $dead[] = 0.0;
+                    }
+                    else {
+                        $values[] = round(($val[0]->SHIP / $val[0]->ALL) * 100, 2);
+                        $dead[] = round(($val[0]->DEAD / ($val[0]->SHIP > 0 ? $val[0]->SHIP : 1)) * 100, 2);
+                    }
+                }
+                return [$dates, $values, $dead];
+            });
+
+            $pop = new PersonalDaily();
+            $pop->displayAxes(true);
+            $pop->export(true, "Download");
+            $pop->height(300);
+            $pop->theme(ThemeController::getChartTheme());
+            $pop->displayLegend(true);
+            $pop->labels($dates);
+            $pop->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $pop->dataset("Fit popularity (Percentage of all runs)", "line", $values)->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $pop->dataset("Failure ratio (Percentage of failed runs)", "line", $dead)->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'color'          => 'red',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            return $pop;
+        }
+
+
+        /**
+         * @param string $ffh
+         * @param bool   $includePrivate
+         *
+         * @return mixed
+         */
+        public function getSimilarFitsAsIdList(string $ffh, bool $includePrivate = false) {
+            $query = DB::table("fits")
+                ->where("FFH", $ffh);
+            if (!$includePrivate) {
+                $query->where("PRIVACY", "!=", 'private');
+            }
+            $ids = $query->select("ID")->get();
+            return \Arr::pluck($ids, "ID");
+        }
     }

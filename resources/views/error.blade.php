@@ -3,10 +3,10 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
-            <h4 class="font-weight-bold my-5"><img src="https://img.icons8.com/cotton/64/000000/cancel--v1.png"> The capacitor is empty</h4>
-            @if(isset($error))
+            <h4 class="font-weight-bold my-5"><img src="https://img.icons8.com/cotton/64/000000/cancel--v1.png" class="smallicon bringupper-"> The capacitor is empty</h4>
+            @if(isset($message))
                 <div class="card card-body border-danger border-danger shadow-sm mb-5">
-                    {{ $error }}
+                    {{ $message }}
                 </div>
             @endif
         </div>
