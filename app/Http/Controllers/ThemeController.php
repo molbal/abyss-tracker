@@ -57,4 +57,8 @@
             }
             return redirect(url()->previous(route("home")));
         }
+
+        public static function getGlitchIcon() {
+            return asset(sprintf("_icons/glitch-%s.gif", self::isDarkTheme() ? "dark" : "light"));
+        }
     }

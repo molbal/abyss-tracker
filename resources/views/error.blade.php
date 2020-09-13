@@ -2,13 +2,28 @@
 @section("browser-title", "Error")
 @section("content")
     <div class="row mt-5">
-        <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
-            <h4 class="font-weight-bold my-5"><img src="https://img.icons8.com/cotton/64/000000/cancel--v1.png" class="smallicon bringupper-"> The capacitor is empty</h4>
-            @if(isset($message))
-                <div class="card card-body border-danger border-danger shadow-sm mb-5">
-                    {{ $message }}
+        <div class="col-sm-12 col-md-8 offset-md-2 mt-5 text-center">
+            <img src="{{\App\Http\Controllers\ThemeController::getGlitchIcon()}}" alt="" style="height: 160px;" class="mb-3">
+            <div class="card mb-5 text-left shadow">
+                <div class="card-header">
+                    Something went wrong
                 </div>
-            @endif
+                @if(isset($message))
+                    <div class="card-body shadow-sm border-0 mb-0">
+                        <p class="lead mb-0 pb-0">{{ $message }}</p>
+                    </div>
+                @endif
+                @if(isset($error))
+                    <div class="card-body shadow-sm border-0 mb-0">
+                        <p class="lead mb-0 pb-0">{{ $error }}</p>
+                    </div>
+                @endif
+                <div class="card-footer shadow-sm d-flex justify-content-between">
+                    <a href="{{route("home")}}" class="text-dark text-left w-25 d-inline-block">Go to homepage</a>
+                    <a target="_blank" href="{{route('community.discord')}}" class="text-dark text-center w-25 d-inline-block">Get help on Discord</a>
+                    <a target="_blank" href="https://github.com/molbal/abyss-tracker/issues/new?assignees=&labels=&template=bug_report.md&title=" class="text-dark text-right w-25 d-inline-block">Submit bug</a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="my-5">&nbsp;</div>

@@ -3,7 +3,7 @@
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
         <h4 class="font-weight-bold">Fits</h4>
-        <a href="{{route("fit_new")}}" class="btn btn-outline-secondary">Add new fit</a>
+        <a href="{{route("fit_new")}}" class="text-dark"><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedIconColor()}}.png" class="tinyicon mr-1">New fit</a>
     </div>
     <div class="row mt-3">
         <div class="col-sm-3">
