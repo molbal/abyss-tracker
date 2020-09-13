@@ -8,14 +8,14 @@
                 <div class="card-header">
                     Something went wrong
                 </div>
-                @if(isset($message))
+                @if(isset($message) || isset($error))
                     <div class="card-body shadow-sm border-0 mb-0">
-                        <p class="lead mb-0 pb-0">{{ $message }}</p>
-                    </div>
-                @endif
-                @if(isset($error))
-                    <div class="card-body shadow-sm border-0 mb-0">
-                        <p class="lead mb-0 pb-0">{{ $error }}</p>
+                        <p class="lead mb-0 pb-0">{{ $message ?? "" }}{{ $error ?? "" }}</p>
+                        @if(isset($sso))
+                            <p class="text-center mb-0 pb-0">
+                                <a href="{{route("auth-start")}}" class="my-sm-0"><img src="https://eve-nt.uk/img/sso_small.png" alt="Log in with EVE Online Single sign on" width="130" height="20"></a>
+                            </p>
+                        @endif
                     </div>
                 @endif
                 <div class="card-footer shadow-sm d-flex justify-content-between">

@@ -164,6 +164,22 @@
                 'users' => $users
             ]);
         }
+        /**
+         * Handles the homescreen
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function mine() {
+
+            $results = $this->getStartingQuery(false)->where("fits.CHAR_ID",session()->get("login_id"))
+                            ->orderByDesc("RUNS_COUNT")->get();
+
+            foreach ($results as $i => $result) {
+                $results[$i]->TAGS = $this->getFitTags($result->ID);
+            }
+            return view("components.fits.mine-list", [
+                'results' => $results
+            ]);
+        }
 
         /**
          * Handles the search view
@@ -220,11 +236,13 @@
 
         /**
          * Gets the starting query
+         *
+         * @param bool $excludePrivate
+         *
          * @return \Illuminate\Database\Query\Builder
          */
-        public function getStartingQuery(): Builder {
-            return DB::table("fits")
-                     ->where("PRIVACY", '!=', 'private')
+        public function getStartingQuery(bool $excludePrivate = true): Builder {
+            $query = DB::table("fits")
                      ->where("STATUS", 'done')
                      ->join("ship_lookup", 'fits.SHIP_ID', '=', 'ship_lookup.ID')
                      ->join("fit_recommendations", 'fits.ID', '=', 'fit_recommendations.FIT_ID')
@@ -242,9 +260,16 @@
                                "fit_recommendations.EXOTIC as Exotic",
                                "fit_recommendations.FIRESTORM as Firestorm",
                                "fit_recommendations.GAMMA as Gamma",
-                               "fits.SUBMITTED as Submitted"])
+                               "fits.SUBMITTED as Submitted",
+                               "fits.PRIVACY"])
                      ->distinct("fits.ID");
-        }/**
+            if ($excludePrivate) {
+                $query->where("PRIVACY", '!=', 'private');
+            }
+            return $query;
+        }
+
+        /**
      * @param Request $request
      *
      * @return array

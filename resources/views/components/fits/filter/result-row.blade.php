@@ -18,7 +18,7 @@
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{number_format($row->RUNS_COUNT, 0, ",", " ")}} </span>
     </td>
 </tr>
-<tr class="border-bottom text-up">
+<tr class="{{$admin == false ? "border-bottom" : ""}} text-up">
     <!-- icon -->
     <td>
         <span class="text-muted text-small moveabitup" style="vertical-align: top">
@@ -38,15 +38,27 @@
                 @endif
             @endforeach
             </div>
-{{--            <div>--}}
-{{--                @foreach(["Dark","Electrical","Exotic","Firestorm","Gamma"] as $type)--}}
-{{--                    @if ($row->$type > 0)--}}
-{{--                        <span data-toggle="tooltip" title="Can do {{$type}} runs, up to tier {{$row->$type}}">--}}
-{{--                            <img src="types/{{$type}}.png" alt="" class="tinyicon">{{$row->$type}}--}}
-{{--                        </span>--}}
-{{--                    @endif--}}
-{{--                @endforeach--}}
-{{--            </div>--}}
         </div>
     </td>
 </tr>
+@if($admin)
+    <tr class="border-bottom text-up">
+        <td colspan="2">
+            <span>Privacy status: <STRONG>{{$row->PRIVACY}}</STRONG></span>
+        </td>
+        <td colspan="5">
+            <span>Set privacy to: </span>
+            <a href="{{route("fit.change_privacy", ['id' => $row->ID, 'privacySetting' => 'public'])}}" class="text-dark font-weight-bold">Public</a>
+            <span class="d-inline-block mx-1">&middot;</span>
+            <a href="{{route("fit.change_privacy", ['id' => $row->ID, 'privacySetting' => 'incognito'])}}" class="text-dark font-weight-bold">Incognito</a>
+            <span class="d-inline-block mx-1">&middot;</span>
+            <a href="{{route("fit.change_privacy", ['id' => $row->ID, 'privacySetting' => 'private'])}}" class="text-dark font-weight-bold">Private</a>
+        </td>
+{{--        <td colspan="2" class="text-right">--}}
+{{--            <span>Uploaded {{\App\Http\Controllers\TimeHelper::timeElapsedString($row->Submitted)}}</span>--}}
+{{--        </td>--}}
+        <td colspan="2" class="text-right">
+            <a href="{{route("fit.delete", ['id' => $row->ID])}}" class="text-danger">Delete fit <img src="https://img.icons8.com/color/48/000000/delete-sign.png" class="tinyicon bringupper"/></a>
+        </td>
+    </tr>
+@endif

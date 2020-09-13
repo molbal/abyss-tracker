@@ -89,7 +89,7 @@
                 DB::table("fit_recommendations")->where("FIT_ID", $id)->delete();
                 DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->delete();
                 DB::commit();
-                return view("sp_message", ['title' => "Fit deleted", 'message' =>"The fit and all its data was removed from the Abyss Tracker."]);
+                return view("autoredirect", ['title' => "Fit deleted", 'message' =>"The fit and all its data was removed from the Abyss Tracker.", "redirect" => route("fit.mine")]);
             }
             catch (\Exception $e) {
                 DB::rollBack();
