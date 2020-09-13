@@ -10377,6 +10377,11 @@ ul.infolinks {
   text-align: center;
 }
 
+table.fit-results tr.border-bottom:last-child {
+  border-color: #212529 !important;
+  border-bottom-width: 0 !important;
+}
+
 .footer-top {
   padding: 60px 0;
   background: #0f1113;

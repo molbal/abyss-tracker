@@ -89,3 +89,11 @@ ul.infolinks {
     text-align: center;
 }
 
+
+table.fit-results {
+    tr.border-bottom:last-child {
+        border-color: $tab-active-bg !important;
+        border-bottom-width: 0 !important;
+
+    }
+}

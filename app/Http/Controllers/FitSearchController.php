@@ -315,6 +315,11 @@
                 $filters_display->add("Most popular first");
             }
 
+            if ($request->filled("MIN_USES")) {
+//                $query->where("ship_lookup.GROUP", '=', $request->get("SHIP_GROUP"));
+                $query->having("RUNS_COUNT",">=",$request->get("MIN_USES"));
+                $filters_display->add("Has at least ".$request->get("MIN_USES")." runs recorded");
+            }
             $tagList = $this->tags->getTagList();
             foreach ($tagList as $tag) {
                 if ($request->filled($tag)) {
@@ -322,6 +327,7 @@
                     $filters_display->add($this->labelForTag($tag, $request));
                 }
             }
+
 
             return [$query, $filters_display];
         }

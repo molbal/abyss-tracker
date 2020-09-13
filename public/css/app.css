@@ -10243,6 +10243,11 @@ ul.infolinks {
   text-align: center;
 }
 
+table.fit-results tr.border-bottom:last-child {
+  border-color: #fff !important;
+  border-bottom-width: 0 !important;
+}
+
 .footer-top {
   padding: 60px 0;
   background: #333;

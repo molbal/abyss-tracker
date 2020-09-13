@@ -1,4 +1,4 @@
-<table class="table table-sm table-responsive-md">
+<table class="table table-sm table-responsive-md fit-results">
     <tr>
         <td>&nbsp;</td>
         <td class="text-muted text-left">Name</td>

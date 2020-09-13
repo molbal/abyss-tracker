@@ -46,25 +46,29 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="NAME">Fit name</label>
+                    <input type="text" name="NAME" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="CHEAPER_THAN">Cheaper than</label>
+                    <select name="CHEAPER_THAN" class="form-control select2-nosearch">
+                        <option value="">-</option>
+                        <option value="50">50M ISK</option>
+                        <option value="100">100M ISK</option>
+                        <option value="150">150M ISK</option>
+                        <option value="250">250M ISK</option>
+                        <option value="300">300M ISK</option>
+                        <option value="500">500M ISK</option>
+                        <option value="750">750M ISK</option>
+                        <option value="1000">1B ISK</option>
+                        <option value="1500">1.5B ISK</option>
+                        <option value="2000">2B ISK</option>
+                    </select>
+                </div>
                     <div class="form-group">
-                        <label for="NAME">Fit name</label>
-                        <input type="text" name="NAME" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="CHEAPER_THAN">Cheaper than</label>
-                        <select name="CHEAPER_THAN" class="form-control select2-nosearch">
-                            <option value="">-</option>
-                            <option value="50">50M ISK</option>
-                            <option value="100">100M ISK</option>
-                            <option value="150">150M ISK</option>
-                            <option value="250">250M ISK</option>
-                            <option value="300">300M ISK</option>
-                            <option value="500">500M ISK</option>
-                            <option value="750">750M ISK</option>
-                            <option value="1000">1B ISK</option>
-                            <option value="1500">1.5B ISK</option>
-                            <option value="2000">2B ISK</option>
-                        </select>
+                        <label for="MIN_USES">Minimum uses</label>
+                        <input type="number" name="MIN_USES" class="form-control" value="0">
                     </div>
             @endcomponent
 
@@ -128,7 +132,7 @@
 
             @component("components.collapse.collapsible-card", ["title" => "Ordering", 'icon' => 'order-by'])
                     <div class="form-group">
-                        <label for="ORDER_BY">Ship size</label>
+                        <label for="ORDER_BY">Order by</label>
                         <select name="ORDER_BY" class="form-control select2-default">
                             <option value="RUNS_COUNT" selected>Popularity</option>
                             <option value="fits.PRICE">Price</option>
@@ -139,7 +143,7 @@
                         <label for="ORDER_BY_ORDER">Direction</label>
                         <select name="ORDER_BY_ORDER" class="form-control select2-default">
                             <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
+                            <option value="desc" selected>Descending</option>
                         </select>
                     </div>
             @endcomponent
