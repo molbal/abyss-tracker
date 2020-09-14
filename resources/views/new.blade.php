@@ -365,18 +365,18 @@
         }).val("{{date("Y-m-d")}}");
 
         function setProvingConduit() {
-            var tier = $("#TIER").val();
-            var $proving = $(".proving");
-            switch (tier) {
-                case '3':
-                case '4':
-                case '5':
-                    $proving.show();
-                    break;
-                default:
-                    $proving.hide();
-                    break;
-            }
+            // var tier = $("#TIER").val();
+            // var $proving = $(".proving");
+            // switch (tier) {
+            //     case '3':
+            //     case '4':
+            //     case '5':
+            //         $proving.show();
+            //         break;
+            //     default:
+            //         $proving.hide();
+            //         break;
+            // }
         }
 
         function setDeathReason() {
@@ -471,6 +471,9 @@
                 if (msg.infodiv==='error') {
                     stop_stopwatch();
                     $("#start_sw").hide();
+                }
+                else if(msg.infodiv=='finished') {
+                    clearInterval(window.stopwatch_interval);
                 }
             });
         }

@@ -21,6 +21,7 @@
          * @throws \Exception
          */
         public function addChecks(int $charId) {
+
             DB::beginTransaction();
             if (DB::table("stopwatch")->where("CHAR_ID", $charId)->exists()) {
                 DB::table("stopwatch")->where("CHAR_ID", $charId)->delete();
