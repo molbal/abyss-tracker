@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+{{--    <link rel="stylesheet" href="{{asset("css/jquery.inputpicker.css")}}">--}}
     <title>@yield('browser-title', config('app.name')) | {{ config('app.name') }}</title>
     <style>
 
@@ -201,8 +202,10 @@
         integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.8.0/echarts-en.min.js"
         charset="utf-8"></script>
-<script src="/js/echart.theme.dark.js" charset="utf-8"></script>
-<script src="/js/echart.theme.light.js" charset="utf-8"></script>
+<script src="https://abyss.eve-nt.uk/js/echart.theme.dark.js"
+        charset="utf-8"></script>
+<script src="https://abyss.eve-nt.uk/js/echart.theme.light.js"
+        charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js"
         integrity="sha256-vucLmrjdfi9YwjGY/3CQ7HnccFSS/XRS1M/3k/FDXJw=" crossorigin="anonymous"></script>
 <script type="text/javascript"
@@ -215,6 +218,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"
 ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"
+></script>
+<script src="{{asset("js/jquery.inputpicker.js")}}"
 ></script>
 @yield('scripts')
 <script>

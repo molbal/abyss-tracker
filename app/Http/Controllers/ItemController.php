@@ -5,8 +5,6 @@
 
 
     use App\Http\Controllers\Loot\LootCacheController;
-    use DateTime;
-    use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;

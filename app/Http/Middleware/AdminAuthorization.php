@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use http\Exception\RuntimeException;
 
 class AdminAuthorization
 {

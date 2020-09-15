@@ -7,10 +7,8 @@
     use App\Http\Controllers\EFT\Tags\TagsController;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Http\Request;
-    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Log;
 
     class FitSearchController extends Controller {
 

@@ -5,14 +5,11 @@
 
     use App\Helpers\ConversationCache;
     use App\Http\Controllers\Controller;
-    use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
-    use Illuminate\Support\Facades\Session;
     use Laravel\Socialite\Facades\Socialite;
     use Laravel\Socialite\Two\User;
-    use PHPUnit\Exception;
 
     class AuthController extends Controller {
 

@@ -13,16 +13,19 @@
                         <p class="lead mb-0 pb-0">{{ $message ?? "" }}{{ $error ?? "" }}</p>
                         @if(isset($sso))
                             <p class="text-center mb-0 pb-0">
-                                <a href="{{route("auth-start")}}" class="my-sm-0"><img src="https://eve-nt.uk/img/sso_small.png" alt="Log in with EVE Online Single sign on" width="130" height="20"></a>
+                                <a href="{{route("auth-start")}}" class="my-sm-0"><img src="{{asset("sso.png")}}" alt="Log in with EVE Online Single sign on" width="270" height="45"></a>
                             </p>
                         @endif
                     </div>
                 @endif
-                <div class="card-footer shadow-sm d-flex justify-content-between">
-                    <a href="{{route("home")}}" class="text-dark text-left w-25 d-inline-block">Go to homepage</a>
-                    <a target="_blank" href="{{route('community.discord')}}" class="text-dark text-center w-25 d-inline-block">Get help on Discord</a>
-                    <a target="_blank" href="https://github.com/molbal/abyss-tracker/issues/new?assignees=&labels=&template=bug_report.md&title=" class="text-dark text-right w-25 d-inline-block">Submit bug</a>
-                </div>
+
+                @if(!isset($sso))
+                    <div class="card-footer shadow-sm d-flex justify-content-between">
+                        <a href="{{route("home")}}" class="text-dark text-left w-25 d-inline-block">Go to homepage</a>
+                        <a target="_blank" href="{{route('community.discord')}}" class="text-dark text-center w-25 d-inline-block">Get help on Discord</a>
+                        <a target="_blank" href="https://github.com/molbal/abyss-tracker/issues/new?assignees=&labels=&template=bug_report.md&title=" class="text-dark text-right w-25 d-inline-block">Submit bug</a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

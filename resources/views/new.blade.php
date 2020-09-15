@@ -116,31 +116,37 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="">What ship did you fly?</label>
-                                    <select name="SHIP_ID" id="SHIP_ID" class="form-control select2-default">
-                                        <option {{($prev->SHIP_ID ?? "") == "" ? "selected" : ""}} value="">I don't
-                                            remember / secret
-                                        </option>
-                                        @foreach($ships as $ship)
-                                            <option
-                                                value="{{$ship->ID}}" {!! ($prev->SHIP_ID ?? 0) == $ship->ID ? "selected='selected'" : ""!!}>
-                                                {{$ship->NAME}} ({{$ship->GROUP}})
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="">What fit did you pick? @component('components.info-toggle')This list automatically updates when you select a ship.@endcomponent</label>
+{{--                            <div class="col-sm-4">--}}
+{{--                                <div class="form-group">--}}
+{{--                                    <label for="">What ship did you fly?</label>--}}
+{{--                                    <select name="SHIP_ID" id="SHIP_ID" class="form-control select2-default">--}}
+{{--                                        <option {{($prev->SHIP_ID ?? "") == "" ? "selected" : ""}} value="">I don't--}}
+{{--                                            remember / secret--}}
+{{--                                        </option>--}}
+{{--                                        @foreach($ships as $ship)--}}
+{{--                                            <option--}}
+{{--                                                value="{{$ship->ID}}" {!! ($prev->SHIP_ID ?? 0) == $ship->ID ? "selected='selected'" : ""!!}>--}}
+{{--                                                {{$ship->NAME}} ({{$ship->GROUP}})--}}
+{{--                                            </option>--}}
+{{--                                        @endforeach--}}
+{{--                                    </select>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <div class="col-sm-4">--}}
+{{--                                <label for="">What fit did you pick? @component('components.info-toggle')This list automatically updates when you select a ship.@endcomponent</label>--}}
 
-                                <select name="FIT_ID" id="FIT_ID" class="form-control select2-fit">
-                                    @if($last_fit_name)
-                                        <option value="{{$prev->FIT_ID}}">{{$last_fit_name}}</option>
-                                    @endif
-                                    <option value="">I don't remember / secret</option>
-                                </select>
+{{--                                <select name="FIT_ID" id="FIT_ID" class="form-control select2-fit">--}}
+{{--                                    @if($last_fit_name)--}}
+{{--                                        <option value="{{$prev->FIT_ID}}">{{$last_fit_name}}</option>--}}
+{{--                                    @endif--}}
+{{--                                    <option value="">I don't remember / secret</option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label for="vessel">What ship/fit did you use?</label>
+                                    <input type="text" class="form-control" id="vessel" name="vessel">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -365,18 +371,6 @@
         }).val("{{date("Y-m-d")}}");
 
         function setProvingConduit() {
-            // var tier = $("#TIER").val();
-            // var $proving = $(".proving");
-            // switch (tier) {
-            //     case '3':
-            //     case '4':
-            //     case '5':
-            //         $proving.show();
-            //         break;
-            //     default:
-            //         $proving.hide();
-            //         break;
-            // }
         }
 
         function setDeathReason() {
@@ -506,22 +500,39 @@
             $("#stopwatch_enabled").show();
 
 
-            window.fitSelector = $(".select2-fit").select2({
-                theme: 'bootstrap',
-                width: '100%',
-                ajax: {
-                    url: function(params) {
-                        var ship = $("#SHIP_ID").select2('data')[0]['id'];
-                        console.log(ship, params);
-                        var url = '{{env('APP_URL')}}/fits/search/select/'+(ship)+"/"+(params.term ? params.term : "")+"/";
-                        return url;
-                    },
-                }
+            {{--window.fitSelector = $(".select2-fit").select2({--}}
+            {{--    theme: 'bootstrap',--}}
+            {{--    width: '100%',--}}
+            {{--    ajax: {--}}
+            {{--        url: function(params) {--}}
+            {{--            var ship = $("#SHIP_ID").select2('data')[0]['id'];--}}
+            {{--            console.log(ship, params);--}}
+            {{--            var url = '{{env('APP_URL')}}/fits/search/select/'+(ship)+"/"+(params.term ? params.term : "")+"/";--}}
+            {{--            return url;--}}
+            {{--        },--}}
+            {{--    }--}}
+            {{--});--}}
+
+            $('#vessel').inputpicker({
+                data:[
+                    {value:"1",text:"Text 1", description: "This is the description of the text 1."},
+                    {value:"2",text:"Text 2", description: "This is the description of the text 2."},
+                    {value:"3",text:"Text 3", description: "This is the description of the text 3."}
+                ],
+                fields:[
+                    {name:'value',text:'Id'},
+                    {name:'text',text:'Title'},
+                    {name:'description',text:'Description'}],
+                fieldText : 'text',
+                fieldValue: 'value',
+                headShow: true,
+                filterOpen: true,
+                autoOpen: true
             });
+
             @if($stopwatch)
                 start_stopwatch();
             @endif
-
             @if($advanced_open)
                 $("#advanced-loot-view").click();
             @endif

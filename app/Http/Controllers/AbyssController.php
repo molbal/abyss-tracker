@@ -4,16 +4,6 @@
     namespace App\Http\Controllers;
 
 
-    use App\Charts\AbyssSurvivalType;
-    use App\Charts\DailyAdds;
-    use App\Charts\IskPerHourChart;
-    use App\Charts\LootAveragesChart;
-    use App\Charts\LootTierChart;
-    use App\Charts\LootTypesChart;
-    use App\Charts\PersonalDaily;
-    use App\Charts\BellChart1;
-    use App\Charts\SurvivalLevelChart;
-    use App\Charts\TierLevelsChart;
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Misc\DonorController;
@@ -24,7 +14,6 @@
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Mail;
     use Illuminate\Support\Facades\Validator;
 

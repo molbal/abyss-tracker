@@ -5,11 +5,7 @@
 
 
 	use App\Connector\EveAPI\EveAPICore;
-    use App\Exceptions\ESIAuthException;
-    use App\Http\Controllers\ESITokenController;
     use App\Http\Controllers\Misc\DTO\IngameDonor;
-    use Illuminate\Support\Facades\Cache;
-    use Illuminate\Support\Facades\Log;
 
     class JournalService extends EveAPICore {
 

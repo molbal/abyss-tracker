@@ -5,7 +5,6 @@
 
 
     use Illuminate\Support\Facades\Cookie;
-    use Symfony\Component\HttpFoundation\Cookie as SendCookie;
 
     class ThemeController extends Controller {
 

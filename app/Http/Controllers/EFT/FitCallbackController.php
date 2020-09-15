@@ -3,10 +3,10 @@
 
 	namespace App\Http\Controllers\EFT;
 
+    use App\Http\Controllers\Controller;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
-	use App\Http\Controllers\Controller;
 
     class FitCallbackController extends Controller {
 
