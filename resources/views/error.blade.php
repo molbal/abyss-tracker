@@ -6,14 +6,18 @@
             <img src="{{\App\Http\Controllers\ThemeController::getGlitchIcon()}}" alt="" style="height: 160px;" class="mb-3">
             <div class="card mb-5 text-left shadow">
                 <div class="card-header">
-                    Something went wrong
+                    @if(isset($sso))
+                        This page is for signed in users only
+                    @else
+                        Something went wrong
+                    @endif
                 </div>
                 @if(isset($message) || isset($error))
                     <div class="card-body shadow-sm border-0 mb-0">
                         <p class="lead mb-0 pb-0">{{ $message ?? "" }}{{ $error ?? "" }}</p>
                         @if(isset($sso))
                             <p class="text-center mb-0 pb-0">
-                                <a href="{{route("auth-start")}}" class="my-sm-0"><img src="{{asset("sso.png")}}" alt="Log in with EVE Online Single sign on" width="270" height="45"></a>
+                                <a href="{{route("auth-start")}}"><img class="my-3" src="{{asset("sso.png")}}" alt="Log in with EVE Online Single sign on" width="270" height="45"></a>
                             </p>
                         @endif
                     </div>
