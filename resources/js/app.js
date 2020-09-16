@@ -1,1 +1,1 @@
-require('./bootstrap');
+import Toastify from 'toastify-js';

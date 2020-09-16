@@ -498,20 +498,19 @@
             $form.submit(function (e) {});
             $(".sw_status").hide();
             $("#stopwatch_enabled").show();
-
-
-            {{--window.fitSelector = $(".select2-fit").select2({--}}
-            {{--    theme: 'bootstrap',--}}
-            {{--    width: '100%',--}}
-            {{--    ajax: {--}}
-            {{--        url: function(params) {--}}
-            {{--            var ship = $("#SHIP_ID").select2('data')[0]['id'];--}}
-            {{--            console.log(ship, params);--}}
-            {{--            var url = '{{env('APP_URL')}}/fits/search/select/'+(ship)+"/"+(params.term ? params.term : "")+"/";--}}
-            {{--            return url;--}}
-            {{--        },--}}
-            {{--    }--}}
-            {{--});--}}
+            Toastify({
+                text: "Stopwatch is enabled.",
+                duration: 3000,
+                // destination: "https://github.com/apvarun/toastify-js",
+                // newWindow: true,
+                close: true,
+                avatar: '{{asset('stopwatch/AbyssalEntrance.png')}}',
+                gravity: "top", // `top` or `bottom`
+                position: 'right', // `left`, `center` or `right`
+                backgroundColor: "linear-gradient(to right, #2f0d0e, #6e0202)",
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                onClick: function(){} // Callback after click
+            }).showToast();
 
             $('#vessel').inputpicker({
                 data:[

@@ -1,14 +1,3 @@
-// Variables
-@import 'variables';
-$body-bg: #030303;
-$tab-active-color: #fff;
-$tab-active-bg: #212529;
-
-$footer-up-bg: #0f1113;
-$footer-down-bg: #191d21;
-
-// Bootstrap
-@import "~@forevolve/bootstrap-dark/scss/bootstrap-dark";
 @import "layout";
 @import "button";
 @import "form";
@@ -23,6 +12,6 @@ $footer-down-bg: #191d21;
 @import "homepage";
 @import "steps";
 @import "all_styles";
-@import "dark_only";
+@import "white_only";
 @import "jquery.inputpicker";
 @import "~toastify-js/src/toastify.css";

@@ -221,6 +221,9 @@
 ></script>
 <script src="{{asset("js/jquery.inputpicker.js")}}"
 ></script>
+{{--<script src="{{asset("js/app.js")}}"--}}
+{{--></script>--}}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @yield('scripts')
 <script>
     window.onunload = function(){};

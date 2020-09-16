@@ -17,4 +17,5 @@ mix.js('resources/js/app.js', 'public/js')
 })
     .sass('resources/sass/app-dark.scss', 'public/css').options({
     processCssUrls: mix.inProduction()
-});
+})
+    .copy("~toasti");
