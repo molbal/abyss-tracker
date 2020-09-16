@@ -43,7 +43,9 @@
 .inputpicker-wrapped-list {
     overflow-y: auto;
     @extend .shadow;
-    padding: 0.5rem;
+    padding: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    background-color: #fff;
 }
 
 .inputpicker-wrapped-list .table {
@@ -76,6 +78,9 @@
 
 .inputpicker-div input{
     display: inline-block;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    background-color: #fff;
+    border-radius: 0;
 }
 
 

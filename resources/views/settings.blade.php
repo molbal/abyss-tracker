@@ -71,14 +71,24 @@
                             Stopwatch is enabled. To disable it and remove the ESI integration from your account use the button below. Doing this will disable the stopwatch
                             function for you.
                         </p>
-                        </div>
-                        <div class="card-footer">
-                        <input type="submit" value="Revoke ESI tokens" class="btn btn-outline-danger">
                     @else
-                        <div class="alert alert-info my-2">To use the stopwatch function, please go to the <a href="{{route('new')}}">new run</a> page and turn it on there</div>
+                        <p class="mb-3">To measure how long a run takes automatically you have to authorize the Abyss Tracker to query your location.</p>
+                        @component("components.info-line")
+                            @lang("tracker.stopwatch.note")
+                        @endcomponent
                     @endif
-
                 </div>
+
+                @if($esi_on)
+                    <div class="card-footer">
+                        <input type="submit" value="Revoke ESI tokens" class="btn btn-outline-danger">
+                    </div>
+                @else
+                    <div class="card-footer">
+                        <a href="{{route("auth-scoped-start")}}" class="btn btn-outline-success">Enable stopwatch</a>
+                    </div>
+                @endif
+
             </form>
 
 

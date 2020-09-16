@@ -10916,6 +10916,17 @@ ul.pagination {
   -webkit-animation-fill-mode: both;
 }
 
+.toastify {
+  padding: 16px 24px !important;
+  box-shadow: 0 3px 6px -1px rgba(159, 167, 199, 0.23), 0 10px 36px -4px rgba(159, 167, 199, 0.1) !important;
+  background: linear-gradient(135deg, #111111, #0a0a0a) !important;
+}
+
+.toastify-avatar {
+  width: 64px !important;
+  height: 64px !important;
+}
+
 body {
   color: #fafafa !important;
 }
@@ -11227,7 +11238,9 @@ a.text-dark:focus, a.text-dark:hover {
 
 .inputpicker-wrapped-list {
   overflow-y: auto;
-  padding: 0.5rem;
+  padding: 0;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  background-color: #fff;
 }
 
 .inputpicker-wrapped-list .table {
@@ -11259,6 +11272,9 @@ a.text-dark:focus, a.text-dark:hover {
 /*.loading*/
 .inputpicker-div input {
   display: inline-block;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  background-color: #fff;
+  border-radius: 0;
 }
 
 .inputpicker-div input.loading {

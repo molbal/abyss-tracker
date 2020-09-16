@@ -17,9 +17,9 @@
     Route::get("/stats_mine/", 'AbyssController@home_mine')->name("home_mine");
 
 
-    Route::post("/new", 'AbyssController@store')->name("store");
+    Route::post("/new", 'AbyssController@store')->name("store")->middleware("sso");
     Route::get("/new", 'AbyssController@form_new')->name("new")->middleware("sso");
-    Route::post("/api/loot_estimate", 'Loot\AjaxLootController@getSum')->name("estimate_loot");
+    Route::post("/api/loot_estimate", 'Loot\AjaxLootController@getSum')->name("estimate_loot")->middleware("sso");
 
     Route::get("/runs/{order_by?}/{order_type?}", 'AbyssController@get_all')->name("runs");
     Route::get("/runs_mine/{order_by?}/{order_type?}", 'AbyssController@get_mine')->name("runs_mine")->middleware("sso");

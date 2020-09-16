@@ -116,32 +116,6 @@
                                     </select>
                                 </div>
                             </div>
-{{--                            <div class="col-sm-4">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label for="">What ship did you fly?</label>--}}
-{{--                                    <select name="SHIP_ID" id="SHIP_ID" class="form-control select2-default">--}}
-{{--                                        <option {{($prev->SHIP_ID ?? "") == "" ? "selected" : ""}} value="">I don't--}}
-{{--                                            remember / secret--}}
-{{--                                        </option>--}}
-{{--                                        @foreach($ships as $ship)--}}
-{{--                                            <option--}}
-{{--                                                value="{{$ship->ID}}" {!! ($prev->SHIP_ID ?? 0) == $ship->ID ? "selected='selected'" : ""!!}>--}}
-{{--                                                {{$ship->NAME}} ({{$ship->GROUP}})--}}
-{{--                                            </option>--}}
-{{--                                        @endforeach--}}
-{{--                                    </select>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-sm-4">--}}
-{{--                                <label for="">What fit did you pick? @component('components.info-toggle')This list automatically updates when you select a ship.@endcomponent</label>--}}
-
-{{--                                <select name="FIT_ID" id="FIT_ID" class="form-control select2-fit">--}}
-{{--                                    @if($last_fit_name)--}}
-{{--                                        <option value="{{$prev->FIT_ID}}">{{$last_fit_name}}</option>--}}
-{{--                                    @endif--}}
-{{--                                    <option value="">I don't remember / secret</option>--}}
-{{--                                </select>--}}
-{{--                            </div>--}}
                             <div class="col-sm-8">
                                 <div class="form-group">
                                     <label for="vessel">What ship/fit did you use?</label>
@@ -182,15 +156,11 @@
                                 <div class="form-group" id="timer_auto">
                                     <small class="text-capitalize font-weight-bold text-danger pt-0">OFF</small>
                                     <p class="h1">00:00</p>
-                                    <a href="javascript:void(0)" class="font-italic" id="stop_stopwatch">Stop stopwatch and switch to manual entry</a>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 @if($stopwatch)
-                                    <p class="mb-1 sw_status" id="stopwatch_enabled">Stopwatch is enabled for your account. To start measuring, press the
-                                        start button <strong>before</strong> you go into the Abyss.</p>
-                                    <a href="javascript:void(0)" id="start_sw" class="btn btn-outline-primary mb-1">Start
-                                        stopwatch</a>
+                                    <p class="mb-1 sw_status" id="stopwatch_enabled">Stopwatch is enabled for your account. To enable it click the <strong>Start stopwatch</strong> text at the bottom of this panel.</p>
                                     <p class="starting sw_status">
                                         The stopwatch is currently on standby, waiting for you to enter the Abyss. <br>
                                         <small>The stopwatch and timer is updated every 3 to 10 seconds.</small>
@@ -210,25 +180,35 @@
                                     </p>
                                 @else
                                     <p class="mb-1">To automatically measure how much time a run takes please enable the
-                                        API access so we can check your location. (Your location will never be
-                                        saved)</p>
-                                    <a href="{{route("auth-scoped-start")}}" class="btn btn-sm btn-outline-primary mb-1">Enable
-                                        stopwatch</a>
+                                        API access so we can check your location.
+                                    </p>
+                                    @component("components.info-line")
+                                        @lang("tracker.stopwatch.note")
+                                    @endcomponent
                                 @endif
 
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="card-footer">
+
+                    @if($stopwatch)
+                        <a href="javascript:void(0)" class="text-dark" id="start_sw"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sport-stopwatch.png" class="mr-1 tinyicon"/>Start stopwatch</a>
+                    @else
+                        <a href="{{route("auth-scoped-start")}}" data-toggle="tooltip" title="This will reload this page!" class="text-dark" id="enable_sw"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sport-stopwatch.png" class="mr-1 tinyicon"/>Enable stopwatch</a>
+                    @endif
+                    <a href="javascript:void(0)" class="text-dark" id="stop_stopwatch"><img src="{{asset("_icons/stop-stopwatch-".App\Http\Controllers\ThemeController::getThemedIconColor().".svg")}}" alt="" class="mr-1 tinyicon">Switch to manual entry</a>
+                </div>
             </div>
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3 pb-2">
                     <h5 class="font-weight-bold">Loot questions <span class="float-right text-small">
-{{--                                            <a href="/how-to-loot.gif" target="_blank">How to use?</a>                                        <img--}}
-                                            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" class="tinyicon"
-                                            data-toggle="tooltip"
-                                            title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language.">
-                                        </span></h5>
+                        <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" class="tinyicon"
+                        data-toggle="tooltip"
+                        title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language.">
+                    </span></h5>
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12">
@@ -414,13 +394,13 @@
         }
 
         function switch_to_manual() {
-            $("#timer_auto").hide();
-            $("#timer_manual").show();
+            $("#timer_auto, #stop_stopwatch").hide();
+            $("#timer_manual, #start_sw").show();
         }
 
         function switch_to_auto() {
-            $("#timer_auto").show();
-            $("#timer_manual").hide();
+            $("#timer_auto, #stop_stopwatch").show();
+            $("#timer_manual, #start_sw").hide();
         }
 
         function start_stopwatch() {
