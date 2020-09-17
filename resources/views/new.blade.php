@@ -4,8 +4,7 @@
 
     <form action="{{route("store")}}" method="post">
         <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
-            <h4 class="font-weight-bold"><img src="https://img.icons8.com/dusk/50/000000/add-file.png" class="titleicon">Add new Abyss run
-            </h4>
+            <h4 class="font-weight-bold"><img src="https://img.icons8.com/dusk/50/000000/add-file.png" class="titleicon">Add new Abyss run</h4>
         </div>
         @if(isset($errors))
             @if ($errors->any())
@@ -58,7 +57,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="">Abyss Tier</label>
-                                    <select name="TIER" id="TIER" class="form-control select2-default">
+                                    <select name="TIER" id="TIER" class="form-control select2-default" required>
                                         @for($i=0;$i<7;$i++)
                                             <option {{($prev->TIER ?? null) == $i ? "selected" : ""}} value="{{$i}}">@lang("tiers.$i") (T{{$i}})</option>
                                         @endfor
@@ -100,7 +99,7 @@
                             <div class="col-sm-4 d-none">
                                 <div class="form-group">
                                     <label for="">Which day did you do this run?</label>
-                                    <input type="text" class="form-control datepicker" name="RUN_DATE" required>
+                                    <input type="text" class="form-control datepicker" name="RUN_DATE" value="{{date("Y-m-d")}}" required>
                                 </div>
                             </div>
 
@@ -349,7 +348,6 @@
         window.csrf_token = '{{csrf_token()}}';
         window.start_stopwatch_ = {{$stopwatch ? "true" : "false"}};
         window.advanced_open_ = {{$advanced_open ? "true" : "false"}};
-
     </script>
     <script type="text/javascript" src="{{asset("js/new-run.js")}}"></script>
 @endsection

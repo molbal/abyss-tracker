@@ -271,8 +271,8 @@ $(function () {
   switch_to_manual();
   $("#stop_stopwatch").click(stop_stopwatch);
   $("#start_sw").click(start_stopwatch);
-  var $form = $("form");
-  $form.submit(function (e) {});
+  // var $form = $("form");
+  // $form.submit(function (e) {});
   $(".sw_status").hide();
   $("#stopwatch_enabled").show();
   $("#browser-notifications-enable").click(requestNotification);
