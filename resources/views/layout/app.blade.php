@@ -221,69 +221,13 @@
 ></script>
 <script src="{{asset("js/jquery.inputpicker.js")}}"
 ></script>
-{{--<script src="{{asset("js/app.js")}}"--}}
-{{--></script>--}}
+<script src="https://cdn.jsdelivr.net/npm/maximize-select2-height@1.0.4/maximize-select2-height.min.js"
+        integrity="sha256-rOpd4voNU/iOOklhdb2rhwe4OaXfo7vIO3f7Tc8xe0o=" crossorigin="anonymous"></script>
+<script src="{{asset("js/app.js")}}"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @yield('scripts')
 <script>
-    window.onunload = function(){};
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
 
-        $(".select2-default").select2({
-            theme: 'bootstrap',
-            width: '100%'
-        });
-
-        $(".select2-nosearch").select2({
-            theme: 'bootstrap',
-            minimumResultsForSearch: -1,
-            width: '100%'
-        });
-
-        var buttonCommon = {};
-        var buttonExcelCopy = {
-            exportOptions: {
-                format: {
-                    body: function ( data, row, column, node ) {
-                        // Strip $ from salary column to make it numeric
-                        var regex = /^[0-9 ]{1,13} ISK$/;
-                        if (data.match(regex)) {
-                            replaced = data.match(/\d+/g).join("");
-                            console.log("Matched: ", data, " and ", replaced);
-                            return replaced;
-
-                        }
-                        else {
-                            var div = document.createElement("div");
-                            div.innerHTML = data;
-                            var text = div.textContent || div.innerText || "";
-                            return text;
-                        }
-                    }
-                }
-            }
-        };
-
-        $(".datatable").append('<caption style="caption-side: bottom">Result list generated at {{date("Y-m-d H:i:s")}}</caption>');
-        $('.datatable').DataTable({
-            paginate: false,
-            dom: 'Bfrtip',
-            // buttons: [
-            //     'copy', 'csv', 'excel', 'pdf'
-            // ],
-            buttons: [
-                $.extend( true, {}, buttonCommon, {
-                    extend: 'copyHtml5'
-                } ),
-                $.extend( true, {}, buttonExcelCopy, {
-                    extend: 'excelHtml5'
-                } ),
-                $.extend( true, {}, buttonCommon, {
-                    extend: 'pdfHtml5'
-                } )]
-        });
-    });
 </script>
 @if(!config("app.debug"))
     <!-- Global site tag (gtag.js) - Google Analytics -->

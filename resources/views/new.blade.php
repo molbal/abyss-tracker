@@ -4,8 +4,7 @@
 
     <form action="{{route("store")}}" method="post">
         <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
-            <h4 class="font-weight-bold"><img src="https://img.icons8.com/dusk/50/000000/add-file.png"> Add new Abyss
-                run
+            <h4 class="font-weight-bold"><img src="https://img.icons8.com/dusk/50/000000/add-file.png" class="titleicon">Add new Abyss run
             </h4>
         </div>
         @if(isset($errors))
@@ -60,33 +59,13 @@
                                 <div class="form-group">
                                     <label for="">Abyss Tier</label>
                                     <select name="TIER" id="TIER" class="form-control select2-default">
-                                        <option {{($prev->TIER ?? null) == 1 ? "selected" : ""}}>1</option>
-                                        <option {{($prev->TIER ?? null) == 2 ? "selected" : ""}}>2</option>
-                                        <option {{($prev->TIER ?? null) == 3 ? "selected" : ""}}>3</option>
-                                        <option {{($prev->TIER ?? null) == 4 ? "selected" : ""}}>4</option>
-                                        <option {{($prev->TIER ?? null) == 5 ? "selected" : ""}}>5</option>
-                                        <option {{($prev->TIER ?? null) == 6 ? "selected" : ""}}>5 with single Dreadnought room</option>
+                                        @for($i=0;$i<7;$i++)
+                                            <option {{($prev->TIER ?? null) == $i ? "selected" : ""}} value="{{$i}}">@lang("tiers.$i") (T{{$i}})</option>
+                                        @endfor
+                                        <option value="5S1">T5 Special Room</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="">Did you survive?</label>
-                                    <select name="SURVIVED" id="SURVIVED" class="form-control select2-nosearch">
-                                        <option value="0">My ship blew up</option>
-                                        <option value="1" selected>Survived</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4 d-none">
-                                <div class="form-group">
-                                    <label for="">Which day did you do this run?</label>
-                                    <input type="text" class="form-control datepicker" name="RUN_DATE" required>
-                                </div>
-                            </div>
-
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="">Which cans did you loot?</label>
@@ -116,7 +95,25 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 d-none">
+                                <div class="form-group">
+                                    <label for="">Which day did you do this run?</label>
+                                    <input type="text" class="form-control datepicker" name="RUN_DATE" required>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="">Did you survive?</label>
+                                    <select name="SURVIVED" id="SURVIVED" class="form-control select2-nosearch">
+                                        <option value="0">My ship blew up</option>
+                                        <option value="1" selected>Survived</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-10">
                                 <div class="form-group">
                                     <label for="vessel">What ship/fit did you use?</label>
                                     <select type="text" class="form-control" id="vessel" name="vessel"></select>
@@ -201,7 +198,6 @@
                 </div>
 
                 <div class="card-footer">
-
                     @if($stopwatch)
                         <a href="javascript:void(0)" class="text-dark" id="start_sw"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sport-stopwatch.png" class="mr-1 tinyicon"/>Start stopwatch</a>
                     @else
@@ -271,9 +267,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-4">
-                                <label for="">Why did you lose your ship?&nbsp;<img
-                                        src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
-                                        title="A lot of reasons can contribute to losing a ship. Select the one you think contributed most to this loss."></label>
+                                <label for="">Why did you lose your ship? </label>
                                 <select name="DEATH_REASON" id="" class="form-control select2-nosearch">
                                     <option value="">I don't remember / secret</option>
                                     <option value="TIMEOUT">Timer ran out</option>
@@ -288,9 +282,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-8">
-                                <label for="">If you died you can share your lossmail&nbsp;<img
-                                        src="https://img.icons8.com/small/16/000000/info.png" data-toggle="tooltip"
-                                        title="Please use a zKillboard link"></label>
+                                <label for="">zKillboard link @component("components.info-toggle") Please only use a zKillboard link @endcomponent </label>
                                 <input type="text" class="form-control" name="KILLMAIL">
                             </div>
                         </div>

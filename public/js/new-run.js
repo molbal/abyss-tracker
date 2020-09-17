@@ -116,8 +116,8 @@ function advancedView() {
 }
 
 function switch_to_manual() {
-  $("#timer_auto, #stop_stopwatch").hide();
-  $("#timer_manual, #start_sw").show();
+  $("#timer_auto, #stop_stopwatch, .sw_status").hide();
+  $("#timer_manual, #start_sw, #stopwatch_enabled").show();
 }
 
 function switch_to_auto() {
@@ -138,7 +138,7 @@ function start_stopwatch() {
     }
   }).done(function (msg) {
     check_status();
-    window.stopwatch_interval = setInterval(check_status, 3000);
+    window.stopwatch_interval = setInterval(check_status, 1500);
   }).fail(function (msg) {
     alert(msg.error);
   });
@@ -284,9 +284,9 @@ $(function () {
     },
     templateResult: function templateResult(result) {
       if (result.id !== undefined) {
-        return $('<div class="row">' + '<div class="col-md-3">' + result.SHIP_NAME + '</div>' + '<div class="col-md-4">' + result.SHIP_CLASS + '</div>' + '<div class="col-md-5"><span class="">' + result.FIT_NAME + '</span>' + '</div>');
+        return $('<div class="row">' + '<div class="col-md-3"><img src="https://imageserver.eveonline.com/Type/' + result.SHIP_ID + '_32.png" alt="" class="tinyicon rounded-circle mr-1" style="border: 1px solid #fff">' + result.SHIP_NAME + '</div>' + '<div class="col-md-3">' + result.SHIP_CLASS + '</div>' + '<div class="col-md-5"><span class="">' + result.FIT_NAME + '</span>' + '</div>');
       } else {
-        return $('<div class="row"><div class="col-md-12"><span class="font-weight-bold text-uppercase">' + result.text + '</span></div>');
+        return $('<div class="row">' + '<div class="col-md-12"><span class="font-weight-bold text-uppercase">' + result.text + '</span></div>' + '<div class="col-md-3 text-italic">Ship name</div>\n' + '<div class="col-md-3 text-italic">Ship class</div>\n' + '<div class="col-md-5 text-italic">Fit name</div>' + '</div>');
       }
     }
   });

@@ -2,5 +2,6 @@
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/css/app-dark.css": "/css/app-dark.css",
+    "/js/fits.js": "/js/fits.js",
     "/js/new-run.js": "/js/new-run.js"
 }
