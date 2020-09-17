@@ -9,6 +9,7 @@
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Str;
 
     class FitSearchController extends Controller {
 
@@ -26,6 +27,105 @@
 
 
         /**
+         * Must be secured by middleware
+         */
+        public function getIntegratedTypeList(Request $request) {
+            $myFits = DB::table("fits as f")
+                        ->join("ship_lookup as l", "f.SHIP_ID","=","l.ID")
+                        ->where("f.CHAR_ID", session()->get("login_id", 0))
+                        ->select([
+                            'l.ID as SHIP_ID',
+                            'f.ID as FIT_ID',
+                            'f.NAME as FIT_NAME',
+                            'l.NAME as SHIP_NAME',
+                            'l.GROUP as SHIP_CLASS'
+                        ])
+                        ->get();
+
+            $fits = DB::table("ship_lookup as l")
+                       ->leftJoin("fits as f", "l.ID", '=', 'f.SHIP_ID')
+                       ->where("f.CHAR_ID",'!=', session()->get("login_id", 0))
+                       ->whereIn("f.PRIVACY", ['public', 'incognito'])
+                       ->select([
+                           'l.ID as SHIP_ID',
+                           'f.ID as FIT_ID',
+                           'f.NAME as FIT_NAME',
+                           'l.NAME as SHIP_NAME',
+                           'l.GROUP as SHIP_CLASS'
+                       ])
+                       ->orderBy('l.NAME')
+                       ->orderBy('f.NAME');
+
+            $ships = DB::table("ship_lookup as s")
+                       ->select([
+                           's.ID as SHIP_ID',
+                           DB::raw('\'\' as FIT_ID'),
+                           DB::raw('\'\' as FIT_NAME'),
+                           's.NAME as SHIP_NAME',
+                           's.GROUP as SHIP_CLASS'
+                       ])
+                       ->union($fits)
+                       ->orderBy(DB::raw(4))
+                       ->orderBy(DB::raw(3))
+                       ->get();
+
+            $mapper = function ($item, $key) {
+                if ($item->FIT_NAME)
+                    $item->FIT_NAME = strip_tags(trim($item->FIT_NAME));
+                $item->id = json_encode([
+                    'SHIP_ID' => $item->SHIP_ID,
+                    'FIT_ID' => $item->FIT_ID
+                ]);
+                $item->text = sprintf("%s, %s", $item->SHIP_NAME, $item->FIT_NAME ? "" . $item->FIT_NAME : "without fit selected");
+                return $item;
+            };
+
+            $myFits->map($mapper);
+            $ships->map($mapper);
+
+            if (Str::of($request->get('term', ''))->isNotEmpty()) {
+                $filter = function ($item, $key) use ($request){
+                    $term = mb_strtoupper($request->get('term', ""));
+                    if (Str::contains(mb_strtoupper($item->SHIP_NAME), $term)) {
+                        return true;
+                    }
+                    if (Str::contains(mb_strtoupper($item->FIT_NAME), $term)) {
+                        return true;
+                    }
+                    if (Str::contains(mb_strtoupper($item->SHIP_CLASS), $term)) {
+                        return true;
+                    }
+                    return false;
+                };
+                $myFits = $myFits->filter($filter);
+                $ships = $ships->filter($filter);
+
+                $highlight = function($item, $key) use ($request) {
+                    $term = $request->get("term", "");
+                    $item->SHIP_NAME = str_ireplace($term, "<span class='highlight'>".ucfirst($term)."</span>", $item->SHIP_NAME);
+                    $item->FIT_NAME = str_ireplace($term, "<span class='highlight'>".ucfirst($term)."</span>", $item->FIT_NAME);
+                    $item->SHIP_CLASS = str_ireplace($term, "<span class='highlight'>".ucfirst($term)."</span>", $item->SHIP_CLASS);
+
+                    return $item;
+                };
+
+                $myFits->map($highlight);
+                $ships->map($highlight);
+            }
+
+            return [
+                'results' => [
+                    ['text' => "My fits", 'children' => $myFits->values()],
+                    ['text' => "All ships and public fits", 'children' => $ships->values()],
+                ],
+                'pagination' => [
+                    'more' => false
+                ]
+            ];
+        }
+
+        /**
+         * @deprecated
          * Handles the fit search backend
          * @param int    $shipId
          * @param string $nameOrId
@@ -33,7 +133,7 @@
          * @return array
          */
         public function getFitsForNewRunDropdown(int $shipId, string $nameOrId="") {
-
+/*
             $return = [];
             $return[] = [
                 "text" => "No selection",
@@ -120,7 +220,7 @@
                 ];
             }
 
-            return (["results" =>$return , "pagination" =>['more' => false]]);
+            return (["results" =>$return , "pagination" =>['more' => false]]);*/
         }
 
         /**

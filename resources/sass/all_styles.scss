@@ -266,3 +266,25 @@ ul.pagination {
     width: 64px !important;
     height: 64px !important;
 }
+
+
+.select2-search__field {
+    padding-top: 6px !important;
+    border-radius: 0 !important;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+}
+
+.highlight {
+    font-weight: bold;
+    color: $red;
+}
+
+.select2-container--bootstrap .select2-results > .select2-results__options {
+    max-height: 200px;
+    overflow-y: hidden;
+    overflow-x: hidden !important;
+}
+
+.select2-results__option--highlighted[aria-selected] {
+    background-color: #0f1113 !important;
+}

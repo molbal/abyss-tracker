@@ -43,28 +43,36 @@
                 return [
                     'status' => 'error',
                     'infodiv' => 'error',
-                    'seconds' => 0
+                    'seconds' => 0,
+                    'msg_icon' => asset("stopwatch/ESIerror.png"),
+                    'toast' => "Sorry, something went wrong with the stopwatch."
                 ];
             }
 
             $state = [
                 'status' => 'error',
-                'seconds' => 0
+                'seconds' => 0,
+                'msg_icon' => asset("stopwatch/ESIerror.png"),
+                'toast' => "Sorry, something went wrong with the stopwatch."
             ];
             if (DB::table("stopwatch")->where("CHAR_ID", $charId)->exists()) {
-                $var = DB::table("stopwatch")->where("CHAR_ID", $charId)->get()->get(0);
+                $var = DB::table("stopwatch")->where("CHAR_ID", $charId)->first();
                 if ($var->IN_ABYSS) {
                     $state = [
                         'status' => "RUNNING",
                         'infodiv' => "running",
-                        'seconds' => (strtotime(date("Y-m-d H:i:s")) - strtotime($var->ENTERED_ABYSS))
+                        'seconds' => (strtotime(date("Y-m-d H:i:s")) - strtotime($var->ENTERED_ABYSS)),
+                        'msg_icon' => asset("stopwatch/AbyssalEntrance.png"),
+                        'toast' => "You have entered Abyssal Deadspace"
                     ];
                 }
                 elseif ($var->EXITED_ABYSS) {
                     $state = [
                         'status' => "<span class=\"text-success\">FINISHED</span>",
                         'infodiv' => "finished",
-                        'seconds' => (strtotime($var->EXITED_ABYSS) - strtotime($var->ENTERED_ABYSS))
+                        'seconds' => (strtotime($var->EXITED_ABYSS) - strtotime($var->ENTERED_ABYSS)),
+                        'msg_icon' => asset("stopwatch/NormalSpace.png"),
+                        'toast' => "You have returned from Abyssal Deadspace"
                     ];
                 }
                 else {

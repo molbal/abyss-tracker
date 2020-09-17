@@ -119,7 +119,7 @@
                             <div class="col-sm-8">
                                 <div class="form-group">
                                     <label for="vessel">What ship/fit did you use?</label>
-                                    <input type="text" class="form-control" id="vessel" name="vessel">
+                                    <select type="text" class="form-control" id="vessel" name="vessel"></select>
                                 </div>
                             </div>
                         </div>
@@ -178,6 +178,14 @@
                                         There was something wrong with the ESI responses so your ESI token was removed. Please authenticate again. Please enable the stopwatch again<br>
                                         <a href="{{route("auth-scoped-start")}}" class="btn btn-sm btn-outline-primary mb-1">Re-enable stopwatch</a>
                                     </p>
+                                <div id="browser-notifications">
+                                    <hr>
+
+                                    @component("components.info-line")
+                                        <a href="javascript:void(0)" id="browser-notifications-enable" class="text-dark">To enable browser notifications for the stopwatch please click here</a>
+                                    @endcomponent
+                            </div>
+
                                 @else
                                     <p class="mb-1">To automatically measure how much time a run takes please enable the
                                         API access so we can check your location.
@@ -218,9 +226,9 @@
                                         filament. The site will compare the two to get which items you looted and which
                                         items you used up/lost.
                                     </div>
-                                    <div class="text-dark">
+                                    @component("components.info-line", ['class' => "mb-2"])
                                         Please only copy items here that you looted from the Abyss. Make sure to copy from list view, not grid view.
-                                    </div>
+                                    @endcomponent
                                     <strong class="mt-2 adv">Before cargo:</strong>
                                     <textarea name="LOOT_DETAILED_BEFORE" id="LOOT_DETAILED_BEFORE" rows="4"
                                               class="form-control adv">{{$last_loot}}</textarea>
@@ -236,8 +244,6 @@
                                 <div class="form-group d-none">
                                     <label for="">Did the Proving Conduit spawn?</label>
                                     <select name="PVP_CONDUIT_SPAWN" class="form-control select2-nosearch">
-{{--                                        <option value="">I don't remember</option>--}}
-{{--                                        <option value="1">Yes, it spawned</option>--}}
                                         <option value="0">No, it did not</option>
                                     </select>
                                 </div>
@@ -246,8 +252,6 @@
                                 <div class="form-group d-none">
                                     <label for="">Did you go into the PVP room?</label>
                                     <select name="PVP_CONDUIT_USED" class="form-control select2-nosearch">
-{{--                                        <option value="">I don't remember</option>--}}
-{{--                                        <option value="1">Yes, I went into the PVP room</option>--}}
                                         <option value="0" selected>No, I did not go into the PVP room</option>
                                     </select>
                                 </div>
@@ -346,177 +350,16 @@
 
 @section("scripts")
     <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd'
-        }).val("{{date("Y-m-d")}}");
+        window.check_status_url = "{{route("stopwatch_get", ["charId" => session()->get("login_id", 0)])}}";
+        window.start_stopwatch_url = "{{route("stopwatch_start", ["charId" => session()->get("login_id")])}}";
+        window.loot_detailed_url = "{{route("estimate_loot")}}";
+        window.fit_newrun_select = '{{route("fit.newrun.select")}}';
+        window.csrf_token = '{{csrf_token()}}';
+        window.start_stopwatch_ = {{$stopwatch ? "true" : "false"}};
+        window.advanced_open_ = {{$advanced_open ? "true" : "false"}};
 
-        function setProvingConduit() {
-        }
-
-        function setDeathReason() {
-            var death = $("#SURVIVED").val();
-            var dth = $(".death");
-            switch (death) {
-                case '0':
-                    dth.show();
-                    break;
-                default:
-                    dth.hide();
-                    break;
-            }
-
-        }
-
-        $("#LOOT_DETAILED").change(function () {
-            $("#loot_value").html("...");
-            $.ajax({
-                method: "POST",
-                url: "{{route("estimate_loot")}}",
-                data: {
-                    "_token": "{{csrf_token()}}",
-                    "LOOT_DETAILED": $("#LOOT_DETAILED").val()
-                }
-            }).done(function (msg) {
-                console.log(msg);
-                sum = JSON.parse(msg);
-                $("#loot_value").html(sum.formatted);
-            });
-
-        });
-
-        function advancedView() {
-            $("#advanced-loot-view, #middot-1").removeClass("d-inline-block").hide();
-            $(".adv").slideDown(115);
-            // $(".adv").animate({
-            //     height: 'toggle',
-            //
-            // });
-        }
-
-        function switch_to_manual() {
-            $("#timer_auto, #stop_stopwatch").hide();
-            $("#timer_manual, #start_sw").show();
-        }
-
-        function switch_to_auto() {
-            $("#timer_auto, #stop_stopwatch").show();
-            $("#timer_manual, #start_sw").hide();
-        }
-
-        function start_stopwatch() {
-            switch_to_auto();
-            $("#start_sw").hide();
-            window.date1 = new Date();
-            $("#timer_auto small").html("PREPARING...");
-
-            $.ajax({
-                method: "POST",
-                url: "{{route("stopwatch_start", ["charId" => session()->get("login_id")])}}",
-                data: {
-                    "_token": "{{csrf_token()}}"
-                }
-            }).done(function (msg) {
-                check_status();
-                window.stopwatch_interval = setInterval(check_status, 3000);
-            }).fail(function (msg) {
-                alert(msg.error)
-            });
-
-        }
-
-        function check_status() {
-            $.ajax({
-                method: "GET",
-                url: "{{route("stopwatch_get", ["charId" => session()->get("login_id")])}}",
-                data: {
-                    "_token": "{{csrf_token()}}"
-                }
-            }).done(function (msg) {
-                console.log(msg);
-                $("#timer_auto small").html(msg.status);
-                var m = Math.floor(msg.seconds/60);
-                var s = (msg.seconds%60);
-                $("#timer_auto p").html((m < 10 ? "0" : "")+m+":"+(s<10 ? "0" : "") + s);
-                $('#run_length_minute').val(m);
-                $('#run_length_second').val(s);
-
-                $(".sw_status").hide();
-                $("."+msg.infodiv).show();
-                if (msg.infodiv==='error') {
-                    stop_stopwatch();
-                    $("#start_sw").hide();
-                }
-                else if(msg.infodiv=='finished') {
-                    clearInterval(window.stopwatch_interval);
-                }
-            });
-        }
-
-        function stop_stopwatch() {
-            switch_to_manual();
-            $("#start_sw").show();
-            try {
-                clearInterval(window.stopwatch_interval);
-            }
-            catch (ignored) {
-
-            }
-        }
-
-
-        // When ready.
-        $(function () {
-            setProvingConduit();
-            setDeathReason();
-            $("#TIER").change(setProvingConduit);
-            $("#SURVIVED").change(setDeathReason);
-            $("#advanced-loot-view").click(advancedView);
-            switch_to_manual();
-            $("#stop_stopwatch").click(stop_stopwatch);
-            $("#start_sw").click(start_stopwatch);
-            var $form = $("form");
-            $form.submit(function (e) {});
-            $(".sw_status").hide();
-            $("#stopwatch_enabled").show();
-            Toastify({
-                text: "Stopwatch is enabled.",
-                duration: 3000,
-                // destination: "https://github.com/apvarun/toastify-js",
-                // newWindow: true,
-                close: true,
-                avatar: '{{asset('stopwatch/AbyssalEntrance.png')}}',
-                gravity: "top", // `top` or `bottom`
-                position: 'right', // `left`, `center` or `right`
-                backgroundColor: "linear-gradient(to right, #2f0d0e, #6e0202)",
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                onClick: function(){} // Callback after click
-            }).showToast();
-
-            $('#vessel').inputpicker({
-                data:[
-                    {value:"1",text:"Text 1", description: "This is the description of the text 1."},
-                    {value:"2",text:"Text 2", description: "This is the description of the text 2."},
-                    {value:"3",text:"Text 3", description: "This is the description of the text 3."}
-                ],
-                fields:[
-                    {name:'value',text:'Id'},
-                    {name:'text',text:'Title'},
-                    {name:'description',text:'Description'}],
-                fieldText : 'text',
-                fieldValue: 'value',
-                headShow: true,
-                filterOpen: true,
-                autoOpen: true
-            });
-
-            @if($stopwatch)
-                start_stopwatch();
-            @endif
-            @if($advanced_open)
-                $("#advanced-loot-view").click();
-            @endif
-        });
     </script>
+    <script type="text/javascript" src="{{asset("js/new-run.js")}}"></script>
 @endsection
 
 @section("styles")
