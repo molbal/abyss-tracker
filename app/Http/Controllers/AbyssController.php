@@ -190,11 +190,13 @@
                 return view("error", ["error" => "Please log in to access this page"]);
             }
 
+            dd($request->all());
             Validator::make($request->all(), [
                 'TYPE'     => 'required',
                 'TIER'     => 'required',
                 'SURVIVED' => 'required',
                 'PUBLIC'   => 'required',
+                'vessel'   => 'required',
                 'RUN_DATE' => 'required|date',
                 'KILLMAIL' => 'nullable|regex:/https?:\/\/zkillboard\.com\/kill\/\d+\/?/m',
                 'RUN_LENGTH_M' => 'nullable|numeric|min:0|max:20',

@@ -186,7 +186,7 @@ $(function () {
         templateResult: function(result) {
             if (result.id !== undefined) {
                 return $('<div class="row">' +
-                    '<div class="col-md-3"><img src="https://imageserver.eveonline.com/Type/'+result.SHIP_ID+'_32.png" alt="" class="tinyicon rounded-circle mr-1" style="border: 1px solid #fff">'+result.SHIP_NAME+'</div>' +
+                    '<div class="col-md-3">'+(result.SHIP_ID > 0 ? '<img src="https://imageserver.eveonline.com/Type/'+result.SHIP_ID+'_32.png" alt="" class="tinyicon rounded-circle mr-1" style="border: 1px solid #fff">' : '')+result.SHIP_NAME+'</div>' +
                     '<div class="col-md-3">'+result.SHIP_CLASS+'</div>' +
                     '<div class="col-md-5"><span class="">'+result.FIT_NAME+'</span>' +
                     '</div>');
