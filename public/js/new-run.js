@@ -289,7 +289,7 @@ $(function () {
         return $('<div class="row">' + '<div class="col-md-12"><span class="font-weight-bold text-uppercase">' + result.text + '</span></div>' + '<div class="col-md-3 text-italic">Ship name</div>\n' + '<div class="col-md-3 text-italic">Ship class</div>\n' + '<div class="col-md-5 text-italic">Fit name</div>' + '</div>');
       }
     }
-  });
+  }).maximizeSelect2Height();
   $("#LOOT_DETAILED").change(function () {
     $("#loot_value").html("...");
     $.ajax({

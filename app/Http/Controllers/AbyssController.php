@@ -9,6 +9,7 @@
     use App\Http\Controllers\Misc\DonorController;
     use App\Http\Controllers\Profile\LeaderboardController;
     use App\Http\Controllers\Profile\SettingController;
+    use App\Http\Requests\NewRunRequest;
     use App\Mail\RunFlagged;
     use App\PatreonDonorDisplay;
     use Illuminate\Http\Request;
@@ -178,51 +179,24 @@
 
 
         /**
-         * Handles the storing of a new run
+         * @param NewRunRequest $request
          *
-         * @param Request $request
-         *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
          */
-        public function store(Request $request) {
-
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please log in to access this page"]);
-            }
-
-            dd($request->all());
-            Validator::make($request->all(), [
-                'TYPE'     => 'required',
-                'TIER'     => 'required',
-                'SURVIVED' => 'required',
-                'PUBLIC'   => 'required',
-                'vessel'   => 'required',
-                'RUN_DATE' => 'required|date',
-                'KILLMAIL' => 'nullable|regex:/https?:\/\/zkillboard\.com\/kill\/\d+\/?/m',
-                'RUN_LENGTH_M' => 'nullable|numeric|min:0|max:20',
-                'RUN_LENGTH_S' => 'nullable|numeric|min:0|max:59',
-            ], [
-                'required' => "Please fill :attribute before saving your request",
-                'regex'    => "Please link a valid zKillboard link like this: https://zkillboard.com/kill/81359022/"
-            ])->validate();
-
-
-
-            if ($request->get("SURVIVED") == "1") {
-                Validator::make($request->all(), ['LOOT_DETAILED' => 'required'], ['required' => "Please fill :attribute before saving your request"])->validate();
-            }
+        public function store(NewRunRequest $request) {
 
             $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
             $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
 
-            if (SettingController::getBooleanSetting((int)session()->get("login_id"), "remember_cargo", true)) {
-                Cache::put(sprintf("at.last_dropped.%s", session()->get("login_id")), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
+            $loginId = session()->get("login_id");
+            if (SettingController::getBooleanSetting((int) $loginId, "remember_cargo", true)) {
+                Cache::put(sprintf("at.last_dropped.%s", $loginId), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
             }
             else {
-                Cache::forget(sprintf("at.last_dropped.%s", session()->get("login_id")));
+                Cache::forget(sprintf("at.last_dropped.%s", $loginId));
             }
 
-            DB::table("stopwatch")->where("CHAR_ID", session()->get("login_id"))->delete();
+            DB::table("stopwatch")->where("CHAR_ID", $loginId)->delete();
 
             if ($request->get("submit") == "view-details") {
                 return redirect(route("view_single", ["id" => $id]));

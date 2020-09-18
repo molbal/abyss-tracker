@@ -134,7 +134,7 @@
 
             return [
                 'results' => [
-                    ['id' => "", "text" => "Not specified", "SHIP_ID" => 1, "FIT_ID" => "", "SHIP_NAME" => "Not specified", "SHIP_CLASS" => "", "FIT_NAME" => ""],
+                    ['id' => json_encode(['SHIP_ID' => null, 'FIT_ID' => null]), "text" => "Not specified", "SHIP_ID" => 0, "FIT_ID" => "", "SHIP_NAME" => "Not specified", "SHIP_CLASS" => "", "FIT_NAME" => ""],
                     ['text' => "My fits", 'children' => $myFits->values()],
                     ['text' => "All ships and public fits", 'children' => $ships->values()],
                 ],

@@ -61,7 +61,7 @@
                                         @for($i=0;$i<7;$i++)
                                             <option {{($prev->TIER ?? null) == $i ? "selected" : ""}} value="{{$i}}">@lang("tiers.$i") (T{{$i}})</option>
                                         @endfor
-                                        <option value="5S1">T5 Special Room</option>
+                                        <option value="{{config("tracker.constants.bonus-room")}}">T5 Special Room</option>
                                     </select>
                                 </div>
                             </div>
@@ -207,11 +207,7 @@
             </div>
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3 pb-2">
-                    <h5 class="font-weight-bold">Loot questions <span class="float-right text-small">
-                        <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" class="tinyicon"
-                        data-toggle="tooltip"
-                        title="Please copy the loot from your inventory (list view!) and paste it here. Please only use English language.">
-                    </span></h5>
+                    <h5 class="font-weight-bold">Loot</h5>
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12">
@@ -222,7 +218,7 @@
                                         items you used up/lost.
                                     </div>
                                     @component("components.info-line", ['class' => "mb-2"])
-                                        Please only copy items here that you looted from the Abyss. Make sure to copy from list view, not grid view.
+                                        Please only copy items here that you looted from the Abyss. Make sure to copy from list view, not grid view. English localization only.
                                     @endcomponent
                                     <strong class="mt-2 adv">Before cargo:</strong>
                                     <textarea name="LOOT_DETAILED_BEFORE" id="LOOT_DETAILED_BEFORE" rows="4"

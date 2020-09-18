@@ -57,6 +57,10 @@
         'esi' => [
             'api-root' => env("ESI_ROOT", "https://esi.evetech.net/latest/"),
             'useragent' => env("ESI_USERAGENT", "Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)"),
-        ]
+        ],
+
+        'constants' => [
+            'bonus-room' => "T5-BONUS"
+        ],
 
     ];

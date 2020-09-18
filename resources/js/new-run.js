@@ -202,7 +202,7 @@ $(function () {
             }
         }
 
-    });
+    }).maximizeSelect2Height();
 
 
     $("#LOOT_DETAILED").change(function () {
