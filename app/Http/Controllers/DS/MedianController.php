@@ -46,7 +46,7 @@ SELECT a.LI FROM (
  WHERE a.RNK=?;
 
 ",
-                [$isCruiser ? 1 : 0, $tier, round($rank*$percent*0.01)])[0]->LI;
+                [$isCruiser ? 1 : 0, $tier, round($rank*$percent*0.01)])[0]->LI ?? 0;
             });
         }
 
@@ -72,7 +72,7 @@ SELECT a.LI FROM (
                   ORDER BY d.LOOT_ISK
                 ) as dd
                 WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );
-            ", [$tier, $isCruiser ? 1 : 0])[0]->MEDIAN_ISK;
+            ", [$tier, $isCruiser ? 1 : 0])[0]->MEDIAN_ISK ?? 0;
             });
         }
 
@@ -86,7 +86,12 @@ SELECT a.LI FROM (
          */
         public static function getFitMedian(int $fitId, int $tier, string $type): int {
             return Cache::remember(sprintf("aft.median.fit.%s.%d.%s", $fitId, $tier, $type), now()->addMinute(), function () use ($fitId, $tier, $type) {
-                return intval(DB::select("select MEDIAN_FOR_FIT_TYPE_TIER(?, ?, ?) as `MEDIAN`;", [$fitId, $tier, $type])[0]->MEDIAN);
+                try {
+                    return intval(DB::select("select MEDIAN_FOR_FIT_TYPE_TIER(?, ?, ?) as `MEDIAN`;", [$fitId, $tier, $type])[0]->MEDIAN);
+                }
+                catch (\Exception $e) {
+                    return 0;
+                }
             });
         }
 

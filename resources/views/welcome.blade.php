@@ -6,6 +6,15 @@
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
 
+
+    <div class="row mt-3">
+
+        <div class="col-sm-12">
+            <div class="card card-body border-0 shadow-sm p-3 pb-0 mb-3">
+                <p class="text-center mb-0">Destroyer support is coming is the next patch! Tier 0 and 6 difficulty is supported now.</p>
+            </div>
+        </div>
+    </div>
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-12 col-md-8 row">
 
@@ -13,9 +22,9 @@
             {{--        NEWS START --}}
             <div class="col-xs-12 col-md-6">
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
-                    <img src="{{asset('home/1.5.6.jpg')}}" alt="1.5.5 released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
+                    <img src="{{asset("home/1.6.0b.jpg")}}" alt="1.5.5 released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
                     <div class="p-3 text-center">
-                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to 1.5.6</a>
+                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to 1.6 <sup>beta</sup></a>
                         <p class="mb-0">See changes and new features</p>
                     </div>
                 </div>

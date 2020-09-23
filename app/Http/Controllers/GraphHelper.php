@@ -32,7 +32,7 @@
             $dataCruiser = collect([]);
             $dataFrigate = collect([]);
 
-            for ($i = 1; $i<=5; $i++) {
+            for ($i = 0; $i<=6; $i++) {
                 $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
                 $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
             }

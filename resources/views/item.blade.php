@@ -62,7 +62,7 @@
                     <thead>
                     <tr>
                         <th>&nbsp;</th>
-                        @for($t=1;$t<=5;$t++)
+                        @for($t=0;$t<=6;$t++)
                         <th class="text-center"><img src="/tiers/{{$t}}.png" style="height: 16px;width: 16px;" alt=""> Tier {{$t}}</th>
                             @endfor
                     </tr>
@@ -75,16 +75,16 @@
                                 @else
                                     <td class="font-weight-bold"><img src="https://image.eveonline.com/Type/33011_32.png" style="height: 32px;width: 32px;" alt=""> All types</td>
                                 @endif
-                                @for($tier=1;$tier<=5;$tier++)
-                                <td class="text-center {{$drops[$type][$tier]->RUNS_COUNT < 10 ? 'text-black-50' : ''}}">
-                                    @if($drops[$type][$tier]->RUNS_COUNT == 0)
+                                @for($tier=0;$tier<=6;$tier++)
+                                <td class="text-center {{($drops[$type][$tier]->RUNS_COUNT ?? 0) < 10 ? 'text-black-50' : ''}}">
+                                    @if(($drops[$type][$tier]->RUNS_COUNT ?? 0) == 0)
                                         <span class="text-black-50">?</span>
                                         <br>
                                         <span class="text-small">0 / 0</span>
                                     @else
-                                        <span class="estimate-confident">{{min(100,round($drops[$type][$tier]->DROPPED_COUNT/$drops[$type][$tier]->RUNS_COUNT*100, 2))}}% </span>
+                                        <span class="estimate-confident">{{min(100,round(($drops[$type][$tier]->DROPPED_COUNT ?? 0)/($drops[$type][$tier]->RUNS_COUNT ?? 1)*100, 2))}}% </span>
                                         <br>
-                                        <span class="text-small">{{min($drops[$type][$tier]->RUNS_COUNT, $drops[$type][$tier]->DROPPED_COUNT)}} / {{$drops[$type][$tier]->RUNS_COUNT}}</span>
+                                        <span class="text-small">{{min(($drops[$type][$tier]->RUNS_COUNT ?? 0), ($drops[$type][$tier]->DROPPED_COUNT ?? 0))}} / {{($drops[$type][$tier]->RUNS_COUNT ?? 1)}}</span>
                                     @endif
                                 </td>
                                 @endfor

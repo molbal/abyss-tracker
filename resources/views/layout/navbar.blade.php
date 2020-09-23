@@ -50,11 +50,9 @@
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == $currentRoute)}}/info.png"> Overview</a>
                 </a>
                 <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
-                    <a href="{{route("infopage.tier", ['tier' => 1])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Calm <small class="bringupper">(Tier 1)</small></a>
-                    <a href="{{route("infopage.tier", ['tier' => 2])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Agitated <small class="bringupper">(Tier 2)</small></a>
-                    <a href="{{route("infopage.tier", ['tier' => 3])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Fierce <small class="bringupper">(Tier 3)</small></a>
-                    <a href="{{route("infopage.tier", ['tier' => 4])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Raging <small class="bringupper">(Tier 4)</small></a>
-                    <a href="{{route("infopage.tier", ['tier' => 5])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Chaotic <small class="bringupper">(Tier 5)</small></a>
+                    @for($i=0;$i<=6;$i++)
+                    <a href="{{route("infopage.tier", ['tier' => $i])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> @lang("tiers.$i") <small class="bringupper">(Tier {{ $i }})</small></a>
+                    @endfor
                 </div>
             </li>
             <li class="nav-item dropdown" style="list-style: none">

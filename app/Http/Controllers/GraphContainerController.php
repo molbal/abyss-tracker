@@ -47,8 +47,8 @@
             $chart->theme(ThemeController::getChartTheme());
             $chart->load(route("chart.home.distribution.cruisers"));
             $labels = collect([]);
-            for ($i = 1; $i<=5; $i++) {
-                $labels->add("Tier {$i}");
+            for ($i = 0; $i<=6; $i++) {
+                $labels->add("(Tier {$i})");
             }
             $chart->labels($labels);
             $chart->options([
@@ -58,6 +58,7 @@
                     ]
                 ]
             ]);
+
             return $chart;
         }
 
