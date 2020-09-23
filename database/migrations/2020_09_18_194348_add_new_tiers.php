@@ -18,7 +18,7 @@ class AddNewTiers extends Migration
         DB::statement("alter table droprates_cache modify TIER enum('1', '2', '3', '4', '5', '6', '0') not null;");
         DB::statement("alter table droprates_increment modify TIER enum('1', '2', '3', '4', '5', '6', '0') not null;");
         DB::statement("alter table filament_types modify TIER enum('1', '2', '3', '4', '5', '6', '0') not null;");
-        DB::statement("alter table video_tutorials modify tier enum('1', '2', '3', '4', '5', '6', '0') not null;");
+        DB::statement("alter table video_tutorials modify tier enum('1', '2', '3', '4', '5', '6', '0');");
         DB::table("tier")->insert([['TIER' => 0], ["TIER" => 6]]);
     }
 
