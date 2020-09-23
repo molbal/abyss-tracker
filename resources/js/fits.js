@@ -11,13 +11,13 @@ function filterList() {
         .always(function() {
             $("#doFilter").removeAttr("disabled").removeClass("disabled");
         });
-}
+};
 
 
 function formatState (state) {
     var $state = $(state);
     return $state;
-}
+};
 
 
 
@@ -41,7 +41,7 @@ function toggleTag(slot, value, ths) {
         input.val(value);
         _this.addClass('active');
     }
-}
+};
 
 $(function () {
     $("#doFilter").click(filterList);
@@ -49,7 +49,6 @@ $(function () {
     $(".select2-character").select2({
         theme: 'bootstrap',
         templateResult: function (state) {
-            // console.log(state);
             if (!state.id) { return state.text; }
             if (state.element.value.toLowerCase() === "0") {
                 return $('<span class="text-center">'+state.text+'</span>');

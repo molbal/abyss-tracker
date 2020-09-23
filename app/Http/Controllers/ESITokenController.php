@@ -41,7 +41,7 @@
          * Gets a new, refreshed access token and places it in the cache + returns it.
          * @throws Exception
          */
-        public function getAndCacheNewAccessToken(): string {
+        public function getAndCacheNewAccessToken(): ?string {
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL,"https://login.eveonline.com/oauth/token");
@@ -77,14 +77,14 @@
             /** @var array $esiResponseDecoded */
             $esiResponseDecoded = @json_decode($esiResponse, true);
             /** @var int $expiresInMinutes */
-            $expiresInMinutes = floor($esiResponseDecoded["expires_in"] ?? 0/60);
+            $expiresInMinutes = max(floor($esiResponseDecoded["expires_in"] ?? 0/60)-1, 1);
             /** @var string $newAccessToken */
             $newAccessToken = $esiResponseDecoded["access_token"] ?? null;
 
             if (!$newAccessToken) {
                 throw new ESIAuthException("Could not get auth token for char ID ".$this->charId);
             }
-            Cache::put("AccessToken-".$this->charId, $newAccessToken, $expiresInMinutes);
+            Cache::put("AccessToken-".$this->charId, $newAccessToken, now()->addMinutes($expiresInMinutes));
             return $newAccessToken;
         }
 

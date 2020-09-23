@@ -243,6 +243,28 @@
 @section("scripts")
     <script>
         window.fit_search_ajax = '{{route("fit.search.ajax")}}';
+
+        function toggleTag(slot, value, ths) {
+            var _this = $(ths);
+            console.log(ths, _this);
+            let input = $("#" + slot);
+            var cv = input.val();
+
+            _this.parent().find("span").removeClass("active");
+            if (cv === "") {
+                console.log("initial");
+                input.val(value);
+                _this.addClass('active');
+            } else if (cv === value) {
+                console.log("equals ", cv, value);
+                input.val("");
+                _this.removeClass('active');
+            } else {
+                console.log("different ", cv, value);
+                input.val(value);
+                _this.addClass('active');
+            }
+        };
     </script>
     <script src="{{asset("js/fits.js")}}" type="text/javascript"></script>
 @endsection
