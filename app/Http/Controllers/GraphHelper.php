@@ -378,8 +378,8 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
          */
         private function calcNormalDist(float  $x, float $mean, float $sdev) {
 
-            $z = ($x - $mean) / $sdev;
-            return (1.0 / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
+            $z = ($x - $mean) / max($sdev, 1);
+            return (1.0 / (max($sdev, 1) * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
 //            return ($mean+$sdev / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
 
 
@@ -412,7 +412,7 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
             }
 
             foreach ($chartDataSet as $i => $chartData) {
-                $chartDataSet[$i][1] = $chartData[1]/$max;
+                $chartDataSet[$i][1] = $chartData[1]/max(1,$max);
             }
             return $chartDataSet;
         }
