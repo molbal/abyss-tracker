@@ -48,7 +48,7 @@
             $chart->load(route("chart.home.distribution.cruisers"));
             $labels = collect([]);
             for ($i = 0; $i<=6; $i++) {
-                $labels->add("(Tier {$i})");
+                $labels->add("Tier {$i}");
             }
             $chart->labels($labels);
             $chart->options([

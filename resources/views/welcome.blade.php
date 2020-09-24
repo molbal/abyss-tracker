@@ -11,7 +11,9 @@
 
         <div class="col-sm-12">
             <div class="card card-body border-0 shadow-sm p-3 pb-0 mb-3">
-                <p class="text-center mb-0">Destroyer support is coming is the next patch! Tier 0 and 6 difficulty is supported now.</p>
+                <p class="text-center mb-0">Destroyer support is coming is the next patch! Tier 0 and 6 difficulty is supported now.
+                    <br>
+                Median loot values shown are broken - working on a solution.</p>
             </div>
         </div>
     </div>

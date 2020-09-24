@@ -59,7 +59,7 @@ SELECT a.LI FROM (
          */
         public static function getTierMedian(int $tier, bool $isCruiser):int {
 
-            return Cache::remember(sprintf("aft.loot-median-tier.%d.%d", $tier, $isCruiser ? 1 : 0), now()->addHour(), function () use ($tier, $isCruiser) {
+//            return Cache::remember(sprintf("aft.loot-median-tier.%d.%d", $tier, $isCruiser ? 1 : 0), now()->addHour(), function () use ($tier, $isCruiser) {
                 return DB::select("
              SELECT AVG(dd.LOOT_ISK) as MEDIAN_ISK
                 FROM (
@@ -73,7 +73,7 @@ SELECT a.LI FROM (
                 ) as dd
                 WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );
             ", [$tier, $isCruiser ? 1 : 0])[0]->MEDIAN_ISK ?? 0;
-            });
+//            });
         }
 
         /**
