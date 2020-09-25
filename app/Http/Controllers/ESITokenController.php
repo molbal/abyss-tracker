@@ -31,10 +31,14 @@
          * @throws Exception
          */
         public function getAccessToken():string {
-            $token = Cache::get("AccessToken-".$this->charId);
-            if ($token) return $token;
+            if (Cache::has("AccessToken-".$this->charId)) {
 
-            return $this->getAndCacheNewAccessToken();
+                $token = Cache::get("AccessToken-".$this->charId);
+            }
+            else {
+                $token = $this->getAndCacheNewAccessToken();
+            }
+            return $token;
         }
 
         /**

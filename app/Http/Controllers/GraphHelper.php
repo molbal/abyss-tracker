@@ -222,6 +222,62 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
 
         }
 
+        public function typeTier(Request $request, $tier) {
+            $request->headers->set('Accept', 'application/json');
+
+
+            $chart = Cache::remember("aft.tiers.type-". $tier, now()->addMinutes(15), function() use ($tier) {
+                return  DB::table("runs")
+                          ->where("TIER", $tier)
+                          ->groupBy("TYPE")
+                          ->select("TYPE")
+                          ->selectRaw("COUNT(type) AS CNT")->get();
+            });
+
+            $dataset = [];
+            $values = [];
+            foreach ($chart as $type) {
+                $dataset[] = $type->TYPE;
+                $values[] = $type->CNT;
+            }
+
+            $chart = new LootAveragesChart();
+
+            $chart->labels($dataset);
+            $chart->dataset('Filament types', 'pie', $values)->options([
+                "radius" => self::HOME_PIE_RADIUS
+            ]);
+            return $chart->api();
+        }
+
+
+        public function homeTier(Request $request) {
+            $request->headers->set('Accept', 'application/json');
+            if (Cache::has("home.levels")) {
+                $chart = Cache::get("home.levels");
+            } else {
+                $chart = DB::table("runs")->groupBy("TIER")->select("TIER")->selectRaw("COUNT(TIER) AS CNT")->get();
+                Cache::put("home.levels", $chart, 15);
+            }
+
+            $dataset = [];
+            $values = [];
+            foreach ($chart as $type) {
+                $dataset[] = "Tier ".$type->TIER;
+                $values[] = $type->CNT;
+            }
+
+            $chart = new TierLevelsChart();
+
+            $chart->labels($dataset);
+            $chart->dataset('Tier levels', 'pie', $values)->options([
+                "radius" => self::HOME_PIE_RADIUS
+            ]);
+            return $chart->api();
+
+        }
+
+
         public function tierAverages(Request $request) {
             $request->headers->set('Accept', 'application/json');
 

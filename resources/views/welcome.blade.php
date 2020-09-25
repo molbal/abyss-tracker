@@ -10,10 +10,10 @@
     <div class="row mt-3">
 
         <div class="col-sm-12">
-            <div class="card card-body border-0 shadow-sm p-3 pb-0 mb-3">
-                <p class="text-center mb-0">Destroyer support is coming is the next patch! Tier 0 and 6 difficulty is supported now.
-                    <br>
-                Median loot values shown are broken - working on a solution.</p>
+            <div class="card card-body
+            shadow-sm p-3 pb-0 mb-3 border-danger">
+                <p class="text-center mb-0">The Abyss Tracker is experiencing technical difficulties at the moment. The following functions may now work properly at the moment:
+                Run deletion, Drop rate display, Median calculation.</p>
             </div>
         </div>
     </div>
