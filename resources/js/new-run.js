@@ -113,7 +113,7 @@ function check_status() {
         else if(msg.infodiv==='standby') {
             clearInterval(window.stopwatch_interval);
             if (window.already_started === false) {
-                notify("The stopwatch stopped due to inactivity.", "");
+                notify("The stopwatch stopped due to inactivity - if this happens within 10 seconds of starting the stopwatch it means the ESI API broke and you should authenticate in Settings again.", "stopwatch/ESIerror.png");
             }
         }
         if (window.previous_state !== msg.infodiv) {
@@ -138,6 +138,10 @@ function stop_stopwatch() {
 }
 
 function notify(message, icon) {
+    console.log("Message: ", message, "icon: ", icon);
+    if (message === "" || typeof message === "undefined") {
+        return;
+    }
     if ( typeof Notification !== "undefined" ) {
         if (Notification.permission === "granted") {
             var notification = new Notification('Abyss Tracker Stopwatch', { body: message, icon: icon });

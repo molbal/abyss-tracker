@@ -5,20 +5,6 @@
         <h4 class="font-weight-bold">Welcome to Veetor's Abyss Loot Tracker</h4>
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
-
-
-    <div class="row mt-3">
-
-        <div class="col-sm-12">
-            <div class="card card-body shadow-sm p-3 pb-0 mb-3 border-danger">
-                <p class="text-left mb-0">The Abyss Tracker is experiencing technical difficulties at the moment. <br>The following functions may not work properly:
-                <strike>Run deletion, Drop rate display, Median calculation</strike>, parsing loot when adding
-                    <br>
-                    Works again: run deletion, Drop rate display, Median calculation
-                </p>
-            </div>
-        </div>
-    </div>
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-12 col-md-8 row">
 

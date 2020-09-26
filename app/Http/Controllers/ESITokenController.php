@@ -81,13 +81,14 @@
             /** @var array $esiResponseDecoded */
             $esiResponseDecoded = @json_decode($esiResponse, true);
             /** @var int $expiresInMinutes */
-            $expiresInMinutes = max(floor($esiResponseDecoded["expires_in"] ?? 0/60)-1, 1);
+            $expiresInMinutes = max(floor(($esiResponseDecoded["expires_in"] ?? 0)/60)-1, 1);
             /** @var string $newAccessToken */
             $newAccessToken = $esiResponseDecoded["access_token"] ?? null;
 
             if (!$newAccessToken) {
                 throw new ESIAuthException("Could not get auth token for char ID ".$this->charId);
             }
+            Cache::forget("AccessToken-".$this->charId);
             Cache::put("AccessToken-".$this->charId, $newAccessToken, now()->addMinutes($expiresInMinutes));
             return $newAccessToken;
         }
@@ -107,7 +108,7 @@
                 throw new Exception("The user ID " . $this->charId. " has no refresh token stored");
             }
             else {
-                $refreshToken = $refreshToken->get()->first()->REFRESH_TOKEN;
+                $refreshToken = $refreshToken->first()->REFRESH_TOKEN;
             }
 
             return $refreshToken;

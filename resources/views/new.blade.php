@@ -349,7 +349,7 @@
         window.start_stopwatch_ = {{$stopwatch ? "true" : "false"}};
         window.advanced_open_ = {{$advanced_open ? "true" : "false"}};
     </script>
-    <script type="text/javascript" src="{{asset("js/new-run.js")}}"></script>
+    <script type="text/javascript" src="{{asset("js/new-run.js")}}?version={{config("tracker.version")}}"></script>
 @endsection
 
 @section("styles")
