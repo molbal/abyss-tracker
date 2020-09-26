@@ -43,7 +43,7 @@ function start_stopwatch() {
         }
     }).done(function (msg) {
         check_status();
-        window.stopwatch_interval = setInterval(check_status, 1500);
+        window.stopwatch_interval = setInterval(check_status, 1000);
     }).fail(function (msg) {
         alert(msg.error)
     });
@@ -110,8 +110,14 @@ function check_status() {
         else if(msg.infodiv==='finished') {
             clearInterval(window.stopwatch_interval);
         }
-
+        else if(msg.infodiv==='standby') {
+            clearInterval(window.stopwatch_interval);
+            if (window.already_started === false) {
+                notify("The stopwatch stopped due to inactivity.", "");
+            }
+        }
         if (window.previous_state !== msg.infodiv) {
+            window.already_started = true
             window.previous_state = msg.infodiv;
             notify(msg.toast, msg.msg_icon)
         }
@@ -162,6 +168,7 @@ function notify(message, icon) {
 }
 
 // When ready.
+window.already_started = false;
 $(function () {
     setProvingConduit();
     setDeathReason();
@@ -170,7 +177,7 @@ $(function () {
     $("#advanced-loot-view").click(advancedView);
     switch_to_manual();
     $("#stop_stopwatch").click(stop_stopwatch);
-    $("#start_sw").click(start_stopwatch);
+    $("#start_sw, #start_sw_2").click(start_stopwatch);
     var $form = $("form");
     $form.submit(function (e) {});
     $(".sw_status").hide();
@@ -235,7 +242,7 @@ $(function () {
     if (window.start_stopwatch_) {
         start_stopwatch();
     }
-    if (window.advanced_open) {
+    if (window.advanced_open_) {
         $("#advanced-loot-view").click();
     }
 });

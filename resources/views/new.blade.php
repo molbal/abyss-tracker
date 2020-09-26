@@ -156,7 +156,7 @@
                             </div>
                             <div class="col-md-6">
                                 @if($stopwatch)
-                                    <p class="mb-1 sw_status" id="stopwatch_enabled">Stopwatch is enabled for your account. To enable it click the <strong>Start stopwatch</strong> text at the bottom of this panel.</p>
+                                    <p class="mb-1 sw_status" id="stopwatch_enabled">Stopwatch is enabled for your account. To turn it on, click the <strong>Start stopwatch</strong> text at the bottom of this panel.</p>
                                     <p class="starting sw_status">
                                         The stopwatch is currently on standby, waiting for you to enter the Abyss. <br>
                                         <small>The stopwatch and timer is updated every 3 to 10 seconds.</small>
@@ -173,6 +173,10 @@
                                         <small class="text-danger">Error</small><br>
                                         There was something wrong with the ESI responses so your ESI token was removed. Please authenticate again. Please enable the stopwatch again<br>
                                         <a href="{{route("auth-scoped-start")}}" class="btn btn-sm btn-outline-primary mb-1">Re-enable stopwatch</a>
+                                    </p>
+                                    <p class="standby sw_status">
+                                        The stopwatch is ready to start.<br>
+                                        <a href="javascript:void(0)" class="text-dark" id="start_sw_2"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sport-stopwatch.png" class="mr-1 tinyicon"/>Start stopwatch</a>
                                     </p>
                                 <div id="browser-notifications">
                                     <hr>
