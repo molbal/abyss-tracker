@@ -67,8 +67,9 @@
                     @forelse($embed->getParsedBookmarks() as $bookmark)
                         <li class="bookmark">
                         <span class="bookmark-label" data-second="{{$bookmark->timeSeconds}}" data-second-next="{{$bookmark->timeSecondsNext}}">
-                            <a href="javascript:void(0)" class="text-dark font-weight-bold seeker">{{$bookmark->timeFormatted}}<span class="mx-1">&middot;</span>{{$bookmark->label}}</a>
-                            <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/circled-play.png" class="mx-1 bringupper bookmark-play-icon d-inline-block">
+                            <a href="javascript:void(0)" class="text-dark font-weight-bold seeker">{{$bookmark->timeFormatted}}</a><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/circled-play.png" class="mx-1 bringupper bookmark-play-icon d-inline-block"><br>
+                            <span class="d-inline-block mb-3 mt-0">{{$bookmark->label}}</span>
+
                         </span>
                         </li>
                     @empty

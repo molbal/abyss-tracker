@@ -5,7 +5,6 @@
         <h4 class="font-weight-bold">Welcome to Veetor's Abyss Loot Tracker</h4>
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
-
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-12 col-md-8 row">
 
@@ -13,9 +12,9 @@
             {{--        NEWS START --}}
             <div class="col-xs-12 col-md-6">
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
-                    <img src="{{asset('home/1.5.6.jpg')}}" alt="1.5.5 released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
+                    <img src="{{asset("home/1.6.0b.jpg")}}" alt="1.5.5 released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
                     <div class="p-3 text-center">
-                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to 1.5.6</a>
+                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to 1.6</a>
                         <p class="mb-0">See changes and new features</p>
                     </div>
                 </div>
@@ -92,7 +91,7 @@
                 <h4 class="font-weight-bold"><img class="smallicon bringupper mr-1" src="https://img.icons8.com/small/32/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"/> Overview pages</h4>
 {{--                <img src="{{asset("home/infopage.jpg")}}" alt="Information pages" class="w-100 shadow-sm rounded-top mb-2">--}}
                 <table class="ml-auto mr-auto">
-                @for($i = 1; $i <=5; $i++)
+                @for($i = 0; $i <=6; $i++)
                     <tr cellpadding="1">
                         <td><a href="{{route('infopage.tier',['tier' => $i])}}" class="text-dark"><img class="smallicon" src="{{asset("tiers/{$i}.png")}}" alt=""></a></td>
                         <td class="text-left"><a href="{{route('infopage.tier',['tier' => $i])}}" class="text-dark">@lang('tiers.'.$i) difficulty overview</a></td>

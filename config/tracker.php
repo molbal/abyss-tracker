@@ -1,7 +1,7 @@
 <?php
     return [
         'maintenance-token' => env('MAINTENANCE_TOKEN'),
-        'version' => '1.5.6',
+        'version' => '1.6',
         'discord' => 'https://discord.gg/FyNsM5k',
         'submit-tutorial' => 'https://forms.gle/ct4Yc75W4zjbR6Xi7',
         'flag-address' => env('FLAG_ADDRESS'),
@@ -17,7 +17,7 @@
         ],
 
         'items' => [
-            'group_whitelist' => [1992,1993,105,255,2019,1964,1088,1990,257,1995,1977,1979,1996,489,107,106,487],
+            'group_whitelist' => [1992,1993,105,255,2019,1964,1088,1990,257,1995,1977,1979,1996,489,107,106,487,4050],
             'items_blacklist' => [940, 32877]
         ],
 
@@ -57,6 +57,10 @@
         'esi' => [
             'api-root' => env("ESI_ROOT", "https://esi.evetech.net/latest/"),
             'useragent' => env("ESI_USERAGENT", "Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)"),
-        ]
+        ],
+
+        'constants' => [
+            'bonus-room' => "T5-BONUS"
+        ],
 
     ];

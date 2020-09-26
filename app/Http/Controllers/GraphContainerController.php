@@ -4,19 +4,12 @@
     namespace App\Http\Controllers;
 
 
-    use App\Charts\AbyssSurvivalType;
-    use App\Charts\BellChart2;
+    use App\Charts\BellChart1;
     use App\Charts\DailyAdds;
     use App\Charts\HomeCruiserMedian;
     use App\Charts\HomePagePopularClasses;
     use App\Charts\HomePagePopularHulls;
-    use App\Charts\IskPerHourChart;
-    use App\Charts\LootTierChart;
-    use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
-    use App\Charts\BellChart1;
-    use App\Charts\SurvivalLevelChart;
-    use App\Charts\TierLevelsChart;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
@@ -54,7 +47,7 @@
             $chart->theme(ThemeController::getChartTheme());
             $chart->load(route("chart.home.distribution.cruisers"));
             $labels = collect([]);
-            for ($i = 1; $i<=5; $i++) {
+            for ($i = 0; $i<=6; $i++) {
                 $labels->add("Tier {$i}");
             }
             $chart->labels($labels);
@@ -65,6 +58,7 @@
                     ]
                 ]
             ]);
+
             return $chart;
         }
 

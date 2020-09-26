@@ -26,7 +26,7 @@
                 ->where("TYPE", "ALL")
                 ->selectRaw("SUM(DROPPED_COUNT) AS DROPPED_COUNT_SUM")
                 ->selectRaw("SUM(RUNS_COUNT) AS RUNS_COUNT_SUM")
-                ->get()->get(0);
+                ->first();
 
             $ret = [];
             foreach ($stats as $stat) {
@@ -35,7 +35,9 @@
                 }
                 $ret[$stat->TYPE][$stat->TIER] = $stat;
             }
+
             $ret["sum"] = $all;
+
             return $ret;
         }
 

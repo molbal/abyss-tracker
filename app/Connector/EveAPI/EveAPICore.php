@@ -7,7 +7,7 @@
     use App\Http\Controllers\ESITokenController;
     use Illuminate\Support\Facades\DB;
 
-	abstract class EveAPICore
+    abstract class EveAPICore
 	{
 
 		/** @var string */

@@ -17,12 +17,12 @@
     Route::get("/stats_mine/", 'AbyssController@home_mine')->name("home_mine");
 
 
-    Route::post("/new", 'AbyssController@store')->name("store");
-    Route::get("/new", 'AbyssController@form_new')->name("new");
-    Route::post("/api/loot_estimate", 'Loot\AjaxLootController@getSum')->name("estimate_loot");
+    Route::post("/new", 'AbyssController@store')->name("store")->middleware("sso");
+    Route::get("/new", 'AbyssController@form_new')->name("new")->middleware("sso");
+    Route::post("/api/loot_estimate", 'Loot\AjaxLootController@getSum')->name("estimate_loot")->middleware("sso");
 
     Route::get("/runs/{order_by?}/{order_type?}", 'AbyssController@get_all')->name("runs");
-    Route::get("/runs_mine/{order_by?}/{order_type?}", 'AbyssController@get_mine')->name("runs_mine");
+    Route::get("/runs_mine/{order_by?}/{order_type?}", 'AbyssController@get_mine')->name("runs_mine")->middleware("sso");
     Route::get("/runs/{charID}/{order_by?}/{order_type?}", 'AbyssController@get_char')->name("runs_char");
     Route::get("/filter/{type}/{tier}", 'FilteredController@get_list')->name("filtered_list");
 
@@ -31,9 +31,9 @@
      * Runs
      */
     Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
-    Route::get("/run/{id}/privacy/{privacy}", 'AbyssController@change_privacy')->name("run.change_privacy");
-    Route::get("/run/delete/{id}", 'AbyssController@delete')->name("run_delete");
-    Route::post("/run/flag", 'AbyssController@flag')->name("run_flag");
+    Route::get("/run/{id}/privacy/{privacy}", 'AbyssController@change_privacy')->name("run.change_privacy")->middleware("sso");
+    Route::get("/run/delete/{id}", 'AbyssController@delete')->name("run_delete")->middleware("sso");
+    Route::post("/run/flag", 'AbyssController@flag')->name("run_flag")->middleware("sso");
 
     /**
      * Profile
@@ -50,31 +50,33 @@
     /**
      * Settings
      */
-    Route::get('/settings', 'Profile\SettingController@index')->name('settings.index');
-    Route::post('/settings/update', 'Profile\SettingController@save')->name('settings.save');
-    Route::post('/settings/remove-esi', 'Profile\SettingController@removeEsi')->name('settings.remove-esi');
-    Route::post('/settings/save-cargo', 'Profile\SettingController@saveCargo')->name('settings.save-cargo');
+    Route::get('/settings', 'Profile\SettingController@index')->name('settings.index')->middleware("sso");
+    Route::post('/settings/update', 'Profile\SettingController@save')->name('settings.save')->middleware("sso");
+    Route::post('/settings/remove-esi', 'Profile\SettingController@removeEsi')->name('settings.remove-esi')->middleware("sso");
+    Route::post('/settings/save-cargo', 'Profile\SettingController@saveCargo')->name('settings.save-cargo')->middleware("sso");
 
     /**
      * Stopwatch
      */
-    Route::post("/stopwatch/start/{charId}", 'StopwatchController@addChecks')->name("stopwatch_start");
-    Route::get("/stopwatch/get/{charId}", 'StopwatchController@getAbyssState')->name("stopwatch_get");
+    Route::post("/stopwatch/start/{charId}", 'StopwatchController@addChecks')->name("stopwatch_start")->middleware("sso");
+    Route::get("/stopwatch/get/{charId}", 'StopwatchController@getAbyssState')->name("stopwatch_get")->middleware("sso");
 
     /**
      * Ships and fits routes
      */
     Route::get("/ships/", 'ShipsController@get_all')->name("ships_all");
     Route::get("/ship/{id}", 'ShipsController@get_single')->name("ship_single");
-    Route::get("/fits/new", 'FitsController@new')->name("fit_new");
-    Route::post("/fits/new/submit", 'FitsController@new_store')->name("fit_new_store");
-    Route::get("/fit/{id}/delete", 'FitsController@delete')->name('fit.delete');
-    Route::get("/fit/{id}/change-privacy/{privacySetting}", 'FitsController@changePrivacy')->name('fit.change_privacy');
+    Route::get("/fits/new", 'FitsController@new')->name("fit_new")->middleware("sso");
+    Route::post("/fits/new/submit", 'FitsController@new_store')->name("fit_new_store")->middleware("sso");
+    Route::get("/fit/{id}/delete", 'FitsController@delete')->name('fit.delete')->middleware("sso");
+    Route::get("/fit/{id}/change-privacy/{privacySetting}", 'FitsController@changePrivacy')->name('fit.change_privacy')->middleware("sso");
     Route::get("/fit/{id}", 'FitsController@get')->name('fit_single');
     Route::get("/fits", 'FitSearchController@index')->name("fit.index");
+    Route::get("/fits/mine", 'FitSearchController@mine')->name("fit.mine")->middleware("sso");
     Route::any("/fits/search", 'FitSearchController@search')->name("fit.search");
     Route::post("/fits/search/ajax", 'FitSearchController@searchAjax')->name("fit.search.ajax");
     Route::get("/fits/search/select/{shipId}/{nameOrId?}", 'FitSearchController@getFitsForNewRunDropdown')->name("fit.search.select");
+    Route::get("/fits/newrun/select", 'FitSearchController@getIntegratedTypeList')->name("fit.newrun.select")->middleware("sso");
 
     /**
      * Item check
@@ -150,9 +152,15 @@
     Route::get("/maintenance/test-login/{login_id}/{secret}", 'Maintenance\MaintenanceController@debugLogin');
     Route::get("/maintenance/recalc-fit/{id}/{secret}", 'Maintenance\MaintenanceController@recalculateSingleFit');
     Route::get("/maintenance/recalc-fits/{secret}", 'Maintenance\MaintenanceController@recalculateQueuedFits');
+    Route::get("/maintenance/mediantest", 'Maintenance\MaintenanceController@medianTests');
 
     /**
      * Community Controller
      */
     Route::get("/discord", 'CommunityController@discord')->name("community.discord");
+
+    /**
+     * Helpers
+     */
+    Route::any("/guard/must-log-in", 'HelperController@showLoginNotice')->name("helper.message.login");
 

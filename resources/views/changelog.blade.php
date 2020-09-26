@@ -18,9 +18,30 @@
                 </p>
             </div>
             <div class="card card-body border-danger shadow-sm mb-3 p-0">
-                <img src="{{asset("home/1.5.6.jpg")}}" alt="1.5.6 release" class="w-100 shadow">
+                <img src="{{asset("home/1.6.0b.jpg")}}" alt="1.6.0 release" class="w-100 shadow">
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                    <h4 class="mb-0 pb-0"><strong>1.6.0 <sup>beta</sup></strong> 'Howitzer' release</h4>
+                    <small class="mt-0">2020 sept 23</small>
+                    <p class="text-justify">
+                        New features, bugfix, and CCP update catchup release
+                    </p>
+                    <ul>
+                        <li><strong>Adds support for Tier 0 and Tier 6 difficulty</strong> - Destroyers coming in the next patch.</li>
+                        <li>Improves stopwatch stability and adds stopwatch notifications</li>
+                        <li>Adds "My fits" page</li>
+                        <li>Improves error message displays</li>
+                        <li>Adds fit search filter: Ship usage</li>
+                        <li>Merges Ship selection and Fit selection into one dropdown on the new run screen</li>
+                        <li>Fixes bug: New fit description field broken with dark theme</li>
+                        <li>Fixes bug: Selecting bonus room does nothing</li>
+                        <li>Fixes bug: Fit "break even" calculation will now correctly round up instead of rounding down resulting in more punctual data</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3 p-0">
+                <img src="{{asset("home/1.5.6.jpg")}}" alt="1.5.6 release" class="w-100 shadow">
+                <div class="p-3">
                     <h4 class="mb-0 pb-0"><strong>1.5.6</strong> 'SOE' release</h4>
                     <small class="mt-0">2020 sept 9</small>
                     <p class="text-justify">

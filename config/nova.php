@@ -19,7 +19,7 @@ return [
     |
     */
 
-    'name' => env('NOVA_APP_NAME', env('APP_NAME')),
+    'name' => env('NOVA_APP_NAME', "Admin | ".env('APP_NAME')),
 
     /*
     |--------------------------------------------------------------------------

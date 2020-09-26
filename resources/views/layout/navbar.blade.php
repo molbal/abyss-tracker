@@ -50,11 +50,9 @@
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == $currentRoute)}}/info.png"> Overview</a>
                 </a>
                 <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
-                    <a href="{{route("infopage.tier", ['tier' => 1])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Calm <small class="bringupper">(Tier 1)</small></a>
-                    <a href="{{route("infopage.tier", ['tier' => 2])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Agitated <small class="bringupper">(Tier 2)</small></a>
-                    <a href="{{route("infopage.tier", ['tier' => 3])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Fierce <small class="bringupper">(Tier 3)</small></a>
-                    <a href="{{route("infopage.tier", ['tier' => 4])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Raging <small class="bringupper">(Tier 4)</small></a>
-                    <a href="{{route("infopage.tier", ['tier' => 5])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> Chaotic <small class="bringupper">(Tier 5)</small></a>
+                    @for($i=0;$i<=6;$i++)
+                    <a href="{{route("infopage.tier", ['tier' => $i])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> @lang("tiers.$i") <small class="bringupper">(Tier {{ $i }})</small></a>
+                    @endfor
                 </div>
             </li>
             <li class="nav-item dropdown" style="list-style: none">
@@ -78,18 +76,19 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="https://images.evetech.net/characters/{{session()->get("login_id")}}/portrait?size=32" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm" style="border:1px solid #fff;"> {{session()->get('login_name')}}</a>
                     <div class="dropdown-menu shadow animate slideIn" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item pl-2 {{"new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("new")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == $currentRoute)}}/new-by-copy.png" class="tinyicon mr-1"/> Add run</a>
-                        <a class="dropdown-item pl-2 {{"fit_new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("fit_new")}}" ><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit_new" == $currentRoute)}}.png" class="tinyicon mr-1"> New fit</a>
-                        <a class="dropdown-item pl-2 {{"runs_mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("runs_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs_mine" == $currentRoute)}}/bulleted-list.png" class="tinyicon mr-1"/> My runs</a>
-                        <a class="dropdown-item pl-2 {{"home_mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("home_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("home_mine" == $currentRoute)}}/positive-dynamic.png" class="tinyicon mr-1"/> My stats</a>
-                        <a class="dropdown-item pl-2 {{"profile.index" == $currentRoute ? "active text-dark" : ""}}" href="{{route("profile.index", ["id" => session()->get('login_id')])}}" ><img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("profile.index" == $currentRoute)}}/head-profile.png" class="tinyicon mr-1"/> My public profile</a>
+                        <a class="dropdown-item pl-2 {{"new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("new")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == $currentRoute)}}/new-by-copy.png" class="tinyicon mr-1"/>Add run</a>
+                        <a class="dropdown-item pl-2 {{"fit_new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("fit_new")}}" ><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit_new" == $currentRoute)}}.png" class="tinyicon mr-1">New fit</a>
+                        <a class="dropdown-item pl-2 {{"runs_mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("runs_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs_mine" == $currentRoute)}}/bulleted-list.png" class="tinyicon mr-1"/>My home</a>
+                        <a class="dropdown-item pl-2 {{"home_mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("home_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("home_mine" == $currentRoute)}}/positive-dynamic.png" class="tinyicon mr-1"/>My stats</a>
+                        <a class="dropdown-item pl-2 {{"fit.mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("fit.mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.mine" == $currentRoute)}}/scan-stock.png" class="tinyicon mr-1"/>My fits</a>
+                        <a class="dropdown-item pl-2 {{"profile.index" == $currentRoute ? "active text-dark" : ""}}" href="{{route("profile.index", ["id" => session()->get('login_id')])}}" ><img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("profile.index" == $currentRoute)}}/head-profile.png" class="tinyicon mr-1"/>Public profile</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item pl-2 {{"settings.index" == $currentRoute ? "active text-dark" : ""}}" href="{{route("settings.index")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("settings.index" == $currentRoute)}}/settings.png" class="tinyicon mr-1"/> Settings</a>
                         <a class="dropdown-item pl-2" href="{{route("logout")}}#"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/logout-rounded.png" class="tinyicon mr-1"/> Log out</a>
                     </div>
                 </li>
             @else
-                <a href="{{route("auth-start")}}" class="my-sm-0"><img src="https://eve-nt.uk/img/sso_small.png" alt="Log in with EVE Online Single sign on" width="195" height="30"></a>
+                <a href="{{route("auth-start")}}" class="my-sm-0"><img src="{{asset("sso.png")}}" alt="Log in with EVE Online Single sign on" width="195" height="30"></a>
             @endif
         </form>
     </div>

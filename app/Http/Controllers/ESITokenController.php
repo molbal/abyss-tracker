@@ -31,17 +31,21 @@
          * @throws Exception
          */
         public function getAccessToken():string {
-            $token = Cache::get("AccessToken-".$this->charId);
-            if ($token) return $token;
+            if (Cache::has("AccessToken-".$this->charId)) {
 
-            return $this->getAndCacheNewAccessToken();
+                $token = Cache::get("AccessToken-".$this->charId);
+            }
+            else {
+                $token = $this->getAndCacheNewAccessToken();
+            }
+            return $token;
         }
 
         /**
          * Gets a new, refreshed access token and places it in the cache + returns it.
          * @throws Exception
          */
-        public function getAndCacheNewAccessToken(): string {
+        public function getAndCacheNewAccessToken(): ?string {
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL,"https://login.eveonline.com/oauth/token");
@@ -77,14 +81,15 @@
             /** @var array $esiResponseDecoded */
             $esiResponseDecoded = @json_decode($esiResponse, true);
             /** @var int $expiresInMinutes */
-            $expiresInMinutes = floor($esiResponseDecoded["expires_in"] ?? 0/60);
+            $expiresInMinutes = max(floor(($esiResponseDecoded["expires_in"] ?? 0)/60)-1, 1);
             /** @var string $newAccessToken */
             $newAccessToken = $esiResponseDecoded["access_token"] ?? null;
 
             if (!$newAccessToken) {
                 throw new ESIAuthException("Could not get auth token for char ID ".$this->charId);
             }
-            Cache::put("AccessToken-".$this->charId, $newAccessToken, $expiresInMinutes);
+            Cache::forget("AccessToken-".$this->charId);
+            Cache::put("AccessToken-".$this->charId, $newAccessToken, now()->addMinutes($expiresInMinutes));
             return $newAccessToken;
         }
 
@@ -103,7 +108,7 @@
                 throw new Exception("The user ID " . $this->charId. " has no refresh token stored");
             }
             else {
-                $refreshToken = $refreshToken->get()->first()->REFRESH_TOKEN;
+                $refreshToken = $refreshToken->first()->REFRESH_TOKEN;
             }
 
             return $refreshToken;

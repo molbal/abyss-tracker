@@ -2,13 +2,35 @@
 @section("browser-title", "Error")
 @section("content")
     <div class="row mt-5">
-        <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
-            <h4 class="font-weight-bold my-5"><img src="https://img.icons8.com/cotton/64/000000/cancel--v1.png"> The capacitor is empty</h4>
-            @if(isset($error))
-                <div class="card card-body border-danger border-danger shadow-sm mb-5">
-                    {{ $error }}
+        <div class="col-sm-12 col-md-8 offset-md-2 mt-5 text-center">
+            <img src="{{\App\Http\Controllers\ThemeController::getGlitchIcon()}}" alt="" style="height: 160px;" class="mb-3">
+            <div class="card mb-5 text-left shadow">
+                <div class="card-header">
+                    @if(isset($sso))
+                        This page is for signed in users only
+                    @else
+                        Something went wrong
+                    @endif
                 </div>
-            @endif
+                @if(isset($message) || isset($error))
+                    <div class="card-body shadow-sm border-0 mb-0">
+                        <p class="lead mb-0 pb-0">{{ $message ?? "" }}{{ $error ?? "" }}</p>
+                        @if(isset($sso))
+                            <p class="text-center mb-0 pb-0">
+                                <a href="{{route("auth-start")}}"><img class="my-3" src="{{asset("sso.png")}}" alt="Log in with EVE Online Single sign on" width="270" height="45"></a>
+                            </p>
+                        @endif
+                    </div>
+                @endif
+
+                @if(!isset($sso))
+                    <div class="card-footer shadow-sm d-flex justify-content-between">
+                        <a href="{{route("home")}}" class="text-dark text-left w-25 d-inline-block">Go to homepage</a>
+                        <a target="_blank" href="{{route('community.discord')}}" class="text-dark text-center w-25 d-inline-block">Get help on Discord</a>
+                        <a target="_blank" href="https://github.com/molbal/abyss-tracker/issues/new?assignees=&labels=&template=bug_report.md&title=" class="text-dark text-right w-25 d-inline-block">Submit bug</a>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
     <div class="my-5">&nbsp;</div>
