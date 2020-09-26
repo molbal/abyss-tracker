@@ -119,9 +119,10 @@ WHERE
          * @return int
          */
         public static function getFitMedian(int $fitId, int $tier, string $type): int {
+//            Log::info("Median calculation for $fitId $tier $type");
             return Cache::remember(sprintf("aft.median.fit.%s.%d.%s", $fitId, $tier, $type), now()->addMinute(), function () use ($fitId, $tier, $type) {
                 try {
-                    return intval(DB::select("select MEDIAN_FOR_FIT_TYPE_TIER(?, ?, ?) as `MEDIAN`;", [$fitId, $tier, $type])[0]->MEDIAN);
+                    return intval(DB::select("select MEDIAN_FOR_FIT_TYPE_TIER(?, ?, ?) as `MEDIAN`;", [$fitId, strval($tier), $type])[0]->MEDIAN);
                 }
                 catch (\Exception $e) {
                     return 0;

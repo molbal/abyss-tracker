@@ -187,7 +187,7 @@ text-align: center;">
 
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Fit performance</h5>
-                <p class="mb-0">The information below was calculated from {{$runs->count()}} user submitted runs (displayed left).</p>
+                <p class="mb-0">The information below was calculated from {{$runsCountAll}} user submitted runs (displayed left).</p>
             </div>
             @forelse($breaksEven as $info)
                 @component("components.fits.ds.break-even", ['info'=>$info, 'price' => $fit->PRICE]) @endcomponent

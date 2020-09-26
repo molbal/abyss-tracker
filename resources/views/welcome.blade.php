@@ -14,7 +14,7 @@
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
                     <img src="{{asset("home/1.6.0b.jpg")}}" alt="1.5.5 released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
                     <div class="p-3 text-center">
-                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to 1.6 <sup>beta</sup></a>
+                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to 1.6</a>
                         <p class="mb-0">See changes and new features</p>
                     </div>
                 </div>
