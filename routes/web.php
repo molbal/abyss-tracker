@@ -152,6 +152,7 @@
     Route::get("/maintenance/test-login/{login_id}/{secret}", 'Maintenance\MaintenanceController@debugLogin');
     Route::get("/maintenance/recalc-fit/{id}/{secret}", 'Maintenance\MaintenanceController@recalculateSingleFit');
     Route::get("/maintenance/recalc-fits/{secret}", 'Maintenance\MaintenanceController@recalculateQueuedFits');
+    Route::get("/maintenance/mediantest", 'Maintenance\MaintenanceController@medianTests');
 
     /**
      * Community Controller

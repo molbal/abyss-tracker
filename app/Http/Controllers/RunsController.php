@@ -105,7 +105,7 @@
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID'           => session()->get("login_id"),
                 'PUBLIC'            => $request->get("PUBLIC"),
-                'TIER'              => $request->isBonusRoom() ? "5" : HelperController::clamp($request->get('TIER'),0,6),
+                'TIER'              => strval($request->isBonusRoom() ? "5" : HelperController::clamp($request->get('TIER'),0,6)),
                 'TYPE'              => $request->get("TYPE"),
                 'LOOT_ISK'          => $request->get("SURVIVED") ? $lootDifference['totalPrice'] : 0,
                 'SURVIVED'          => $request->get("SURVIVED"),

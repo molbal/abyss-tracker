@@ -10,10 +10,12 @@
     <div class="row mt-3">
 
         <div class="col-sm-12">
-            <div class="card card-body
-            shadow-sm p-3 pb-0 mb-3 border-danger">
-                <p class="text-center mb-0">The Abyss Tracker is experiencing technical difficulties at the moment. The following functions may now work properly at the moment:
-                Run deletion, Drop rate display, Median calculation.</p>
+            <div class="card card-body shadow-sm p-3 pb-0 mb-3 border-danger">
+                <p class="text-left mb-0">The Abyss Tracker is experiencing technical difficulties at the moment. <br>The following functions may not work properly:
+                <strike>Run deletion, Drop rate display, Median calculation</strike>, parsing loot when adding
+                    <br>
+                    Works again: run deletion, Drop rate display, Median calculation
+                </p>
             </div>
         </div>
     </div>
@@ -103,7 +105,7 @@
                 <h4 class="font-weight-bold"><img class="smallicon bringupper mr-1" src="https://img.icons8.com/small/32/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"/> Overview pages</h4>
 {{--                <img src="{{asset("home/infopage.jpg")}}" alt="Information pages" class="w-100 shadow-sm rounded-top mb-2">--}}
                 <table class="ml-auto mr-auto">
-                @for($i = 1; $i <=5; $i++)
+                @for($i = 0; $i <=6; $i++)
                     <tr cellpadding="1">
                         <td><a href="{{route('infopage.tier',['tier' => $i])}}" class="text-dark"><img class="smallicon" src="{{asset("tiers/{$i}.png")}}" alt=""></a></td>
                         <td class="text-left"><a href="{{route('infopage.tier',['tier' => $i])}}" class="text-dark">@lang('tiers.'.$i) difficulty overview</a></td>

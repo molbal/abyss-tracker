@@ -6,6 +6,7 @@
 
 	use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
 
     class MedianController {
 
@@ -30,7 +31,7 @@
     and r.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
                       and r.TIER=?;
             ",
-                [$isCruiser ? 1 : 0, $tier])[0]->CNT;
+                [$isCruiser ? 1 : 0, strval($tier)])[0]->CNT;
 
             return DB::select("
 SELECT a.LI FROM (
@@ -46,7 +47,7 @@ SELECT a.LI FROM (
  WHERE a.RNK=?;
 
 ",
-                [$isCruiser ? 1 : 0, $tier, round($rank*$percent*0.01)])[0]->LI ?? 0;
+                [$isCruiser ? 1 : 0, strval($tier), round($rank*$percent*0.01)])[0]->LI ?? 0;
             });
         }
 
@@ -59,21 +60,54 @@ SELECT a.LI FROM (
          */
         public static function getTierMedian(int $tier, bool $isCruiser):int {
 
-//            return Cache::remember(sprintf("aft.loot-median-tier.%d.%d", $tier, $isCruiser ? 1 : 0), now()->addHour(), function () use ($tier, $isCruiser) {
-                return DB::select("
-             SELECT AVG(dd.LOOT_ISK) as MEDIAN_ISK
-                FROM (
-                SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
-                  FROM runs d, (SELECT @rownum:=0) r
-                  WHERE d.LOOT_ISK is NOT NULL
-                and d.SURVIVED=1
-                and d.TIER=?
-                and d.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
-                  ORDER BY d.LOOT_ISK
-                ) as dd
-                WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );
-            ", [$tier, $isCruiser ? 1 : 0])[0]->MEDIAN_ISK ?? 0;
-//            });
+            // Workaround: Tier is changed to string as the SQL server incorrectly uses enum otherwise.
+            return Cache::remember(sprintf("aft.loot.median.tier.%d.%d", $tier, $isCruiser ? 1 : 0), now()->addHour(), function () use ($tier, $isCruiser) {
+                $rowIndex = DB::select("
+SELECT
+  COUNT(*) + 1 as ROWINDEX
+FROM
+  runs r
+    LEFT JOIN ship_lookup sl on r.SHIP_ID = sl.ID
+WHERE
+      r.LOOT_ISK>0
+      and
+      r.SURVIVED=1
+      and
+      r.TIER=?
+        and
+      sl.IS_CRUISER=?
+order by r.LOOT_ISK asc
+", [strval($tier), $isCruiser ? 1 : 0])[0]->ROWINDEX;
+
+
+                $median = DB::select("
+SELECT
+  AVG(i.LOOT_ISK) AS MEDIAN_ISK
+FROM
+  (
+  SELECT
+    r.LOOT_ISK LOOT_ISK,
+    ROW_NUMBER() OVER (ORDER BY r.LOOT_ISK) AS rowindex
+  FROM
+    runs r
+    LEFT JOIN ship_lookup sl on r.SHIP_ID = sl.ID
+WHERE
+      r.LOOT_ISK>0
+      and
+      r.SURVIVED=1
+      and
+      r.TIER=?
+        and
+      sl.IS_CRUISER=?
+order by r.LOOT_ISK asc
+) as i
+WHERE
+  i.rowindex IN (?,?);", [strval($tier), $isCruiser ? 1 : 0, ceil($rowIndex / 2), intval($rowIndex / 2)])[0]->MEDIAN_ISK;
+
+                return $median ?? 0;
+            });
+
+
         }
 
         /**

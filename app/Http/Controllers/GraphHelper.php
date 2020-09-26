@@ -204,7 +204,7 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
 
         public function homeSurvivalTier(Request $request, int $tier) {
             $request->headers->set('Accept', 'application/json');
-            $data = Cache::remember("home.survival", now()->addHour(), function () use ($tier) {
+            $data = Cache::remember("home.survival.tier.$tier", now()->addHour(), function () use ($tier) {
                 return [
                     "survived" => DB::table("runs")->where("SURVIVED", '=', true)->where('TIER', $tier)->whereRaw("RUN_DATE > NOW() - INTERVAL 180 DAY")->count(),
                     "died" => DB::table("runs")->where("SURVIVED", '=', false)->where('TIER', $tier)->whereRaw("RUN_DATE > NOW() - INTERVAL 180 DAY")->count()];

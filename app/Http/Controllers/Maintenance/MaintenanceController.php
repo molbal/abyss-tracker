@@ -5,12 +5,28 @@
 
 
 	use App\Http\Controllers\Controller;
+    use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\EFT\FitParser;
     use Illuminate\Support\Facades\Artisan;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
     class MaintenanceController extends Controller {
+
+        public function medianTests() {
+//            /** @var MedianController $cont */
+//            $cont = resolve('App\Http\Controllers\DS\MedianController');
+
+            $a = collect([]);
+            for ($i=0;$i<=6;$i++) {
+                $a->add(["Tier $i" => [
+                    'cruiser' => number_format(MedianController::getTierMedian($i, true), 0, ","," ")." ISK",
+                    'frigate' => number_format(MedianController::getTierMedian($i, false), 0, ","," ")." ISK",
+                ]]);
+            }
+
+            return $a;
+        }
 
         function convertOldFits($secret) {
             if ($secret != config('tracker.maintenance-token')) {
