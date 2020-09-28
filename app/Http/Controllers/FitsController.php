@@ -232,7 +232,7 @@
 
 
             if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
-                return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('home_mine') . "'>View public fits</a></p>")]);
+                return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('fit.search') . "'>View public fits</a></p>")]);
             }
             $ship_name = DB::table('ship_lookup')
                            ->where('ID', $fit->SHIP_ID)
