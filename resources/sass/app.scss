@@ -9,7 +9,6 @@ $footer-up-bg: #333;
 $footer-down-bg: #444;
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-
 @import "layout";
 @import "button";
 @import "form";
@@ -22,5 +21,9 @@ $footer-down-bg: #444;
 @import "fit";
 @import "footer";
 @import "homepage";
+@import "steps";
 @import "all_styles";
 @import "white_only";
+//@import "jquery.inputpicker";
+@import "select2";
+@import "~toastify-js/src/toastify.css";

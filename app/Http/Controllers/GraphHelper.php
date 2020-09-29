@@ -32,7 +32,7 @@
             $dataCruiser = collect([]);
             $dataFrigate = collect([]);
 
-            for ($i = 1; $i<=5; $i++) {
+            for ($i = 0; $i<=6; $i++) {
                 $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
                 $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
             }
@@ -204,7 +204,7 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
 
         public function homeSurvivalTier(Request $request, int $tier) {
             $request->headers->set('Accept', 'application/json');
-            $data = Cache::remember("home.survival", now()->addHour(), function () use ($tier) {
+            $data = Cache::remember("home.survival.tier.$tier", now()->addHour(), function () use ($tier) {
                 return [
                     "survived" => DB::table("runs")->where("SURVIVED", '=', true)->where('TIER', $tier)->whereRaw("RUN_DATE > NOW() - INTERVAL 180 DAY")->count(),
                     "died" => DB::table("runs")->where("SURVIVED", '=', false)->where('TIER', $tier)->whereRaw("RUN_DATE > NOW() - INTERVAL 180 DAY")->count()];
@@ -221,6 +221,62 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
             return $chart->api();
 
         }
+
+        public function typeTier(Request $request, $tier) {
+            $request->headers->set('Accept', 'application/json');
+
+
+            $chart = Cache::remember("aft.tiers.type-". $tier, now()->addMinutes(15), function() use ($tier) {
+                return  DB::table("runs")
+                          ->where("TIER", $tier)
+                          ->groupBy("TYPE")
+                          ->select("TYPE")
+                          ->selectRaw("COUNT(type) AS CNT")->get();
+            });
+
+            $dataset = [];
+            $values = [];
+            foreach ($chart as $type) {
+                $dataset[] = $type->TYPE;
+                $values[] = $type->CNT;
+            }
+
+            $chart = new LootAveragesChart();
+
+            $chart->labels($dataset);
+            $chart->dataset('Filament types', 'pie', $values)->options([
+                "radius" => self::HOME_PIE_RADIUS
+            ]);
+            return $chart->api();
+        }
+
+
+        public function homeTier(Request $request) {
+            $request->headers->set('Accept', 'application/json');
+            if (Cache::has("home.levels")) {
+                $chart = Cache::get("home.levels");
+            } else {
+                $chart = DB::table("runs")->groupBy("TIER")->select("TIER")->selectRaw("COUNT(TIER) AS CNT")->get();
+                Cache::put("home.levels", $chart, 15);
+            }
+
+            $dataset = [];
+            $values = [];
+            foreach ($chart as $type) {
+                $dataset[] = "Tier ".$type->TIER;
+                $values[] = $type->CNT;
+            }
+
+            $chart = new TierLevelsChart();
+
+            $chart->labels($dataset);
+            $chart->dataset('Tier levels', 'pie', $values)->options([
+                "radius" => self::HOME_PIE_RADIUS
+            ]);
+            return $chart->api();
+
+        }
+
 
         public function tierAverages(Request $request) {
             $request->headers->set('Accept', 'application/json');
@@ -378,8 +434,8 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
          */
         private function calcNormalDist(float  $x, float $mean, float $sdev) {
 
-            $z = ($x - $mean) / $sdev;
-            return (1.0 / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
+            $z = ($x - $mean) / max($sdev, 1);
+            return (1.0 / (max($sdev, 1) * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
 //            return ($mean+$sdev / ($sdev * sqrt(2.0 * pi()))) * exp(-0.5 * $z * $z);
 
 
@@ -412,7 +468,7 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
             }
 
             foreach ($chartDataSet as $i => $chartData) {
-                $chartDataSet[$i][1] = $chartData[1]/$max;
+                $chartDataSet[$i][1] = $chartData[1]/max(1,$max);
             }
             return $chartDataSet;
         }

@@ -4,13 +4,16 @@
 	namespace App\Http\Controllers;
 
 
-	use App\Http\Controllers\DS\FitBreakEvenCalculator;
+	use App\Charts\LootAveragesChart;
+    use App\Charts\PersonalDaily;
+    use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\FitParser;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
     use App\Http\Controllers\Partners\EveWorkbench;
     use App\Http\Controllers\Youtube\YoutubeController;
+    use Carbon\Carbon;
     use ChrisKonnertz\OpenGraph\OpenGraph;
     use Cohensive\Embed\Embed;
     use Illuminate\Http\Request;
@@ -21,9 +24,14 @@
 
     class FitsController extends Controller {
 
+        /** @var FitSearchController */
+        private $fitSearchController;
+
         /** @var FitHelper */
         protected $fitHelper;
 
+        /** @var BarkController */
+        private $barkController;
         /** @var FitParser */
         protected $fitParser;
 
@@ -33,12 +41,16 @@
         /**
          * FitsController constructor.
          *
+         * @param FitSearchController $fitSearchController
          * @param FitHelper           $fitHelper
+         * @param BarkController      $barkController
          * @param FitParser           $fitParser
          * @param ItemPriceCalculator $sipc
          */
-        public function __construct(FitHelper $fitHelper, FitParser $fitParser, ItemPriceCalculator $sipc) {
+        public function __construct(FitSearchController $fitSearchController, FitHelper $fitHelper, BarkController $barkController, FitParser $fitParser, ItemPriceCalculator $sipc) {
+            $this->fitSearchController = $fitSearchController;
             $this->fitHelper = $fitHelper;
+            $this->barkController = $barkController;
             $this->fitParser = $fitParser;
             $this->sipc = $sipc;
         }
@@ -77,7 +89,7 @@
                 DB::table("fit_recommendations")->where("FIT_ID", $id)->delete();
                 DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->delete();
                 DB::commit();
-                return view("sp_message", ['title' => "Fit deleted", 'message' =>"The fit and all its data was removed from the Abyss Tracker."]);
+                return view("autoredirect", ['title' => "Fit deleted", 'message' =>"The fit and all its data was removed from the Abyss Tracker.", "redirect" => route("fit.mine")]);
             }
             catch (\Exception $e) {
                 DB::rollBack();
@@ -258,13 +270,13 @@
             $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
 
             $og = new OpenGraph();
-            $og->title(sprintf("%s fit - %s", $ship_name, env("APP_NAME")))
+            $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
                ->type('profile')
-               ->description(sprintf("%s fit - %s", $ship_name, env("APP_NAME")))
+               ->description(sprintf("%s fit - %s", $ship_name, config('app.name')))
                ->url()
                ->locale('en_US')
                ->localeAlternate(['en_UK'])
-               ->siteName(env('APP_NAME'))
+               ->siteName(config('app.name'))
                ->determiner('an')
                ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
             $og->profile(["first_name" => trim($fit->NAME)]);
@@ -282,6 +294,16 @@
             $eftParsed = $eftObj->getStructuredDisplay();
             $fit->PRICE = $eftObj->getFitValue();
             $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
+
+            $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
+            $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
+            $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
+            $loots = $this->getFitLootStrategyChart($fitIdsAll);
+            $similars = $this->getFitsFromIds($fitIdsNonPrivate);
+
+            $runsCountAll = DB::table("runs")
+                  ->where("FIT_ID", $id)
+                  ->orderBy("CREATED_AT", 'DESC')->count();
             return view('fit', [
                 'fit' => $fit,
                 'ship_name' => $ship_name,
@@ -297,13 +319,22 @@
                 'og' => $og,
                 'id' => $id,
                 'runs' => $runs,
-                "breaksEven" => $breaksEven
+                "breaksEven" => $breaksEven,
+                'popularity' => $popularity,
+                'loots' => $loots,
+                'fitIdsAll' => $fitIdsAll,
+                'fitIdsNonPrivate' => $fitIdsNonPrivate,
+                'similars' => $similars,
+                'runsCountAll' => $runsCountAll
             ]);
 
             }
             catch (\Exception $e)  {
+                if (config("app.debug")) {
+                    throw $e;
+                }
                 Log::error("Error viewing fit: ".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString());
-                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit."]);
+                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit.".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString()]);
             }
 	    }
 
@@ -317,9 +348,9 @@
         public function submitSvcFitService(string $eft, int $fitId) {
             $ch = curl_init();
 
-            curl_setopt($ch, CURLOPT_URL,env("FIT_SERVICE_URL"));
+            curl_setopt($ch, CURLOPT_URL,config('fits.service-url'));
             curl_setopt($ch, CURLOPT_POST, true);
-            $query = http_build_query(['fit' => $eft, 'appId' => env("FIT_SERVICE_APP_ID"), 'appSecret' => env('FIT_SERVICE_APP_SECRET'), 'fitId' => $fitId]);
+            $query = http_build_query(['fit' => $eft, 'appId' =>config('fits.auth.id'), 'appSecret' => config('fits.auth.secret'), 'fitId' => $fitId]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
             curl_setopt($ch, CURLOPT_VERBOSE, true);
             curl_setopt($ch,CURLOPT_STDERR ,fopen('./svcfitstat.log', 'w+'));
@@ -418,4 +449,132 @@
         }
 
 
+        /**
+         * @param array $id
+         * @param     $name
+         * @return PersonalDaily
+         */
+        public function getFitPopularityChart(array $ids, $name): PersonalDaily {
+            [$dates, $values, $dead] = Cache::remember("ship.popularity-ffh.".implode("-", $ids), now()->addHour(), function() use ($ids, $name) {
+                $dates = [];
+                $values = [];
+                $dead = [];
+                for ($i = -90; $i <= 0; $i++) {
+                    $date = strtotime("now $i days");
+                    $query = "select
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=?) as 'ALL',
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids) . ")) as 'SHIP',
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids) . ") and SURVIVED=0) as 'DEAD';";
+                    $val = DB::select($query,
+                        [
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
+                            (new Carbon($date))->addDays(-3),
+                            (new Carbon($date))->addDays(+3),
+                        ]);
+                    $dates[] = date("M.d.", $date);
+                    if ($val[0]->ALL == 0) {
+                        $values[] = 0.0;
+                        $dead[] = 0.0;
+                    }
+                    else {
+                        $values[] = round(($val[0]->SHIP / $val[0]->ALL) * 100, 2);
+                        $dead[] = round(($val[0]->DEAD / ($val[0]->SHIP > 0 ? $val[0]->SHIP : 1)) * 100, 2);
+                    }
+                }
+                return [$dates, $values, $dead];
+            });
+
+            $pop = new PersonalDaily();
+            $pop->displayAxes(true);
+            $pop->export(true, "Download");
+            $pop->height(300);
+            $pop->theme(ThemeController::getChartTheme());
+            $pop->displayLegend(true);
+            $pop->labels($dates);
+            $pop->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $pop->dataset("Fit popularity (Percentage of all runs)", "line", $values)->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $pop->dataset("Failure ratio (Percentage of failed runs)", "line", $dead)->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'color'          => 'red',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            return $pop;
+        }
+
+
+        /**
+         * @param string $ffh
+         * @param bool   $includePrivate
+         *
+         * @return mixed
+         */
+        public function getSimilarFitsAsIdList(string $ffh, bool $includePrivate = false) {
+            $query = DB::table("fits")
+                ->where("FFH", $ffh);
+            if (!$includePrivate) {
+                $query->where("PRIVACY", "!=", 'private');
+            }
+            $ids = $query->select("ID")->get();
+            return \Arr::pluck($ids, "ID");
+        }
+
+
+        public function getFitsFromIds(array $ids) {
+            $fits = $this->fitSearchController->getStartingQuery()->whereIn("fits.ID", $ids)->get();
+
+            foreach ($fits as $i => $result) {
+                $fits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
+            }
+            return $fits;
+        }
+
+        /**
+         * @param int $id
+         * @return LootAveragesChart
+         */
+        public function getFitLootStrategyChart(array $ids): LootAveragesChart {
+            $loot_strategy = DB::table("runs")
+                               ->whereIn("FIT_ID", $ids)
+                               ->whereNotNull("LOOT_TYPE")
+                               ->where("SURVIVED", true)
+                               ->selectRaw("count(ID) as CNT, LOOT_TYPE")
+                               ->groupBy("LOOT_TYPE")
+                               ->get();
+
+            $labels = [];
+            $data = [];
+            foreach ($loot_strategy as $reason) {
+                $labels[] = ucfirst(trim(str_ireplace("Looted the", "", $this->barkController->getLootStrategyDescription($reason))));
+                $data[] = $reason->CNT;
+            }
+            $loot_chart = new LootAveragesChart();
+            $loot_chart->displayAxes(false);
+            $loot_chart->export(true, "Download");
+            $loot_chart->height(400);
+            $loot_chart->theme(ThemeController::getChartTheme());
+            $loot_chart->displayLegend(true);
+            $loot_chart->labels($labels);
+            $loot_chart->dataset("Looting strategy", "pie", $data)->options([
+                'radius' => ShipsController::PIE_RADIUS_SMALL
+            ]);
+            return $loot_chart;
+        }
     }

@@ -23,12 +23,14 @@
         "doctrine/dbal": "^2.10",
         "erusev/parsedown": "^1.7",
         "fideloper/proxy": "^4.0",
+        "itsgoingd/clockwork": "^4.1",
+        "kabbouchi/nova-logs-tool": "^0.2.0",
         "laravel/framework": "^7.22.2",
+        "laravel/nova": "@dev",
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
         "phpoffice/phpspreadsheet": "^1.11",
-        "sayorus/eveonline-socialite": "^0.6.1",
-        "molbal/nova-mirror": "@dev"
+        "sayorus/eveonline-socialite": "^0.6.1"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

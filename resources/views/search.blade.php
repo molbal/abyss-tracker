@@ -38,7 +38,7 @@
                                 <select name="tier" class="form-control select2-nosearch">
                                     <option value="" selected>&nbsp;</option>
                                     @foreach($tiers as $tier)
-                                        <option value="{{$tier->TIER}}">{{$tier->TIER}}</option>
+                                        <option value="{{$tier->TIER}}">@lang ("tiers.".$tier->TIER) (Tier {{$tier->TIER}})</option>
                                     @endforeach
                                 </select>
                             </div>

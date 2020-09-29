@@ -13,16 +13,12 @@
     use App\Charts\ShipFrigateChart;
     use App\Http\Controllers\Loot\LootCacheController;
     use Carbon\Carbon;
-    use DateTime;
-    use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Log;
-    use function Psy\debug;
 
     class ShipsController extends Controller {
-        const PIE_RADIUS = [45, 135];
-        const PIE_RADIUS_SMALL = [25, 95];
+        public const PIE_RADIUS = [45, 135];
+        public const PIE_RADIUS_SMALL = [25, 95];
 
         /** @var LootCacheController */
         private $lootCacheController;

@@ -13,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
+    $this->loadViewsFrom(__DIR__.'/../resources/views', 'nova');
     }
 
     /**
@@ -23,6 +24,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+//        if(env('APP_DEBUG')) {
+//            DB::listen(function($query) {
+////                File::append(
+////                    storage_path('/logs/query.log'),
+////                    $query->sql . ' [' . implode(', ', $query->bindings) . ']' . PHP_EOL
+////                );
+//
+//                Log::channel("query")->info($query->time."ms ".$query->sql." ".implode(",", $query->bindings));
+//            });
+//        }
     }
 }

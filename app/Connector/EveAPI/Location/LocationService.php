@@ -33,7 +33,7 @@
 
                 return $val;
             } catch (\Exception $e) {
-                Log::warning("Error during " . $e->getMessage() . " with response " . ($ret ?? "[no response]")." headers".print_r(curl_getinfo($c), 1));
+                Log::warning("Error during getCurrentLocation " . $e->getMessage() . " with response " . ($ret ?? "[no response]")." headers".print_r(curl_getinfo($c), 1));
 
                 return null;
             } finally {

@@ -2,6 +2,18 @@
 @section("browser-title", sprintf("%s difficulty overview",__("tiers.".$tier)))
 
 @section("content")
+    <div class="d-flex justify-content-between align-items-start mt-3">
+        @if($tier > 0)
+            <a class="text-dark" href="{{route('infopage.tier', ['tier' => $tier-1])}}">&leftarrow;&nbsp;@lang("tiers.".($tier-1)) information</a>
+        @else
+            <span>&nbsp;</span>
+        @endif
+        @if($tier < 6)
+            <a class="text-dark" href="{{route('infopage.tier', ['tier' => $tier+1])}}">@lang("tiers.".($tier+1)) information&nbsp;&rightarrow;</a>
+        @else
+            <span>&nbsp;</span>
+        @endif
+    </div>
     <div class="row mt-5">
         <div class="col-sm-12 text-center">
             <h2 class="font-weight-bold title">

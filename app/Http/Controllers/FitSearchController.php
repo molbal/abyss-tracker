@@ -7,10 +7,10 @@
     use App\Http\Controllers\EFT\Tags\TagsController;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Http\Request;
-    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Str;
 
     class FitSearchController extends Controller {
 
@@ -28,102 +28,122 @@
 
 
         /**
-         * Handles the fit search backend
-         * @param int    $shipId
-         * @param string $nameOrId
-         *
-         * @return array
+         * Must be secured by middleware
          */
-        public function getFitsForNewRunDropdown(int $shipId, string $nameOrId="") {
-
-            $return = [];
-            $return[] = [
-                "text" => "No selection",
-                "children" => [$this->getFitSelect(null, false, "No selection", "", false)]
-            ];
-            $shipName = Cache::remember("aft.ship-name..$shipId", now()->addHour(), function () use ($shipId) {
-               return DB::table('ship_lookup')
-                        ->where('ID', $shipId)
-                        ->value('NAME');
+        public function getIntegratedTypeList(Request $request) {
+            $myFits = Cache::remember("aft.my-fits", now()->addSeconds(30), function () {
+                return DB::table("fits as f")
+                        ->join("ship_lookup as l", "f.SHIP_ID","=","l.ID")
+                        ->where("f.CHAR_ID", session()->get("login_id", 0))
+                        ->select([
+                            'l.ID as SHIP_ID',
+                            'f.ID as FIT_ID',
+                            'f.NAME as FIT_NAME',
+                            'l.NAME as SHIP_NAME',
+                            'l.GROUP as SHIP_CLASS'
+                        ])->get();
             });
 
-            $lastShipId = DB::table("runs")
-                            ->where("CHAR_ID", session()->get("login_id", null))
-                            ->where("SHIP_ID", $shipId)
-                            ->whereNotNull("FIT_ID")
-                            ->orderBy("ID", 'DESC')
-                            ->limit(1)
-                            ->value("FIT_ID") ?? null;
+            $ships = Cache::remember("aft.ships-fits-all", now()->addMinute(), function () {
+                $fits = DB::table("ship_lookup as l")
+                                 ->leftJoin("fits as f", "l.ID", '=', 'f.SHIP_ID')
+                                 ->where("f.CHAR_ID",'!=', session()->get("login_id", 0))
+                                 ->whereIn("f.PRIVACY", ['public', 'incognito'])
+                                 ->select([
+                                     'l.ID as SHIP_ID',
+                                     'f.ID as FIT_ID',
+                                     'f.NAME as FIT_NAME',
+                                     'l.NAME as SHIP_NAME',
+                                     'l.GROUP as SHIP_CLASS'
+                                 ])
+                                 ->orderBy('l.NAME')
+                                 ->orderBy('f.NAME');
+                return DB::table("ship_lookup as s")
+                  ->select([
+                      's.ID as SHIP_ID',
+                      DB::raw('\'\' as FIT_ID'),
+                      DB::raw('\'\' as FIT_NAME'),
+                      's.NAME as SHIP_NAME',
+                      's.GROUP as SHIP_CLASS'
+                  ])
+                  ->union($fits)
+                  ->orderBy(DB::raw(4))
+                  ->orderBy(DB::raw(3))
+                  ->get();
+            });
 
-            if ($lastShipId) {
-                $lastUsedFit = DB::table("fits")
-                                   ->where("ID", $lastShipId)
-                                   ->first();
-                if (isset($lastUsedFit->ID)) {
-                    $return[] = [
-                        "text" => "Last used $shipName fit",
-                        "children" => [$this->getFitSelect($lastUsedFit, false, null, null, true)]
-                    ];
-                }
+            $mapper = function ($item, $key) {
+                if ($item->FIT_NAME)
+                    $item->FIT_NAME = strip_tags(trim($item->FIT_NAME));
+                $item->id = json_encode([
+                    'SHIP_ID' => $item->SHIP_ID,
+                    'FIT_ID' => $item->FIT_ID
+                ]);
+                $item->text = sprintf("%s, %s", $item->SHIP_NAME, $item->FIT_NAME ? "" . $item->FIT_NAME : "without fit selected");
+                return $item;
+            };
+
+            $myFits->map($mapper);
+            $ships->map($mapper);
+
+            if (Str::of($request->get('term', ''))->isNotEmpty()) {
+                $filter = function ($item, $key) use ($request){
+                    $term = mb_strtoupper($request->get('term', ""));
+                    if (Str::contains(mb_strtoupper($item->SHIP_NAME), $term)) {
+                        return true;
+                    }
+                    if (Str::contains(mb_strtoupper($item->FIT_NAME), $term)) {
+                        return true;
+                    }
+                    if (Str::contains(mb_strtoupper($item->SHIP_CLASS), $term)) {
+                        return true;
+                    }
+
+
+                    $regex = '/^'.(collect(preg_split( '//u', $term, null, PREG_SPLIT_NO_EMPTY))->map(function($item) {
+                        return sprintf("%s\\w+", Str::upper($item));
+                    })->implode("\\s")).'/';
+
+                    if (preg_match($regex, mb_strtoupper($item->SHIP_NAME))) {
+                        return true;
+                    }
+                    if (preg_match($regex, mb_strtoupper($item->FIT_NAME))) {
+                        return true;
+                    }
+                    if (preg_match($regex, mb_strtoupper($item->SHIP_CLASS))) {
+                        return true;
+                    }
+
+                    return false;
+                };
+                $myFits = $myFits->filter($filter);
+                $ships = $ships->filter($filter);
+
+                $highlight = function($item, $key) use ($request) {
+                    $term = $request->get("term", "");
+                    $item->SHIP_NAME = str_ireplace($term, "<span class='highlight'>".ucfirst($term)."</span>", $item->SHIP_NAME);
+                    $item->FIT_NAME = str_ireplace($term, "<span class='highlight'>".ucfirst($term)."</span>", $item->FIT_NAME);
+                    $item->SHIP_CLASS = str_ireplace($term, "<span class='highlight'>".ucfirst($term)."</span>", $item->SHIP_CLASS);
+
+                    return $item;
+                };
+
+                $myFits->map($highlight);
+                $ships->map($highlight);
             }
 
-            // My fits
-            $loggedInCharId = session()->get("login_id");
-            $myFits = DB::table("fits")
-                        ->where("SHIP_ID", $shipId)
-                        ->where("CHAR_ID", $loggedInCharId)
-                        ->where(function ($query) use ($nameOrId) {
-                            $query->where("ID", $nameOrId)
-                                  ->orWhere("NAME", 'LIKE', "%" . $nameOrId . "%");
-                        })
-                        ->get();
-            $groupPostFix = $nameOrId ? " ($nameOrId name or id)" : "";
-            if ($myFits->count() > 0) {
-                $list = [];
-                foreach ($myFits as $myFit) {
-                    $list[] = $this->getFitSelect($myFit);
-                }
-                $return[] = [
-                    "text" => sprintf("My %s fits", $shipName). $groupPostFix,
-                    "children" => $list
-                ];
-            }
-            else {
-                $return[] = [
-                    "text" => sprintf("My %s fits", $shipName).($groupPostFix),
-                    "children" => [$this->getFitSelect(null, true, "You don't have any $shipName fits".($groupPostFix), -1)]
-                ];
-            }
-
-            // Public & anonym fits
-            $myFits = DB::table("fits")
-                        ->where("SHIP_ID", $shipId)
-                        ->whereIn("PRIVACY", ["public", "incognito"])
-                        ->where("CHAR_ID",'<>', $loggedInCharId)
-                        ->where(function ($query) use ($nameOrId) {
-                            $query->where("ID", $nameOrId)
-                                  ->orWhere("NAME", 'LIKE', "%" . $nameOrId . "%");
-                        })
-                        ->get();
-            if ($myFits->count() > 0) {
-                $list = [];
-                foreach ($myFits as $myFit) {
-                    $list[] = $this->getFitSelect($myFit);
-                }
-                $return[] = [
-                    "text" => sprintf("Public and anonym %s fits", $shipName).($groupPostFix),
-                    "children" => $list
-                ];
-            }
-            else {
-                $return[] = [
-                    "text" => sprintf("Public and anonym  %s fits", $shipName).($groupPostFix),
-                    "children" => [$this->getFitSelect(null, true, "No public or anyonym $shipName fits".($groupPostFix), -1)]
-                ];
-            }
-
-            return (["results" =>$return , "pagination" =>['more' => false]]);
+            return [
+                'results' => [
+                    ['id' => json_encode(['SHIP_ID' => null, 'FIT_ID' => null]), "text" => "Not specified", "SHIP_ID" => 0, "FIT_ID" => "", "SHIP_NAME" => "Not specified", "SHIP_CLASS" => "", "FIT_NAME" => ""],
+                    ['text' => "My fits", 'children' => $myFits->values()],
+                    ['text' => "All ships and public fits", 'children' => $ships->values()],
+                ],
+                'pagination' => [
+                    'more' => false
+                ]
+            ];
         }
+
 
         /**
          * @param             $thing
@@ -162,6 +182,22 @@
                 'shipGroups' => $groups,
                 'results' => $results,
                 'users' => $users
+            ]);
+        }
+        /**
+         * Handles the homescreen
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function mine() {
+
+            $results = $this->getStartingQuery(false)->where("fits.CHAR_ID",session()->get("login_id"))
+                            ->orderByDesc("RUNS_COUNT")->get();
+
+            foreach ($results as $i => $result) {
+                $results[$i]->TAGS = $this->getFitTags($result->ID);
+            }
+            return view("components.fits.mine-list", [
+                'results' => $results
             ]);
         }
 
@@ -211,7 +247,7 @@
          * @return mixed
          */
         public function getFitTags(int $id) {
-            return Cache::remember("aft.fits.tags.$id", now()->addSeconds(30), function () use ($id) {
+            return Cache::remember("aft.fits.tags.$id", now()->addSeconds(120), function () use ($id) {
                 return DB::table("fit_tags")
                          ->where("FIT_ID", $id)
                          ->get();
@@ -220,11 +256,13 @@
 
         /**
          * Gets the starting query
+         *
+         * @param bool $excludePrivate
+         *
          * @return \Illuminate\Database\Query\Builder
          */
-        public function getStartingQuery(): Builder {
-            return DB::table("fits")
-                     ->where("PRIVACY", '!=', 'private')
+        public function getStartingQuery(bool $excludePrivate = true): Builder {
+            $query = DB::table("fits")
                      ->where("STATUS", 'done')
                      ->join("ship_lookup", 'fits.SHIP_ID', '=', 'ship_lookup.ID')
                      ->join("fit_recommendations", 'fits.ID', '=', 'fit_recommendations.FIT_ID')
@@ -242,9 +280,16 @@
                                "fit_recommendations.EXOTIC as Exotic",
                                "fit_recommendations.FIRESTORM as Firestorm",
                                "fit_recommendations.GAMMA as Gamma",
-                               "fits.SUBMITTED as Submitted"])
+                               "fits.SUBMITTED as Submitted",
+                               "fits.PRIVACY"])
                      ->distinct("fits.ID");
-        }/**
+            if ($excludePrivate) {
+                $query->where("PRIVACY", '!=', 'private');
+            }
+            return $query;
+        }
+
+        /**
      * @param Request $request
      *
      * @return array
@@ -315,6 +360,11 @@
                 $filters_display->add("Most popular first");
             }
 
+            if ($request->filled("MIN_USES")) {
+//                $query->where("ship_lookup.GROUP", '=', $request->get("SHIP_GROUP"));
+                $query->having("RUNS_COUNT",">=",$request->get("MIN_USES"));
+                $filters_display->add("Has at least ".$request->get("MIN_USES")." runs recorded");
+            }
             $tagList = $this->tags->getTagList();
             foreach ($tagList as $tag) {
                 if ($request->filled($tag)) {
@@ -322,6 +372,7 @@
                     $filters_display->add($this->labelForTag($tag, $request));
                 }
             }
+
 
             return [$query, $filters_display];
         }

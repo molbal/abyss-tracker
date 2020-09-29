@@ -5,7 +5,6 @@
 
 
     use Illuminate\Support\Facades\Cookie;
-    use Symfony\Component\HttpFoundation\Cookie as SendCookie;
 
     class ThemeController extends Controller {
 
@@ -14,7 +13,13 @@
          * @return bool
          */
         public static function isDarkTheme():bool {
-            return !(Cookie::has("bright-theme") && Cookie::get("bright-theme") == "true");
+            $cached = config("runtime.theme.dark", null);
+            if ($cached == null) {
+                $val = !(Cookie::get("bright-theme", "false") == "true");
+                config(["runtime.theme.dark" => $val]);
+                return $val;
+            }
+            return $cached;
         }
 
         public static function getChartTheme():string {
@@ -49,6 +54,10 @@
             else {
                 Cookie::queue("bright-theme", "true", time()+60*60*24*60);
             }
-            return redirect(route("home"));
+            return redirect(url()->previous(route("home")));
+        }
+
+        public static function getGlitchIcon() {
+            return asset(sprintf("_icons/glitch-%s.gif", self::isDarkTheme() ? "dark" : "light"));
         }
     }

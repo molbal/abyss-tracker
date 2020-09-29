@@ -98,10 +98,11 @@
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold"><img src="https://img.icons8.com/cotton/32/000000/rocket.png" class="smallicon mr-1"/> Actions</h5>
                 <ul style="list-style: none" class="p-0">
-                    <li><a class="text-dark d-inline-block pb-1" href="{{route("new")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == Route::currentRouteName())}}/new-by-copy.png" class="tinyicon mr-1"/> Add run</a></li>
-                    <li><a class="text-dark d-inline-block pb-1" href="{{route("fit_new")}}" ><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit_new" == Route::currentRouteName())}}.png" class="tinyicon mr-1"> New fit</a></li>
-                    <li><a class="text-dark d-inline-block pb-1" href="{{route("runs_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs_mine" == Route::currentRouteName())}}/bulleted-list.png" class="tinyicon mr-1"/> My runs</a></li>
-                    <li><a class="text-dark d-inline-block pb-1" href="{{route("profile.index", ["id" => session()->get('login_id')])}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("profile.index" == Route::currentRouteName())}}/head-profile.png" class="tinyicon mr-1"/> My public profile</a></li>
+                    <li><a class="text-dark d-inline-block pb-1" href="{{route("new")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/new-by-copy.png" class="tinyicon mr-1"/>Add run</a></li>
+                    <li><a class="text-dark d-inline-block pb-1" href="{{route("fit_new")}}" ><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedIconColor()}}.png" class="tinyicon mr-1">New fit</a></li>
+                    <li><a class="text-dark d-inline-block pb-1" href="{{route("runs_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/bulleted-list.png" class="tinyicon mr-1"/>My runs</a></li>
+                    <li><a class="text-dark d-inline-block pb-1" href="{{route("fit.mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/scan-stock.png" class="tinyicon mr-1"/>My fits</a></li>
+                    <li><a class="text-dark d-inline-block pb-1" href="{{route("profile.index", ["id" => session()->get('login_id')])}}" ><img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/head-profile.png" class="tinyicon mr-1"/>My public profile</a></li>
                 </ul>
             </div>
             @component("components.restricted", ["title" => "Loot query","public" => true])

@@ -29,8 +29,8 @@ class SearchController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index() {
-        $tiers = DB::table("tier")->select("TIER")->get();
-        $types = DB::table("type")->select("TYPE")->get();
+        $tiers = DB::table("tier")->select("TIER")->orderBy("TIER")->get();
+        $types = DB::table("type")->select("TYPE")->orderBy("TYPE")->get();
         $ships = DB::table("ship_lookup")
                    ->select(["ID", "NAME", "GROUP"])
                     ->whereExists(function ($q) {
@@ -48,7 +48,7 @@ class SearchController extends Controller
     public function search(Request $request) {
 
         Validator::make($request->all(), [
-            'tier' => 'nullable|numeric|min:1|max:5',
+            'tier' => 'nullable|numeric|min:0|max:6',
             'type' => ['nullable',Rule::exists("type","TYPE")],
             'ship_id' => 'nullable|numeric',
             'hull_size' => 'nullable|numeric|min:0|max:15',
@@ -66,7 +66,6 @@ class SearchController extends Controller
             'loot_max' => 'nullable|numeric',
             'loot_strategy' => 'nullable',
         ])->validate();
-//        dd($request->all());
 
         $scb = new SearchQueryBuilder();
         if ($request->get("tier")) {
@@ -87,7 +86,6 @@ class SearchController extends Controller
         if ($request->get("run_date_start")) {
             $scb->addCondition(new SearchCriteria("Runs until ".$request->get("run_date_end"), "runs", "RUN_DATE", "<=", $request->get("run_date_end")));
         }
-//        dd($scb);
         if ($request->get("min_run_length_m")) {
             $sec = ($request->get("min_run_length_m")*60)+($request->get("min_run_length_s"));
             $scb->addCondition(new SearchCriteria("Longer than ".$request->get("min_run_length_m").":".$request->get("min_run_length_s"), "runs", "RUNTIME_SECONDS", ">=", $sec));
@@ -119,9 +117,7 @@ class SearchController extends Controller
             $scb->addCondition(new SearchCriteria(number_format($request->get("loot_max"), 0, " ", " ") ." ISK max loot", "runs", "LOOT_ISK", "<=", $request->get("loot_max")));
         }
 
-//        DB::enableQueryLog();
         $query = $scb->getQuery()->limit(350)->get();
-//        dd(DB::getQueryLog(), $query);
         return view("results", [
             'results' => $query,
 			'conditions' => $scb->getConditions()

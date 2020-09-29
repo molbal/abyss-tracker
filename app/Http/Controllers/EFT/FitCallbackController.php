@@ -3,17 +3,17 @@
 
 	namespace App\Http\Controllers\EFT;
 
+    use App\Http\Controllers\Controller;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
-	use App\Http\Controllers\Controller;
 
     class FitCallbackController extends Controller {
 
         function handleFitCallback(Request $request) {
 
             // This is your app secret
-            $app_secret = env("FIT_SERVICE_APP_SECRET");
+            $app_secret = config('fits.auth.secret');
 
             // This is the thing we will receive
             $expectedAuth = sha1($app_secret);

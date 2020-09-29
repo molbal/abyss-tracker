@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -37,7 +36,7 @@ class RunFlagged extends Mailable
     public function build()
     {
         return $this->markdown('emails.flagged')
-                    ->from(env("MAIL_USERNAME"))
+                    ->from(config('mail.username'))
                     ->subject(sprintf("Run #%d flagged", $this->id));
     }
 }

@@ -5,6 +5,7 @@
 
 
 	use App\Http\Controllers\Controller;
+    use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\EFT\FitParser;
     use Illuminate\Support\Facades\Artisan;
     use Illuminate\Support\Facades\DB;
@@ -12,8 +13,23 @@
 
     class MaintenanceController extends Controller {
 
+        public function medianTests() {
+//            /** @var MedianController $cont */
+//            $cont = resolve('App\Http\Controllers\DS\MedianController');
+
+            $a = collect([]);
+            for ($i=0;$i<=6;$i++) {
+                $a->add(["Tier $i" => [
+                    'cruiser' => number_format(MedianController::getTierMedian($i, true), 0, ","," ")." ISK",
+                    'frigate' => number_format(MedianController::getTierMedian($i, false), 0, ","," ")." ISK",
+                ]]);
+            }
+
+            return $a;
+        }
+
         function convertOldFits($secret) {
-            if ($secret != env("MAINTENANCE_TOKEN")) {
+            if ($secret != config('tracker.maintenance-token')) {
                 abort(403, "Invalid maintenance token.");
             }
 
@@ -39,7 +55,7 @@
 
 
         function showFlaggedRuns($secret) {
-            if ($secret != env("MAINTENANCE_TOKEN")) {
+            if ($secret != config('tracker.maintenance-token')) {
                 abort(403, "Invalid maintenance token.");
             }
             $flags = DB::table("run_report")
@@ -51,7 +67,7 @@
         }
 
         function deleteFlaggedRun(int $id, string $secret) {
-            if ($secret != env("MAINTENANCE_TOKEN")) {
+            if ($secret != config('tracker.maintenance-token')) {
                 abort(403, "Invalid maintenance token.");
             }
 
@@ -73,7 +89,7 @@
         }
 
         function runMigrations($secret) {
-            if ($secret != env("MAINTENANCE_TOKEN")) {
+            if ($secret != config('tracker.maintenance-token')) {
                 abort(403, "Invalid maintenance token.");
             }
             echo "DB maintenance starts <br>";
@@ -82,7 +98,7 @@
         }
 
         function debugLogin($login_id, $secret) {
-            if ($secret != env("MAINTENANCE_TOKEN")) {
+            if ($secret != config('tracker.maintenance-token')) {
                 abort(403, "Invalid maintenance token.");
             }
             session()->put("login_id", $login_id);
@@ -92,7 +108,7 @@
         }
 
         function recalculateSingleFit($id, $secret) {
-            if ($secret != env("MAINTENANCE_TOKEN")) {
+            if ($secret != config('tracker.maintenance-token')) {
                 abort(403, "Invalid maintenance token.");
             }
 
@@ -105,8 +121,8 @@
         }
 
         public function getRoutes($secret) {
-            if ($secret != env("MAINTENANCE_TOKEN")) {
-                abort(403, "Invalid maintenance token: " .  env("MAINTENANCE_TOKEN"));
+            if ($secret != config('tracker.maintenance-token')) {
+                abort(403, "Invalid maintenance token: " .  config('tracker.maintenance-token'));
             }
 
             $routes = [];
@@ -120,7 +136,7 @@
         }
 
         public function resetAndCache($secret) {
-//            if ($secret != env("MAINTENANCE_TOKEN")) {
+//            if ($secret != config('tracker.maintenance-token')) {
 //                abort(403, "Invalid maintenance token.");
 //            }
 
@@ -140,7 +156,7 @@
         }
 
         function recalculateQueuedFits($secret) {
-            if ($secret != env("MAINTENANCE_TOKEN")) {
+            if ($secret != config('tracker.maintenance-token')) {
                 abort(403, "Invalid maintenance token.");
             }
 
@@ -161,7 +177,7 @@
 
         function afterReleaseActions($secret) {
 
-            if ($secret != env("MAINTENANCE_TOKEN")) {
+            if ($secret != config('tracker.maintenance-token')) {
                 abort(403, "Invalid maintenance token.");
             }
         }
