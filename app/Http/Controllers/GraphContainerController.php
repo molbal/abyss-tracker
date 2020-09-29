@@ -4,19 +4,12 @@
     namespace App\Http\Controllers;
 
 
-    use App\Charts\AbyssSurvivalType;
-    use App\Charts\BellChart2;
+    use App\Charts\BellChart1;
     use App\Charts\DailyAdds;
     use App\Charts\HomeCruiserMedian;
     use App\Charts\HomePagePopularClasses;
     use App\Charts\HomePagePopularHulls;
-    use App\Charts\IskPerHourChart;
-    use App\Charts\LootTierChart;
-    use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
-    use App\Charts\BellChart1;
-    use App\Charts\SurvivalLevelChart;
-    use App\Charts\TierLevelsChart;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
@@ -42,55 +35,6 @@
             return $chart;
         }
 
-//
-//        /**
-//         * @return LootTypesChart
-//         */
-//        public function getHomeLootTypesChart() : LootTypesChart
-//        {
-//            $lootTypesChart = new LootTypesChart();
-//            $lootTypesChart->load(route("chart.home.type"));
-//            $lootTypesChart->displayAxes(false);
-//            $lootTypesChart->displayLegend(false);
-//            $lootTypesChart->export(true, "Download");
-//            $lootTypesChart->height("400");
-//            $lootTypesChart->theme(ThemeController::getChartTheme());
-//
-//            return $lootTypesChart;
-//        }
-//
-//        /**
-//         * @return TierLevelsChart
-//         */
-//        public function getHomeLootTierLevels() : TierLevelsChart
-//        {
-//            $tierLevelsChart = new TierLevelsChart();
-//            $tierLevelsChart->load(route("chart.home.tier"));
-//            $tierLevelsChart->displayAxes(false);
-//            $tierLevelsChart->displayLegend(false);
-//            $tierLevelsChart->export(true, "Download");
-//            $tierLevelsChart->height("400");
-//            $tierLevelsChart->theme(ThemeController::getChartTheme());
-//
-//            return $tierLevelsChart;
-//        }
-//
-//        /**
-//         * @return SurvivalLevelChart
-//         */
-//        public function getHomeSurvivalLevels() : SurvivalLevelChart
-//        {
-//            $survival_chart = new SurvivalLevelChart();
-//            $survival_chart->load(route("chart.home.survival"));
-//            $survival_chart->export(true, "Download");
-//            $survival_chart->displayAxes(false);
-//            $survival_chart->height(400);
-//            $survival_chart->theme(ThemeController::getChartTheme());
-//            $survival_chart->displayLegend(false);
-//
-//            return $survival_chart;
-//        }
-
         /**
          * @return BellChart1
          */
@@ -103,7 +47,7 @@
             $chart->theme(ThemeController::getChartTheme());
             $chart->load(route("chart.home.distribution.cruisers"));
             $labels = collect([]);
-            for ($i = 1; $i<=5; $i++) {
+            for ($i = 0; $i<=6; $i++) {
                 $labels->add("Tier {$i}");
             }
             $chart->labels($labels);
@@ -114,28 +58,11 @@
                     ]
                 ]
             ]);
+
             return $chart;
         }
 
 
-//        /**
-//         * @return BellChart1
-//         */
-//        public function getHomeLootAveragesFrigates() : BellChart2
-//        {
-//            $chart = new BellChart2(0,250);
-//
-//            $chart->export(true, "Download");
-//            $chart->height("400");
-//            $chart->theme(ThemeController::getChartTheme());
-//            $chart->load(route("chart.home.distribution.frigates"));
-//            $options = $chart->options;
-//            $options["xAxis"] = [];
-//            $chart->options($options, true);
-//            $chart->options(['tooltip' => ['trigger' => 'axis', 'formatter' => "function(params) {return params.name;}"]]);
-//
-//            return $chart;
-//        }
 
         /**
          * @return array

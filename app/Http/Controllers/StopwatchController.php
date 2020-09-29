@@ -9,7 +9,6 @@
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
-    use Illuminate\Support\Facades\Redis;
 
     class StopwatchController extends Controller {
 
@@ -21,6 +20,7 @@
          * @throws \Exception
          */
         public function addChecks(int $charId) {
+
             DB::beginTransaction();
             if (DB::table("stopwatch")->where("CHAR_ID", $charId)->exists()) {
                 DB::table("stopwatch")->where("CHAR_ID", $charId)->delete();
@@ -28,7 +28,7 @@
 
             DB::table("stopwatch")->insert([
                 "CHAR_ID" => $charId,
-                "EXPIRE" => date("Y-m-d H:i:s", strtotime("now +40 minutes")),
+                "EXPIRE" =>now()->addHour(),
                 "IN_ABYSS" => false
             ]);
             DB::commit();
@@ -43,28 +43,36 @@
                 return [
                     'status' => 'error',
                     'infodiv' => 'error',
-                    'seconds' => 0
+                    'seconds' => 0,
+                    'msg_icon' => asset("stopwatch/ESIerror.png"),
+                    'toast' => "Sorry, something went wrong with the stopwatch."
                 ];
             }
 
             $state = [
                 'status' => 'error',
-                'seconds' => 0
+                'seconds' => 0,
+                'msg_icon' => asset("stopwatch/ESIerror.png"),
+                'toast' => "Sorry, something went wrong with the stopwatch."
             ];
             if (DB::table("stopwatch")->where("CHAR_ID", $charId)->exists()) {
-                $var = DB::table("stopwatch")->where("CHAR_ID", $charId)->get()->get(0);
+                $var = DB::table("stopwatch")->where("CHAR_ID", $charId)->first();
                 if ($var->IN_ABYSS) {
                     $state = [
                         'status' => "RUNNING",
                         'infodiv' => "running",
-                        'seconds' => (strtotime(date("Y-m-d H:i:s")) - strtotime($var->ENTERED_ABYSS))
+                        'seconds' => (strtotime(date("Y-m-d H:i:s")) - strtotime($var->ENTERED_ABYSS)),
+                        'msg_icon' => asset("stopwatch/AbyssalEntrance.png"),
+                        'toast' => "You have entered Abyssal Deadspace"
                     ];
                 }
                 elseif ($var->EXITED_ABYSS) {
                     $state = [
                         'status' => "<span class=\"text-success\">FINISHED</span>",
                         'infodiv' => "finished",
-                        'seconds' => (strtotime($var->EXITED_ABYSS) - strtotime($var->ENTERED_ABYSS))
+                        'seconds' => (strtotime($var->EXITED_ABYSS) - strtotime($var->ENTERED_ABYSS)),
+                        'msg_icon' => asset("stopwatch/NormalSpace.png"),
+                        'toast' => "You have returned from Abyssal Deadspace"
                     ];
                 }
                 else {
@@ -78,6 +86,7 @@
             else {
                 $state = [
                     'status' => 'READY TO START STOPWATCH',
+                    'infodiv' => 'standby',
                     'seconds' => 0
                 ];
             }
@@ -125,6 +134,7 @@
             }
             catch (ESIAuthException $e) {
                 DB::table("chars")->where("CHAR_ID", $charId)->update(["REFRESH_TOKEN" => ""]);
+                Log::channel("stopwatch")->warning(sprintf("Due to an error, char $charId refresh token is removed: %s", $e->getMessage()));
                 throw new ESIAuthException("Auth exception, removed refresh token. Please auth again.");
             }
 
@@ -140,23 +150,27 @@
             if ($preAbyss != $nowAbyss) {
                 if ($preAbyss) {
                     // Old tick: IN ABYSS, new tick: OUTSIDE ABYSS
+                    Log::channel("stopwatch")->info(sprintf("Character %d exited the Abyss", $charId));
                     DB::table("stopwatch")->where("CHAR_ID", $charId)->update([
-                        'EXITED_ABYSS' => date("Y-m-d H:i:s"),
-                        "IN_ABYSS" => false
+                        'EXITED_ABYSS' => now(),
+                        "IN_ABYSS" => false,
+                        'EXPIRE' => now()->addMinutes(20)
                     ]);
 
                 }
                 else {
-                    // ld tick: OUTSIDE ABYSS, new tick: IN ABYSS
+                    // Old tick: OUTSIDE ABYSS, new tick: IN ABYSS
+                    Log::channel("stopwatch")->info(sprintf("Character %d entered the Abyss", $charId));
                     DB::table("stopwatch")->where("CHAR_ID", $charId)->update([
-                       'ENTERED_ABYSS' => date("Y-m-d H:i:s"),
-                       "IN_ABYSS" => true
+                       'ENTERED_ABYSS' => now(),
+                       "IN_ABYSS" => true,
+                       'EXPIRE' => now()->addMinutes(21)
                     ]);
                 }
             }
 
             if (time() > strtotime($var->EXPIRE)) {
-                //Log::info("Expired! Removing $charId from stopwatch.");
+                Log::info("Expired! Removing $charId from stopwatch.");
                 DB::table("stopwatch")->where("CHAR_ID", $charId)->delete();
             }
         }

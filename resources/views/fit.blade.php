@@ -171,6 +171,14 @@ text-align: center;">
         <h4 class="font-weight-bold">{{$fit->NAME}} usage</h4>
     </div>
     <div class="row mt-3">
+        <div class="col-md-12 col-sm-12">
+            <div class="card card-body border-0 shadow-sm p-0">
+                <h5 class="font-weight-bold mb-2 p-3">Popularity over the last 3 months <small class="float-right">This graph shows the percentage of Abyss runs using/day using a this fit</small></h5>
+                <div class="h-300px graph-container">{!! $popularity->container() !!}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
         <div class="col-xs-12 col-sm-8">
             @component("components.runs.list", ['title' => "Runs with this fit", 'items' => $runs]) @endcomponent
         </div>
@@ -179,7 +187,7 @@ text-align: center;">
 
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Fit performance</h5>
-                <p class="mb-0">The information below was calculated from {{$runs->count()}} user submitted runs (displayed left).</p>
+                <p class="mb-0">The information below was calculated from {{$runsCountAll}} user submitted runs (displayed left).</p>
             </div>
             @forelse($breaksEven as $info)
                 @component("components.fits.ds.break-even", ['info'=>$info, 'price' => $fit->PRICE]) @endcomponent
@@ -189,9 +197,28 @@ text-align: center;">
                 </div>
             @endforelse
 
+            <div class="card card-body border-0 shadow-sm p-0 mt-3">
+                <h5 class="font-weight-bold mb-2 p-3">Loot strategy with this fit</h5>
+                <div class="h-400px graph-container">{!! $loots->container() !!}</div>
+            </div>
+
         </div>
     </div>
 
+
+    @if (count($fitIdsAll) > 1)
+    <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
+        <h4 class="font-weight-bold">Almost identical fits</h4>
+            @component("components.info-toggle")
+                Fits with the same modules fitted to their high, mid, and low slots + same rigs are counted 'Almost identical'. This section only shows up if there are identical fits.
+            @endcomponent
+    </div>
+
+    <div class="card card-body border-0 shadow-sm mt-3">
+        <p>This fit has {{count($fitIdsAll)}} almost identical fits (which are counted against loot and popularity statistics). Out of these fits, {{count($fitIdsNonPrivate)}} are not set to private:</p>
+        @component("components.fits.filter.result-list", ["results" => $similars]) @endcomponent
+    </div>
+    @endif
 
     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
     <div class="row mt-5">
@@ -216,15 +243,17 @@ text-align: center;">
     </style>
 @endsection
 @section("scripts")
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
-    <script>
-        $(function () {
-            $('.inline-pie').sparkline('html', {
-                type: 'pie',
-                sliceColors: ['#78b7aa', 'rgba(0,0,0,0)'],
-                disableInteraction: true
-            });
-            $('.inline-pie').animate({'opacity': 1}, 1500);
-        });
-    </script>
+    {!! $popularity->script() !!}
+    {!! $loots->script() !!}
+{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>--}}
+{{--    <script>--}}
+{{--        $(function () {--}}
+{{--            $('.inline-pie').sparkline('html', {--}}
+{{--                type: 'pie',--}}
+{{--                sliceColors: ['#78b7aa', 'rgba(0,0,0,0)'],--}}
+{{--                disableInteraction: true--}}
+{{--            });--}}
+{{--            $('.inline-pie').animate({'opacity': 1}, 1500);--}}
+{{--        });--}}
+{{--    </script>--}}
 @endsection

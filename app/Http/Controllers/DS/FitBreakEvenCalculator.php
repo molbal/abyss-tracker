@@ -4,6 +4,7 @@
 	namespace App\Http\Controllers\DS;
 
 
+    use App\Http\Controllers\HelperController;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -38,7 +39,7 @@
                     $meanRuntimeSeconds = 60 * 20;
                 }
 
-                $breakEvenRuns = max(0, min(9999, floor($fit->PRICE / $meanLootIsk)));
+                $breakEvenRuns = HelperController::clamp(ceil($fit->PRICE / $meanLootIsk), 0, 9999); //max(0, min(9999, floor($fit->PRICE / $meanLootIsk)));
                 $breakEvenSeconds = $breakEvenRuns * $meanRuntimeSeconds;
                 $breaksEven->add([
                     "info" => $maxTier,

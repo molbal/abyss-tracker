@@ -68,6 +68,20 @@ return [
             'days' => 7,
         ],
 
+        'droprate' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/droprate.log'),
+            'level' => 'debug',
+            'days' => 7,
+        ],
+
+        'query' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/query.log'),
+            'level' => 'debug',
+            'days' => 1,
+        ],
+
         'itempricecalculator' => [
             'driver' => 'daily',
             'path' => storage_path('logs/itempricecalculator.log'),

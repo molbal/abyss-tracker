@@ -27,6 +27,6 @@
 
         public static function getEmbed(string $url): string {
             $url = self::getYoutubeID($url);
-            return '<iframe style="width:100%; margin-bottom:16px; height: 480px" src="http://www.youtube.com/embed/'.urlencode($url).'" frameborder="0" allowfullscreen></iframe>';
+            return '<iframe style="width:100%; margin-bottom:16px; height: 480px" src="https://www.youtube.com/embed/'.urlencode($url).'" frameborder="0" allowfullscreen></iframe>';
         }
 	}

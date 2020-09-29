@@ -3,7 +3,7 @@
 @section("content")
     <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
         <h4 class="font-weight-bold">Fits</h4>
-        <a href="{{route("fit_new")}}" class="btn btn-outline-secondary">Add new fit</a>
+        <a href="{{route("fit_new")}}" class="text-dark"><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedIconColor()}}.png" class="tinyicon mr-1">New fit</a>
     </div>
     <div class="row mt-3">
         <div class="col-sm-3">
@@ -12,7 +12,7 @@
             @component("components.collapse.collapsible-card", ["title" => "Abyss target", 'show' => true, 'icon' => 'abyss'])
                 <div class="form-group">
                     <label for="TYPE">Abyss type</label>
-                    <select name="TYPE" class="form-control select2-nosearch">
+                    <select name="TYPE" id="select_TYPE" class="form-control select2-nosearch">
                         <option value="">Any</option>
                         <option value="Electrical">Electrical</option>
                         <option value="Dark">Dark</option>
@@ -23,13 +23,15 @@
                 </div>
                 <div class="form-group">
                     <label for="TIER">Abyss tier</label>
-                    <select name="TIER" class="form-control select2-nosearch">
+                    <select name="TIER" id="select_TIER" class="form-control select2-nosearch">
                         <option value="">Any</option>
+                        <option value="0">0 or harder</option>
                         <option value="1">1 or harder</option>
                         <option value="2">2 or harder</option>
                         <option value="3">3 or harder</option>
                         <option value="4">4 or harder</option>
-                        <option value="5">5</option>
+                        <option value="5">5 or harder</option>
+                        <option value="6">6</option>
                     </select>
                 </div>
             @endcomponent
@@ -37,7 +39,7 @@
             @component("components.collapse.collapsible-card", ["title" => "Basic data", 'icon' => 'basic'])
                 <div class="form-group">
                     <label for="CHAR_ID">Creator</label>
-                    <select name="CHAR_ID" class="form-control select2-character">
+                    <select name="CHAR_ID" id="select_CHAR_ID" class="form-control select2-character">
                         <option value="">Anyone</option>
                         @foreach($users as $user)
                             <option
@@ -46,25 +48,29 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="NAME">Fit name</label>
+                    <input type="text" name="NAME" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="CHEAPER_THAN">Cheaper than</label>
+                    <select name="CHEAPER_THAN" id="select_CHEAPER_THAN" class="form-control select2-nosearch">
+                        <option value="">-</option>
+                        <option value="50">50M ISK</option>
+                        <option value="100">100M ISK</option>
+                        <option value="150">150M ISK</option>
+                        <option value="250">250M ISK</option>
+                        <option value="300">300M ISK</option>
+                        <option value="500">500M ISK</option>
+                        <option value="750">750M ISK</option>
+                        <option value="1000">1B ISK</option>
+                        <option value="1500">1.5B ISK</option>
+                        <option value="2000">2B ISK</option>
+                    </select>
+                </div>
                     <div class="form-group">
-                        <label for="NAME">Fit name</label>
-                        <input type="text" name="NAME" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="CHEAPER_THAN">Cheaper than</label>
-                        <select name="CHEAPER_THAN" class="form-control select2-nosearch">
-                            <option value="">-</option>
-                            <option value="50">50M ISK</option>
-                            <option value="100">100M ISK</option>
-                            <option value="150">150M ISK</option>
-                            <option value="250">250M ISK</option>
-                            <option value="300">300M ISK</option>
-                            <option value="500">500M ISK</option>
-                            <option value="750">750M ISK</option>
-                            <option value="1000">1B ISK</option>
-                            <option value="1500">1.5B ISK</option>
-                            <option value="2000">2B ISK</option>
-                        </select>
+                        <label for="MIN_USES">Minimum uses</label>
+                        <input type="number" name="MIN_USES" class="form-control" value="0">
                     </div>
             @endcomponent
 
@@ -74,7 +80,7 @@
                         @component("components.info-toggle")
                             For optimal results only use Ship, Class or Size selectors. Set the other options to 'Any'
                         @endcomponent</label>
-                    <select name="SHIP_ID" class="form-control select2-default">
+                    <select name="SHIP_ID" id="select_SHIP_ID" class="form-control select2-default">
                         <option value="" selected>Any</option>
                         @foreach($ships as $ship)
                             <option
@@ -85,7 +91,7 @@
                 </div>
                 <div class="form-group">
                     <label for="SHIP_GROUP">Ship class</label>
-                    <select name="SHIP_GROUP" class="form-control select2-default">
+                    <select name="SHIP_GROUP" id="select_SHIP_GROUP" class="form-control select2-default">
                         <option value="" selected>Any</option>
                         @foreach($shipGroups as $group)
                             <option
@@ -96,7 +102,7 @@
                 </div>
                 <div class="form-group">
                     <label for="SHIP_IS_CRUISER">Ship size</label>
-                    <select name="SHIP_IS_CRUISER" class="form-control select2-default">
+                    <select name="SHIP_IS_CRUISER" id="select_SHIP_IS_CRUISER" class="form-control select2-default">
                         <option value="" selected>Any</option>
                         <option value="1">Cruiser</option>
                         <option value="0">Frigate</option>
@@ -128,7 +134,7 @@
 
             @component("components.collapse.collapsible-card", ["title" => "Ordering", 'icon' => 'order-by'])
                     <div class="form-group">
-                        <label for="ORDER_BY">Ship size</label>
+                        <label for="ORDER_BY">Order by</label>
                         <select name="ORDER_BY" class="form-control select2-default">
                             <option value="RUNS_COUNT" selected>Popularity</option>
                             <option value="fits.PRICE">Price</option>
@@ -139,7 +145,7 @@
                         <label for="ORDER_BY_ORDER">Direction</label>
                         <select name="ORDER_BY_ORDER" class="form-control select2-default">
                             <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
+                            <option value="desc" selected>Descending</option>
                         </select>
                     </div>
             @endcomponent
@@ -236,44 +242,7 @@
 @endsection
 @section("scripts")
     <script>
-        function filterList() {
-            var filters = $("form#filters").serializeArray();
-            $("#doFilter").attr("disabled", "disabled").addClass("disabled");
-            $.post('{{route("fit.search.ajax")}}', filters, function(a) {
-                $("#results").css("opacity", "0.01").html(a).animate({opacity:1}, 250);
-            })
-            .fail(function() {
-                alert("Sorry, something went wrong while searching");
-            })
-            .always(function() {
-                $("#doFilter").removeAttr("disabled").removeClass("disabled");
-            });
-        }
-
-
-        function formatState (state) {
-            var $state = $(state);
-            return $state;
-        }
-
-        $(".select2-character").select2({
-            theme: 'bootstrap',
-            templateResult: function (state) {
-                console.log(state);
-                if (!state.id) { return state.text; }
-                if (state.element.value.toLowerCase() === "0") {
-                    return $('<span class="text-center">'+state.text+'</span>');
-                }
-                var $state = $(
-                    '<span><img style="width: 24px; height: 24px" src="https://images.evetech.net/characters/' +  state.element.value.toLowerCase() +
-                    '/portrait?size=32" class="rounded-circle shadow-sm movealilbitup" /> ' +
-                    state.text +     '</span>'
-                );
-                return $state;
-            },
-            width: '100%',
-        });
-
+        window.fit_search_ajax = '{{route("fit.search.ajax")}}';
 
         function toggleTag(slot, value, ths) {
             var _this = $(ths);
@@ -295,10 +264,7 @@
                 input.val(value);
                 _this.addClass('active');
             }
-        }
-
-        $(function () {
-            $("#doFilter").click(filterList);
-        });
+        };
     </script>
+    <script src="{{asset("js/fits.js")}}" type="text/javascript"></script>
 @endsection

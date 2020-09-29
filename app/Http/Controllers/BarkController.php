@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use Illuminate\Support\Facades\Log;
     class BarkController {
 
 
@@ -115,7 +116,7 @@
          */
         public function getRunSummaryBark($data, $averageLootForTier): array {
             if ($data->LOOT_ISK > 0) {
-                $percent = ($data->LOOT_ISK / $averageLootForTier) * 100;
+                $percent = ($data->LOOT_ISK / (max(1,$averageLootForTier))) * 100;
             }
             else {
                 $percent = -100;

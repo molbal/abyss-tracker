@@ -11,10 +11,13 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix.js('resources/js/app.js', 'public/js/app.js')
     .sass('resources/sass/app.scss', 'public/css').options({
-    processCssUrls: mix.inProduction()
-})
+        processCssUrls: mix.inProduction()
+    })
     .sass('resources/sass/app-dark.scss', 'public/css').options({
-    processCssUrls: mix.inProduction()
-});
+        processCssUrls: mix.inProduction()
+    })
+    .js('resources/js/new-run.js', 'public/js/new-run.js')
+    .js('resources/js/fits.js', 'public/js/fits.js')
+  ;
