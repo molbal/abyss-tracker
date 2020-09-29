@@ -31,15 +31,18 @@
 
 
             $dataCruiser = collect([]);
+            $dataDestroyer = collect([]);
             $dataFrigate = collect([]);
 
             for ($i = 0; $i<=6; $i++) {
-                $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
-                $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
+                $dataCruiser->add(round(MedianController::getTierMedian($i, ShipHullSize::CRUISER) / 1000000, 2));
+                $dataDestroyer->add(round(MedianController::getTierMedian($i, ShipHullSize::DESTROYER) / 1000000, 2));
+                $dataFrigate->add(round(MedianController::getTierMedian($i, ShipHullSize::FRIGATE) / 1000000, 2));
             }
 
-            $chart->dataset("Cruiser median loot values (Most probable)", "bar", $dataCruiser);
-            $chart->dataset("Frigate median loot values (Most probable)", "bar", $dataFrigate);
+            $chart->dataset("Cruiser median loot", "bar", $dataCruiser);
+            $chart->dataset("Destroyer median loot", "bar", $dataDestroyer);
+            $chart->dataset("Frigate median loot", "bar", $dataFrigate);
             $request->headers->set('Accept', 'application/json');
             return $chart->api();
         }
