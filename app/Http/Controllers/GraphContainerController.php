@@ -17,6 +17,7 @@
     use App\Charts\BellChart1;
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
+    use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
@@ -143,12 +144,13 @@
         public function getHomeDailyRunCounts() : object
         {
 
-            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
+            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month, $count_destroyer] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
 
                 $run_date = [];
                 $count_unknown = [];
                 $count_cruiser = [];
                 $count_frigate = [];
+                $count_destroyer = [];
                 $rolling_avg_week = [];
                 $rolling_avg_month = [];
                 for ($days = -60; $days <= 0; $days++) {
@@ -165,7 +167,7 @@
                     $count_cruiser[] = DB::table("runs")
                                          ->whereNotNull("runs.SHIP_ID")
                                          ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                                         ->where("ship_lookup.IS_CRUISER", "1")
+                                         ->where("ship_lookup.HULL_SIZE", ShipHullSize::CRUISER)
                                          ->where("RUN_DATE", date("Y-m-d", $timestamp))
                                          ->groupBy("RUN_DATE")
                                          ->count();
@@ -173,7 +175,15 @@
                     $count_frigate[] = DB::table("runs")
                                          ->whereNotNull("runs.SHIP_ID")
                                          ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                                         ->where("ship_lookup.IS_CRUISER", "0")
+                                         ->where("ship_lookup.HULL_SIZE", ShipHullSize::FRIGATE)
+                                         ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                                         ->groupBy("RUN_DATE")
+                                         ->count();
+
+                    $count_destroyer = DB::table("runs")
+                                         ->whereNotNull("runs.SHIP_ID")
+                                         ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                                         ->where("ship_lookup.HULL_SIZE", ShipHullSize::DESTROYER)
                                          ->where("RUN_DATE", date("Y-m-d", $timestamp))
                                          ->groupBy("RUN_DATE")
                                          ->count();
@@ -188,12 +198,13 @@
                                                    ->count() / 30, 2);
                 }
 
-                return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month];
+                return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month, $count_destroyer];
             });
 
             $daily_add_chart = new DailyAdds();
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Unspecified runs", "bar", $count_unknown)->options(["stack" => "1"]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Cruiser runs", "bar", $count_cruiser)->options(["stack" => "1"]);
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Destroyer runs", "bar", $count_frigate)->options(["stack" => "1"]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Frigate runs", "bar", $count_frigate)->options(["stack" => "1"]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => true]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => true]);

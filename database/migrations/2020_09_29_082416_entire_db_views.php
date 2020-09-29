@@ -168,9 +168,7 @@ SELECT `r`.`ID` AS `ID`,
        `r`.`RUNTIME_SECONDS` AS `RUNTIME_SECONDS`
 FROM ((`runs` `r`
        JOIN `chars` `c` on(`r`.`CHAR_ID` = `c`.`CHAR_ID`))
-      LEFT JOIN `ship_lookup` `s` on(`r`.`SHIP_ID` = `s`.`ID`)) ;
-
-
+      LEFT JOIN `ship_lookup` `s` on(`r`.`SHIP_ID` = `s`.`ID`));
         ");
             $consoleOutput->writeln("Creating view: v_ship_run_count");
             DB::statement("
