@@ -376,10 +376,10 @@ $lost_buy = 0;
         <div class="col-md-12 col-sm-12">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="tab-head-bell" data-toggle="tab" href="#tab-bell" role="tab" aria-controls="home" aria-selected="true">Tier {{$all_data->TIER}} loot distribution</a>
+                    <a class="nav-link active" id="tab-head-bell" data-toggle="tab" href="#tab-bell" role="tab" aria-controls="home" aria-selected="true">Tier {{$all_data->TIER}} loot distribution chart</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="tab-head-legacy" data-toggle="tab" href="#tab-legacy" role="tab" aria-controls="profile" aria-selected="false">Legacy averages graph</a>
+                    <a class="nav-link" id="tab-head-legacy" data-toggle="tab" href="#tab-legacy" role="tab" aria-controls="profile" aria-selected="false">Bar chart</a>
                 </li>
             </ul>
             <div class="card card-body border-0 shadow-sm top-left-no-round">

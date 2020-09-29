@@ -7,6 +7,7 @@
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Misc\DonorController;
+    use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use App\Http\Controllers\Profile\LeaderboardController;
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Requests\NewRunRequest;
@@ -533,22 +534,33 @@ from (`abyss`.`lost_items` `dl`
             // Check if we there is anything here
             if (count($lost) == 0) {
 
-                $is_frigate = false;
+                $multiply = 1;
                 if ($all_data->SHIP_ID) {
-                    $is_frigate = intval(DB::table("ship_lookup")->where("ID", $all_data->SHIP_ID)->value("IS_CRUISER")) == 0;
+                    $hull_size = intval(DB::table("ship_lookup")->where("ID", $all_data->SHIP_ID)->value("HULL_SIZE"));
+                    switch ($hull_size) {
+                        case ShipHullSize::CRUISER:
+                            $multiply = 1;
+                            break;
+                        case ShipHullSize::DESTROYER:
+                            $multiply = 2;
+                            break;
+                        case ShipHullSize::FRIGATE:
+                            $multiply = 3;
+                            break;
+                    }
                 }
 
                 // Add the missing filament
                 $lost = DB::select("select
                     `ip`.`ITEM_ID`                   AS `ITEM_ID`,
-                    ".($is_frigate ? 3 : 1)."                 AS `COUNT`,
+                    ".($multiply)."                 AS `COUNT`,
                     `ip`.`NAME`                      AS `NAME`,
                     `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
                     `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
                     `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
                     `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
-                    ".($is_frigate ? 3 : 1)."*`ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
-                    ".($is_frigate ? 3 : 1)."*`ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
+                    ".($multiply)."*`ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
+                    ".($multiply)."*`ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
 from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]);
             } else {
                 // If it doesnt exist in the list probably it was both looted and used
