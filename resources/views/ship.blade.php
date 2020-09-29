@@ -4,7 +4,7 @@
     <div class="row mt-3">
         <div class="col-sm-12 col-md-12">
             <div id="banner" class="shadow-sm w-100">
-                <img src="https://images.evetech.net/types/{{$id}}/render?size=128" class="rounded-circle shadow-sm">
+                <img src="https://images.evetech.net/types/{{$id}}/render?size=256" class="rounded-circle shadow-sm" style="width: 128px; height:128px">
                 <h4 class="font-weight-bold">{{$name}}
                 </h4>
             </div>

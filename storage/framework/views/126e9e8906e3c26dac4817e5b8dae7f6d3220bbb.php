@@ -1,4 +1,4 @@
-<table class="table table-sm table-responsive-md">
+<table class="table table-sm table-responsive-md fit-results">
     <tr>
         <td>&nbsp;</td>
         <td class="text-muted text-left">Name</td>
@@ -10,7 +10,7 @@
         <td class="text-muted text-right">Runs count</td>
     </tr>
     <?php $__empty_1 = true; $__currentLoopData = $results; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-        <?php $__env->startComponent("components.fits.filter.result-row", ["row" => $row]); ?><?php if (isset($__componentOriginal6249636dcfbf7db5a7855ef2ed6b506535273f66)): ?>
+        <?php $__env->startComponent("components.fits.filter.result-row", ["row" => $row, "admin" => (isset($admin) && $admin==true)]); ?><?php if (isset($__componentOriginal6249636dcfbf7db5a7855ef2ed6b506535273f66)): ?>
 <?php $component = $__componentOriginal6249636dcfbf7db5a7855ef2ed6b506535273f66; ?>
 <?php unset($__componentOriginal6249636dcfbf7db5a7855ef2ed6b506535273f66); ?>
 <?php endif; ?>
