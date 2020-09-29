@@ -344,8 +344,8 @@
 
 
             if ($request->filled("SHIP_IS_CRUISER")) {
-                $query->where("ship_lookup.IS_CRUISER", '=', $request->get("SHIP_IS_CRUISER"));
-                $filters_display->add(($request->get("SHIP_IS_CRUISER")=="1" ? "Cruiser" : "Frigate")." size ships");
+                $query->where("ship_lookup.HULL_SIZE", '=', $request->get("SHIP_IS_CRUISER"));
+                $filters_display->add(ucfirst($request->get("SHIP_IS_CRUISER"))." size ships");
             }
             if ($request->filled("SHIP_GROUP")) {
                 $query->where("ship_lookup.GROUP", '=', $request->get("SHIP_GROUP"));
