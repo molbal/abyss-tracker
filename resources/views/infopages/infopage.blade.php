@@ -124,7 +124,7 @@
         <div class="col-md-8">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Most popular @lang("tiers.".$tier) fits</h5>
-                @component("components.fits.filter.result-list", ["results" => $popularFits])@endcomponent
+                @component("components.fits.filter.result-list", ["runs-search.results" => $popularFits])@endcomponent
             </div>
             <div class="card-footer">
                 <a href="{{route("fit.search", ["TIER" => $tier])}}" target="_blank" class="btn btn-outline-secondary">Show more</a>

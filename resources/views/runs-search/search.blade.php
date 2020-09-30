@@ -1,13 +1,12 @@
 @extends("layout.app")
 @section("browser-title", "Search")
 @section("content")
-    <form action="{{route("search.do")}}" method="post">
+    <form action="{{route("search.do")}}" method="get">
         {{csrf_field()}}
 
     <div class="row mt-5">
         <div class="col-sm-12">
             <h4 class="font-weight-bold">Advanced search</h4>
-            <small>Max 250 results</small>
         </div>
 
         @if(isset($errors))
@@ -56,10 +55,8 @@
                         </div>
                         <div class="col-sm-12 col-md-3">
                             <div class="form-group">
-                                <label>Exact ship type</label><img
-                                    class="float-right"
-                                    src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png" data-toggle="tooltip"
-                                    title="Ships with 0 runs are hidden from this list">
+                                <label>Exact ship type</label>
+                                @component("components.info-toggle") Ships with 0 runs are hidden from this list @endcomponent
                                 <select name="ship_id" class="form-control select2-default">
                                     <option value="" selected>&nbsp;</option>
                                     @foreach($ships as $ship)
@@ -73,8 +70,9 @@
                                 <label>Hull size</label>
                                 <select name="hull_size" class="form-control select2-nosearch">
                                     <option value="" selected>&nbsp;</option>
-                                    <option value="1">Cruiser sized ships</option>
-                                    <option value="0">Frigate sized ships</option>
+                                    <option value="{{\App\Http\Controllers\Misc\Enums\ShipHullSize::CRUISER}}">{{ucfirst(\App\Http\Controllers\Misc\Enums\ShipHullSize::CRUISER)}} size</option>
+                                    <option value="{{\App\Http\Controllers\Misc\Enums\ShipHullSize::DESTROYER}}">{{ucfirst(\App\Http\Controllers\Misc\Enums\ShipHullSize::DESTROYER)}} size</option>
+                                    <option value="{{\App\Http\Controllers\Misc\Enums\ShipHullSize::FRIGATE}}">{{ucfirst(\App\Http\Controllers\Misc\Enums\ShipHullSize::FRIGATE)}} size</option>
                                 </select>
                             </div>
                         </div>

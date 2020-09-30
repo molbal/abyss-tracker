@@ -8,6 +8,8 @@
                 <div class="card-header">
                     @if(isset($sso))
                         This page is for signed in users only
+                    @elseif(isset($title))
+                        {{$title}}
                     @else
                         Something went wrong
                     @endif

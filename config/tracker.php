@@ -12,6 +12,10 @@
             ]
         ],
 
+        'search' => [
+            'link_save_time_days' => 7
+        ],
+
         'cargo' => [
             'saveTime' => 60
         ],

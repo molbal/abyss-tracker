@@ -7,7 +7,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-sm-3">
-            @component("components.collapse.collapsible-card", ["title" => "Displaying ".$results->count()." fits", 'show' => true, 'icon' => 'search'])
+            @component("components.collapse.collapsible-card", ["title" => "Displaying ".$results->count()." fits", 'show' => true, 'icon' => 'runs-search.search'])
                 <p>With the following filters:</p>
                 @forelse($filters as $filter)
                     <span class="badge badge-secondary m-1 text-wrap" style="font-size: 0.9em">{{$filter}}</span>
@@ -24,7 +24,7 @@
         <div class="col-sm-9">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Result list</h5>
-                @component("components.fits.filter.result-list", ["results" => $results])@endcomponent
+                @component("components.fits.filter.result-list", ["runs-search.results" => $results])@endcomponent
             </div>
         </div>
     </div>

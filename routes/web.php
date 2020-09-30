@@ -107,6 +107,7 @@
      */
     Route::get("/search", 'SearchController@index')->name("search.index");
     Route::any("/search/execute", 'SearchController@search')->name("search.do");
+    Route::any("/search/saved/{uuid}", 'SearchController@savedSearch')->name("search.saved");
 
     /**
      * Donor routes

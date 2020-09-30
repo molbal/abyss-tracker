@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveUpdateTriggerFromFits extends Migration
+class SavedSearchesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class RemoveUpdateTriggerFromFits extends Migration
      */
     public function up()
     {
-        Schema::table('fits', function (Blueprint $table) {
-            //
+        Schema::create('saved_searches', function (Blueprint $table) {
+            $table->string('id', 64);
+            $table->json('criteria');
+            $table->datetime('expires');
+            $table->primary(['id']);
+            $table->index(['expires']);
         });
     }
 
@@ -25,8 +29,6 @@ class RemoveUpdateTriggerFromFits extends Migration
      */
     public function down()
     {
-        Schema::table('fits', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('saved_searches');
     }
 }

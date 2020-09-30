@@ -24,7 +24,7 @@
                         </div>
                         <div class="card card-body border-0 shadow-sm mt-3">
                             <h5 class="font-weight-bold">Related fits</h5>
-                            @component("components.fits.filter.result-list", ["results" => $fits])@endcomponent
+                            @component("components.fits.filter.result-list", ["runs-search.results" => $fits])@endcomponent
                         </div>
                     </div>
 

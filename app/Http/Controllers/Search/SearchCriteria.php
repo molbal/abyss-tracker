@@ -4,7 +4,7 @@
 	namespace App\Http\Controllers\Search;
 
 
-	class SearchCriteria {
+	class SearchCriteria implements \Serializable {
 
         private $name;
         private $table;
@@ -21,7 +21,7 @@
          * @param $relation
          * @param $value
          */
-        public function __construct($name, $table, $field, $relation, $value) {
+        public function __construct($name, $table, $field, $relation, $value)  {
             $this->name = $name;
             $this->table = $table;
             $this->field = $field;
@@ -120,5 +120,23 @@
         }
 
 
+        public function serialize() {
+            return json_encode([
+                'name' => $this->name,
+                'table' => $this->table,
+                'field' => $this->field,
+                'relation' => $this->relation,
+                'value' => $this->value,
+            ]);
+        }
 
+        public function unserialize($serialized) {
+            $json = json_decode($serialized);
+
+            $this->name = $json->name;
+            $this->table = $json->table;
+            $this->field = $json->field;
+            $this->relation = $json->relation;
+            $this->value = $json->value;
+        }
     }

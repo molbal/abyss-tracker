@@ -216,7 +216,7 @@ text-align: center;">
 
     <div class="card card-body border-0 shadow-sm mt-3">
         <p>This fit has {{count($fitIdsAll)}} almost identical fits (which are counted against loot and popularity statistics). Out of these fits, {{count($fitIdsNonPrivate)}} are not set to private:</p>
-        @component("components.fits.filter.result-list", ["results" => $similars]) @endcomponent
+        @component("components.fits.filter.result-list", ["runs-search.results" => $similars]) @endcomponent
     </div>
     @endif
 
