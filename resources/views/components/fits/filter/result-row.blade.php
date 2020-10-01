@@ -1,5 +1,5 @@
 @php
-    $stats = json_decode($row->STATS)
+    $stats = @json_decode($row->STATS)
 @endphp
 <tr class="text-down">
     <td rowspan="2" class="text-center">

@@ -6,7 +6,13 @@ function filterList() {
         $("#results").css("opacity", "0.01").html(a).animate({opacity:1}, 250);
     })
         .fail(function() {
-            alert("Sorry, something went wrong while searching");
+            Toastify({
+                text: "Sorry, something went wrong while searching",
+                duration: 10000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: 'center', // `left`, `center` or `right`
+            }).showToast();
         })
         .always(function() {
             $("#doFilter").removeAttr("disabled").removeClass("disabled");

@@ -220,13 +220,13 @@
         <div class="card card-body border-0 shadow-sm top-left-no-round">
             <div class="tab-content" id="fits-tab-content">
                 <div class="tab-pane fade show active" id="tab-fits-popular" role="tabpanel" aria-labelledby="tab-head-distribution">
-                    @component("components.fits.filter.result-list", ["runs-search.results" => $popularFits])@endcomponent
+                    @component("components.fits.filter.result-list", ["results" => $popularFits]) @endcomponent
                     <div class="">
                         <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'RUNS_COUNT', 'DIRECTION' => 'DESC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more popular fits</a>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="tab-fits-new" role="tabpanel" aria-labelledby="tab-head-activity">
-                    @component("components.fits.filter.result-list", ["runs-search.results" => $newFits])@endcomponent
+                    @component("components.fits.filter.result-list", ["results" => $newFits]) @endcomponent
                     <div class="">
                         <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'Submitted', 'ORDER_BY_ORDER' => 'ASC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more new fits</a>
                     </div>

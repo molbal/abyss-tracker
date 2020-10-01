@@ -5,5 +5,5 @@
         <p>No filter applied</p>
     @endforelse
     <hr>
-@component("components.fits.filter.result-list", ["runs-search.results" => $results])@endcomponent
+@component("components.fits.filter.result-list", ["results" => $results])@endcomponent
 @endcomponent
