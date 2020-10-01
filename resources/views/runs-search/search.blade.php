@@ -6,7 +6,7 @@
 
     <div class="row mt-5">
         <div class="col-sm-12">
-            <h4 class="font-weight-bold">Advanced search</h4>
+            <h4 class="font-weight-bold">Search runs</h4>
         </div>
 
         @if(isset($errors))
@@ -85,7 +85,7 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
-                                <label for="">Run at</label>
+                                <label for="">Ran at</label>
                                 <input type="text" class="form-control daterange">
                                 <input type="hidden" id="datarangestart" name="run_date_start">
                                 <input type="hidden" id="datarangestop" name="run_date_end">
@@ -100,7 +100,7 @@
                                         <span class="input-group-text" id="">m</span>
                                     </div>
                                     <input name="min_run_length_s" id="run_length_second" class="form-control"/>
-                                    <div class="input-group-prepend">
+                                    <div class="input-group-append">
                                         <span class="input-group-text" id="">s</span>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                                         <span class="input-group-text" id="">m</span>
                                     </div>
                                     <input name="max_run_length_s" id="run_length_second" class="form-control"/>
-                                    <div class="input-group-prepend">
+                                    <div class="input-group-append">
                                         <span class="input-group-text" id="">s</span>
                                     </div>
                                 </div>
@@ -138,26 +138,26 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-3">
-                            <div class="form-group">
-                                <label for="">Proving conduit spawned?</label>
-                                <select name="proving_had" id="proving_had" class="form-control select2-nosearch">
-                                    <option value="" selected>&nbsp;</option>
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-3">
-                            <div class="form-group">
-                                <label for="">PVP room usage?</label>
-                                <select name="proving_used" id="proving_used" class="form-control select2-nosearch">
-                                    <option value="" selected>&nbsp;</option>
-                                    <option value="1">Yes, went into PVP room</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                        </div>
+{{--                        <div class="col-sm-12 col-md-3">--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label for="">Proving conduit spawned?</label>--}}
+{{--                                <select name="proving_had" id="proving_had" class="form-control select2-nosearch">--}}
+{{--                                    <option value="" selected>&nbsp;</option>--}}
+{{--                                    <option value="1">Yes</option>--}}
+{{--                                    <option value="0">No</option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        <div class="col-sm-12 col-md-3">--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label for="">PVP room usage?</label>--}}
+{{--                                <select name="proving_used" id="proving_used" class="form-control select2-nosearch">--}}
+{{--                                    <option value="" selected>&nbsp;</option>--}}
+{{--                                    <option value="1">Yes, went into PVP room</option>--}}
+{{--                                    <option value="0">No</option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                         <div class="col-sm-12 col-md-3">
                             <div class="form-group">
                                 <label for="">Death reason filter</label>

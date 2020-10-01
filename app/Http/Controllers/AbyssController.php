@@ -18,6 +18,7 @@
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Mail;
     use Illuminate\Support\Facades\Validator;
+    use Illuminate\Support\Str;
 
     class AbyssController extends Controller {
 
@@ -322,7 +323,10 @@ from (`abyss`.`lost_items` `dl`
             $reported = DB::table("run_report")->where("RUN_ID", $id)->exists();
             $reported_message = DB::table("run_report")->where("RUN_ID", $id)->value("MESSAGE");
 
-            $fit_name = $all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit";
+            $fit_name = Str::of($all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit");
+            if ($fit_name->trim()->isEmpty()) {
+                $fit_name = "Deleted fit";
+            }
             $fit_privacy = DB::table("fits")->where("ID", $all_data->FIT_ID)->value("PRIVACY");
 
             $bell = $this->graphContainerController->getLootBellGraphs($data->TIER, 1, $all_data->LOOT_ISK);

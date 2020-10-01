@@ -34,7 +34,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12 ">
-                <div class="card card-body border-0">
+                <div class="card card-body border-0 shadow-sm">
                     <table class="table table-sm table-responsive-lg" id="">
                         <thead>
                         <tr>
@@ -83,19 +83,27 @@
         </div>
     </div>
     @if (isset($link))
-    <div class="container">
+        <div class="container">
 
-        <div class="row mt-3">
-            <div class="col-sm-12">
-                <h4 class="font-weight-bold mb-0">Share this search</h4>
-                <p>
-                    The link below will be saved for {{config('tracker.search.link_save_time_days')}} days.
-                </p>
-                <input type="text" class="form-control" value="{{$link}}">
+            <div class="row mt-3">
+                <div class="col-sm-12">
+                    <div class="card card-body border-0 shadow-sm">
+                        <h4 class="font-weight-bold mb-0">Share this search</h4>
+                        <p>
+                            The link below will be saved for {{config('tracker.search.link_save_time_days')}} days.
+                        </p>
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="sharelink" value="{{$link}}" data-toggle="tooltip" title="Click to select all">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="button" id="sharecopy" data-toggle="tooltip" title="Click to copy the link">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
         </div>
-    </div>
     @endif
     <div>
 
@@ -104,10 +112,41 @@
         @section("scripts")
 
             <script type="text/javascript">
+                function selectAll() {
+                    /* Get the text field */
+                    var copyText = document.getElementById("sharelink");
 
+                    /* Select the text field */
+                    copyText.select();
+                    copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+                }
+                function copyToClipboard() {
+                    /* Get the text field */
+                    var copyText = document.getElementById("sharelink");
+
+                    /* Select the text field */
+                    copyText.select();
+                    copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+                    /* Copy the text inside the text field */
+                    document.execCommand("copy");
+
+                    /* Alert the copied text */
+
+                    Toastify({
+                        text: "Link copied to the clipboard",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: 'center', // `left`, `center` or `right`
+                    }).showToast();
+
+                    copyText.blur();
+                }
                 // When ready.
                 $(function () {
-
+                    $("#sharelink").click(selectAll);
+                    $("#sharecopy").click(copyToClipboard);
                 });
             </script>
 @endsection
