@@ -37,7 +37,8 @@
                         @forelse($last_runs as $item)
                             <tr class="action-hover-only">
                                 <td>
-                                    {!!$item->SHIP_NAME ? ($item->IS_CRUISER ? '<img src="/overview/cruiser.png"  width="10" height="10" data-toggle="tooltip" title="Cruiser run">' : '<img src="/overview/frigate.png" width="10" height="10" data-toggle="tooltip" title="Frigate run">') : '' !!}
+                                    {!!$item->SHIP_NAME ? "<img src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->HULL_SIZE)."' style='width:20px;height:20px;' alt='Ship class icon'>" : '' !!}
+{{--                                    {!!$item->SHIP_NAME ? ($item->IS_CRUISER ? '<img src="/overview/cruiser.png"  width="10" height="10" data-toggle="tooltip" title="Cruiser run">' : '<img src="/overview/frigate.png" width="10" height="10" data-toggle="tooltip" title="Frigate run">') : '' !!}--}}
                                     {!! $item->SURVIVED ? '' : '<img src="/dead.png" width="12" height="12"  data-toggle="tooltip" title="Run railed, ship and capsule lost"/>' !!}
                                 </td>
                                 <td>
