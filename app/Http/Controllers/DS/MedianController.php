@@ -12,26 +12,25 @@
 
         /**
          * Gets loot at a distribution threshold
+         * @param int    $tier
+         * @param int    $percent
+         * @param string $hullSize
          *
-         * @param int  $tier
-         * @param int  $percent
-         * @param bool $isCruiser
-         *
-         * @return mixed+
+         * @return mixed
          */
-        public static function getLootAtThreshold(int $tier, int $percent, bool $isCruiser) {
+        public static function getLootAtThreshold(int $tier, int $percent, string $hullSize) {
 
-            return Cache::remember(sprintf("aft.loot-threshold-tier.%d.%d.%d", $tier, $percent, $isCruiser ? 1 : 0), now()->addHour(), function () use ($tier, $percent, $isCruiser) {
+            return Cache::remember(sprintf("aft.loot-threshold-tier.%d.%d.size.%s", $tier, $percent, $hullSize), now()->addHour(), function () use ($tier, $percent, $hullSize) {
 
-            DB::statement("SET SQL_MODE=''");
+//            DB::statement("SET SQL_MODE=''");
             $rank = DB::select("
             select count(*) as CNT from runs r WHERE
                           r.LOOT_ISK>0
                       and r.SURVIVED=1
-    and r.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
-                      and r.TIER=?;
+    and r.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
+                      and r.TIER=cast(? as char);
             ",
-                [$isCruiser ? 1 : 0, strval($tier)])[0]->CNT;
+                [$hullSize, strval($tier)])[0]->CNT;
 
             return DB::select("
 SELECT a.LI FROM (
@@ -42,12 +41,12 @@ SELECT a.LI FROM (
                       WHERE
                               r.LOOT_ISK>0 and
                               r.SURVIVED=1 and
-                              r.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
-                        and r.TIER=?) a
+                              r.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
+                        and r.TIER=cast(? as char)) a
  WHERE a.RNK=?;
 
 ",
-                [$isCruiser ? 1 : 0, strval($tier), round($rank*$percent*0.01)])[0]->LI ?? 0;
+                [$hullSize, strval($tier), round($rank*$percent*0.01)])[0]->LI ?? 0;
             });
         }
 

@@ -7,6 +7,7 @@
 	use App\Charts\LootTypesChart;
     use App\Charts\SurvivalLevelChart;
     use App\Http\Controllers\DS\MedianController;
+    use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
@@ -33,14 +34,18 @@
          */
         public function tier(int $tier) {
 
-            $medianCruiser = MedianController::getTierMedian($tier, true);
-            $medianFrigate = MedianController::getTierMedian($tier, false);
+            $medianCruiser = MedianController::getTierMedian($tier, ShipHullSize::CRUISER);
+            $medianDestroyer = MedianController::getTierMedian($tier, ShipHullSize::DESTROYER);
+            $medianFrigate = MedianController::getTierMedian($tier, ShipHullSize::FRIGATE);
 
-            $atLoCruiser = MedianController::getLootAtThreshold($tier, 20, true);
-            $atHiCruiser = MedianController::getLootAtThreshold($tier, 80, true);
+            $atLoCruiser = MedianController::getLootAtThreshold($tier, 20, ShipHullSize::CRUISER);
+            $atHiCruiser = MedianController::getLootAtThreshold($tier, 80, ShipHullSize::CRUISER);
 
-            $atLoFrigate = MedianController::getLootAtThreshold($tier, 20, false);
-            $atHiFrigate = MedianController::getLootAtThreshold($tier, 80, false);
+            $atLoDestroyer = MedianController::getLootAtThreshold($tier, 20, ShipHullSize::DESTROYER);
+            $atHiDestroyer = MedianController::getLootAtThreshold($tier, 80, ShipHullSize::DESTROYER);
+
+            $atLoFrigate = MedianController::getLootAtThreshold($tier, 20, ShipHullSize::FRIGATE);
+            $atHiFrigate = MedianController::getLootAtThreshold($tier, 80, ShipHullSize::FRIGATE);
 
 
             $lootTypesChart = new LootTypesChart();
@@ -65,43 +70,43 @@
                 $query = $this->fitSearchController->getStartingQuery()
                                                    ->whereRaw("(
             (
-	fit_recommendations.DARK		 = $tier AND
-	fit_recommendations.ELECTRICAL	<= $tier AND
-	fit_recommendations.EXOTIC		<= $tier AND
-	fit_recommendations.FIRESTORM	<= $tier AND
-	fit_recommendations.GAMMA		<= $tier
+	fit_recommendations.DARK		 = '$tier' AND
+	fit_recommendations.ELECTRICAL	<= '$tier' AND
+	fit_recommendations.EXOTIC		<= '$tier' AND
+	fit_recommendations.FIRESTORM	<= '$tier' AND
+	fit_recommendations.GAMMA		<= '$tier'
 )
 OR
 (
-	fit_recommendations.DARK		<= $tier AND
-	fit_recommendations.ELECTRICAL	 = $tier AND
-	fit_recommendations.EXOTIC		<= $tier AND
-	fit_recommendations.FIRESTORM	<= $tier AND
-	fit_recommendations.GAMMA		<= $tier
+	fit_recommendations.DARK		<= '$tier' AND
+	fit_recommendations.ELECTRICAL	 = '$tier' AND
+	fit_recommendations.EXOTIC		<= '$tier' AND
+	fit_recommendations.FIRESTORM	<= '$tier' AND
+	fit_recommendations.GAMMA		<= '$tier'
 )
 OR
 (
-	fit_recommendations.DARK		<= $tier AND
-	fit_recommendations.ELECTRICAL	<= $tier AND
-	fit_recommendations.EXOTIC		 = $tier AND
-	fit_recommendations.FIRESTORM	<= $tier AND
-	fit_recommendations.GAMMA		<= $tier
+	fit_recommendations.DARK		<= '$tier' AND
+	fit_recommendations.ELECTRICAL	<= '$tier' AND
+	fit_recommendations.EXOTIC		 = '$tier' AND
+	fit_recommendations.FIRESTORM	<= '$tier' AND
+	fit_recommendations.GAMMA		<= '$tier'
 )
 OR
 (
-	fit_recommendations.DARK		<= $tier AND
-	fit_recommendations.ELECTRICAL	<= $tier AND
-	fit_recommendations.EXOTIC		<= $tier AND
-	fit_recommendations.FIRESTORM	 = $tier AND
-	fit_recommendations.GAMMA		<= $tier
+	fit_recommendations.DARK		<= '$tier' AND
+	fit_recommendations.ELECTRICAL	<= '$tier' AND
+	fit_recommendations.EXOTIC		<= '$tier' AND
+	fit_recommendations.FIRESTORM	 = '$tier' AND
+	fit_recommendations.GAMMA		<= '$tier'
 )
 OR
 (
-	fit_recommendations.DARK		<= $tier AND
-	fit_recommendations.ELECTRICAL	<= $tier AND
-	fit_recommendations.EXOTIC		<= $tier AND
-	fit_recommendations.FIRESTORM	<= $tier AND
-	fit_recommendations.GAMMA		 = $tier
+	fit_recommendations.DARK		<= '$tier' AND
+	fit_recommendations.ELECTRICAL	<= '$tier' AND
+	fit_recommendations.EXOTIC		<= '$tier' AND
+	fit_recommendations.FIRESTORM	<= '$tier' AND
+	fit_recommendations.GAMMA		 = '$tier'
 )
 )")
                                                    ->limit(7)
@@ -114,7 +119,7 @@ OR
                 return $popularFits;
             });
 
-            $runs =  DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->where("TIER", $tier)->limit(20)->get();
+            $runs =  DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->where("TIER", strval($tier))->limit(20)->get();
             $drops = DB::select("SELECT          ip.ITEM_ID,
                 MAX(ip.PRICE_BUY) as PRICE_BUY,
                 MAX(ip.PRICE_SELL) as PRICE_SELL,
@@ -134,13 +139,13 @@ ORDER BY 6 DESC LIMIT ?;
 ", [$tier, $tier, 10]);
 
             $count = Cache::remember("aft.infopage.tier.$tier.count", now()->addMinutes(15), function() use ($tier) {
-                return DB::table("runs")->where("TIER", $tier)->count();
+                return DB::table("runs")->where("TIER", strval($tier))->count();
             });
 
 
             $heroes = Cache::remember("aft.infopage.tier.$tier.people", now()->addMinutes(15), function() use ($tier) {
                 return DB::table("runs")
-                         ->where("runs.TIER", $tier)
+                         ->where("runs.TIER", strval($tier))
                          ->where("runs.PUBLIC", true)
                          ->groupBy("runs.CHAR_ID")
                          ->groupBy("chars.NAME")
@@ -155,10 +160,16 @@ ORDER BY 6 DESC LIMIT ?;
             return view("infopages.infopage", [
                 'medianCruiser' => $medianCruiser,
                 'medianFrigate' => $medianFrigate,
+                'medianDestroyer' => $medianDestroyer,
+
                 'atLoCruiser' => $atLoCruiser,
                 'atHiCruiser' => $atHiCruiser,
+
                 'atLoFrigate' => $atLoFrigate,
                 'atHiFrigate' => $atHiFrigate,
+
+                'atLoDestroyer' => $atLoDestroyer,
+                'atHiDestroyer' => $atHiDestroyer,
 
                 'chartTypes' => $lootTypesChart,
                 'chartSurvival' => $survivalChart,

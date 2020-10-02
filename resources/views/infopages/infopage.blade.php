@@ -73,6 +73,41 @@
                 <div class="row">
                     <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/more-than.png" class="pull-left ml-2"/>
                     <div class="col">
+                        <h2 class="font-weight-bold mb-0">{{round($atLoDestroyer/1000000, 2)}} M ISK</h2>
+                        <small class="text-muted font-weight-bold">80% of runs are more profitable</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="Median loot value">
+                <div class="row">
+                    <img src="{{\App\Http\Controllers\ThemeController::getShipSizeIconPath("destroyer")}}" class="pull-left ml-2">
+                    <div class="col">
+                        <h2 class="font-weight-bold mb-0">{{round($medianDestroyer/1000000, 2)}} M ISK</h2>
+                        <small class="text-muted font-weight-bold">Most probable loot value (Destroyers)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="80th percentile value">
+                <div class="row">
+                    <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/less-than.png" class="pull-left ml-2"/>
+                    <div class="col">
+                        <h2 class="font-weight-bold mb-0">{{round($atHiDestroyer/1000000, 2)}} M ISK</h2>
+                        <small class="text-muted font-weight-bold">80% of runs are less profitable</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-4 col-sm-12">
+            <div class="card card-body border-0 shadow-sm" data-toggle="tooltip" title="20th percentile value">
+                <div class="row">
+                    <img src="https://img.icons8.com/ios/64/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/more-than.png" class="pull-left ml-2"/>
+                    <div class="col">
                         <h2 class="font-weight-bold mb-0">{{round($atLoFrigate/1000000, 2)}} M ISK</h2>
                         <small class="text-muted font-weight-bold">80% of runs are more profitable</small>
                     </div>
@@ -124,7 +159,7 @@
         <div class="col-md-8">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Most popular @lang("tiers.".$tier) fits</h5>
-                @component("components.fits.filter.result-list", ["runs-search.results" => $popularFits])@endcomponent
+                @component("components.fits.filter.result-list", ["results" => $popularFits])@endcomponent
             </div>
             <div class="card-footer">
                 <a href="{{route("fit.search", ["TIER" => $tier])}}" target="_blank" class="btn btn-outline-secondary">Show more</a>
