@@ -242,33 +242,35 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function form_new() {
-            if (session()->has("login_id")) {
-                $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
-
-                $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", session()->get("login_id"))->get()->get(0)->REFRESH_TOKEN;
-                $last_loot = Cache::get(sprintf("at.last_dropped.%s", session()->get("login_id")), "");
-
-                try {
-                    $prev = $this->runsController->getPreviousRun();
-                    $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
-                    $last_fit_name = $prev->FIT_ID ? DB::table("fits")->where("ID", $prev->FIT_ID)->value("NAME") : null;
-                }
-                catch (\Exception $e) {
-                    $advanced_open = false;
-                }
-
-                return view("new", [
-                    "ships" => $ships,
-                    "prev"  => $prev,
-                    "stopwatch" => $stopwatch_enabled,
-                    "last_loot" => $last_loot,
-                    "advanced_open" => $advanced_open,
-                    "last_fit_name" => $last_fit_name ?? ""
-                ]);
-            }
-            else {
+            if (!session()->has("login_id")) {
                 return view("error", ["error" => "Please sign in first to add a new run"]);
             }
+            $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
+
+            $loginId = session()->get('login_id');
+            $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", $loginId)->value('REFRESH_TOKEN');
+            $last_loot = Cache::get(sprintf("at.last_dropped.%s", $loginId), "");
+
+            try {
+                $prev = $this->runsController->getPreviousRun();
+                $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
+                $last_fit_name = $prev->FIT_ID ? DB::table("fits")->where("ID", $prev->FIT_ID)->value("NAME") : null;
+            }
+            catch (\Exception $e) {
+                $advanced_open = false;
+            }
+
+            $lastSelected = FitSearchController::getLastSelected($prev);
+
+            return view("new", [
+                "ships" => $ships,
+                "prev"  => $prev,
+                "stopwatch" => $stopwatch_enabled,
+                "last_loot" => $last_loot,
+                "advanced_open" => $advanced_open,
+                "last_fit_name" => $last_fit_name ?? "",
+                "last_selected" => $lastSelected
+            ]);
         }
 
         /**
@@ -596,5 +598,7 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
 
             return $lost;
         }
+
+
 
     }

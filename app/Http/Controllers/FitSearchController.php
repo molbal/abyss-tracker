@@ -438,6 +438,22 @@
             return ($request->get($tagName) == "yes" ? __("tags.show-only") : __("tags.exclude")) . " " . strtolower(__("tags.".$tagName));
         }
 
+
+        /**
+         * @param $prev
+         *
+         * @return string
+         */
+        public static function getLastSelected($prev) : array {
+            $shipName = DB::table("ship_lookup")
+                       ->where('ID', $prev->SHIP_ID)
+                       ->value('NAME');
+            $fitSelected = $prev->FIT_ID != null;
+            $fitName = DB::table("fits")
+                     ->where('ID', $prev->FIT_ID)
+                     ->value('NAME') ?? ($fitSelected ? "Deleted fit" : "No fit selected");
+            return ['id' => json_encode(['SHIP_ID' => $prev->SHIP_ID, 'FIT_ID' => $prev->FIT_ID]), 'text' => "Last used: " . ($shipName ?? "No ship selected") . "/" . ($fitName) . " ".($fitSelected ? "(Fit ID #".$prev->FIT_ID.")" : "")];
+        }
     }
 
 

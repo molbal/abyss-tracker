@@ -2,7 +2,7 @@
 @section("browser-title", "Changes")
 @section("content")
     <div class="row mt-5">
-        <div class="col-sm-6 mb-3 offset-md-3">
+        <div class="col-sm-8 mb-3 offset-md-2">
             <div class="card card-body border-warning shadow-sm mb-3">
                 <small class="text-capitalize font-weight-bold text-dark pt-0">IN DEVELOPMENT / PLANNED</small>
                 <h4 class="mb-0 pb-0">Future releases</h4>
@@ -22,7 +22,7 @@
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                     <h4 class="mb-0 pb-0"><strong>1.7</strong> KurodaAkira's modified release</h4>
-                    <small class="mt-0">2020 october 3</small>
+                    <small class="mt-0">2020 october 2</small>
                     <p class="text-justify">
                         New features and CCP update catchup release
                     </p>
@@ -30,6 +30,7 @@
                         <li><strong>Adds support for destroyers</strong></li>
                         <li>User request: <em>Search now does not limit the number of results at all</em></li>
                         <li>User request: <em>Searches are now shareable with a link, for {{config('tracker.search.link_save_time_days')}} days <a href="https://github.com/molbal/abyss-tracker/issues/25" target="_blank">#25</a></em></li>
+                        <li>Restored the last selected fit functionality - thanks for the patience guys</li>
                     </ul>
                 </div>
             </div>

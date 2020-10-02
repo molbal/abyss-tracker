@@ -10,7 +10,7 @@
             <div class="card card-body border-0 shadow-sm pb-0">
                 <h5 class="font-weight-bold">My fits</h5>
                 <p>Here is a list of all the fits you submitted</p>
-                @component("components.fits.filter.result-list", ["runs-search.results" => $results, "admin" => true])@endcomponent
+                @component("components.fits.filter.result-list", ["results" => $results, "admin" => true])@endcomponent
             </div>
 {{--            <div class="card-footer">--}}
 {{--                {{$results->links()}}--}}
