@@ -273,7 +273,8 @@
                                "fits.STATS",
                                "fits.PRICE",
                                "fits.VIDEO_LINK",
-                               "ship_lookup.NAME as SHIP_NAME", DB::raw('(select count(runs.`ID`) from `runs` where runs.`FIT_ID`=fits.`ID`) as `RUNS_COUNT`'),
+                               "ship_lookup.NAME as SHIP_NAME",
+                               DB::raw('(select count(runs.`ID`) from `runs` where runs.`FIT_ID`=fits.`ID`) as `RUNS_COUNT`'),
                                "ship_lookup.GROUP",
                                "fit_recommendations.DARK as Dark",
                                "fit_recommendations.ELECTRICAL as Electrical",
@@ -344,8 +345,8 @@
 
 
             if ($request->filled("SHIP_IS_CRUISER")) {
-                $query->where("ship_lookup.IS_CRUISER", '=', $request->get("SHIP_IS_CRUISER"));
-                $filters_display->add(($request->get("SHIP_IS_CRUISER")=="1" ? "Cruiser" : "Frigate")." size ships");
+                $query->where("ship_lookup.HULL_SIZE", '=', $request->get("SHIP_IS_CRUISER"));
+                $filters_display->add(ucfirst($request->get("SHIP_IS_CRUISER"))." size ships");
             }
             if ($request->filled("SHIP_GROUP")) {
                 $query->where("ship_lookup.GROUP", '=', $request->get("SHIP_GROUP"));
@@ -437,6 +438,22 @@
             return ($request->get($tagName) == "yes" ? __("tags.show-only") : __("tags.exclude")) . " " . strtolower(__("tags.".$tagName));
         }
 
+
+        /**
+         * @param $prev
+         *
+         * @return string
+         */
+        public static function getLastSelected($prev) : array {
+            $shipName = DB::table("ship_lookup")
+                       ->where('ID', $prev->SHIP_ID)
+                       ->value('NAME');
+            $fitSelected = $prev->FIT_ID != null;
+            $fitName = DB::table("fits")
+                     ->where('ID', $prev->FIT_ID)
+                     ->value('NAME') ?? ($fitSelected ? "Deleted fit" : "No fit selected");
+            return ['id' => json_encode(['SHIP_ID' => $prev->SHIP_ID, 'FIT_ID' => $prev->FIT_ID]), 'text' => "Last used: " . ($shipName ?? "No ship selected") . "/" . ($fitName) . " ".($fitSelected ? "(Fit ID #".$prev->FIT_ID.")" : "")];
+        }
     }
 
 

@@ -104,8 +104,9 @@
                     <label for="SHIP_IS_CRUISER">Ship size</label>
                     <select name="SHIP_IS_CRUISER" id="select_SHIP_IS_CRUISER" class="form-control select2-default">
                         <option value="" selected>Any</option>
-                        <option value="1">Cruiser</option>
-                        <option value="0">Frigate</option>
+                        <option value="{{\App\Http\Controllers\Misc\Enums\ShipHullSize::CRUISER}}">{{ucfirst(\App\Http\Controllers\Misc\Enums\ShipHullSize::CRUISER)}}</option>
+                        <option value="{{\App\Http\Controllers\Misc\Enums\ShipHullSize::DESTROYER}}">{{ucfirst(\App\Http\Controllers\Misc\Enums\ShipHullSize::DESTROYER)}}</option>
+                        <option value="{{\App\Http\Controllers\Misc\Enums\ShipHullSize::FRIGATE}}">{{ucfirst(\App\Http\Controllers\Misc\Enums\ShipHullSize::FRIGATE)}}</option>
                     </select>
                 </div>
             @endcomponent
@@ -166,9 +167,12 @@
                 <h5 class="font-weight-bold">Showing all fits</h5>
                 @component("components.fits.filter.result-list", ["results" => $results])@endcomponent
             </div>
-            <div class="card-footer">
-                {{$results->links()}}
-            </div>
+
+            @if($results->hasPages())
+                <div class="card-footer">
+                    {{$results->links()}}
+                </div>
+            @endif
         </div>
     </div>
 @endsection

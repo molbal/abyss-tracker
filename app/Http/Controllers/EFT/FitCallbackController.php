@@ -27,6 +27,10 @@
             $id = $request->get("id");
             $data = $request->get("result");
 
+            if (DB::table("fits")->where('ID', $id)->doesntExist()) {
+                return response(['error' => sprintf("No such fit with ID %d", $id)], 404);
+            }
+
             Log::info("Fit stats received for $id!");
             DB::table('fits')->where('ID', $id)->update([
                 'STATS' => $data,

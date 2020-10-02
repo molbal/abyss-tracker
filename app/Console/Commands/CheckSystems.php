@@ -38,12 +38,14 @@ class CheckSystems extends Command
      */
     public function handle()
     {
-        /** @var StopwatchController $stopwatch */
-        $stopwatch = resolve("App\Http\Controllers\StopwatchController");
         $allstart = time();
         do {
             $bf = time();
+            /** @var StopwatchController $stopwatch */
+            $stopwatch = resolve("App\Http\Controllers\StopwatchController");
             $stopwatch->updateEsi();
+            unset($stopwatch);
+            gc_collect_cycles();
             $af = time();
             $runtime = ceil($af - $bf);
             $wait = 10 - min(10, max(0, $runtime));
@@ -52,7 +54,5 @@ class CheckSystems extends Command
                 break;
             }
         } while(time()-$allstart < 60-($wait+1));
-        unset($stopwatch);
-        gc_collect_cycles();
     }
 }

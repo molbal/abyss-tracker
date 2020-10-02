@@ -115,7 +115,9 @@
                             <div class="col-sm-10">
                                 <div class="form-group">
                                     <label for="vessel">What ship/fit did you use?</label>
-                                    <select type="text" class="form-control" id="vessel" name="vessel"></select>
+                                    <select type="text" class="form-control" id="vessel" name="vessel">
+                                        <option value="{{$last_selected['id']}}">{{$last_selected['text']}}</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

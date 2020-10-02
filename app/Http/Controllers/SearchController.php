@@ -7,7 +7,9 @@ use App\Http\Controllers\Search\SearchQueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class SearchController extends Controller
 {
@@ -37,7 +39,7 @@ class SearchController extends Controller
                         $q->select(DB::raw(1))->from('runs')->whereRaw("runs.SHIP_ID=ship_lookup.ID");
                     })
                    ->get();
-        return view("search", [
+        return view("runs-search.search", [
             "tiers" => $tiers,
             "types" => $types,
             "ships" => $ships,
@@ -50,10 +52,10 @@ class SearchController extends Controller
         Validator::make($request->all(), [
             'tier' => 'nullable|numeric|min:0|max:6',
             'type' => ['nullable',Rule::exists("type","TYPE")],
-            'ship_id' => 'nullable|numeric',
-            'hull_size' => 'nullable|numeric|min:0|max:15',
+            'ship_id' => ['nullable',Rule::exists("ship_lookup","ID")],
+            'hull_size' => 'nullable|exists:ship_lookup,HULL_SIZE',
             'run_date_start' => 'nullable|date',
-            'run_date_end' => 'nullable|date',
+            'run_date_end' => 'nullable|date|before_or_equal:now',
             'min_run_length_m' => 'nullable|numeric|min:0|max:20',
             'min_run_length_s' => 'nullable|numeric|min:0|max:59',
             'max_run_length_m' => 'nullable|numeric|min:0|max:20',
@@ -68,59 +70,109 @@ class SearchController extends Controller
         ])->validate();
 
         $scb = new SearchQueryBuilder();
-        if ($request->get("tier")) {
+        if ($request->filled("tier")) {
             $scb->addCondition(new SearchCriteria("Tier ".$request->get("tier"), "runs", "TIER", "=", $request->get("tier")));
         }
-        if ($request->get("type")) {
+        if ($request->filled("type")) {
             $scb->addCondition(new SearchCriteria($request->get("type")." type", "runs", "TYPE", "=", $request->get("type")));
         }
-        if ($request->get("ship_id")) {
+        if ($request->filled("ship_id")) {
             $scb->addCondition(new SearchCriteria("Ship type: ".DB::table("ship_lookup")->where("ID", $request->get("ship_id"))->value("NAME"), "runs", "SHIP_ID", "=", $request->get("ship_id")));
         }
-        if ($request->get("hull_size") !== null) {
-            $scb->addCondition(new SearchCriteria(($request->get("hull_size") ? "Cruiser" : "Frigate")." size ships", "ship_lookup", "IS_CRUISER", "=", $request->get("hull_size")));
+        if ($request->filled("hull_size")) {
+            $scb->addCondition(new SearchCriteria(($request->get("hull_size") ? "Cruiser" : "Frigate")." size ships", "ship_lookup", "HULL_SIZE", "=", $request->get("hull_size")));
         }
-        if ($request->get("run_date_start")) {
+        if ($request->filled("run_date_start")) {
             $scb->addCondition(new SearchCriteria("Runs from ".$request->get("run_date_start"), "runs", "RUN_DATE", ">=", $request->get("run_date_start")));
         }
-        if ($request->get("run_date_start")) {
+        if ($request->filled("run_date_start")) {
             $scb->addCondition(new SearchCriteria("Runs until ".$request->get("run_date_end"), "runs", "RUN_DATE", "<=", $request->get("run_date_end")));
         }
-        if ($request->get("min_run_length_m")) {
+        if ($request->filled("min_run_length_m")) {
             $sec = ($request->get("min_run_length_m")*60)+($request->get("min_run_length_s"));
             $scb->addCondition(new SearchCriteria("Longer than ".$request->get("min_run_length_m").":".$request->get("min_run_length_s"), "runs", "RUNTIME_SECONDS", ">=", $sec));
         }
-        if ($request->get("max_run_length_m")) {
+        if ($request->filled("max_run_length_m")) {
             $sec = ($request->get("max_run_length_m")*60)+($request->get("max_run_length_s"));
             $scb->addCondition(new SearchCriteria("Shorter than ".$request->get("max_run_length_m").":".$request->get("max_run_length_s"), "runs", "RUNTIME_SECONDS", "<=", $sec));
         }
-        if ($request->get("survived") !== null) {
+        if ($request->filled("survived")) {
             $scb->addCondition(new SearchCriteria(($request->get("survived") ? "Successful" : "Failed")." runs", "runs", "SURVIVED", "=", $request->get("survived")));
         }
-        if ($request->get("proving_had") !== null) {
-            $scb->addCondition(new SearchCriteria(($request->get("proving_had") ? "Proving conduit spawned" : "Proving conduit didn't spawn"), "runs", "PVP_CONDUIT_SPAWN", "=", $request->get("proving_had")));
-        }
-        if ($request->get("proving_used") !== null) {
-            $scb->addCondition(new SearchCriteria(($request->get("proving_used") ? "Used proving conduit" : "Did not use proving conduit"), "runs", "PVP_CONDUIT_USED", "=", $request->get("proving_used")));
-        }
-        if ($request->get("death_reason")) {
+//        if ($request->get("proving_had") !== null) {
+//            $scb->addCondition(new SearchCriteria(($request->get("proving_had") ? "Proving conduit spawned" : "Proving conduit didn't spawn"), "runs", "PVP_CONDUIT_SPAWN", "=", $request->get("proving_had")));
+//        }
+//        if ($request->get("proving_used") !== null) {
+//            $scb->addCondition(new SearchCriteria(($request->get("proving_used") ? "Used proving conduit" : "Did not use proving conduit"), "runs", "PVP_CONDUIT_USED", "=", $request->get("proving_used")));
+//        }
+        if ($request->filled("death_reason")) {
             $scb->addCondition(new SearchCriteria("Death reason: ".$this->bc->getDeathReasonQQuickBark($request->get("death_reason")), "runs", "DEATH_REASON", "=", $request->get("death_reason")));
         }
-        if ($request->get("loot_strategy")) {
+        if ($request->filled("loot_strategy")) {
             $scb->addCondition(new SearchCriteria("Looting strategy: ".$this->bc->getLootStrategyDescription($request->get("loot_strategy")), "runs", "LOOT_TYPE", "=", $request->get("loot_strategy")));
         }
 
-        if ($request->get("loot_min") !== null) {
+        if ($request->filled("loot_min")) {
             $scb->addCondition(new SearchCriteria(number_format($request->get("loot_min"), 0, " ", " ") ." ISK min loot", "runs", "LOOT_ISK", ">=", $request->get("loot_min")));
         }
-        if ($request->get("loot_max") !== null) {
+        if ($request->filled("loot_max")) {
             $scb->addCondition(new SearchCriteria(number_format($request->get("loot_max"), 0, " ", " ") ." ISK max loot", "runs", "LOOT_ISK", "<=", $request->get("loot_max")));
         }
 
-        $query = $scb->getQuery()->limit(350)->get();
-        return view("results", [
-            'results' => $query,
-			'conditions' => $scb->getConditions()
+        if ($scb->getConditions()->count() == 0) {
+            $error = ValidationException::withMessages([
+                '' => ['Please do not submit an empty search.'],
+            ]);
+            throw $error;
+        }
+
+        $query = $scb->getQuery()->paginate(100);
+        return view("runs-search.results", [
+            'results' => $query->appends($request->all()),
+			'conditions' => $scb->getConditions(),
+            'link' => route('search.saved', ['uuid' => $scb->persistSearch()])
+        ]);
+    }
+
+
+    public function savedSearch(Request  $request, string $uuid) {
+
+        Validator::make($request->all(), [
+            'tier' => 'nullable|numeric|min:0|max:6',
+            'type' => ['nullable',Rule::exists("type","TYPE")],
+            'ship_id' => ['nullable',Rule::exists("ship_lookup","ID")],
+            'hull_size' => 'nullable|exists:ship_lookup,HULL_SIZE',
+            'run_date_start' => 'nullable|date',
+            'run_date_end' => 'nullable|date|before_or_equal:now',
+            'min_run_length_m' => 'nullable|numeric|min:0|max:20',
+            'min_run_length_s' => 'nullable|numeric|min:0|max:59',
+            'max_run_length_m' => 'nullable|numeric|min:0|max:20',
+            'max_run_length_s' => 'nullable|numeric|min:0|max:59',
+            'survived' => 'nullable|numeric|min:0|max:1',
+            'proving_had' => 'nullable|numeric|min:0|max:1',
+            'proving_used' => 'nullable|numeric|min:0|max:1',
+            'death_reason' => 'nullable',
+            'loot_min' => 'nullable|numeric',
+            'loot_max' => 'nullable|numeric',
+            'loot_strategy' => 'nullable',
+        ])->validate();
+
+
+        if (DB::table("saved_searches")->where('id', $uuid)->doesntExist()) {
+            return view('error', [
+                'title' => "Can't find this search",
+                'message' => "Can't find this search: Probably its expired."
+            ]);
+        }
+
+        $json = DB::table("saved_searches")->where('id', $uuid)->value("criteria");
+
+        $scb = new SearchQueryBuilder();
+        $scb->unserializeConditions($json);
+        $query = $scb->getQuery()->paginate(100);
+        return view("runs-search.results", [
+            'results' => $query->appends($request->all()),
+            'conditions' => $scb->getConditions()
         ]);
     }
 

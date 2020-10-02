@@ -163,11 +163,13 @@
                         </div>
                         <div class="col-md-6">
                             <h5 class="font-weight-bold text-white">Info pages</h5>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 0])}}">Tranquil <small class="bringupper">(Tier 0)</small></a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 1])}}">Calm <small class="bringupper">(Tier 1)</small></a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 2])}}">Agitated <small class="bringupper">(Tier 2)</small></a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 3])}}">Fierce <small class="bringupper">(Tier 3)</small></a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 4])}}">Raging <small class="bringupper">(Tier 4)</small></a></p>
                             <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 5])}}">Chaotic <small class="bringupper">(Tier 5)</small></a></p>
+                            <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/info.png"/><a class="text-white" href="{{route("infopage.tier", ['tier' => 6])}}">Cataclysmic <small class="bringupper">(Tier 6)</small></a></p>
                         </div>
                     </div>
                 </div>

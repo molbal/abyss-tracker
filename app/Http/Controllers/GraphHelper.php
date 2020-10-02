@@ -14,6 +14,7 @@
     use App\Charts\SurvivalLevelChart;
     use App\Charts\TierLevelsChart;
     use App\Http\Controllers\DS\MedianController;
+    use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -30,15 +31,18 @@
 
 
             $dataCruiser = collect([]);
+            $dataDestroyer = collect([]);
             $dataFrigate = collect([]);
 
             for ($i = 0; $i<=6; $i++) {
-                $dataCruiser->add(round(MedianController::getTierMedian($i, true) / 1000000, 2));
-                $dataFrigate->add(round(MedianController::getTierMedian($i, false) / 1000000, 2));
+                $dataCruiser->add(round(MedianController::getTierMedian($i, ShipHullSize::CRUISER) / 1000000, 2));
+                $dataDestroyer->add(round(MedianController::getTierMedian($i, ShipHullSize::DESTROYER) / 1000000, 2));
+                $dataFrigate->add(round(MedianController::getTierMedian($i, ShipHullSize::FRIGATE) / 1000000, 2));
             }
 
-            $chart->dataset("Cruiser median loot values (Most probable)", "bar", $dataCruiser);
-            $chart->dataset("Frigate median loot values (Most probable)", "bar", $dataFrigate);
+            $chart->dataset("Cruiser median loot", "bar", $dataCruiser);
+            $chart->dataset("Destroyer median loot", "bar", $dataDestroyer);
+            $chart->dataset("Frigate median loot", "bar", $dataFrigate);
             $request->headers->set('Accept', 'application/json');
             return $chart->api();
         }
@@ -117,12 +121,12 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
         /**
          * Gets the run bell graphs for
          * @param int $tier
-         * @param int $isCruiser
+         * @param string $isCruiser
          * @param int $thisRun
          *
          * @return string
          */
-        public function getRunBellGraphs(int $tier, int  $isCruiser, int $thisRun) {
+        public function getRunBellGraphs(int $tier, string $isCruiser, int $thisRun) {
 
             $million = 1000000;
             $meanCruiser = (DB::table("runs")
@@ -130,35 +134,51 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
                               ->where("runs.SURVIVED", true)
                               ->where("runs.TIER", $tier)
                               ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
-                              ->where("ship_lookup.IS_CRUISER", 1)
+                              ->where("ship_lookup.HULL_SIZE", ShipHullSize::CRUISER)
                               ->avg("runs.LOOT_ISK"))/$million;
             $sdevCruiser = (DB::table("runs")
                               ->where("runs.LOOT_ISK", '>', 0)
                               ->where("runs.SURVIVED", true)
                               ->where("runs.TIER", $tier)
                               ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
-                              ->where("ship_lookup.IS_CRUISER", 1)
+                              ->where("ship_lookup.HULL_SIZE", ShipHullSize::CRUISER)
+                              ->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
+            $meanDestroyer = (DB::table("runs")
+                              ->where("runs.LOOT_ISK", '>', 0)
+                              ->where("runs.SURVIVED", true)
+                              ->where("runs.TIER", $tier)
+                              ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
+                              ->where("ship_lookup.HULL_SIZE", ShipHullSize::DESTROYER)
+                              ->avg("runs.LOOT_ISK"))/$million;
+            $sdevDestroyer = (DB::table("runs")
+                              ->where("runs.LOOT_ISK", '>', 0)
+                              ->where("runs.SURVIVED", true)
+                              ->where("runs.TIER", $tier)
+                              ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
+                              ->where("ship_lookup.HULL_SIZE", ShipHullSize::DESTROYER)
                               ->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
             $meanFrigate = (DB::table("runs")
                               ->where("runs.LOOT_ISK", '>', 0)
                               ->where("runs.SURVIVED", true)
                               ->where("runs.TIER", $tier)
                               ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
-                              ->where("ship_lookup.IS_CRUISER", 0)
+                              ->where("ship_lookup.HULL_SIZE", ShipHullSize::FRIGATE)
                               ->avg("runs.LOOT_ISK"))/$million;
             $sdevFrigate = (DB::table("runs")
                               ->where("runs.LOOT_ISK", '>', 0)
                               ->where("runs.SURVIVED", true)
                               ->where("runs.TIER", $tier)
                               ->join("ship_lookup", "runs.SHIP_ID", '=', 'ship_lookup.ID')
-                              ->where("ship_lookup.IS_CRUISER", 0)
+                              ->where("ship_lookup.HULL_SIZE", ShipHullSize::FRIGATE)
                               ->select(DB::raw("STDDEV(runs.LOOT_ISK) as STDEV"))->first()->STDEV)/$million;
 
 
             $dataCruiser = $this->getCruiserBaseDataForTier($tier);
+            $dataDestroyer = $this->getDestroyerBaseDataForTier($tier);
             $dataFrigate = $this->getFrigateBaseDataForTier($tier);
 
             $chartDataCruiser = $this->buildDataSet($dataCruiser, $million, $meanCruiser, $sdevCruiser);
+            $chartDataDestroyer= $this->buildDataSet($dataDestroyer, $million, $meanDestroyer, $sdevDestroyer);
             $chartDataFrigate = $this->buildDataSet($dataFrigate, $million, $meanFrigate, $sdevFrigate);
 
             $thisRunData = [[
@@ -168,6 +188,11 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
 
             $chart = new BellChart1();
             $chart->dataset("Cruiser size distribution", "line", $chartDataCruiser)->options([
+                "smooth" => 0.5,
+                "showSymbol" => false,
+                "hoverAnimation" => false
+            ]);
+            $chart->dataset("Destroyer size distribution", "line", $chartDataDestroyer)->options([
                 "smooth" => 0.5,
                 "showSymbol" => false,
                 "hoverAnimation" => false
@@ -482,25 +507,8 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
          */
         protected function getCruiserBaseDataForTier(int $tier) : array {
             return Cache::remember("aft.bellgraph.cruiser.t" . $tier, now()->addMinutes(15), function () use ($tier) {
-                return $this->executeBaseDataForTier($tier, true);
+                return $this->executeBaseDataForTier($tier, ShipHullSize::CRUISER);
             });
-        }
-
-        protected function executeBaseDataForTier(int $tier, bool $isCruiser) {
-            return DB::select("
-                    select AVG(i.LOOT_ISK) as `LOOT_ISK`
-                    from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
-                          FROM runs r
-                                   join ship_lookup sl on r.SHIP_ID = sl.ID
-                          where r.SURVIVED = 1
-                            and r.TIER = ?
-                            and r.LOOT_ISK > 0
-                            and sl.IS_CRUISER = ?
-                          GROUP BY r.LOOT_ISK
-                          ORDER BY r.LOOT_ISK ASC) i
-                    WHERE i.DIST<=? AND i.LOOT_ISK <= ?
-                    GROUP BY ROUND(i.DIST, 2)
-                    ORDER BY i.LOOT_ISK ASC", [$tier, $isCruiser, 1, 300000000]);
         }
 
         /**
@@ -510,7 +518,36 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
          */
         protected function getFrigateBaseDataForTier(int $tier) : array {
             return Cache::remember("aft.bellgraph.cruiser.t" . $tier, now()->addMinutes(15), function () use ($tier) {
-                return $this->executeBaseDataForTier($tier, false);
+                return $this->executeBaseDataForTier($tier,  ShipHullSize::FRIGATE);
             });
+        }
+
+        /**
+         * @param int $tier
+         *
+         * @return array
+         */
+        protected function getDestroyerBaseDataForTier(int $tier) : array {
+            return Cache::remember("aft.bellgraph.destroyer.t" . $tier, now()->addMinutes(15), function () use ($tier) {
+                return $this->executeBaseDataForTier($tier, ShipHullSize::DESTROYER);
+            });
+        }
+
+
+        protected function executeBaseDataForTier(int $tier, string $hullSize) {
+            return DB::select("
+                    select AVG(i.LOOT_ISK) as `LOOT_ISK`
+                    from (SELECT MIN(r.LOOT_ISK) as `LOOT_ISK`, CUME_DIST() OVER (ORDER BY LOOT_ISK ASC) as `DIST`
+                          FROM runs r
+                                   join ship_lookup sl on r.SHIP_ID = sl.ID
+                          where r.SURVIVED = 1
+                            and r.TIER = ?
+                            and r.LOOT_ISK > 0
+                            and sl.HULL_SIZE = ?
+                          GROUP BY r.LOOT_ISK
+                          ORDER BY r.LOOT_ISK ASC) i
+                    WHERE i.DIST<=? AND i.LOOT_ISK <= ?
+                    GROUP BY ROUND(i.DIST, 2)
+                    ORDER BY i.LOOT_ISK ASC", [$tier, $hullSize, 1, 300000000]);
         }
     }

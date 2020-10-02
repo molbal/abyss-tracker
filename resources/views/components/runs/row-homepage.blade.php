@@ -1,6 +1,6 @@
 <tr class="action-hover-only">
     <td>
-        {!!$item->SHIP_NAME ? "<img src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->IS_CRUISER ? 'cruiser' : 'frigate')."' style='width:20px;height:20px;' alt='Ship class icon'>" : '' !!}
+        {!!$item->SHIP_NAME ? "<img src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->HULL_SIZE)."' style='width:20px;height:20px;' alt='Ship class icon'>" : '' !!}
         {!! $item->SURVIVED ? '' : '<img src="/dead.png" data-toggle="tooltip" title="Run failed, ship and capsule lost"/>' !!}
     </td>
     <td>

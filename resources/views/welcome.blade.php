@@ -12,9 +12,9 @@
             {{--        NEWS START --}}
             <div class="col-xs-12 col-md-6">
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
-                    <img src="{{asset("home/1.6.0b.jpg")}}" alt="1.5.5 released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
+                    <img src="{{asset("home/1.7.jpg")}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
                     <div class="p-3 text-center">
-                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to 1.6</a>
+                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to {{config('tracker.version')}}</a>
                         <p class="mb-0">See changes and new features</p>
                     </div>
                 </div>
@@ -220,13 +220,13 @@
         <div class="card card-body border-0 shadow-sm top-left-no-round">
             <div class="tab-content" id="fits-tab-content">
                 <div class="tab-pane fade show active" id="tab-fits-popular" role="tabpanel" aria-labelledby="tab-head-distribution">
-                    @component("components.fits.filter.result-list", ["results" => $popularFits])@endcomponent
+                    @component("components.fits.filter.result-list", ["results" => $popularFits]) @endcomponent
                     <div class="">
                         <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'RUNS_COUNT', 'DIRECTION' => 'DESC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more popular fits</a>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="tab-fits-new" role="tabpanel" aria-labelledby="tab-head-activity">
-                    @component("components.fits.filter.result-list", ["results" => $newFits])@endcomponent
+                    @component("components.fits.filter.result-list", ["results" => $newFits]) @endcomponent
                     <div class="">
                         <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'Submitted', 'ORDER_BY_ORDER' => 'ASC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more new fits</a>
                     </div>

@@ -10,6 +10,9 @@
     use App\Charts\HomePagePopularClasses;
     use App\Charts\HomePagePopularHulls;
     use App\Charts\PersonalDaily;
+    use App\Charts\SurvivalLevelChart;
+    use App\Charts\TierLevelsChart;
+    use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
@@ -58,7 +61,6 @@
                     ]
                 ]
             ]);
-
             return $chart;
         }
 
@@ -70,12 +72,13 @@
         public function getHomeDailyRunCounts() : object
         {
 
-            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
+            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month, $count_destroyer] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
 
                 $run_date = [];
                 $count_unknown = [];
                 $count_cruiser = [];
                 $count_frigate = [];
+                $count_destroyer = [];
                 $rolling_avg_week = [];
                 $rolling_avg_month = [];
                 for ($days = -60; $days <= 0; $days++) {
@@ -92,7 +95,7 @@
                     $count_cruiser[] = DB::table("runs")
                                          ->whereNotNull("runs.SHIP_ID")
                                          ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                                         ->where("ship_lookup.IS_CRUISER", "1")
+                                         ->where("ship_lookup.HULL_SIZE", ShipHullSize::CRUISER)
                                          ->where("RUN_DATE", date("Y-m-d", $timestamp))
                                          ->groupBy("RUN_DATE")
                                          ->count();
@@ -100,7 +103,15 @@
                     $count_frigate[] = DB::table("runs")
                                          ->whereNotNull("runs.SHIP_ID")
                                          ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                                         ->where("ship_lookup.IS_CRUISER", "0")
+                                         ->where("ship_lookup.HULL_SIZE", ShipHullSize::FRIGATE)
+                                         ->where("RUN_DATE", date("Y-m-d", $timestamp))
+                                         ->groupBy("RUN_DATE")
+                                         ->count();
+
+                    $count_destroyer = DB::table("runs")
+                                         ->whereNotNull("runs.SHIP_ID")
+                                         ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
+                                         ->where("ship_lookup.HULL_SIZE", ShipHullSize::DESTROYER)
                                          ->where("RUN_DATE", date("Y-m-d", $timestamp))
                                          ->groupBy("RUN_DATE")
                                          ->count();
@@ -115,12 +126,13 @@
                                                    ->count() / 30, 2);
                 }
 
-                return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month];
+                return [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month, $count_destroyer];
             });
 
             $daily_add_chart = new DailyAdds();
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Unspecified runs", "bar", $count_unknown)->options(["stack" => "1"]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Cruiser runs", "bar", $count_cruiser)->options(["stack" => "1"]);
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Destroyer runs", "bar", $count_frigate)->options(["stack" => "1"]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Frigate runs", "bar", $count_frigate)->options(["stack" => "1"]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => true]);
             $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => true]);
@@ -170,67 +182,52 @@
          * @return array
          */
         public function getRunGraphs($data): array {
-            $isCruiser = DB::table("ship_lookup")
+            $hullSize = DB::table("ship_lookup")
                        ->where("ID", $data->SHIP_ID ?? 17715)
-                       ->value("IS_CRUISER");
+                       ->value("HULL_SIZE");
             $otherCharts = new PersonalDaily();
-            $averageLootForTierType = DB::table("runs")
-                ->where("TIER", $data->TIER)
-                ->where("TYPE", $data->TYPE)
-                ->where("SURVIVED", true)
-                ->avg("LOOT_ISK");
-
 
             $medianLootForTier = DB::select("SELECT AVG(dd.LOOT_ISK) as MEDIAN
 FROM (
 SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
   FROM runs d, (SELECT @rownum:=0) r
   WHERE d.LOOT_ISK is NOT NULL
-  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
+  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
   ORDER BY d.LOOT_ISK
 ) as dd
-WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER, $isCruiser])[0]->MEDIAN;
+WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER, $hullSize])[0]->MEDIAN ?? 0;
 
-
-            $averageLootForTierTypeCruiser = DB::table("runs")
-                ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                ->whereNotNull("runs.SHIP_ID")
-                ->where("ship_lookup.IS_CRUISER", "1")
-                ->where("runs.TIER", $data->TIER)
-                ->where("runs.TYPE", $data->TYPE)
-                ->where("runs.SURVIVED", true)
-                ->avg("LOOT_ISK");
-
-
-            $averageLootForTierTypeFrigate = DB::table("runs")
-                ->join("ship_lookup", "runs.SHIP_ID", 'ship_lookup.ID')
-                ->whereNotNull("runs.SHIP_ID")
-                ->where("ship_lookup.IS_CRUISER", "0")
-                ->where("runs.TIER", $data->TIER)
-                ->where("runs.TYPE", $data->TYPE)
-                ->where("runs.SURVIVED", true)
-                ->avg("LOOT_ISK");
 
             $medianLootForTierCruiser =  DB::select("SELECT AVG(dd.LOOT_ISK) as MEDIAN
 FROM (
 SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
   FROM runs d, (SELECT @rownum:=0) r
   WHERE d.LOOT_ISK is NOT NULL
-  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
+  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
   ORDER BY d.LOOT_ISK
 ) as dd
-WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER, 1])[0]->MEDIAN;
+WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER,  ShipHullSize::CRUISER])[0]->MEDIAN ?? 0;
 
+
+            $medianLootForTierDestroyer =  DB::select("SELECT AVG(dd.LOOT_ISK) as MEDIAN
+FROM (
+SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
+  FROM runs d, (SELECT @rownum:=0) r
+  WHERE d.LOOT_ISK is NOT NULL
+  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
+  ORDER BY d.LOOT_ISK
+) as dd
+WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER, ShipHullSize::DESTROYER])[0]->MEDIAN ?? 0;
 
             $medianLootForTierFrigate =  DB::select("SELECT AVG(dd.LOOT_ISK) as MEDIAN
 FROM (
 SELECT d.LOOT_ISK, @rownum:=@rownum+1 as `row_number`, @total_rows:=@rownum
   FROM runs d, (SELECT @rownum:=0) r
   WHERE d.LOOT_ISK is NOT NULL
-  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where IS_CRUISER=?)
+  and d.TIER=? and d.SURVIVED=1 and d.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
   ORDER BY d.LOOT_ISK
 ) as dd
-WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER, 0])[0]->MEDIAN;
+WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );", [$data->TIER,  ShipHullSize::FRIGATE])[0]->MEDIAN ?? 0;
 
             if ($data->SHIP_NAME) {
                 $averageLootForTierTypeShip = DB::table("v_runall")
@@ -264,10 +261,8 @@ WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );",
                 $otherCharts->dataset(sprintf("Tier %s (%s)", $data->TIER, $data->NAME), 'bar', [round($averageLootForTierChar / 1000000, 2)]);
             }
 
-            $otherCharts->dataset(sprintf("%s tier %s all", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierType / 1000000, 2)]);
-            $otherCharts->dataset(sprintf("%s tier %s cruiser", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierTypeCruiser/ 1000000, 2)]);
-            $otherCharts->dataset(sprintf("%s tier %s frigates", $data->TYPE, $data->TIER), 'bar', [round($averageLootForTierTypeFrigate/ 1000000, 2)]);
             $otherCharts->dataset(sprintf("%s tier cruiser (median)",  $data->TIER), 'bar', [round($medianLootForTierCruiser/ 1000000, 2)]);
+            $otherCharts->dataset(sprintf("%s tier frigates (destroyer)",  $data->TIER), 'bar', [round($medianLootForTierDestroyer/ 1000000, 2)]);
             $otherCharts->dataset(sprintf("%s tier frigates (median)",  $data->TIER), 'bar', [round($medianLootForTierFrigate/ 1000000, 2)]);
             $otherCharts->dataset(sprintf("Tier %s (median)", $data->TIER), 'bar', [round($medianLootForTier / 1000000, 2)]);
             $otherCharts->dataset(sprintf("This run"), 'bar', [round($data->LOOT_ISK / 1000000, 2)]);
@@ -278,12 +273,15 @@ WHERE dd.row_number IN ( FLOOR((@total_rows+1)/2), FLOOR((@total_rows+2)/2) );",
 
 
             if ($data->SHIP_NAME) {
-                $group = DB::table("ship_lookup")->where("NAME", $data->SHIP_NAME)->value("IS_CRUISER");
+                $group = DB::table("ship_lookup")->where("NAME", $data->SHIP_NAME)->value("HULL_SIZE");
                 switch ($group) {
-                    case 1:
+                    case  ShipHullSize::DESTROYER:
+                        $medianLootForTier = $medianLootForTierDestroyer;
+                        break;
+                    case  ShipHullSize::CRUISER:
                         $medianLootForTier = $medianLootForTierCruiser;
                         break;
-                    case 0:
+                    case  ShipHullSize::FRIGATE:
                         $medianLootForTier = $medianLootForTierFrigate;
                         break;
 

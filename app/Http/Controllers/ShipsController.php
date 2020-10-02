@@ -10,6 +10,7 @@
     use App\Charts\LootTypesChart;
     use App\Charts\PersonalDaily;
     use App\Charts\ShipCruiserChart;
+    use App\Charts\ShipDestroyerChart;
     use App\Charts\ShipFrigateChart;
     use App\Http\Controllers\Loot\LootCacheController;
     use Carbon\Carbon;
@@ -49,12 +50,15 @@
 
             [$query_cruiser, $shipCruiserChart] = $this->getAllShipsCruiersChart();
             [$query_frig, $shipFrigateChart] = $this->getAllShipsFrigatesChart();
+            [$query_destroyer, $shipDestroyerChart] = $this->getAllShipsDestroyerChart();
 
             return view("ships", [
                 "cruiser_chart" => $shipCruiserChart,
                 "frigate_chart" => $shipFrigateChart,
+                "destroyer_chart" => $shipDestroyerChart,
                 "query_cruiser" => $query_cruiser,
                 "query_frigate" => $query_frig,
+                "query_destroyer" => $query_destroyer,
             ]);
         }
 
@@ -488,7 +492,7 @@
             $query_frig = Cache::remember("ships.frigates", now()->addMinutes(20), function() {
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
-                    where l.IS_CRUISER=0
+                    where l.HULL_SIZE='frigate'
                     group by r.SHIP_ID, l.NAME, l.ID,  l.GROUP
                     order by 1 desc
                     limit 15");
@@ -523,6 +527,44 @@
             return [$query_frig, $shipFrigateChart];
         }
 
+        public function getAllShipsDestroyerChart(): array {
+            $shipDestroyerDataset = Cache::remember("ships.destroyers", now()->addMinutes(20), function() {
+                return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
+                    from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
+                    where l.HULL_SIZE='destroyer'
+                    group by r.SHIP_ID, l.NAME, l.ID,  l.GROUP
+                    order by 1 desc
+                    limit 15");
+            });
+
+            $dataset = [];
+            $values = [];
+            foreach ($shipDestroyerDataset as $type) {
+                $i = 7;
+                if ($i-- == 0) break;
+                $dataset[] = $type->NAME;
+                $values[] = $type->RUNS;
+            }
+
+
+            $shipDestroyerChart = new ShipDestroyerChart();
+            $shipDestroyerChart->export(true, "Download");
+            $shipDestroyerChart->displayAxes(false);
+            $shipDestroyerChart->height(400);
+            $shipDestroyerChart->theme(ThemeController::getChartTheme());
+            $shipDestroyerChart->labels($dataset);
+            $shipDestroyerChart->dataset("Destroyers", "pie", $values)->options([
+                "radius"   => self::PIE_RADIUS,
+                "roseType" => "radius",
+                'label' => [
+                    'position' => 'outer',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 5
+                ]
+            ]);
+            $shipDestroyerChart->displayLegend(false);
+            return [$shipDestroyerDataset, $shipDestroyerChart];
+        }
         /**
          * @return array
          */
@@ -530,7 +572,7 @@
             $query_cruiser = Cache::remember("ships.cruisers", now()->addMinutes(20), function() {
                 return DB::select("select count(r.ID) as RUNS, l.Name as NAME, l.ID as SHIP_ID, l.GROUP
                     from runs r inner join ship_lookup l on r.SHIP_ID=l.ID
-                    where l.IS_CRUISER=1
+                    where l.HULL_SIZE='cruiser'
                     group by r.SHIP_ID, l.NAME, l.ID,  l.GROUP
                     order by 1 desc
                     limit 15");

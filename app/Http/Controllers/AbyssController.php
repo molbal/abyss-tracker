@@ -7,6 +7,7 @@
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Misc\DonorController;
+    use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use App\Http\Controllers\Profile\LeaderboardController;
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Requests\NewRunRequest;
@@ -17,6 +18,7 @@
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Mail;
     use Illuminate\Support\Facades\Validator;
+    use Illuminate\Support\Str;
 
     class AbyssController extends Controller {
 
@@ -240,33 +242,35 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function form_new() {
-            if (session()->has("login_id")) {
-                $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
-
-                $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", session()->get("login_id"))->get()->get(0)->REFRESH_TOKEN;
-                $last_loot = Cache::get(sprintf("at.last_dropped.%s", session()->get("login_id")), "");
-
-                try {
-                    $prev = $this->runsController->getPreviousRun();
-                    $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
-                    $last_fit_name = $prev->FIT_ID ? DB::table("fits")->where("ID", $prev->FIT_ID)->value("NAME") : null;
-                }
-                catch (\Exception $e) {
-                    $advanced_open = false;
-                }
-
-                return view("new", [
-                    "ships" => $ships,
-                    "prev"  => $prev,
-                    "stopwatch" => $stopwatch_enabled,
-                    "last_loot" => $last_loot,
-                    "advanced_open" => $advanced_open,
-                    "last_fit_name" => $last_fit_name ?? ""
-                ]);
-            }
-            else {
+            if (!session()->has("login_id")) {
                 return view("error", ["error" => "Please sign in first to add a new run"]);
             }
+            $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
+
+            $loginId = session()->get('login_id');
+            $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", $loginId)->value('REFRESH_TOKEN');
+            $last_loot = Cache::get(sprintf("at.last_dropped.%s", $loginId), "");
+
+            try {
+                $prev = $this->runsController->getPreviousRun();
+                $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
+                $last_fit_name = $prev->FIT_ID ? DB::table("fits")->where("ID", $prev->FIT_ID)->value("NAME") : null;
+            }
+            catch (\Exception $e) {
+                $advanced_open = false;
+            }
+
+            $lastSelected = FitSearchController::getLastSelected($prev);
+
+            return view("new", [
+                "ships" => $ships,
+                "prev"  => $prev,
+                "stopwatch" => $stopwatch_enabled,
+                "last_loot" => $last_loot,
+                "advanced_open" => $advanced_open,
+                "last_fit_name" => $last_fit_name ?? "",
+                "last_selected" => $lastSelected
+            ]);
         }
 
         /**
@@ -321,7 +325,10 @@ from (`abyss`.`lost_items` `dl`
             $reported = DB::table("run_report")->where("RUN_ID", $id)->exists();
             $reported_message = DB::table("run_report")->where("RUN_ID", $id)->value("MESSAGE");
 
-            $fit_name = $all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit";
+            $fit_name = Str::of($all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit");
+            if ($fit_name->trim()->isEmpty()) {
+                $fit_name = "Deleted fit";
+            }
             $fit_privacy = DB::table("fits")->where("ID", $all_data->FIT_ID)->value("PRIVACY");
 
             $bell = $this->graphContainerController->getLootBellGraphs($data->TIER, 1, $all_data->LOOT_ISK);
@@ -533,22 +540,33 @@ from (`abyss`.`lost_items` `dl`
             // Check if we there is anything here
             if (count($lost) == 0) {
 
-                $is_frigate = false;
+                $multiply = 1;
                 if ($all_data->SHIP_ID) {
-                    $is_frigate = intval(DB::table("ship_lookup")->where("ID", $all_data->SHIP_ID)->value("IS_CRUISER")) == 0;
+                    $hull_size = intval(DB::table("ship_lookup")->where("ID", $all_data->SHIP_ID)->value("HULL_SIZE"));
+                    switch ($hull_size) {
+                        case ShipHullSize::CRUISER:
+                            $multiply = 1;
+                            break;
+                        case ShipHullSize::DESTROYER:
+                            $multiply = 2;
+                            break;
+                        case ShipHullSize::FRIGATE:
+                            $multiply = 3;
+                            break;
+                    }
                 }
 
                 // Add the missing filament
                 $lost = DB::select("select
                     `ip`.`ITEM_ID`                   AS `ITEM_ID`,
-                    ".($is_frigate ? 3 : 1)."                 AS `COUNT`,
+                    ".($multiply)."                 AS `COUNT`,
                     `ip`.`NAME`                      AS `NAME`,
                     `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
                     `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
                     `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
                     `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
-                    ".($is_frigate ? 3 : 1)."*`ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
-                    ".($is_frigate ? 3 : 1)."*`ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
+                    ".($multiply)."*`ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
+                    ".($multiply)."*`ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
 from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]);
             } else {
                 // If it doesnt exist in the list probably it was both looted and used
@@ -580,5 +598,7 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
 
             return $lost;
         }
+
+
 
     }
