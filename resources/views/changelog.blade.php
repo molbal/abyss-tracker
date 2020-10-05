@@ -18,9 +18,22 @@
                 </p>
             </div>
             <div class="card card-body border-danger shadow-sm mb-3 p-0">
-                <img src="{{asset("home/1.7.jpg")}}" alt="1.7.0 release" class="w-100 shadow">
+{{--                <img src="{{asset("home/1.7.jpg")}}" alt="1.7.0 release" class="w-100 shadow">--}}
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                    <h4 class="mb-0 pb-0"><strong>1.8</strong> 'Wetu' release</h4>
+                    <small class="mt-0">2020 october ?</small>
+                    <p class="text-justify">
+                        Feature expansion release
+                    </p>
+                    <ul>
+                        <li><strong>Adds support for editing fits</strong></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card card-body border-0 shadow-sm mb-3 p-0">
+                <img src="{{asset("home/1.7.jpg")}}" alt="1.7.0 release" class="w-100 shadow">
+                <div class="p-3">
                     <h4 class="mb-0 pb-0"><strong>1.7</strong> KurodaAkira's modified release</h4>
                     <small class="mt-0">2020 october 2</small>
                     <p class="text-justify">
