@@ -12803,3 +12803,169 @@ playback timings (ms):
     display: inline-block;
   }
 }
+.msform-container {
+  background-color: #F5F3FB;
+  border-radius: 1rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid #e5e0f5;
+  box-shadow: 0 1rem 1rem rgba(0, 25, 75, 0.05);
+}
+.msform-container:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  border-left: 130px solid #e5e0f5;
+  border-top: 65px solid transparent;
+  border-right: 130px solid transparent;
+  border-bottom: 65px solid #e5e0f5;
+}
+
+.msform-steps {
+  list-style-type: none;
+  counter-reset: step;
+  font-weight: 700;
+  padding: 2rem;
+  margin-bottom: 0;
+  height: 100%;
+}
+.msform-steps:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  border-left: 195px solid #ede9f8;
+  border-top: 65px solid transparent;
+  border-right: 195px solid transparent;
+  border-bottom: 65px solid #ede9f8;
+}
+.msform-steps > li:before {
+  content: counter(step);
+  counter-increment: step;
+  display: inline-flex;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid #d5cdee;
+  font-size: 15px;
+  margin-right: 1rem;
+  letter-spacing: 0;
+}
+.msform-steps li {
+  z-index: 2;
+}
+.msform-steps > li {
+  color: #9580d5;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+}
+.msform-steps > li:last-child {
+  margin-bottom: 0;
+}
+.msform-steps > li.is-completed {
+  color: #d5cdee;
+}
+.msform-steps > li.is-completed:not(:last-child):after {
+  content: "";
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 12px;
+  width: 2px;
+  height: calc(100% - 10px);
+  background-color: #28a745;
+}
+.msform-steps > li.is-completed a {
+  color: #d5cdee;
+}
+.msform-steps > li.is-completed a:hover {
+  color: #b5a7e2;
+  text-decoration: none;
+}
+.msform-steps > li.is-completed:before {
+  content: " ";
+  font-size: 10px;
+  border-color: #28a745;
+  background-image: url("/_icons/tick-light.svg");
+  background-color: #28a745;
+  color: #fff;
+}
+.msform-steps > li.is-active {
+  color: #3395ff;
+}
+.msform-steps > li.is-active:before {
+  border-color: #3395ff;
+}
+
+.msform-steps ul {
+  counter-reset: step;
+  list-style-type: none;
+  margin: 1rem 0 0 0;
+  padding: 0 0 0 2.5rem;
+  width: 100%;
+  z-index: 2;
+}
+.msform-steps ul .msform-step-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #765ac8;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-bottom: 0.5rem;
+}
+.msform-steps ul .msform-step-item ion-icon {
+  color: #d5cdee;
+  display: none;
+}
+.msform-steps ul .msform-step-item:hover {
+  text-decoration: none;
+}
+.msform-steps ul .msform-step-item:last-child {
+  margin-bottom: 0;
+}
+.msform-steps ul .msform-step-item.is-active {
+  font-weight: 700;
+  color: #5a3cb3;
+}
+.msform-steps ul .msform-step-item.is-active ion-icon {
+  display: block;
+}
+
+.msform-content-container {
+  background-color: #fff;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  z-index: 1;
+}
+
+.msform-content {
+  transition: all 500ms ease-out;
+  opacity: 1;
+  transform: translateY(0);
+  color: #444c66;
+}
+.msform-content .form-group {
+  margin-bottom: 1.5rem;
+}
+.msform-content .text-muted {
+  color: #b5a7e2 !important;
+}
+.msform-content.hidden {
+  opacity: 0;
+  transform: translateY(2rem);
+}

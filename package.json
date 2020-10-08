@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@forevolve/bootstrap-dark": "^1.0.0-alpha.1091",
+        "ionicons": "^5.2.3",
         "npm": "^6.14.8",
         "toastify-js": "^1.9.1"
     }

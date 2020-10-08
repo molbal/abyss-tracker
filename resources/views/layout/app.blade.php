@@ -228,9 +228,7 @@
 <script src="{{asset("js/app.js")}}"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @yield('scripts')
-<script>
-
-</script>
+<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 @if(!config("app.debug"))
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86961430-8"></script>
@@ -242,6 +240,7 @@
         gtag('js', new Date());
         gtag('config', 'UA-86961430-8');
     </script>
+
 @endif
 </body>
 </html>
