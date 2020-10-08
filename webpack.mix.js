@@ -20,4 +20,14 @@ mix.js('resources/js/app.js', 'public/js/app.js')
     })
     .js('resources/js/new-run.js', 'public/js/new-run.js')
     .js('resources/js/fits.js', 'public/js/fits.js')
+    .styles([
+        'resources/sass/dependencies-dark/simplemde-theme-dark.min.css'
+    ], 'public/css/new-fit-deps-dark.css')
+    .styles([
+        'resources/sass/dependencies-light/simplemde.min.css'
+    ], 'public/css/new-fit-deps-light.css')
+    .scripts([
+        'resources/js/dependencies-all/simplemde.min.js',
+        'resources/js/new-fit/wizard.js'
+    ], 'public/js/new-fit.js')
   ;
