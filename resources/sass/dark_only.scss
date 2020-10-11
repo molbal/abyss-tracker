@@ -33,6 +33,9 @@ nav.bg-white {
     color: #fff;
 }
 
+a {
+    @extend .text-dark;
+}
 
 .text-dark {
     color: #eee !important;

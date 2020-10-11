@@ -15,6 +15,11 @@
                     </div>
                 @endif
                 <div class="card border-0 shadow">
+                    <div class="card-overlay" wire:loading>
+                        <div class="loading-indicator-container">
+                            <img src="{{asset('loader.png')}}" alt="">
+                        </div>
+                    </div>
                     <div class="card-body border-0 container">
                         <h5 class="font-weight-bold">
                             {{$wizardTitle}}
@@ -92,9 +97,9 @@
                                         <textarea name="eft"  wire:loading.attr="disabled" wire:model.lazy="eft" id="eft" class="w-100 form-control" rows="10" required></textarea>
                                     </div>
 
-                                    <div wire:loading wire:target="eft">
-                                        <img src="{{asset('loader.png')}}" alt=""> Verifying fit...
-                                    </div>
+{{--                                    <div wire:loading wire:target="eft">--}}
+{{--                                        <img src="{{asset('loader.png')}}" alt=""> Verifying fit...--}}
+{{--                                    </div>--}}
                                     @component("components.info-line")
                                         After you paste the EFT, the Abyss Tracker will attempt to validate the fit. It will check if the ship can enter abyssal deadspace before letting you continue. Make sure to select ammunition in Pyfa
                                     @endcomponent
@@ -105,11 +110,15 @@
                                     @endif
     {{--                                STEP 1 ENDS--}}
                                 @elseif($step == 1)
-                                    next steppo
+                                    <p>
+                                        Please write a few words about your fit and set whats the highest Abyss Tier you recommend it for.
+                                    </p>
                                 @endif
                             </div>
                         </div>
                     </div>
+
+                    <button wire:click="$refresh">rf</button>
 {{--                    <div class="card-footer">--}}
 {{--                        <div class="w-100 d-flex justify-content-between">--}}
 {{--                            <button class="btn btn-outline-secondary" disabled>&laquo; Back</button>--}}

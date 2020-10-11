@@ -6679,7 +6679,7 @@ button.bg-dark:focus {
   justify-content: flex-end !important;
 }
 
-.justify-content-center {
+.justify-content-center, .card-overlay div.loading-indicator-container {
   justify-content: center !important;
 }
 
@@ -6699,7 +6699,7 @@ button.bg-dark:focus {
   align-items: flex-end !important;
 }
 
-.align-items-center {
+.align-items-center, .card-overlay div.loading-indicator-container {
   align-items: center !important;
 }
 
@@ -11683,4 +11683,21 @@ nav.bg-white {
 }
 .wizard-message {
   background: #f4f4f4;
+}
+.wizard-message div a {
+  text-decoration: underline;
+}
+
+.card-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 3;
+  cursor: wait;
+}
+.card-overlay div.loading-indicator-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
 }

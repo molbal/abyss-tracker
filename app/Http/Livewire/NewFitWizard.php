@@ -79,10 +79,8 @@ class NewFitWizard extends Component
     }
 
     public function goToStep(int $stepNum) {
-//        dd($this->stepsReady, $stepNum);
         if ($this->stepsReady->has($this->step)) {
             $this->step = $stepNum;
-            $this->message = null;
         }
     }
 
@@ -91,8 +89,9 @@ class NewFitWizard extends Component
         $fitParser = resolve('App\Http\Controllers\EFT\FitParser');
         $fitObj = $fitParser->getFitTypes($value);
         if (!$fitObj->canGoToAbyss()) {
-            throw new MalformedEFTException("This ship (".$fitObj->getShipName().") cannot fly in Abyssal Deadspace!");
+            throw new MalformedEFTException("The ".$fitObj->getShipName()." cannot fly in Abyssal Deadspace - the Abyss Tracker only accepts Abyssal Deadspace capable ships. For a general fit service check out our friends at <a href='https://eveworkbench.com/' target='_blank' rel='nofollow'>EVE Workbench</a>.");
         }
+        sleep(15);
         return $fitObj;
     }
 

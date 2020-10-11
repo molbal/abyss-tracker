@@ -44,13 +44,18 @@ function detectPaste(textarea, callback) {
 
 
 $(function () {
-    var simplemde = new SimpleMDE({
-        element: document.getElementById("description"),
-        forceSync: true,
-        spellChecker: false,
-        status: false,
-        hideIcons: ["guide"]
+    document.addEventListener("DOMContentLoaded", () => {
+        Livewire.hook('element.updated', (el, component) => {
+            var simplemde = new SimpleMDE({
+                element: document.getElementById("description"),
+                forceSync: true,
+                spellChecker: false,
+                status: false,
+                hideIcons: ["guide"]
+            });
+        })
     });
+
 
 
     var textarea = document.getElementById("eft");
