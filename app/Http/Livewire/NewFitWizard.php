@@ -21,11 +21,6 @@ class NewFitWizard extends Component
     /** @var string */
     public $wizardTitle;
 
-    /** @var ?string */
-    public $message;
-
-    /** @var string */
-    public $messageType;
 
     /** @var Collection */
     public $stepsReady;
@@ -34,7 +29,6 @@ class NewFitWizard extends Component
         $this->step = 0;
         $this->fitName = null;
         $this->wizardTitle = "New fit";
-        $this->message =  null;
         $this->stepsReady = collect([]);
     }
 
@@ -43,12 +37,12 @@ class NewFitWizard extends Component
             $obj = $this->parseEft($value);
             if ($obj->isDefaultName()) {
                 $this->fitName = collect(config("shipnames.names"))->random();
-                $this->message =  __("new-fit-wizard.default-name", ['shipname' => $this->fitName]);
-                $this->messageType = 'success';
+                session()->flash('message', __("new-fit-wizard.default-name", ['shipname' => $this->fitName]));
+                session()->flash('messageType','success');
             }
             else {
-                $this->message =  __("new-fit-wizard.eft-verified");
-                $this->messageType = 'success';
+                session()->flash('message', __("new-fit-wizard.eft-verified"));
+                session()->flash('messageType','success');
             }
             $this->wizardTitle = "Uploading fit: ".$this->fitName;
             if (!$this->stepsReady->has(0)) {
@@ -57,8 +51,8 @@ class NewFitWizard extends Component
 
         }
         catch (MalformedEFTException $meft) {
-            $this->message = $meft->getMessage();
-            $this->messageType = 'danger';
+            session()->flash('message', $meft->getMessage());
+            session()->flash('messageType','danger');
 
             if (!$this->stepsReady->has(0)) {
                 $this->stepsReady->forget(0);
@@ -66,8 +60,8 @@ class NewFitWizard extends Component
             $this->wizardTitle = "Invalid fit";
         }
         catch (\Exception $exc) {
-            $this->message = "Unknown error: " . $exc->getMessage();
-            $this->messageType = 'danger';
+            session()->flash('message', $exc->getMessage());
+            session()->flash('messageType','danger');
             $this->wizardTitle = "Invalid fit";
             if (!$this->stepsReady->has(0)) {
                 $this->stepsReady->forget(0);

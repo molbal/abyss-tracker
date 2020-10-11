@@ -245,8 +245,8 @@
             if (isset($response->inventory_types[0]->id)) {
                 $invType = $response->inventory_types[0]->id;
             } else {
-                Log::warning("Cannot find the Eve ID number for this name: <$fullName>"." response: <".print_r($response, 1).">");
-                throw new \InvalidArgumentException("Cannot find the Eve ID number for this name: <$fullName>");
+                Log::warning("Cannot find the Eve ID number for this name: [$fullName]"." response: <".print_r($response, 1).">");
+                throw new \InvalidArgumentException("Cannot find the Eve ID number for this name: $fullName");
             }
 
             return $invType;

@@ -14,13 +14,9 @@
                         </div>
                     </div>
                 @endif
-                @if($message)
-                    <div class="shadow-sm alert alert-{{$messageType}}">{!! $message !!}</div>
-                @endif
                 <div class="card border-0 shadow">
                     <div class="card-body border-0 container">
                         <h5 class="font-weight-bold">
-{{--                            <x-icon icon="database-restore"/>--}}
                             {{$wizardTitle}}
                         </h5>
                         <div class="row">
@@ -77,6 +73,18 @@
                                 </ol>
                             </div>
                             <div class="col-xs-12 col-sm-9">
+                                @if (session()->has('message'))
+                                    <div class="d-flex justify-content-start p-3 mb-2 shadow rounded border-{{session('messageType')}}" style="border-width: 0 0 0 3px; border-style: solid">
+                                        <div class="mr-3">
+                                            {!! config('new-fit-wizard.images.'.session('messageType')) !!}
+                                        </div>
+                                        <div>
+                                            <h4 class="font-weight-bold">Message</h4>
+                                            {!! session('message') !!}
+                                        </div>
+                                    </div>
+                                @endif
+
 {{--                                STEP 1 STARTS--}}
                                 @if($step == 0)
                                     <div class="form-group">
