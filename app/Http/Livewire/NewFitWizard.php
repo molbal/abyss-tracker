@@ -91,7 +91,6 @@ class NewFitWizard extends Component
         if (!$fitObj->canGoToAbyss()) {
             throw new MalformedEFTException("The ".$fitObj->getShipName()." cannot fly in Abyssal Deadspace - the Abyss Tracker only accepts Abyssal Deadspace capable ships. For a general fit service check out our friends at <a href='https://eveworkbench.com/' target='_blank' rel='nofollow'>EVE Workbench</a>.");
         }
-        sleep(15);
         return $fitObj;
     }
 

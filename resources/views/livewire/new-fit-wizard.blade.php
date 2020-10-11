@@ -85,7 +85,7 @@
                                         </div>
                                         <div>
                                             <h4>Message</h4>
-                                            {!! session('message') !!}
+                                            {{ session('message') }}
                                         </div>
                                     </div>
                                 @endif
@@ -101,7 +101,9 @@
 {{--                                        <img src="{{asset('loader.png')}}" alt=""> Verifying fit...--}}
 {{--                                    </div>--}}
                                     @component("components.info-line")
-                                        After you paste the EFT, the Abyss Tracker will attempt to validate the fit. It will check if the ship can enter abyssal deadspace before letting you continue. Make sure to select ammunition in Pyfa
+                                        After you paste the EFT, the Abyss Tracker will attempt to validate the fit. It will check if the ship can enter abyssal deadspace before letting you continue. Make sure to select ammunition in Pyfa.
+                                            <br>
+                                        From the EFT, the Abyss Tracker extracts the ship name, fit name, and calculates statistics to determine damage output, tanks strength (resistances and repair/boost speed), capacitor stats, targeting capabilities and maximum velocity with AB/MWD on.
                                     @endcomponent
 
                                     @if ($stepsReady->has(0))
@@ -110,9 +112,36 @@
                                     @endif
     {{--                                STEP 1 ENDS--}}
                                 @elseif($step == 1)
-                                    <p>
-                                        Please write a few words about your fit and set whats the highest Abyss Tier you recommend it for.
-                                    </p>
+                                        <p>Good tips on what to write here: In which order should you destroy enemies (Eg. neuters, webbers first), how to deal with the rooms like the Karen room or the Leshaks room. You can use <a href="#" target="_blank">markdown</a> formatting.</p>
+                                        <textarea name="description" id="description" class="form-control w-100" rows="10"></textarea>
+
+                                        <div class="form-group mt-3">
+                                            <label for="">Youtube video link</label>
+                                            <input type="text" name="video_link" id="" class="form-control mb-2">
+                                            @component('components.info-line')
+                                                If you have a video guide, we will embed it. Use a well formed Youtube link like <a
+                                                        href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>
+                                            @endcomponent
+                                        </div>
+
+                                        <script>
+                                            console.log("Running scripto {{uniqid()}}");
+                                            try {
+
+                                                simplemde.toTextArea();
+                                                simplemde = null;
+                                            }
+                                            catch (ignored) {
+
+                                            }
+                                                var simplemde = new SimpleMDE({
+                                                    element: document.getElementById("description"),
+                                                    forceSync: true,
+                                                    spellChecker: false,
+                                                    status: false,
+                                                    hideIcons: ["guide"]
+                                                });
+                                        </script>
                                 @endif
                             </div>
                         </div>
