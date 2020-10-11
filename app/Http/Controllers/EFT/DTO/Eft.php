@@ -4,12 +4,14 @@
 	namespace App\Http\Controllers\EFT\DTO;
 
 
-	use App\Http\Controllers\EFT\Exceptions\FitNotFoundException;
+	use App\Connector\EveAPI\Universe\ResourceLookupService;
+    use App\Http\Controllers\EFT\Exceptions\FitNotFoundException;
     use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Str;
 
     class Eft {
 
@@ -47,6 +49,12 @@
             return $this->shipId;
         }
 
+        public function getShipName(): string {
+            /** @var ResourceLookupService $resouceLookupService */
+            $resouceLookupService = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+            return $resouceLookupService->generalNameLookup($this->getShipId());
+        }
+
         /**
          * @param int $shipId
          *
@@ -74,6 +82,10 @@
             $this->fitName = $fitName;
 
             return $this;
+        }
+
+        public function canGoToAbyss() {
+            return DB::table("ship_lookup")->where('ID', $this->shipId)->exists();
         }
 
         /**
@@ -175,5 +187,15 @@
             }
 
             return $value;
+        }
+
+        public function isDefaultName() {
+            $fitName = Str::of($this->getFitName());
+            $shipName = $this->getShipName();
+
+            return (
+                   $fitName->is("*Simulated ". $shipName ." Fitting")
+                || $fitName->is($shipName ." Fit")
+                || $fitName->is($shipName));
         }
     }

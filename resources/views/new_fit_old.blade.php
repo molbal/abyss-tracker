@@ -6,20 +6,7 @@
         <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
             <h4 class="font-weight-bold"><img src="https://img.icons8.com/cotton/50/000000/hammer.png" style="width: 50px; height: 50px;"/> Add new fit</h4>
         </div>
-        @if(isset($errors))
-            @if ($errors->any())
-                <div class="alert alert-danger border-0 shadow-sm d-flex justify-content-between">
-                    <img src="https://img.icons8.com/cotton/64/000000/cancel-2--v1.png">
-                    <div style="width: 100%">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            @endif
-        @endif
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm container">

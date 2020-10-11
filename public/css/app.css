@@ -289,7 +289,7 @@ table {
 caption {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
-  color: #8a98a1;
+  color: #565656;
   text-align: left;
   caption-side: bottom;
 }
@@ -2209,7 +2209,7 @@ textarea.form-control {
   margin-left: -1.25rem;
 }
 .form-check-input[disabled] ~ .form-check-label, .form-check-input:disabled ~ .form-check-label {
-  color: #8a98a1;
+  color: #565656;
 }
 
 .form-check-label {
@@ -7467,7 +7467,7 @@ button.bg-dark:focus {
   white-space: normal;
 }
 
-.shadow-sm {
+.shadow-sm, .msform-steps > li:before {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 
@@ -9918,7 +9918,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .text-muted {
-  color: #8a98a1 !important;
+  color: #565656 !important;
 }
 
 .text-black-50 {
@@ -10848,46 +10848,11 @@ nav.bg-white {
   background: #fff !important;
 }
 
-.msform-container {
-  background-color: #F5F3FB;
-  border-radius: 1rem;
-  position: relative;
-  overflow: hidden;
-  border-bottom: 2px solid #e5e0f5;
-  box-shadow: 0 1rem 1rem rgba(0, 25, 75, 0.05);
-}
-.msform-container:after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 0;
-  width: 0;
-  border-left: 130px solid #e5e0f5;
-  border-top: 65px solid transparent;
-  border-right: 130px solid transparent;
-  border-bottom: 65px solid #e5e0f5;
-}
-
 .msform-steps {
   list-style-type: none;
   counter-reset: step;
-  font-weight: 700;
-  padding: 2rem;
+  padding: 1rem;
   margin-bottom: 0;
-  height: 100%;
-}
-.msform-steps:after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 0;
-  width: 0;
-  border-left: 195px solid #ede9f8;
-  border-top: 65px solid transparent;
-  border-right: 195px solid transparent;
-  border-bottom: 65px solid #ede9f8;
 }
 .msform-steps > li:before {
   content: counter(step);
@@ -10899,7 +10864,7 @@ nav.bg-white {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 2px solid #d5cdee;
+  border: 1.4px solid #565656;
   font-size: 15px;
   margin-right: 1rem;
   letter-spacing: 0;
@@ -10908,7 +10873,7 @@ nav.bg-white {
   z-index: 2;
 }
 .msform-steps > li {
-  color: #9580d5;
+  color: #565656;
   font-size: 0.9em;
   text-transform: uppercase;
   margin-bottom: 1.5rem;
@@ -10918,26 +10883,37 @@ nav.bg-white {
   flex-wrap: wrap;
   position: relative;
 }
+.msform-steps > li:not(:last-child):not(.is-active):not(.is-completed):after {
+  content: "";
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 11.5px;
+  width: 2px;
+  height: calc(100% - 10px);
+  background-color: #565656;
+  border-radius: 1px;
+}
 .msform-steps > li:last-child {
   margin-bottom: 0;
 }
 .msform-steps > li.is-completed {
-  color: #d5cdee;
+  color: #212529;
 }
 .msform-steps > li.is-completed:not(:last-child):after {
   content: "";
   position: absolute;
   top: calc(100% + 5px);
-  left: 12px;
+  left: 11.5px;
   width: 2px;
   height: calc(100% - 10px);
   background-color: #38c172;
+  border-radius: 1px;
 }
 .msform-steps > li.is-completed a {
-  color: #d5cdee;
+  color: #212529;
 }
 .msform-steps > li.is-completed a:hover {
-  color: #b5a7e2;
+  color: #212529;
   text-decoration: none;
 }
 .msform-steps > li.is-completed:before {
@@ -10946,36 +10922,49 @@ nav.bg-white {
   border-color: #38c172;
   background-image: url("/_icons/tick-light.svg");
   background-color: #38c172;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #fff;
 }
 .msform-steps > li.is-active {
-  color: #3490dc;
+  color: #000;
+}
+.msform-steps > li.is-active:not(:last-child):after {
+  content: "";
+  position: absolute;
+  top: calc(24px + 5px);
+  left: 11.5px;
+  width: 2px;
+  height: calc(100% - 10px);
+  background-color: #000;
+  border-radius: 1px;
+}
+.msform-steps > li.is-active.is-active a {
+  color: #000;
 }
 .msform-steps > li.is-active:before {
-  border-color: #3490dc;
+  border-color: #000;
 }
 
 .msform-steps ul {
   counter-reset: step;
   list-style-type: none;
-  margin: 1rem 0 0 0;
+  margin: 0.5rem 0 0 0;
   padding: 0 0 0 2.5rem;
   width: 100%;
   z-index: 2;
+}
+.msform-steps ul li {
+  margin-bottom: 0.15rem;
 }
 .msform-steps ul .msform-step-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #765ac8;
+  color: #212529;
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0;
-  margin-bottom: 0.5rem;
-}
-.msform-steps ul .msform-step-item ion-icon {
-  color: #d5cdee;
-  display: none;
 }
 .msform-steps ul .msform-step-item:hover {
   text-decoration: none;
@@ -10985,34 +10974,7 @@ nav.bg-white {
 }
 .msform-steps ul .msform-step-item.is-active {
   font-weight: 700;
-  color: #5a3cb3;
-}
-.msform-steps ul .msform-step-item.is-active ion-icon {
-  display: block;
-}
-
-.msform-content-container {
-  background-color: #fff;
-  border-top-left-radius: 1rem;
-  border-bottom-left-radius: 1rem;
-  z-index: 1;
-}
-
-.msform-content {
-  transition: all 500ms ease-out;
-  opacity: 1;
-  transform: translateY(0);
-  color: #444c66;
-}
-.msform-content .form-group {
-  margin-bottom: 1.5rem;
-}
-.msform-content .text-muted {
-  color: #b5a7e2 !important;
-}
-.msform-content.hidden {
-  opacity: 0;
-  transform: translateY(2rem);
+  color: #212529;
 }
 
 /*!

@@ -166,7 +166,7 @@
                     throw new \Exception("Please mark at least one type/tier possible in this fit.");
                 }
                 $eft = $request->get("eft");
-                $shipId = $this->getShipIDFromEft($eft);
+                $shipId = self::getShipIDFromEft($eft);
                 if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {
                     throw new \Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
                 }
@@ -413,7 +413,7 @@
          * @return mixed
          * @throws \Exception
          */
-        private function getShipIDFromEft(string $fit) {
+        public static function getShipIDFromEft(string $fit) {
 
             // Get lines
             $lines = explode("\n", trim($fit));
@@ -436,7 +436,9 @@
             }
 
             return $shipId;
-	    }
+        }
+
+
 
         /**
          * @param int $id

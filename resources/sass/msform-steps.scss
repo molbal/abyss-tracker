@@ -2,7 +2,7 @@ $counter-size: 25px;
 $msform-border-radius: 1rem;
 $msform-corner-size: 65px;
 $msform-line-gap: 5px;
-$msform-content-color: #444c66;
+$msform-content-color: $text-base;
 
 $step-bg: #F5F3FB;
 $step-100: darken($step-bg, 10%);
@@ -14,48 +14,13 @@ $step-600: darken($step-bg, 60%);
 $step-700: darken($step-bg, 70%);
 $step-800: darken($step-bg, 80%);
 
-.msform-container {
-    background-color: $step-bg;
-    border-radius: $msform-border-radius;
-    position: relative;
-    overflow: hidden;
-    border-bottom: 2px solid darken($step-bg, 5%);
-    box-shadow: 0 1rem 1rem rgba(0, 25, 75, 0.05);
-
-    &:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 0;
-        width: 0;
-        border-left: #{$msform-corner-size * 2} solid darken($step-bg, 5%);
-        border-top: $msform-corner-size solid transparent;
-        border-right: #{$msform-corner-size * 2} solid transparent;
-        border-bottom: $msform-corner-size solid darken($step-bg, 5%);
-    }
-}
-
 .msform-steps {
     list-style-type: none;
     counter-reset: step;
-    font-weight: 700;
-    padding: 2rem;
+    padding: 1rem;
     margin-bottom: 0;
-    height: 100%;
+    //height: 100%;
 
-    &:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 0;
-        width: 0;
-        border-left: #{$msform-corner-size * 3} solid darken($step-bg, 2.5%);
-        border-top: $msform-corner-size solid transparent;
-        border-right: #{$msform-corner-size * 3} solid transparent;
-        border-bottom: $msform-corner-size solid darken($step-bg, 2.5%);
-    }
 
     & > li:before {
         content: counter(step);
@@ -67,10 +32,11 @@ $step-800: darken($step-bg, 80%);
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        border: 2px solid $step-100;
+        border: 1.4px solid $text-muted;
         font-size: 15px;
         margin-right: 1rem;
         letter-spacing: 0;
+        @extend .shadow-sm
     }
 
     & li {
@@ -78,7 +44,7 @@ $step-800: darken($step-bg, 80%);
     }
 
     & > li {
-        color: $step-300;
+        color: $text-muted;
         font-size: 0.9em;
         text-transform: uppercase;
         margin-bottom: 1.5rem;
@@ -88,28 +54,40 @@ $step-800: darken($step-bg, 80%);
         flex-wrap: wrap;
         position: relative;
 
+        &:not(:last-child):not(.is-active):not(.is-completed):after {
+            content: '';
+            position: absolute;
+            top: calc(100% + #{$msform-line-gap});
+            left: 11.5px;
+            width: 2px;
+            height: calc(100% - #{$msform-line-gap * 2});
+            background-color: $text-muted;
+            border-radius: 1px;
+        }
+
         &:last-child {
             margin-bottom: 0;
         }
 
         &.is-completed {
-            color: $step-100;
+            color: $body-color;
 
             &:not(:last-child):after {
                 content: '';
                 position: absolute;
                 top: calc(100% + #{$msform-line-gap});
-                left: 12px;
+                left: 11.5px;
                 width: 2px;
                 height: calc(100% - #{$msform-line-gap * 2});
                 background-color: $success;
+                border-radius: 1px;
             }
 
             a {
-                color: $step-100;
+                color: $body-color;
 
                 &:hover {
-                    color: $step-200;
+                    color: $tab-active-color;
                     text-decoration: none;
                 }
             }
@@ -117,19 +95,35 @@ $step-800: darken($step-bg, 80%);
             &:before {
                 content: ' ';
                 font-size: 10px;
-                //font-family: 'fontello', sans-serif;
                 border-color: $green;
                 background-image: url('/_icons/tick-light.svg');
                 background-color: $green;
+                background-position: center;
+                background-repeat: no-repeat;
                 color: $white;
             }
         }
 
         &.is-active {
-            color: $primary;
+            color: $text-strongest;
+
+            &:not(:last-child):after {
+                content: '';
+                position: absolute;
+                top: calc(24px + #{$msform-line-gap});
+                left: 11.5px;
+                width: 2px;
+                height: calc(100% - #{$msform-line-gap * 2});
+                background-color: $text-strongest;
+                border-radius: 1px;
+            }
+
+            &.is-active a {
+                color: $text-strongest;
+            }
 
             &:before {
-                border-color: $primary;
+                border-color: $text-strongest;
             }
         }
     }
@@ -138,25 +132,24 @@ $step-800: darken($step-bg, 80%);
 .msform-steps ul {
     counter-reset: step;
     list-style-type: none;
-    margin: 1rem 0 0 0;
+    margin: 0.5rem 0 0 0;
     padding: 0 0 0 2.5rem;
     width: 100%;
     z-index: 2;
+
+    li {
+        margin-bottom: 0.15rem;
+    }
 
     & .msform-step-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: $step-400;
+        color: $tab-active-color;
         font-weight: 400;
         text-transform: none;
         letter-spacing: 0;
-        margin-bottom: 0.5rem;
 
-        & ion-icon {
-            color: $step-100;
-            display: none;
-        }
 
         &:hover {
             text-decoration: none;
@@ -168,38 +161,8 @@ $step-800: darken($step-bg, 80%);
 
         &.is-active {
             font-weight: 700;
-            color: $step-500;
+            color: $tab-active-color;
 
-            ion-icon {
-                display: block;
-            }
         }
-    }
-}
-
-.msform-content-container {
-    background-color: $white;
-    border-top-left-radius: $msform-border-radius;
-    border-bottom-left-radius: $msform-border-radius;
-    z-index: 1;
-}
-
-.msform-content {
-    transition: all 500ms ease-out;
-    opacity: 1;
-    transform: translateY(0);
-    color: $msform-content-color;
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .text-muted {
-        color: $step-200 !important;
-    }
-
-    &.hidden {
-        opacity: 0;
-        transform: translateY(2rem);
     }
 }
