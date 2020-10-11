@@ -1,0 +1,19 @@
+.wizard-message {
+    @extend .d-flex;
+    @extend .justify-content-start;
+    @extend .p-3;
+    @extend .mb-2;
+    @extend .rounded;
+    background: $callout-background;
+
+    div {
+        &:first-child {
+            @extend .mr-3;
+        }
+
+        h4 {
+            @extend .font-weight-bold;
+        }
+    }
+
+}

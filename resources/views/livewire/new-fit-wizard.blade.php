@@ -74,12 +74,12 @@
                             </div>
                             <div class="col-xs-12 col-sm-9">
                                 @if (session()->has('message'))
-                                    <div class="d-flex justify-content-start p-3 mb-2 shadow rounded border-{{session('messageType')}}" style="border-width: 0 0 0 3px; border-style: solid">
-                                        <div class="mr-3">
+                                    <div class="wizard-message border-{{session('messageType')}}" style="border-width: 0 0 0 3px; border-style: solid">
+                                        <div>
                                             {!! config('new-fit-wizard.images.'.session('messageType')) !!}
                                         </div>
                                         <div>
-                                            <h4 class="font-weight-bold">Message</h4>
+                                            <h4>Message</h4>
                                             {!! session('message') !!}
                                         </div>
                                     </div>

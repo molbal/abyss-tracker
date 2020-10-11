@@ -4,6 +4,7 @@
 @import 'variables';
 $tab-active-color: #212529;
 $tab-active-bg: #fff;
+$callout-background: #f4f4f4;
 $text-strongest: #000;
 $text-muted: #565656;
 
@@ -29,3 +30,5 @@ $footer-down-bg: #444;
 @import "msform-steps";
 @import "select2";
 @import "~toastify-js/src/toastify.css";
+
+@import "new-fit";

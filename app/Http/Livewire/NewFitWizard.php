@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Http\Controllers\EFT\Exceptions\MalformedEFTException;
 use App\Http\Controllers\EFT\FitParser;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class NewFitWizard extends Component
@@ -33,10 +34,17 @@ class NewFitWizard extends Component
     }
 
     public function updatingEft($value) {
+        if ($value == "") {
+            session()->flash('message', "Please paste your fit in EFT format.");
+            session()->flash('messageType','warning');
+            return;
+        }
+
+
         try {
             $obj = $this->parseEft($value);
             if ($obj->isDefaultName()) {
-                $this->fitName = collect(config("shipnames.names"))->random();
+                $this->fitName = $this->getRandomFitName();
                 session()->flash('message', __("new-fit-wizard.default-name", ['shipname' => $this->fitName]));
                 session()->flash('messageType','success');
             }
@@ -91,5 +99,12 @@ class NewFitWizard extends Component
     public function render()
     {
         return view('livewire.new-fit-wizard');
+    }
+
+    /**
+     * @return Collection|mixed
+     */
+    private function getRandomFitName() {
+        return collect(config("shipnames.names"))->random()." Mk-".strtoupper(base_convert(DB::table("fits")->count(), 10, 32));
     }
 }

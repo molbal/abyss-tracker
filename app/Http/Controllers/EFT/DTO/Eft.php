@@ -190,12 +190,12 @@
         }
 
         public function isDefaultName() {
-            $fitName = Str::of($this->getFitName());
-            $shipName = $this->getShipName();
+            $fitName = strval(Str::of($this->getFitName())->upper()->trim());
+            $shipName = Str::upper($this->getShipName());
 
             return (
-                   $fitName->is("*Simulated ". $shipName ." Fitting")
-                || $fitName->is($shipName ." Fit")
-                || $fitName->is($shipName));
+                   $fitName == "SIMULATED $shipName FITTING"
+                || $fitName == "$shipName FIT")
+                || $fitName == $shipName;
         }
     }

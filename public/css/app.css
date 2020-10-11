@@ -6315,7 +6315,7 @@ button.bg-dark:focus {
   border-radius: 0.2rem !important;
 }
 
-.rounded {
+.rounded, .wizard-message {
   border-radius: 0.25rem !important;
 }
 
@@ -6389,7 +6389,7 @@ button.bg-dark:focus {
   display: table-cell !important;
 }
 
-.d-flex {
+.d-flex, .wizard-message {
   display: flex !important;
 }
 
@@ -6671,7 +6671,7 @@ button.bg-dark:focus {
   flex-shrink: 1 !important;
 }
 
-.justify-content-start {
+.justify-content-start, .wizard-message {
   justify-content: flex-start !important;
 }
 
@@ -7609,7 +7609,7 @@ button.bg-dark:focus {
   margin-right: 0.5rem !important;
 }
 
-.mb-2,
+.mb-2, .wizard-message,
 .my-2 {
   margin-bottom: 0.5rem !important;
 }
@@ -7628,7 +7628,7 @@ button.bg-dark:focus {
   margin-top: 1rem !important;
 }
 
-.mr-3,
+.mr-3, .wizard-message div:first-child,
 .mx-3 {
   margin-right: 1rem !important;
 }
@@ -7763,7 +7763,7 @@ button.bg-dark:focus {
   padding-left: 0.5rem !important;
 }
 
-.p-3 {
+.p-3, .wizard-message {
   padding: 1rem !important;
 }
 
@@ -9833,7 +9833,7 @@ button.bg-dark:focus {
   font-weight: 400 !important;
 }
 
-.font-weight-bold {
+.font-weight-bold, .wizard-message div h4 {
   font-weight: 700 !important;
 }
 
@@ -10478,7 +10478,7 @@ div.leaderboard div.leaderboard-first img.crown {
   margin: 0 auto -48px auto;
 }
 
-div.d-flex.justify-content-between small {
+div.d-flex.justify-content-between small, div.justify-content-between.wizard-message small {
   position: relative;
   top: 5px;
 }
@@ -11680,4 +11680,7 @@ nav.bg-white {
   .form-inline .select2-container--bootstrap {
     display: inline-block;
   }
+}
+.wizard-message {
+  background: #f4f4f4;
 }
