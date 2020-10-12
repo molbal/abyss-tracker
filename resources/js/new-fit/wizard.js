@@ -9,10 +9,10 @@ function getTextAreaSelection(textarea) {
 }
 
 function detectPaste(textarea, callback) {
-    textarea.onpaste = function() {
+    textarea.onpaste = function () {
         var sel = getTextAreaSelection(textarea);
         var initialLength = textarea.value.length;
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             var val = textarea.value;
             var pastedTextLength = val.length - (initialLength - sel.length);
             var end = sel.start + pastedTextLength;
@@ -27,26 +27,32 @@ function detectPaste(textarea, callback) {
 }
 
 
-
 $(function () {
-    document.addEventListener("DOMContentLoaded", () => {
-        Livewire.hook('element.updated', (el, component) => {
-            var simplemde = new SimpleMDE({
-                element: document.getElementById("description"),
-                forceSync: true,
-                spellChecker: false,
-                status: false,
-                hideIcons: ["guide"]
-            });
-        })
-    });
-
-
-
     var textarea = document.getElementById("eft");
     detectPaste(textarea, function(pasteInfo) {
         console.log("Pasted!");
         $("#eft").blur();
     });
+
+    window.addEventListener('step-change', event => {
+        console.log('Name updated to: ' + event.detail.newstep);
+        try {
+            simplemde.toTextArea();
+            simplemde = null;
+        } catch (ignored) {
+
+        }
+
+        var simplemde = new SimpleMDE({
+            element: document.getElementById("description"),
+            forceSync: true,
+            spellChecker: false,
+            status: false,
+            hideIcons: ["guide"]
+        });
+    })
+
+
+
 });
 

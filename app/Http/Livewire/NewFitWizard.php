@@ -6,6 +6,7 @@ use App\Http\Controllers\EFT\Exceptions\MalformedEFTException;
 use App\Http\Controllers\EFT\FitParser;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class NewFitWizard extends Component
@@ -81,6 +82,11 @@ class NewFitWizard extends Component
     public function goToStep(int $stepNum) {
         if ($this->stepsReady->has($this->step)) {
             $this->step = $stepNum;
+
+
+            $this->dispatchBrowserEvent('step-change', ['newstep' => $stepNum]);
+
+
         }
     }
 

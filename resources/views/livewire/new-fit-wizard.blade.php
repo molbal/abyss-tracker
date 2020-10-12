@@ -123,25 +123,6 @@
                                                         href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>
                                             @endcomponent
                                         </div>
-
-                                        <script>
-                                            console.log("Running scripto {{uniqid()}}");
-                                            try {
-
-                                                simplemde.toTextArea();
-                                                simplemde = null;
-                                            }
-                                            catch (ignored) {
-
-                                            }
-                                                var simplemde = new SimpleMDE({
-                                                    element: document.getElementById("description"),
-                                                    forceSync: true,
-                                                    spellChecker: false,
-                                                    status: false,
-                                                    hideIcons: ["guide"]
-                                                });
-                                        </script>
                                 @endif
                             </div>
                         </div>
