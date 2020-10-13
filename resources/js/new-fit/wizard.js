@@ -50,6 +50,16 @@ $(function () {
             status: false,
             hideIcons: ["guide"]
         });
+
+
+        $(".select2-nosearch").select2({
+            theme: 'bootstrap',
+            minimumResultsForSearch: -1,
+            // width: '100%'
+        }).maximizeSelect2Height();
+
+
+        $('[data-toggle="tooltip"]').tooltip();
     })
 
 

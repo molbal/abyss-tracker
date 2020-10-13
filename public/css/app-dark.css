@@ -12946,6 +12946,8 @@ playback timings (ms):
   background: rgba(0, 0, 0, 0.8);
   z-index: 3;
   cursor: wait;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
 }
 .card-overlay div.loading-indicator-container {
   display: flex;

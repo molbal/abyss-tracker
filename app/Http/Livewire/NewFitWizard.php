@@ -96,7 +96,7 @@ class NewFitWizard extends Component
         }
     }
 
-    public function progressToPrivacy(string $description, string $youtubeLink) {
+    public function progressToPrivacy(string $description, string $youtubeLink, $Electrical ,$Dark ,$Exotic ,$Firestorm ,$Gamma) {
 //        dd($description, $youtubeLink);
         $this->description = $description;
         $this->youtubeLink = $youtubeLink;
