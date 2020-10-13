@@ -11,6 +11,10 @@ use Livewire\Component;
 
 class NewFitWizard extends Component
 {
+    const STEP_FIT = 0;
+    const STEP_DESCRIPTION = 1;
+    const STEP_PRIVACY = 2;
+
     /** @var int */
     public $step;
 
@@ -23,6 +27,11 @@ class NewFitWizard extends Component
     /** @var string */
     public $wizardTitle;
 
+    /** @var string */
+    public $description;
+
+    /** @var string */
+    public $youtubeLink;
 
     /** @var Collection */
     public $stepsReady;
@@ -30,6 +39,7 @@ class NewFitWizard extends Component
     public function mount() {
         $this->step = 0;
         $this->fitName = null;
+        $this->description = null;
         $this->wizardTitle = "New fit";
         $this->stepsReady = collect([]);
     }
@@ -54,8 +64,8 @@ class NewFitWizard extends Component
                 session()->flash('messageType','success');
             }
             $this->wizardTitle = "Uploading fit: ".$this->fitName;
-            if (!$this->stepsReady->has(0)) {
-                $this->stepsReady->add(0);
+            if (!$this->stepsReady->has(self::STEP_FIT)) {
+                $this->stepsReady->add(self::STEP_FIT);
             }
 
         }
@@ -63,8 +73,8 @@ class NewFitWizard extends Component
             session()->flash('message', $meft->getMessage());
             session()->flash('messageType','danger');
 
-            if (!$this->stepsReady->has(0)) {
-                $this->stepsReady->forget(0);
+            if (!$this->stepsReady->has(self::STEP_FIT)) {
+                $this->stepsReady->forget(self::STEP_FIT);
             }
             $this->wizardTitle = "Invalid fit";
         }
@@ -72,8 +82,8 @@ class NewFitWizard extends Component
             session()->flash('message', $exc->getMessage());
             session()->flash('messageType','danger');
             $this->wizardTitle = "Invalid fit";
-            if (!$this->stepsReady->has(0)) {
-                $this->stepsReady->forget(0);
+            if ($this->stepsReady->has(self::STEP_FIT)) {
+                $this->stepsReady->forget(self::STEP_FIT);
             }
 
         }
@@ -82,14 +92,22 @@ class NewFitWizard extends Component
     public function goToStep(int $stepNum) {
         if ($this->stepsReady->has($this->step)) {
             $this->step = $stepNum;
-
-
             $this->dispatchBrowserEvent('step-change', ['newstep' => $stepNum]);
-
-
         }
     }
 
+    public function progressToPrivacy(string $description, string $youtubeLink) {
+//        dd($description, $youtubeLink);
+        $this->description = $description;
+        $this->youtubeLink = $youtubeLink;
+
+        if (!$this->stepsReady->has(self::STEP_DESCRIPTION)) {
+            $this->stepsReady->add(self::STEP_DESCRIPTION);
+        }
+
+        $this->goToStep(self::STEP_PRIVACY);
+
+    }
     public function parseEft($value) {
         /** @var FitParser $fitParser */
         $fitParser = resolve('App\Http\Controllers\EFT\FitParser');

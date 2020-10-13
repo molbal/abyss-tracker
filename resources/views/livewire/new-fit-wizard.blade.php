@@ -107,22 +107,29 @@
                                     @endcomponent
 
                                     @if ($stepsReady->has(0))
-                                        <button class="btn btn-outline-primary mt-3" wire:click="goToStep(1)" wire:loading.attr="disabled">Next step <img wire:loading wire:target="goToStep" src="{{asset('loader.png')}}" alt=""></button>
+                                        <button class="btn btn-outline-primary float-right mt-3" wire:click="goToStep(1)" wire:loading.attr="disabled">Next step <img wire:loading wire:target="goToStep" src="{{asset('loader.png')}}" alt=""></button>
 
                                     @endif
     {{--                                STEP 1 ENDS--}}
                                 @elseif($step == 1)
                                         <p>Good tips on what to write here: In which order should you destroy enemies (Eg. neuters, webbers first), how to deal with the rooms like the Karen room or the Leshaks room. You can use <a href="#" target="_blank">markdown</a> formatting.</p>
-                                        <textarea name="description" id="description" class="form-control w-100" rows="10"></textarea>
+                                        <textarea wire:model.lazy="description" name="description" id="description" class="form-control w-100" rows="10"></textarea>
 
                                         <div class="form-group mt-3">
                                             <label for="">Youtube video link</label>
-                                            <input type="text" name="video_link" id="" class="form-control mb-2">
+                                            <input type="text" name="video_link" id="video_link" class="form-control mb-2">
                                             @component('components.info-line')
                                                 If you have a video guide, we will embed it. Use a well formed Youtube link like <a
                                                         href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>
                                             @endcomponent
                                         </div>
+
+                                        <button class="btn btn-outline-primary float-right mt-3" wire:click="progressToPrivacy($('#description').val(), $('#video_link').val())">Next step</button>
+
+                                        {{--                                STEP 2 begins--}}
+                                    @elseif($step == 2)
+
+                                    PRIVACY
                                 @endif
                             </div>
                         </div>

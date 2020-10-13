@@ -68,6 +68,26 @@ $(function () {
     })
 
 
-
 });
-
+//
+// document.addEventListener("DOMContentLoaded", () => {
+//     console.log("initializing 'hooks'");
+//     Livewire.hook('message.processed', (message, component) => {
+//         console.log("Message processed");
+//
+//         try {
+//             simplemde.toTextArea();
+//             simplemde = null;
+//         } catch (ignored) {
+//
+//         }
+//
+//         var simplemde = new SimpleMDE({
+//             element: document.getElementById("description"),
+//             forceSync: true,
+//             spellChecker: false,
+//             status: false,
+//             hideIcons: ["guide"]
+//         });
+//     });
+// });

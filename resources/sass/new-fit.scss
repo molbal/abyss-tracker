@@ -37,5 +37,6 @@
     background: rgba(0,0,0,0.8);
     z-index: 3;
     cursor: wait;
+    backdrop-filter: blur(10px);
 
 }
