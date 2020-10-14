@@ -7,6 +7,7 @@ use App\Http\Controllers\EFT\FitParser;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class NewFitWizard extends Component
@@ -14,6 +15,7 @@ class NewFitWizard extends Component
     const STEP_FIT = 0;
     const STEP_DESCRIPTION = 1;
     const STEP_PRIVACY = 2;
+
 
     /** @var int */
     public $step;
@@ -36,12 +38,31 @@ class NewFitWizard extends Component
     /** @var Collection */
     public $stepsReady;
 
+    /** @var string */
+    public $privacy;
+
+    /** @var int */
+    public $Electrical;
+
+    /** @var int */
+    public $Dark;
+
+    /** @var int */
+    public $Exotic;
+
+    /** @var int */
+    public $Firestorm;
+
+    /** @var int */
+    public $Gamma;
+
     public function mount() {
         $this->step = 0;
         $this->fitName = null;
         $this->description = null;
         $this->wizardTitle = "New fit";
         $this->stepsReady = collect([]);
+        $this->privacy = 'public';
     }
 
     public function updatingEft($value) {
@@ -60,6 +81,7 @@ class NewFitWizard extends Component
                 session()->flash('messageType','success');
             }
             else {
+                $this->fitName = $obj->getFitName();
                 session()->flash('message', __("new-fit-wizard.eft-verified"));
                 session()->flash('messageType','success');
             }
@@ -97,9 +119,21 @@ class NewFitWizard extends Component
     }
 
     public function progressToPrivacy(string $description, string $youtubeLink, $Electrical ,$Dark ,$Exotic ,$Firestorm ,$Gamma) {
-//        dd($description, $youtubeLink);
         $this->description = $description;
         $this->youtubeLink = $youtubeLink;
+
+        $this->Electrical = $Electrical;
+        $this->Dark = $Dark;
+        $this->Exotic = $Exotic;
+        $this->Firestorm = $Firestorm;
+        $this->Gamma = $Gamma;
+
+        if ($this->Dark == 0 && $this->Exotic == 0 && $this->Firestorm == 0 && $this->Gamma == 0 && $this->privacy == 0) {
+            $error = \Illuminate\Validation\ValidationException::withMessages(['ELECTRICAL' => ['Please mark at least one type/tier possible in this fit.']]);
+
+            $this->dispatchBrowserEvent('step-change', ['newstep' => self::STEP_DESCRIPTION]);
+            throw $error;
+        }
 
         if (!$this->stepsReady->has(self::STEP_DESCRIPTION)) {
             $this->stepsReady->add(self::STEP_DESCRIPTION);
@@ -108,12 +142,36 @@ class NewFitWizard extends Component
         $this->goToStep(self::STEP_PRIVACY);
 
     }
+
+    public function process() {
+
+
+    if (!in_array($this->privacy, ['public', 'incognito', 'private'])) {
+        $error = \Illuminate\Validation\ValidationException::withMessages(['privacy' => ['Please select one of the privacy options.']]);
+        throw $error;
+    }
+
+        return redirect()->action('FitsController@new_store', [
+            "fitName" => $this->fitName,
+            "eft" => $this->eft,
+            "description" => $this->description,
+            "youtubeLink" => $this->youtubeLink,
+            "video_link" => $this->privacy,
+            "ELECTRICAL" => $this->Electrical,
+            "DARK" => $this->Dark,
+            "EXOTIC" => $this->Exotic,
+            "FIRESTORM" => $this->Firestorm,
+            "GAMMA" => $this->Gamma,
+            "privacy" => $this->privacy,
+        ]);
+    }
+
     public function parseEft($value) {
         /** @var FitParser $fitParser */
         $fitParser = resolve('App\Http\Controllers\EFT\FitParser');
         $fitObj = $fitParser->getFitTypes($value);
         if (!$fitObj->canGoToAbyss()) {
-            throw new MalformedEFTException("The ".$fitObj->getShipName()." cannot fly in Abyssal Deadspace - the Abyss Tracker only accepts Abyssal Deadspace capable ships. For a general fit service check out our friends at <a href='https://eveworkbench.com/' target='_blank' rel='nofollow'>EVE Workbench</a>.");
+            throw new MalformedEFTException(__("new-fit-wizard.not-abyss-capable", ['shipname' => $fitObj->getShipName()]));
         }
         return $fitObj;
     }

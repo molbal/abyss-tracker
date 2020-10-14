@@ -41,6 +41,9 @@ function detectPaste(textarea, callback) {
     };
 }
 
+function finishPage() {
+    $("div.card-overlay").css("display", 'inline-block');
+}
 
 $(function () {
     var textarea = document.getElementById("eft");
@@ -72,6 +75,9 @@ $(function () {
             minimumResultsForSearch: -1,
             // width: '100%'
         }).maximizeSelect2Height();
+
+
+        $('[data-toggle="tooltip"]').tooltip();
     })
 
 

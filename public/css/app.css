@@ -7471,7 +7471,7 @@ button.bg-dark:focus {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 
-.shadow {
+.shadow, .btn:hover:not([disabled]) {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
@@ -11692,7 +11692,7 @@ nav.bg-white {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.8);
   z-index: 3;
   cursor: wait;
   -webkit-backdrop-filter: blur(10px);

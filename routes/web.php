@@ -67,7 +67,7 @@
     Route::get("/ships/", 'ShipsController@get_all')->name("ships_all");
     Route::get("/ship/{id}", 'ShipsController@get_single')->name("ship_single");
     Route::get("/fits/new", 'FitsController@new')->name("fit_new")->middleware("sso");
-    Route::post("/fits/new/submit", 'FitsController@new_store')->name("fit_new_store")->middleware("sso");
+    Route::any("/fits/new/submit", 'FitsController@new_store')->name("fit_new_store")->middleware("sso");
     Route::get("/fit/{id}/delete", 'FitsController@delete')->name('fit.delete')->middleware("sso");
     Route::get("/fit/{id}/change-privacy/{privacySetting}", 'FitsController@changePrivacy')->name('fit.change_privacy')->middleware("sso");
     Route::get("/fit/{id}", 'FitsController@get')->name('fit_single');

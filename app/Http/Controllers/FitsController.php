@@ -136,9 +136,7 @@
          * @throws \Exception
          */
         public function new_store(Request $request) {
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please sign in first to add a new fit"]);
-            }
+
             Validator::make($request->all(), [
                 'ELECTRICAL'     => 'required|numeric|min:0|max:5',
                 'DARK'     => 'required|numeric|min:0|max:5',
@@ -163,7 +161,10 @@
                     $request->get("GAMMA") == 0
                 )
                 {
-                    throw new \Exception("Please mark at least one type/tier possible in this fit.");
+                    $error = \Illuminate\Validation\ValidationException::withMessages([
+                        'ELECTRICAL' => ['Please mark at least one type/tier possible in this fit.']
+                    ]);
+                    throw $error;
                 }
                 $eft = $request->get("eft");
                 $shipId = self::getShipIDFromEft($eft);
@@ -175,9 +176,14 @@
                 $totalPrice = $fitObj->getFitValue(); // Let's get this before the DB transaction starts
 
                 $hash = $this->fitHelper->getFitFFH($eft);
+
+                if ($request->filled("fitName")) {
+                    $fitObj->setFitName($request->get("fitName"));
+                }
+
                 DB::beginTransaction();
                 $id = DB::table("fits")->insertGetId([
-                    'CHAR_ID' => session()->get("login_id"),
+                    'CHAR_ID' => session()->get("login_id", 0),
                     'SHIP_ID' => $shipId,
                     'NAME' => $fitObj->getFitName(),
                     'DESCRIPTION' => $request->get("description") ?? "",

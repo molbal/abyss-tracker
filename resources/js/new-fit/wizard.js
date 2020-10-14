@@ -26,6 +26,9 @@ function detectPaste(textarea, callback) {
     };
 }
 
+function finishPage() {
+    $("div.card-overlay").css("display", 'inline-block');
+}
 
 $(function () {
     var textarea = document.getElementById("eft");

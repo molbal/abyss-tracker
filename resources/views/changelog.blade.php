@@ -28,6 +28,8 @@
                     </p>
                     <ul>
                         <li><strong>Adds support for editing fits</strong></li>
+                        <li>New fit submission form overhauled</li>
+                        <li>Fit stats calculator updated to process EDENCOM ships and get updated balance changes</li>
                     </ul>
                 </div>
             </div>

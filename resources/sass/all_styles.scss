@@ -20,6 +20,10 @@ tr, td {
     animation: rotating 2s linear infinite;
 }
 
+.btn:hover:not([disabled]) {
+    @extend .shadow
+}
+
 
 * {
     font-family: 'Shentox 13';
