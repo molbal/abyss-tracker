@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class NewFitWizard extends Component
@@ -72,7 +73,6 @@ class NewFitWizard extends Component
             return;
         }
 
-
         try {
             $obj = $this->parseEft($value);
             if ($obj->isDefaultName()) {
@@ -128,11 +128,9 @@ class NewFitWizard extends Component
         $this->Firestorm = $Firestorm;
         $this->Gamma = $Gamma;
 
-        if ($this->Dark == 0 && $this->Exotic == 0 && $this->Firestorm == 0 && $this->Gamma == 0 && $this->privacy == 0) {
-            $error = \Illuminate\Validation\ValidationException::withMessages(['ELECTRICAL' => ['Please mark at least one type/tier possible in this fit.']]);
-
+        if ($Electrical == 0 && $Dark == 0 && $Exotic == 0 && $Firestorm == 0 && $Gamma == 0) {
             $this->dispatchBrowserEvent('step-change', ['newstep' => self::STEP_DESCRIPTION]);
-            throw $error;
+            throw ValidationException::withMessages(['ELECTRICAL' => [__('new-fit-wizard.all-weather-0')]]);
         }
 
         if (!$this->stepsReady->has(self::STEP_DESCRIPTION)) {
@@ -143,20 +141,20 @@ class NewFitWizard extends Component
 
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws ValidationException
+     */
     public function process() {
-
-
-    if (!in_array($this->privacy, ['public', 'incognito', 'private'])) {
-        $error = \Illuminate\Validation\ValidationException::withMessages(['privacy' => ['Please select one of the privacy options.']]);
-        throw $error;
-    }
+        if (!in_array($this->privacy, ['public', 'incognito', 'private'])) {
+            throw ValidationException::withMessages(['privacy' => [__("new-fit-wizard.privacy-unselected")]]);
+        }
 
         return redirect()->action('FitsController@new_store', [
             "fitName" => $this->fitName,
             "eft" => $this->eft,
             "description" => $this->description,
-            "youtubeLink" => $this->youtubeLink,
-            "video_link" => $this->privacy,
+            "video_link" => $this->youtubeLink,
             "ELECTRICAL" => $this->Electrical,
             "DARK" => $this->Dark,
             "EXOTIC" => $this->Exotic,

@@ -11,6 +11,7 @@
     use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\FitParser;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
+    use App\Http\Controllers\EFT\Tags\TagsController;
     use App\Http\Controllers\Partners\EveWorkbench;
     use App\Http\Controllers\Youtube\YoutubeController;
     use Carbon\Carbon;
@@ -32,6 +33,7 @@
 
         /** @var BarkController */
         private $barkController;
+
         /** @var FitParser */
         protected $fitParser;
 
@@ -244,95 +246,114 @@
 
             try {
 
-            $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
-                return $this->getFitsQB($id)->first();
-            });
+                // Get the fit - with some caching
+                $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
+                    return $this->getFitsQB($id)->first();
+                });
 
-
-            if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
-                return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('fit.search') . "'>View public fits</a></p>")]);
-            }
-            $ship_name = DB::table('ship_lookup')
-                           ->where('ID', $fit->SHIP_ID)
-                           ->value('NAME');
-            $char_name = DB::table('chars')
-                           ->where('CHAR_ID', $fit->CHAR_ID)
-                           ->value('NAME');
-
-
-            $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
-            $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
-            $shipPrice = $this->sipc->getFromTypeId($fit->SHIP_ID)->getAveragePrice() ?? 0.0;
-
-            if (trim($fit->VIDEO_LINK)) {
-                try {
-                    $embed = YoutubeController::getEmbed($fit->VIDEO_LINK);
-                } catch (\Exception $exception) {
-                    Log::warning(sprintf("Could not generate embed for %s", $fit->VIDEO_LINK));
-                    $embed = "<div class='alert alert-warning'>Could not generate embed for link: " . htmlentities($fit->VIDEO_LINK) . '</div>';
+                // Check credentials
+                if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
+                    return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('fit.search') . "'>View public fits</a></p>")]);
                 }
-            } else { $embed = "";}
 
-            $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
+                // Get ship name and character name
+                $ship_name = DB::table('ship_lookup')
+                               ->where('ID', $fit->SHIP_ID)
+                               ->value('NAME');
+                $char_name = DB::table('chars')
+                               ->where('CHAR_ID', $fit->CHAR_ID)
+                               ->value('NAME');
 
-            $og = new OpenGraph();
-            $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
-               ->type('profile')
-               ->description(sprintf("%s fit - %s", $ship_name, config('app.name')))
-               ->url()
-               ->locale('en_US')
-               ->localeAlternate(['en_UK'])
-               ->siteName(config('app.name'))
-               ->determiner('an')
-               ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
-            $og->profile(["first_name" => trim($fit->NAME)]);
+                // Parse secription, get ship type and ship
+                $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
+                $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
+                $shipitemObject = $this->sipc->getFromTypeId($fit->SHIP_ID);
+                if (!$shipitemObject) {
+                    throw new \Exception("Could not find the ship name from the ship ID (".$fit->SHIP_ID.") - This happens frequently during EVE downtime and will solve itself when EVE comes back online");
+                }
+
+                // Get ship's price
+                $shipPrice = $shipitemObject->getAveragePrice() ?? 0.0;
+
+                // Get video link
+                if (trim($fit->VIDEO_LINK)) {
+                    try {
+                        $embed = YoutubeController::getEmbed($fit->VIDEO_LINK);
+                    } catch (\Exception $exception) {
+                        Log::warning(sprintf("Could not generate embed for %s", $fit->VIDEO_LINK));
+                        $embed = "<div class='alert alert-warning'>Could not generate embed for link: " . htmlentities($fit->VIDEO_LINK) . '</div>';
+                    }
+                } else { $embed = "";}
+
+                // Get recommendations
+                $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
 
 
-            $runs = DB::table("runs")
-              ->where("FIT_ID", $id)
-              ->orderBy("CREATED_AT", 'DESC')
-              ->paginate(25);
 
-            $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
-            $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
+                // Make open graph tags
+                $og = new OpenGraph();
+                $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
+                   ->type('profile')
+                   ->description(sprintf("%s fit with %s on %s", $ship_name,TagsController::getFitTags($id)->join(", ", ", and "), config('app.name')))
+                   ->url()
+                   ->locale('en_US')
+                   ->localeAlternate(['en_UK'])
+                   ->siteName(config('app.name'))
+                   ->determiner('an')
+                   ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
+                $og->profile(["first_name" => trim($fit->NAME)]);
 
-            $eftObj = Eft::loadFromId($id);
-            $eftParsed = $eftObj->getStructuredDisplay();
-            $fit->PRICE = $eftObj->getFitValue();
-            $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
-
-            $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
-            $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
-            $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
-            $loots = $this->getFitLootStrategyChart($fitIdsAll);
-            $similars = $this->getFitsFromIds($fitIdsNonPrivate);
-
-            $runsCountAll = DB::table("runs")
+                // Get last runs with this fit
+                $runs = DB::table("runs")
                   ->where("FIT_ID", $id)
-                  ->orderBy("CREATED_AT", 'DESC')->count();
-            return view('fit', [
-                'fit' => $fit,
-                'ship_name' => $ship_name,
-                'char_name' => $char_name,
-                'ship_type' => $shipType,
-                'ship_price' => $shipPrice,
-                'items_price' => $eftObj->getItemsValue(),
-                'fit_quicklook' => $eftParsed,
-                'description' => $description,
-                'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),
-                'embed' => $embed,
-                'recommendations' => $recommendations,
-                'og' => $og,
-                'id' => $id,
-                'runs' => $runs,
-                "breaksEven" => $breaksEven,
-                'popularity' => $popularity,
-                'loots' => $loots,
-                'fitIdsAll' => $fitIdsAll,
-                'fitIdsNonPrivate' => $fitIdsNonPrivate,
-                'similars' => $similars,
-                'runsCountAll' => $runsCountAll
-            ]);
+                  ->orderBy("CREATED_AT", 'DESC')
+                  ->paginate(25);
+
+                // Get max tiers and "break even" stats
+                $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
+                $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
+
+                // Get parsed items and price
+                $eftObj = Eft::loadFromId($id);
+                $eftParsed = $eftObj->getStructuredDisplay();
+                $fit->PRICE = $eftObj->getFitValue();
+                $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
+
+                // Get similar fits
+                $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
+                $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
+                $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
+                $loots = $this->getFitLootStrategyChart($fitIdsAll);
+                $similars = $this->getFitsFromIds($fitIdsNonPrivate);
+
+                // Get all runs count with this fit
+                $runsCountAll = DB::table("runs")
+                      ->where("FIT_ID", $id)
+                      ->orderBy("CREATED_AT", 'DESC')->count();
+
+                return view('fit', [
+                    'fit' => $fit,
+                    'ship_name' => $ship_name,
+                    'char_name' => $char_name,
+                    'ship_type' => $shipType,
+                    'ship_price' => $shipPrice,
+                    'items_price' => $eftObj->getItemsValue(),
+                    'fit_quicklook' => $eftParsed,
+                    'description' => $description,
+                    'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),
+                    'embed' => $embed,
+                    'recommendations' => $recommendations,
+                    'og' => $og,
+                    'id' => $id,
+                    'runs' => $runs,
+                    "breaksEven" => $breaksEven,
+                    'popularity' => $popularity,
+                    'loots' => $loots,
+                    'fitIdsAll' => $fitIdsAll,
+                    'fitIdsNonPrivate' => $fitIdsNonPrivate,
+                    'similars' => $similars,
+                    'runsCountAll' => $runsCountAll
+                ]);
 
             }
             catch (\Exception $e)  {
@@ -340,7 +361,7 @@
                     throw $e;
                 }
                 Log::error("Error viewing fit: ".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString());
-                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit.".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString()]);
+                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit. Reason: ".$e->getMessage()]);
             }
 	    }
 

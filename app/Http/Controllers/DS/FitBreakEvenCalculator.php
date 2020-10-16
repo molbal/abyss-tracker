@@ -5,6 +5,7 @@
 
 
     use App\Http\Controllers\HelperController;
+    use App\Http\Controllers\TimeHelper;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -44,11 +45,11 @@
                 $breaksEven->add([
                     "info" => $maxTier,
                     "medianRuntime" => $meanRuntimeSeconds ?? 60 * 20,
-                    "medianRuntimeFormatted" =>  gmdate("i:s",$meanRuntimeSeconds ?? 60 * 20),
+                    "medianRuntimeFormatted" =>  TimeHelper::formatSecondsToMMSS($meanRuntimeSeconds),
                     "medianISK" => $meanLootIsk,
                     "breakEvenRuns" => $breakEvenRuns,
                     "breakEvenTimeSeconds" => $breakEvenSeconds,
-                    "breakEvenTimeFormatted" => gmdate("H:i:s", $breakEvenSeconds),
+                    "breakEvenTimeFormatted" => TimeHelper::formatSecondsToHHMMSS($breakEvenSeconds),
                     "iskPerHour" => (3600 / $meanRuntimeSeconds) * $meanLootIsk]);
             }
 

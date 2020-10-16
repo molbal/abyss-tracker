@@ -44,7 +44,7 @@
 //                \debugbar()->stopMeasure("Appraisal for $typeId");
             }
             catch (RemoteAppraisalToolException $exc) {
-                \debugbar()->warning("Could not appraise typeId $typeId ".$exc->getMessage());
+//                \debugbar()->warning("Could not appraise typeId $typeId ".$exc->getMessage());
                 Log::channel("itempricecalculator")->warning("Could not appraise typeId $typeId ".$exc->getMessage()."\n".$exc->getTraceAsString());
                 $dto = null;
             }
