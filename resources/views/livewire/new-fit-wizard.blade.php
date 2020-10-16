@@ -90,7 +90,7 @@
 
                                 @if($step == 0)
                                     <div class="form-group">
-                                        <label for="eft">Please paste your fit as EFT here</label>
+                                        <label for="eft">Please paste your fit as EFT here, <a href="javascript:void(0)" id="zkill_modal_link">or import from zKillboard</a></label>
                                         <textarea name="eft"  wire:loading.attr="disabled" wire:model.lazy="eft" id="eft" class="w-100 form-control" rows="10" required></textarea>
                                     </div>
                                     @component("components.info-line")
@@ -98,6 +98,7 @@
                                             <br>
                                         From the EFT, the Abyss Tracker extracts the ship name, fit name, and calculates statistics to determine damage output, tanks strength (resistances and repair/boost speed), capacitor stats, targeting capabilities and maximum velocity with AB/MWD on.
                                     @endcomponent
+                                    @component("components.import_zkill_modal") @endcomponent
 
                                 @elseif($step == 1)
                                         <h5 class="font-weight-bold">Fit information</h5>

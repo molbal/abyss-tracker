@@ -4,9 +4,13 @@ namespace App\Http\Livewire;
 
 use App\Http\Controllers\EFT\Exceptions\MalformedEFTException;
 use App\Http\Controllers\EFT\FitParser;
+use DOMDocument;
+use DOMXPath;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -172,6 +176,36 @@ class NewFitWizard extends Component
             throw new MalformedEFTException(__("new-fit-wizard.not-abyss-capable", ['shipname' => $fitObj->getShipName()]));
         }
         return $fitObj;
+    }
+
+    public function importFromZkill(string $zkillLink) {
+        $zkillLink = trim($zkillLink);
+        Validator::make(['link' => $zkillLink], [
+            'link' => 'required|regex:/https?:\/\/zkillboard\.com\/kill\/\d+\/?$/m'
+        ], [
+            'required' => "Please fill :attribute before saving your fit",
+            'regex' => "Please enter a valid zKilboard link",
+        ])->validate();
+        try {
+            libxml_use_internal_errors(true);
+            $DOM = new DOMDocument();
+            $source = Http::get($zkillLink);
+            if ($source->failed() || !$source->successful()) {
+                throw new \Exception("Could not get link ".$zkillLink);
+            }
+            $DOM->loadHTML($source->body());
+            $xpath = new DOMXPath($DOM);
+            $eft = $xpath->query('//textarea[@id="eft"]')->item(0)->nodeValue;
+            libxml_use_internal_errors(false);
+
+            $this->eft = $eft;
+            $this->updatingEft($eft);
+        }
+        catch (\Exception $e) {
+            throw ValidationException::withMessages([
+               "zKillboard"=>$e->getMessage()
+            ]);
+        }
     }
 
     public function render()

@@ -17,7 +17,25 @@
                     </div>
                 </div>
             @endif
+{{--            <ul class="nav nav-tabs" id="myTab" role="tablist">--}}
+{{--                <li class="nav-item" role="presentation">--}}
+{{--                    <a class="nav-link active" id="tab-head-distribution" data-toggle="tab" href="#tab-distribution" role="tab" aria-controls="home" aria-selected="true">Loot values</a>--}}
+{{--                </li>--}}
+{{--                <li class="nav-item" role="presentation">--}}
+{{--                    <a class="nav-link" id="tab-head-activity" data-toggle="tab" href="#tab-activity" role="tab" aria-controls="profile" aria-selected="false">Abyss activity (daily)</a>--}}
+{{--                </li>--}}
+{{--            </ul>--}}
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Modules</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#eft">Export</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history">History</a></li>
+                @if (session()->get("login_id", -1) == $fit->CHAR_ID)
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">Settings</a></li>
+                @endif
+            </ul>
             <div class="card card-body border-0 shadow-sm">
+
+
                 <div class="tab-content">
                     <div id="home" class="tab-pane active">
                         <h5 class="font-weight-bold">Fit's modules</h5>
@@ -57,12 +75,30 @@
                         <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" onclick="this.focus();this.select()"
                                   style="font-family: 'Fira Code', 'Consolas', fixed">{{$fit->RAW_EFT}}</textarea>
                     </div>
+                    <div id="history" class="tab-pane fade">
+                        <h3>History</h3>
+
+                    </div>
+                    @if (session()->get("login_id", -1) == $fit->CHAR_ID)
+                        <div id="settings" class="tab-pane fade">
+                            <h3>Fit settings</h3>
+                            <p class="mb-0">You submitted this fit so you can delete it or modify its privacy.</p>
+                            <br>
+                            <div class="btn-group mb-2 d-block">
+                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn btn-outline-secondary">Set privacy to 'Public'
+                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn btn-outline-secondary">Set privacy to 'Anonym'
+                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn btn-outline-secondary">Set privacy to 'Private'
+                                </a>
+                            </div>
+                            <hr class="mt-5">
+                            <p class="text-danger">Danger zone</p>
+                            <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="btn btn-outline-danger">Delete fit</a>
+
+
+                        </div>
+                    @endif
                 </div>
 
-                <ul class="nav nav-pills">
-                    <li class="active nav-item mr-3"><a data-toggle="tab" href="#home">Formatted</a></li>
-                    <li class="nav-item mr-3"><a data-toggle="tab" href="#eft">EFT</a></li>
-                </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Maximum suggested Abyssal difficulty</h5>
@@ -217,23 +253,13 @@ text-align: center;">
     <div class="card card-body border-0 shadow-sm mt-3">
         <p>This fit has {{count($fitIdsAll)}} almost identical fits (which are counted against loot and popularity statistics). Out of these fits, {{count($fitIdsNonPrivate)}} are not set to private:</p>
         @component("components.fits.filter.result-list", ["results" => $similars]) @endcomponent
+        @if($fitIdsAll > $fitIdsNonPrivate)
+            <p class="italic mb-0">+ {{(count($fitIdsAll) - count($fitIdsNonPrivate))}} hidden fit(s).</p>
+        @endif
     </div>
     @endif
 
-    @if (session()->get("login_id", -1) == $fit->CHAR_ID)
-    <div class="row mt-5">
-        <div class="card card-body border-danger shadow-sm text-center mt-3">
-            <div class="mb-0">
-                <h5 class="font-weight-bold">Fit settings</h5>
-                <p class="mb-0">You submitted this fit so you can delete it or modify its privacy. If you would like to modify it, please delete this an create a new one instead.</p>
-                <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="text-danger">Delete fit</a> &centerdot;
-                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="">Set privacy to 'Public'</a> &centerdot;
-                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="">Set privacy to 'Anonym'</a> &centerdot;
-                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="">Set privacy to 'Private'</a>
-            </div>
-        </div>
-    </div>
-    @endif
+
 @endsection
 @section("styles")
     <style>

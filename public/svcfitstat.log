@@ -1,6 +1,6 @@
-*   Trying 104.27.144.139:443...
+*   Trying 172.67.147.215:443...
 * TCP_NODELAY set
-* Connected to svcfitstat.eve-nt.uk (104.27.144.139) port 443 (#0)
+* Connected to svcfitstat.eve-nt.uk (172.67.147.215) port 443 (#0)
 * ALPN, offering h2
 * ALPN, offering http/1.1
 * successfully set certificate verify locations:
@@ -18,20 +18,20 @@
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x1ed5c7e5d90)
+* Using Stream ID: 1 (easy handle 0x19e81c793b0)
 > POST /api/calculate/async HTTP/2
 Host: svcfitstat.eve-nt.uk
 accept: */*
-content-length: 505
+content-length: 915
 content-type: application/x-www-form-urlencoded
 
 * We are completely uploaded and fine
 * old SSL session ID is stale, removing
 * Connection state changed (MAX_CONCURRENT_STREAMS == 256)!
 < HTTP/2 200 
-< date: Thu, 15 Oct 2020 17:36:29 GMT
+< date: Fri, 16 Oct 2020 22:18:06 GMT
 < content-type: application/json
-< set-cookie: __cfduid=d2c876e8e2b7fa51538888032a3d3dc921602783388; expires=Sat, 14-Nov-20 17:36:28 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
+< set-cookie: __cfduid=d1c15f4e0c457a90c0d4b43bb4aa81d351602886685; expires=Sun, 15-Nov-20 22:18:05 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
 < x-powered-by: PHP/7.4.11
 < cache-control: private, must-revalidate
 < pragma: no-cache
@@ -40,11 +40,11 @@ content-type: application/x-www-form-urlencoded
 < x-ratelimit-remaining: 59
 < x-powered-by: PleskLin
 < cf-cache-status: DYNAMIC
-< cf-request-id: 05ceeebae10000bd639c262000000001
+< cf-request-id: 05d516eca40000edfb7084f000000001
 < expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
-< report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report?lkg-colo=19&lkg-time=1602783389"}],"group":"cf-nel","max_age":604800}
+< report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report?lkg-colo=19&lkg-time=1602886687"}],"group":"cf-nel","max_age":604800}
 < nel: {"report_to":"cf-nel","max_age":604800}
 < server: cloudflare
-< cf-ray: 5e2b4d7168c7bd63-CDG
+< cf-ray: 5e35275a9874edfb-CDG
 < 
 * Connection #0 to host svcfitstat.eve-nt.uk left intact

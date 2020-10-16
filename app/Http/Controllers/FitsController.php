@@ -17,9 +17,12 @@
     use Carbon\Carbon;
     use ChrisKonnertz\OpenGraph\OpenGraph;
     use Cohensive\Embed\Embed;
+    use DOMDocument;
+    use DOMXPath;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Http;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Validator;
 
@@ -240,6 +243,7 @@
          * @throws \Exception
          */
         public function get(int $id) {
+
             if (!$this->getFitsQB($id)->exists()) {
                 return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
             }

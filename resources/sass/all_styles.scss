@@ -24,6 +24,9 @@ tr, td {
     @extend .shadow
 }
 
+.modal-backdrop {
+    backdrop-filter: blur(10px);
+}
 
 * {
     font-family: 'Shentox 13';

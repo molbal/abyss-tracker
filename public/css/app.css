@@ -10564,6 +10564,11 @@ tr, td {
   animation: rotating 2s linear infinite;
 }
 
+.modal-backdrop {
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+}
+
 * {
   font-family: "Shentox 13";
 }

@@ -42,7 +42,9 @@ function detectPaste(textarea, callback) {
 }
 
 function finishPage() {
-    $("div.card-overlay").css("display", 'inline-block');
+    setInterval(function () {
+        $("div.card-overlay").css("display", 'inline-block');
+    }, 333);
 }
 
 $(function () {
@@ -51,6 +53,9 @@ $(function () {
         console.log("Pasted!");
         $("#eft").blur();
     });
+    $("#zkill_modal_link").click(function () {
+        $("#zkill_modal").modal({});
+    })
 
     window.addEventListener('step-change', event => {
         console.log('Name updated to: ' + event.detail.newstep);
@@ -82,25 +87,3 @@ $(function () {
 
 
 });
-//
-// document.addEventListener("DOMContentLoaded", () => {
-//     console.log("initializing 'hooks'");
-//     Livewire.hook('message.processed', (message, component) => {
-//         console.log("Message processed");
-//
-//         try {
-//             simplemde.toTextArea();
-//             simplemde = null;
-//         } catch (ignored) {
-//
-//         }
-//
-//         var simplemde = new SimpleMDE({
-//             element: document.getElementById("description"),
-//             forceSync: true,
-//             spellChecker: false,
-//             status: false,
-//             hideIcons: ["guide"]
-//         });
-//     });
-// });
