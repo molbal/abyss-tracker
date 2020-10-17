@@ -26,6 +26,9 @@ mix.js('resources/js/app.js', 'public/js/app.js')
     .styles([
         'resources/sass/dependencies-light/simplemde.min.css'
     ], 'public/css/new-fit-deps-light.css')
+    .sass('resources/sass/fit-only.scss', 'public/css').options({
+    processCssUrls: mix.inProduction()
+    })
     .scripts([
         'resources/js/dependencies-all/simplemde.min.js',
         'resources/js/new-fit/wizard.js'

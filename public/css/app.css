@@ -6343,7 +6343,7 @@ button.bg-dark:focus {
   border-radius: 0.3rem !important;
 }
 
-.rounded-circle {
+.rounded-circle, img#ship_prof, img#char_prof {
   border-radius: 50% !important;
 }
 
@@ -7471,7 +7471,7 @@ button.bg-dark:focus {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 
-.shadow, .btn:hover:not([disabled]) {
+.shadow, .btn:hover:not([disabled]), img#ship_prof, img#char_prof {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
@@ -10268,12 +10268,23 @@ td.w-20p {
   width: 20px !important;
 }
 
-#char_prof {
+.fit-title {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+img#char_prof {
   width: 128px;
   height: 128px;
   position: relative;
   top: -52px;
   margin-bottom: -38px;
+  border: 2px solid #fff;
+}
+
+img#ship_prof {
+  width: 64px;
+  height: 64px;
   border: 2px solid #fff;
 }
 
@@ -10605,7 +10616,7 @@ a.dropdown-item.active {
   height: 16px;
 }
 
-.nav-link img.rounded-circle {
+.nav-link img.rounded-circle, .nav-link img#char_prof, .nav-link img#ship_prof {
   width: 24px;
   height: 24px;
 }
@@ -10828,6 +10839,12 @@ ul.pagination {
 
 .select2-results__option--highlighted[aria-selected] {
   background-color: #0f1113 !important;
+}
+
+.nav-tabs .nav-link {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
 }
 
 .bright-theme-only-white {

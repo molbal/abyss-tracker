@@ -301,3 +301,10 @@ ul.pagination {
 .select2-results__option--highlighted[aria-selected] {
     background-color: #0f1113 !important;
 }
+
+
+.nav-tabs .nav-link {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.8rem
+}

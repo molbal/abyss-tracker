@@ -31,12 +31,27 @@ td.w-20p {
     width: 20px !important;
 }
 
-#char_prof {
+.fit-title {
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+img#char_prof {
+    @extend .rounded-circle;
+    @extend .shadow;
     width: 128px;
     height: 128px;
     position: relative;
     top: -52px;
     margin-bottom: -38px;
+    border: 2px solid #fff;
+}
+
+img#ship_prof{
+    @extend .rounded-circle;
+    @extend .shadow;
+    width: 64px;
+    height: 64px;
     border: 2px solid #fff;
 }
 

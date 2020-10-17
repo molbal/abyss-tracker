@@ -1,8 +1,8 @@
 @extends("layout.app")
 @section("browser-title", $ship_name." fit")
 @section("content")
-    <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
-        <h4 class="font-weight-bold">{{$fit->NAME}} <small class="ml-3">(Fit #{{$id}})</small></h4>
+    <div class="d-flex justify-content-between align-items-center mb-1 mt-5">
+        <h4 class="font-weight-bold fit-title">{{$fit->NAME}}</h4><small class="ml-3">(Fit #{{$id}})</small>
     </div>
     <div class="row">
         <div class="col-sm-8">
@@ -29,6 +29,7 @@
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Modules</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#eft">Export</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history">History</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#render3d">3D</a></li>
                 @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">Settings</a></li>
                 @endif
@@ -56,7 +57,7 @@
                             </tr>
                             <tr>
                                 <td style="width: 36px;">
-                                    <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID}}_32.png" alt="{{$ship_name}} icon" style="width: 32px;height: 32px;">
+                                    <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID}}_64.png" alt="{{$ship_name}} icon" class="fit-item-icon">
                                 </td>
                                 <td>
                                     {{$ship_name}}
@@ -77,6 +78,10 @@
                     </div>
                     <div id="history" class="tab-pane fade">
                         <h3>History</h3>
+
+                    </div>
+                    <div id="render3d" class="tab-pane fade">
+                        <h3>3D view</h3>
 
                     </div>
                     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
@@ -139,7 +144,7 @@
             <div class="card card-body shadow-sm border-0 text-center">
                 @if($fit->PRIVACY == 'public')
                     <div class="text-small">
-                        <img src="https://images.evetech.net/characters/{{$fit->CHAR_ID}}/portrait?size=128" alt="{{$char_name}}" class="rounded-circle shadow" id="char_prof">
+                        <img src="https://images.evetech.net/characters/{{$fit->CHAR_ID}}/portrait?size=256" alt="{{$char_name}}"  id="char_prof">
                         <br>
                         <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark mb-1 d-inline-block">{{$char_name}} </a>
                         <br>
@@ -155,10 +160,9 @@
             <div class="card card-body shadow-sm border-0 mt-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="" style="width: 191px;
-text-align: center;">
-                            <img src="https://images.evetech.net/types/{{$fit->SHIP_ID}}/render?size=64"
-                                 class="rounded-circle shadow" style="border: 2px solid #fff; width: 64px;height: 64px;">
+                        <div class="" style="width: 191px; text-align: center;">
+                            <img src="https://images.evetech.net/types/{{$fit->SHIP_ID}}/render?size=128"
+                                 id="ship_prof">
                             <br>
                             <div>
                                 <h2 class="font-weight-bold mb-0 mt-3" style="line-height: 1.6rem">
@@ -262,24 +266,9 @@ text-align: center;">
 
 @endsection
 @section("styles")
-    <style>
-        .table-sm td, .table-sm th {
-            padding: .1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="{{asset("css/fit-only.css")}}">
 @endsection
 @section("scripts")
     {!! $popularity->script() !!}
     {!! $loots->script() !!}
-{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>--}}
-{{--    <script>--}}
-{{--        $(function () {--}}
-{{--            $('.inline-pie').sparkline('html', {--}}
-{{--                type: 'pie',--}}
-{{--                sliceColors: ['#78b7aa', 'rgba(0,0,0,0)'],--}}
-{{--                disableInteraction: true--}}
-{{--            });--}}
-{{--            $('.inline-pie').animate({'opacity': 1}, 1500);--}}
-{{--        });--}}
-{{--    </script>--}}
 @endsection

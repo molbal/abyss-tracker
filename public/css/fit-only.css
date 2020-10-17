@@ -1,0 +1,15 @@
+.table-sm td, .table-sm th {
+  padding: 0.1rem;
+}
+
+img.fit-item-icon {
+  border-radius: 0.25rem;
+  width: 32px;
+  height: 32px;
+}
+
+img.fit-ammo-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}

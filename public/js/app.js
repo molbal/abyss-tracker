@@ -167,16 +167,28 @@ $(function () {
 
 /***/ }),
 
+/***/ "./resources/sass/fit-only.scss":
+/*!**************************************!*\
+  !*** ./resources/sass/fit-only.scss ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
 /***/ 0:
-/*!********************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/sass/app.scss ./resources/sass/app-dark.scss ***!
-  \********************************************************************************************/
+/*!***************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/sass/app.scss ./resources/sass/app-dark.scss ./resources/sass/fit-only.scss ***!
+  \***************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! C:\Users\molbal\Documents\JetBrains\abyss-tracker\resources\js\app.js */"./resources/js/app.js");
 __webpack_require__(/*! C:\Users\molbal\Documents\JetBrains\abyss-tracker\resources\sass\app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! C:\Users\molbal\Documents\JetBrains\abyss-tracker\resources\sass\app-dark.scss */"./resources/sass/app-dark.scss");
+__webpack_require__(/*! C:\Users\molbal\Documents\JetBrains\abyss-tracker\resources\sass\app-dark.scss */"./resources/sass/app-dark.scss");
+module.exports = __webpack_require__(/*! C:\Users\molbal\Documents\JetBrains\abyss-tracker\resources\sass\fit-only.scss */"./resources/sass/fit-only.scss");
 
 
 /***/ })
