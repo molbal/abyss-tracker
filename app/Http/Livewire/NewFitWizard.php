@@ -4,6 +4,8 @@ namespace App\Http\Livewire;
 
 use App\Http\Controllers\EFT\Exceptions\MalformedEFTException;
 use App\Http\Controllers\EFT\FitParser;
+use App\Http\Controllers\Partners\EveWorkbench;
+use App\Http\Controllers\Partners\ZKillboard;
 use DOMDocument;
 use DOMXPath;
 use Illuminate\Support\Collection;
@@ -60,6 +62,9 @@ class NewFitWizard extends Component
 
     /** @var int */
     public $Gamma;
+
+
+
 
     public function mount() {
         $this->step = 0;
@@ -181,29 +186,41 @@ class NewFitWizard extends Component
     public function importFromZkill(string $zkillLink) {
         $zkillLink = trim($zkillLink);
         Validator::make(['link' => $zkillLink], [
-            'link' => 'required|regex:/https?:\/\/zkillboard\.com\/kill\/\d+\/?$/m'
+            'link' => 'required|regex:'.config('tracker.verification.zkillboard', '/https?:\/\/zkillboard\.com\/kill\/\d+\/?$/m')
         ], [
             'required' => "Please fill :attribute before saving your fit",
             'regex' => "Please enter a valid zKilboard link",
         ])->validate();
         try {
-            libxml_use_internal_errors(true);
-            $DOM = new DOMDocument();
-            $source = Http::get($zkillLink);
-            if ($source->failed() || !$source->successful()) {
-                throw new \Exception("Could not get link ".$zkillLink);
-            }
-            $DOM->loadHTML($source->body());
-            $xpath = new DOMXPath($DOM);
-            $eft = $xpath->query('//textarea[@id="eft"]')->item(0)->nodeValue;
-            libxml_use_internal_errors(false);
+            $eft = ZKillboard::getZKillboardFit($zkillLink);
 
             $this->eft = $eft;
             $this->updatingEft($eft);
         }
         catch (\Exception $e) {
             throw ValidationException::withMessages([
-               "zKillboard"=>$e->getMessage()
+                "zKillboard" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function importFromEveWorkbench(string $ewbLink) {
+        $ewbLink = trim($ewbLink);
+        Validator::make(['link' => $ewbLink], [
+            'link' => 'required|regex:'.config('tracker.verification.eveworkbench', '/https?:\/\/(www.)?eveworkbench.com\/fitting\/[a-z \-]+\/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\/?$/m')
+        ], [
+            'required' => "Please fill :attribute before saving your fit",
+            'regex' => "Please enter a valid EVE Workbench link",
+        ])->validate();
+        try {
+            $eft = EveWorkbench::getEveWorkbenchFit($ewbLink);
+
+            $this->eft = $eft;
+            $this->updatingEft($eft);
+        }
+        catch (\Exception $e) {
+            throw ValidationException::withMessages([
+                "eveWorkbench" => $e->getMessage()
             ]);
         }
     }

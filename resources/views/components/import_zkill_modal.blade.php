@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 <div class="text-justify text-black-50 text-small mb-3">
-                    Please enter the full zKillboard link such as <a href="https://zkillboard.com/kill/85153872/" target="_blank">https://zkillboard.com/kill/85153872/</a> then click Import. The Abyss Tracker will call zKillboard and try to extract the data.
+                    Please enter the full zKillboard link of a killmail such as <a href="https://zkillboard.com/kill/85153872/" target="_blank">https://zkillboard.com/kill/85153872/</a> then click Import. The Abyss Tracker will call zKillboard and try to extract the data.
                 </div>
                 <div class="form-group">
                     <label for="message">zKillboard link</label>

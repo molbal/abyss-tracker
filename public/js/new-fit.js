@@ -56,6 +56,9 @@ $(function () {
     $("#zkill_modal_link").click(function () {
         $("#zkill_modal").modal({});
     })
+    $("#ewb_modal_link").click(function () {
+        $("#ewb_modal").modal({});
+    })
 
     window.addEventListener('step-change', event => {
         console.log('Name updated to: ' + event.detail.newstep);
