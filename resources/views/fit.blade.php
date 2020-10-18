@@ -31,10 +31,10 @@
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history">History</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#render3d">3D</a></li>
                 @if (session()->get("login_id", -1) == $fit->CHAR_ID)
-                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">Settings</a></li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings"><span class="text-danger">Settings</span></a></li>
                 @endif
             </ul>
-            <div class="card card-body border-0 shadow-sm pt-2">
+            <div class="card card-body border-0 shadow-sm pt-3">
 
 
                 <div class="tab-content">
@@ -71,7 +71,10 @@
                         </table>
                     </div>
                     <div id="eft" class="tab-pane fade">
-                        <h3>EFT</h3>
+                        <h5 class="font-weight-bold">Export fit</h5>
+                        @component("components.info-line", ['class' => 'mb-3 mt-1'])
+                            On the left side of the ingame fitting window, click the wrench icon. Then at the bottom left of the page click 'Import &amp; Export' then 'Import from clipboard' to import this fit to EVE Online.
+                        @endcomponent
                         <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" onclick="this.focus();this.select()"
                                   style="font-family: 'Fira Code', 'Consolas', fixed">{{$fit->RAW_EFT}}</textarea>
                     </div>

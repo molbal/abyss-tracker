@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7ef1961c23abd57bd9aff1e8518670a",
+    "content-hash": "f9a2083f971e21aa8fecead25aa36462",
     "packages": [
         {
             "name": "balping/json-raw-encoder",
@@ -1124,16 +1124,16 @@
         },
         {
             "name": "itsgoingd/clockwork",
-            "version": "v4.1.7",
+            "version": "v4.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/itsgoingd/clockwork.git",
-                "reference": "49c28d7c43f6021eca4c290f620f13ee7d15f668"
+                "reference": "0dc2e5be39de88b18719bb4f3cdacfa605ad2146"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/itsgoingd/clockwork/zipball/49c28d7c43f6021eca4c290f620f13ee7d15f668",
-                "reference": "49c28d7c43f6021eca4c290f620f13ee7d15f668",
+                "url": "https://api.github.com/repos/itsgoingd/clockwork/zipball/0dc2e5be39de88b18719bb4f3cdacfa605ad2146",
+                "reference": "0dc2e5be39de88b18719bb4f3cdacfa605ad2146",
                 "shasum": ""
             },
             "require": {
@@ -1179,7 +1179,7 @@
                 "profiling",
                 "slim"
             ],
-            "time": "2020-08-25T20:05:21+00:00"
+            "time": "2020-09-17T19:21:25+00:00"
         },
         {
             "name": "kabbouchi/laravel-ward",
@@ -8521,10 +8521,10 @@
     "platform": {
         "php": "^7.3",
         "ext-curl": "*",
+        "ext-dom": "*",
         "ext-http": "*",
         "ext-json": "*",
-        "ext-libxml": "*",
-        "ext-dom": "*"
+        "ext-libxml": "*"
     },
     "platform-dev": []
 }

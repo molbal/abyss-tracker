@@ -18,20 +18,20 @@
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x19e81c793b0)
+* Using Stream ID: 1 (easy handle 0x25509eb8c20)
 > POST /api/calculate/async HTTP/2
 Host: svcfitstat.eve-nt.uk
 accept: */*
-content-length: 915
+content-length: 673
 content-type: application/x-www-form-urlencoded
 
 * We are completely uploaded and fine
 * old SSL session ID is stale, removing
 * Connection state changed (MAX_CONCURRENT_STREAMS == 256)!
 < HTTP/2 200 
-< date: Fri, 16 Oct 2020 22:18:06 GMT
+< date: Sun, 18 Oct 2020 18:23:23 GMT
 < content-type: application/json
-< set-cookie: __cfduid=d1c15f4e0c457a90c0d4b43bb4aa81d351602886685; expires=Sun, 15-Nov-20 22:18:05 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
+< set-cookie: __cfduid=d33b39d44d4baf0e0b4d3f9c75c00de161603045402; expires=Tue, 17-Nov-20 18:23:22 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
 < x-powered-by: PHP/7.4.11
 < cache-control: private, must-revalidate
 < pragma: no-cache
@@ -40,11 +40,11 @@ content-type: application/x-www-form-urlencoded
 < x-ratelimit-remaining: 59
 < x-powered-by: PleskLin
 < cf-cache-status: DYNAMIC
-< cf-request-id: 05d516eca40000edfb7084f000000001
+< cf-request-id: 05de8cbe2b0000d4534ebe6000000001
 < expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
-< report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report?lkg-colo=19&lkg-time=1602886687"}],"group":"cf-nel","max_age":604800}
+< report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report?lkg-colo=75&lkg-time=1603045403"}],"group":"cf-nel","max_age":604800}
 < nel: {"report_to":"cf-nel","max_age":604800}
 < server: cloudflare
-< cf-ray: 5e35275a9874edfb-CDG
+< cf-ray: 5e444a437f82d453-HAM
 < 
 * Connection #0 to host svcfitstat.eve-nt.uk left intact

@@ -16,8 +16,10 @@
     "require": {
         "php": "^7.3",
         "ext-curl": "*",
+        "ext-dom": "*",
         "ext-http": "*",
         "ext-json": "*",
+        "ext-libxml": "*",
         "chriskonnertz/open-graph": "^2.0",
         "consoletvs/charts": "6.*",
         "doctrine/dbal": "^2.10",
@@ -31,9 +33,7 @@
         "laravel/tinker": "^2.0",
         "livewire/livewire": "^2.2",
         "phpoffice/phpspreadsheet": "^1.11",
-        "sayorus/eveonline-socialite": "^0.6.1",
-        "ext-libxml": "*",
-        "ext-dom": "*"
+        "sayorus/eveonline-socialite": "^0.6.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.8",
