@@ -2,12 +2,12 @@
 @section("browser-title", "Run #".$run->ID." details")
 @section("content")
 
-    <div class="d-flex justify-content-between align-items-start mb-4 mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
         <h4 class="font-weight-bold">Showing the details of <span data-toggle="tooltip"
                                                                   title="Loot value compared to median loot of this tier with the same ship size: {{round($percent)}}%">{{$run_summary}}</span>
             Abyssal run</h4>
         <p class="text-right font-italic text-sm mb-0 pb-0">
-            Saved at: {{$run->CREATED_AT ?? $run->RUN_DATE}}
+            Saved <span data-toggle="tooltip" title="Exact date and time (EVE time): {{$run->CREATED_AT ?? $run->RUN_DATE}}">{{\App\Http\Controllers\TimeHelper::timeElapsedString($run->CREATED_AT ?? $run->RUN_DATE)}}</span>
         </p>
     </div>
 

@@ -9,6 +9,7 @@
     use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
+    use App\Http\Controllers\EFT\FitHistoryController;
     use App\Http\Controllers\EFT\FitParser;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
     use App\Http\Controllers\EFT\Tags\TagsController;
@@ -335,6 +336,9 @@
                       ->where("FIT_ID", $id)
                       ->orderBy("CREATED_AT", 'DESC')->count();
 
+                // Get history
+                $history = FitHistoryController::getFitHistory($id);
+//        dd($history->first()->created_at);
                 return view('fit', [
                     'fit' => $fit,
                     'ship_name' => $ship_name,
@@ -356,7 +360,8 @@
                     'fitIdsAll' => $fitIdsAll,
                     'fitIdsNonPrivate' => $fitIdsNonPrivate,
                     'similars' => $similars,
-                    'runsCountAll' => $runsCountAll
+                    'runsCountAll' => $runsCountAll,
+                    'history' => $history
                 ]);
 
             }

@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
  * @property int $fit_root_id
  * @property int $fit_it
  * @property string $event
- * @property string $created_at
+ * @property Carbon $created_at
  * @method static \Illuminate\Database\Eloquent\Builder|FitHistoryItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FitHistoryItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FitHistoryItem query()
@@ -51,35 +51,16 @@ class FitHistoryItem extends Model
      */
     protected $table = 'fit_logs';
 
-
-    /** ID of the history item
-     *
-     * @var int
-     */
-    public $id;
-
-    /** ID of the fit root id
-     *
-     * @var int
-     */
-    public $fit_root_id;
-
-    /** ID of the fit ID
-     *
-     * @var int
-     */
-    public $fit_it;
-
-    /** Event text (max 255 char)
-     *
-     * @var string
-     */
-    public $event;
-
     /**
-     * Timestamp
+     * The attributes that should be mutated to dates.
      *
-     * @var Carbon
+     * @var array
      */
-    public $created_at;
+    protected $dates = [
+        'created_at',
+    ];
+
+
+
+
 }

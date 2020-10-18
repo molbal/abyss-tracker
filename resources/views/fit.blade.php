@@ -2,7 +2,7 @@
 @section("browser-title", $ship_name." fit")
 @section("content")
     <div class="d-flex justify-content-between align-items-center mb-1 mt-5">
-        <h4 class="font-weight-bold fit-title">{{$fit->NAME}}</h4><small class="ml-3">(Fit #{{$id}})</small>
+        <h4 class="font-weight-bold fit-title">{{$fit->NAME}}</h4><small class="ml-3">Fit #{{$id}}</small>
     </div>
     <div class="row">
         <div class="col-sm-8">
@@ -34,12 +34,11 @@
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">Settings</a></li>
                 @endif
             </ul>
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm pt-2">
 
 
                 <div class="tab-content">
                     <div id="home" class="tab-pane active">
-                        <h5 class="font-weight-bold">Fit's modules</h5>
                         <table class="table table-responsive-sm table-sm w-100 mb-4">
                             @component("components.fit_group", ["items" => $fit_quicklook["high"], "section" => "High slot modules"])@endcomponent
                             @component("components.fit_group", ["items" => $fit_quicklook["mid"], "section" => "Mid slot modules"])@endcomponent
@@ -78,7 +77,26 @@
                     </div>
                     <div id="history" class="tab-pane fade">
                         <h3>History</h3>
-
+                        <table class="tabme table-sm w-100">
+                            <tr>
+                                <th>Datetime</th>
+                                <th>Event</th>
+                                <th>Fit version</th>
+                            </tr>
+                            @forelse($history as $item)
+                                @component("components.fits.fithistory", ['item'=>$item]) @endcomponent
+                            @empty
+                                <tr>
+                                   <td colspan="3">
+                                       <p class="py-5 text-center font-italic text-muted">No fit history available</p>
+                                   </td>
+                                </tr>
+                            @endforelse
+                        </table>
+                        <hr>
+                        @component("components.info-line")
+                            @lang("fits.records-notice", ['date' => config("tracker.fit.logs.initial-date")])
+                        @endcomponent
                     </div>
                     <div id="render3d" class="tab-pane fade">
                         <h3>3D view</h3>

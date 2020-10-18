@@ -6,7 +6,8 @@
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
     <div class="row mt-3">
-        <div class="col-xs-12 col-sm-12 col-md-8 row">
+        <div class="col-xs-12 col-sm-12 col-md-8">
+            <div class="row">
 
 
             {{--        NEWS START --}}
@@ -58,6 +59,7 @@
                 </div>
             </div>
             {{--        LOOT GRAPH ENDS--}}
+            </div>
         </div>
 
         <div class="col-xs-12 col-sm-12 col-md-4">
