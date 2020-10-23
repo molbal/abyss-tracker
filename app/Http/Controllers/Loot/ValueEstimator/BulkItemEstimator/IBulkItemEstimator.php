@@ -21,5 +21,5 @@
          * @return Collection
          * @throws RemoteAppraisalToolException
          */
-        public function getPrice(): Collection;
+        public function getPrices(): Collection;
 	}

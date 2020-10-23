@@ -201,17 +201,36 @@
          * @return float|int
          */
         public function getItemsValue() {
-            $value =  0;
+            $itemsValue = 0;
 
-            /** @var EftLine $line */
-            foreach ($this->lines as $line) {
-                $itemObject = $this->getPriceEstimator()->getFromTypeId($line->getTypeId());
+            $typeIds = $this->lines->map(function( /** @var $item EftLine */ $item) {
+                return $item->getTypeId();
+            })->unique();
+
+            $prices = $this->getPriceEstimator()->appraiseBulk($typeIds);
+
+            $this->lines->transform(function ($line) use (&$itemsValue, $prices) {
+                /** @var EftLine $line */
+                $itemObject = $prices->get($line->getTypeId());
+
                 if ($itemObject) {
-                    $value += $itemObject->getAveragePrice();
+                    $itemsValue += $itemObject->getAveragePrice();
+                    $line->setAveragePrice(intval($itemObject->getAveragePrice()));
                 }
-            }
 
-            return $value;
+                return $line;
+
+            });
+
+//            foreach ($this->lines as $i => $line) {
+//                $itemObject = $prices->get($line->getTypeId()); // $this->getPriceEstimator()->getFromTypeId($line->getTypeId());
+//
+//                if ($itemObject) {
+//                    $itemsValue += $itemObject->getAveragePrice();
+//                }
+//            }
+
+            return $itemsValue;
         }
 
         public function isDefaultName() {

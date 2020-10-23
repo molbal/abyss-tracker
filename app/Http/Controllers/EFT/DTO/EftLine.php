@@ -25,6 +25,9 @@
         /** @var ItemPriceCalculator */
         private $ipc;
 
+        /** @var ?int */
+        private $averagePrice;
+
         /**
          * EftLine constructor.
          */
@@ -33,6 +36,7 @@
             $this->ammoName = null;
             $this->resolver = null;
             $this->ipc = null;
+            $this->averagePrice = null;
         }
 
 
@@ -76,12 +80,23 @@
          * @return int
          */
         public function getAveragePrice():int {
+            if ($this->averagePrice != null) {
+                return  $this->averagePrice;
+            }
             if (!$this->typeId) return 0;
             $o = $this->getItemPriceCalculator()->getFromTypeId($this->typeId);
             if ($o) {
-                return intval($o->getAveragePrice());
+                $this->averagePrice = intval($o->getAveragePrice());
             }
-            return 0;
+            else {
+                $this->averagePrice = 0;
+            }
+            return $this->averagePrice;
+        }
+
+        public function setAveragePrice(int $averagePrice) {
+            $this->averagePrice = $averagePrice;
+            return $this;
         }
 
         /**
@@ -214,5 +229,7 @@
                 return $this->getItemName();
             }
         }
+
+
 
     }

@@ -19,10 +19,7 @@
             $this->listOfTypeIds = $listOfTypeIds;
         }
 
-        public function getPrice() : Collection {
-
-//            https://market.fuzzwork.co.uk/aggregates/?region=10000002&types=48112,12005
-
+        public function getPrices() : Collection {
             $return = collect([]);
 
             $client = new Client();

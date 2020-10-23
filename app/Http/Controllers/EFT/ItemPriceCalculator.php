@@ -7,6 +7,7 @@
 	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
+    use App\Http\Controllers\Loot\ValueEstimator\BulkItemEstimator\IBulkItemEstimator;
     use App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\ISingleItemEstimator;
 //    use DebugBar\DebugBar;
     use Illuminate\Support\Collection;
@@ -101,8 +102,27 @@
             }
         }
 
-        private function appraiseBulk(Collection $listOfIds): Collection {
+        public function appraiseBulk(Collection $listOfTypeIds): Collection {
+            $strListofIds = $listOfTypeIds->implode(",");
+            Log::channel("itempricecalculator")->info("Appraising in bulk: ". $strListofIds);
+            return Cache::remember("aft.bulkestimator.".md5($strListofIds), now()->addMinutes(30), function() use ($listOfTypeIds) {
+                $estimators = $this->getBulkItemEstimators();
+                foreach ($estimators as $i => $estimator) {
 
+                    /** @var IBulkItemEstimator $estimatorImpl */
+                    $estimatorImpl = resolve($estimator, ["listOfTypeIds" => $listOfTypeIds]);
+
+                    try {
+                        return $estimatorImpl->getPrices();
+                    }
+                    catch (RemoteAppraisalToolException $retex) {
+                        Log::channel("itempricecalculator")->warning("BULK RemoteAppraisalToolException: Error while calculating typeId ".$listOfTypeIds->implode(",").": ".$retex->getMessage()."\n".$retex->getTraceAsString());
+                    }
+                    catch (\Exception $retex) {
+                        Log::channel("itempricecalculator")->error("BULK Unexpected exception: Error while calculating typeId ".$listOfTypeIds->implode(",").": ".$retex->getMessage()."\n".$retex->getTraceAsString());
+                    }
+                }
+            });
         }
 
         /**
