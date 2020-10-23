@@ -27,6 +27,8 @@
 	    /** @var FitHelper */
 	    private $fitHelper;
 
+	    /** @var ItemPriceCalculator */
+	    private $priceEstimator;
 
         /**
          * @return Collection
@@ -150,6 +152,8 @@
             return $this->fitHelper;
         }
 
+
+
         public function getStructuredDisplay() {
             $struct = ['high' => [], 'mid' => [], 'low' => [], 'rig' => [], 'drone' => [], 'ammo' => [], 'cargo' => [], 'booster' => [], 'implant' => []];
             /** @var FitHelper $helper */
@@ -164,6 +168,18 @@
             return $struct;
         }
 
+        /**
+         * @return ItemPriceCalculator
+         */
+        public function getPriceEstimator() : ItemPriceCalculator {
+            if ($this->priceEstimator == null) {
+                $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+            }
+            return $this->priceEstimator;
+        }
+
+
+
 
         /**
          * Gets the value of the entire fit
@@ -172,9 +188,7 @@
         public function getFitValue():int {
             $value = $this->getItemsValue();
 
-            /** @var ItemPriceCalculator $priceEstimator */
-            $priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
-            $itemObject = $priceEstimator->getFromTypeId($this->getShipId());
+            $itemObject = $this->getPriceEstimator()->getFromTypeId($this->getShipId());
             if ($itemObject) {
                 $value += $itemObject->getAveragePrice();
             }
@@ -189,11 +203,9 @@
         public function getItemsValue() {
             $value =  0;
 
-            /** @var ItemPriceCalculator $priceEstimator */
-            $priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
             /** @var EftLine $line */
             foreach ($this->lines as $line) {
-                $itemObject = $priceEstimator->getFromTypeId($line->getTypeId());
+                $itemObject = $this->getPriceEstimator()->getFromTypeId($line->getTypeId());
                 if ($itemObject) {
                     $value += $itemObject->getAveragePrice();
                 }

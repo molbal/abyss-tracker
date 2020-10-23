@@ -55,6 +55,18 @@
                 'service-root' => env('EVEWORKBENCH_API_ROOT'),
                 'app-key' =>env('EVEWORKBENCH_API_APP_KEY'),
                 'client-id' =>env('EVEWORKBENCH_API_CLIENT_ID'),
+            ],
+
+            'estimators' => [
+                'single-item' => [
+//                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\CacheSingleItemEstimator',
+//                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\ItemPriceTableSingleItemEstimator',
+//                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\FuzzworkMarketDataSingleItemEstimator',
+                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\EveWorkbenchSingleItemEstimator'
+                ],
+                'bulk' => [
+
+                ]
             ]
         ],
 

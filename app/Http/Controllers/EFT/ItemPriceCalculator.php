@@ -9,6 +9,7 @@
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\ISingleItemEstimator;
 //    use DebugBar\DebugBar;
+    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -37,14 +38,11 @@
         public function getFromTypeId(int $typeId): ?ItemObject {
             if ($typeId == 0) return null;
             try {
-//                \debugbar()->startMeasure("Appraisal for $typeId");
                 $dto = Cache::remember("app.ipc.".$typeId, now()->addMinute(), function() use ($typeId) {
                    return  $this->appraise($typeId);
                 });
-//                \debugbar()->stopMeasure("Appraisal for $typeId");
             }
             catch (RemoteAppraisalToolException $exc) {
-//                \debugbar()->warning("Could not appraise typeId $typeId ".$exc->getMessage());
                 Log::channel("itempricecalculator")->warning("Could not appraise typeId $typeId ".$exc->getMessage()."\n".$exc->getTraceAsString());
                 $dto = null;
             }
@@ -103,6 +101,10 @@
             }
         }
 
+        private function appraiseBulk(Collection $listOfIds): Collection {
+
+        }
+
         /**
          * @param int $typeId
          *
@@ -148,12 +150,11 @@
          * @return array
          */
         private function getSingleItemEstimators() {
-            return [
-              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\CacheSingleItemEstimator',
-              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\ItemPriceTableSingleItemEstimator',
-              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\FuzzworkMarketDataSingleItemEstimator',
-              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\EveWorkbenchSingleItemEstimator'
-            ];
+            return config('tracker.market.estimators.single-item');
+        }
+
+        protected function getBulkItemEstimators() {
+            return config('tracker.market.estimators.bulk');
         }
 
 	}
