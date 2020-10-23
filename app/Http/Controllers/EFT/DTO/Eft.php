@@ -24,6 +24,10 @@
 	    /** @var string */
 	    private $fitName;
 
+	    /** @var FitHelper */
+	    private $fitHelper;
+
+
         /**
          * @return Collection
          */
@@ -136,14 +140,23 @@
             return $eft;
         }
 
+        /**
+         * @return FitHelper
+         */
+        public function getFitHelper() : FitHelper {
+            if ($this->fitHelper == null) {
+                $this->fitHelper = resolve('App\Http\Controllers\EFT\FitHelper');
+            }
+            return $this->fitHelper;
+        }
+
         public function getStructuredDisplay() {
             $struct = ['high' => [], 'mid' => [], 'low' => [], 'rig' => [], 'drone' => [], 'ammo' => [], 'cargo' => [], 'booster' => [], 'implant' => []];
             /** @var FitHelper $helper */
-            $helper = resolve('App\Http\Controllers\EFT\FitHelper');
             foreach ($this->lines as $line) {
                 /** @var EftLine $line */
                 try {
-                    $struct[$helper->getItemSlot($line->getTypeId())][] = $line;
+                    $struct[$this->getFitHelper()->getItemSlot($line->getTypeId())][] = $line;
                 } catch (\Exception $e) {
                     $struct['cargo'][] = $line;
                 }
