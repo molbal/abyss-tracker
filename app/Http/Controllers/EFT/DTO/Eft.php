@@ -211,24 +211,17 @@
 
             $this->lines->transform(function ($line) use (&$itemsValue, $prices) {
                 /** @var EftLine $line */
-                $itemObject = $prices->get($line->getTypeId());
+                $itemObject = $prices->filter(function ($item) use ($line) {
+                    return $line->getTypeId() == $item->getTypeId();
+                })->first();
 
                 if ($itemObject) {
                     $itemsValue += $itemObject->getAveragePrice();
                     $line->setAveragePrice(intval($itemObject->getAveragePrice()));
                 }
-
                 return $line;
 
             });
-
-//            foreach ($this->lines as $i => $line) {
-//                $itemObject = $prices->get($line->getTypeId()); // $this->getPriceEstimator()->getFromTypeId($line->getTypeId());
-//
-//                if ($itemObject) {
-//                    $itemsValue += $itemObject->getAveragePrice();
-//                }
-//            }
 
             return $itemsValue;
         }

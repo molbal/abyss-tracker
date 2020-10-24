@@ -57,7 +57,7 @@
                         ->setBuyPrice($resp[$typeId]["buy"]["max"])
                         ->setSellPrice($resp[$typeId]["sell"]["min"]);
 
-                $return->add([$typeId => $itemObj]);
+                $return->add($itemObj);
             }
 
 
