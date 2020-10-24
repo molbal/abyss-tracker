@@ -314,8 +314,6 @@
                 $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
                 clock()->endEvent("Load fit recommendations");
 
-
-
                 // Make open graph tags
                 clock()->startEvent("Generate Open Graph tags", "");
                 $og = new OpenGraph();
@@ -384,7 +382,6 @@
                 $history = FitHistoryController::getFitHistory($id)->reverse();
                 clock()->endEvent("Load history");
 
-//        dd($history->first()->created_at);
                 return view('fit', [
                     'fit' => $fit,
                     'ship_name' => $ship_name,
@@ -544,38 +541,11 @@
          * @return PersonalDaily
          */
         public function getFitPopularityChart(array $ids, $name): PersonalDaily {
-            [$dates, $values, $dead] = Cache::remember("ship.popularity-ffh.".implode("-", $ids), now()->addHour(), function() use ($ids, $name) {
-                $dates = [];
-                $values = [];
-                $dead = [];
-                for ($i = -90; $i <= 0; $i++) {
-                    $date = strtotime("now $i days");
-                    $query = "select
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=?) as 'ALL',
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids) . ")) as 'SHIP',
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids) . ") and SURVIVED=0) as 'DEAD';";
-                    $val = DB::select($query,
-                        [
-                            (new Carbon($date))->addDays(-3),
-                            (new Carbon($date))->addDays(+3),
-                            (new Carbon($date))->addDays(-3),
-                            (new Carbon($date))->addDays(+3),
-                            (new Carbon($date))->addDays(-3),
-                            (new Carbon($date))->addDays(+3),
-                        ]);
-                    $dates[] = date("M.d.", $date);
-                    if ($val[0]->ALL == 0) {
-                        $values[] = 0.0;
-                        $dead[] = 0.0;
-                    }
-                    else {
-                        $values[] = round(($val[0]->SHIP / $val[0]->ALL) * 100, 2);
-                        $dead[] = round(($val[0]->DEAD / ($val[0]->SHIP > 0 ? $val[0]->SHIP : 1)) * 100, 2);
-                    }
-                }
-                return [$dates, $values, $dead];
-            });
 
+            $dates = [];
+            for($i=-90; $i<=0; $i++) {
+                $dates[] = date("M.d.", strtotime("now $i days"));
+            }
             $pop = new PersonalDaily();
             $pop->displayAxes(true);
             $pop->export(true, "Download");
@@ -583,25 +553,9 @@
             $pop->theme(ThemeController::getChartTheme());
             $pop->displayLegend(true);
             $pop->labels($dates);
+            $pop->load(route("chart.fit.popularity", ['ids' => json_encode($ids), 'name' => $name]));
             $pop->options([
                 'tooltip' => [
-                    'trigger' => "axis"
-                ]
-            ]);
-            $pop->dataset("Fit popularity (Percentage of all runs)", "line", $values)->options([
-                'smooth'         => true,
-                'symbolSize'     => 0,
-                'smoothMonotone' => 'x',
-                'tooltip'        => [
-                    'trigger' => "axis"
-                ]
-            ]);
-            $pop->dataset("Failure ratio (Percentage of failed runs)", "line", $dead)->options([
-                'smooth'         => true,
-                'symbolSize'     => 0,
-                'smoothMonotone' => 'x',
-                'color'          => 'red',
-                'tooltip'        => [
                     'trigger' => "axis"
                 ]
             ]);

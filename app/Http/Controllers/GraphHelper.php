@@ -15,6 +15,7 @@
     use App\Charts\TierLevelsChart;
     use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\Misc\Enums\ShipHullSize;
+    use Carbon\Carbon;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -22,6 +23,67 @@
     class GraphHelper extends Controller {
 
         const HOME_PIE_RADIUS = [50, 90];
+
+
+        public function getFitPopularityChart(string $ids, string $name) {
+            $ids_int = json_decode($ids, 1);
+            foreach ($ids_int as $id) {
+                if(!is_numeric($id)) {
+                    throw new \InvalidArgumentException("IDs passed must be nulls");
+                }
+            }
+            [ $values, $dead] = Cache::remember("ship.popularity-ffh.".md5($ids), now()->addHour(), function() use ($ids_int, $name) {
+                $values = [];
+                $dead = [];
+                for ($i = -90; $i <= 0; $i++) {
+                    $query = "select
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=?) as 'ALL',
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids_int) . ")) as 'SHIP',
+                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids_int) . ") and SURVIVED=0) as 'DEAD';";
+                    $val = DB::select($query,
+                        [
+                            (new Carbon("now $i days"))->addDays(-3),
+                            (new Carbon("now $i days"))->addDays(+3),
+                            (new Carbon("now $i days"))->addDays(-3),
+                            (new Carbon("now $i days"))->addDays(+3),
+                            (new Carbon("now $i days"))->addDays(-3),
+                            (new Carbon("now $i days"))->addDays(+3),
+                        ]);
+                    if ($val[0]->ALL == 0) {
+                        $values[] = 0.0;
+                        $dead[] = 0.0;
+                    }
+                    else {
+                        $values[] = round(($val[0]->SHIP / $val[0]->ALL) * 100, 2);
+                        $dead[] = round(($val[0]->DEAD / ($val[0]->SHIP > 0 ? $val[0]->SHIP : 1)) * 100, 2);
+                    }
+                }
+                return [$values, $dead];
+            });
+
+
+            $pop = new PersonalDaily();
+
+            $pop->dataset("Fit popularity (Percentage of all runs)", "line", $values)->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $pop->dataset("Failure ratio (Percentage of failed runs)", "line", $dead)->options([
+                'smooth'         => true,
+                'symbolSize'     => 0,
+                'smoothMonotone' => 'x',
+                'color'          => 'red',
+                'tooltip'        => [
+                    'trigger' => "axis"
+                ]
+            ]);
+
+            return $pop->api();
+        }
 
         /**
          * @return string

@@ -104,7 +104,6 @@
 
         public function appraiseBulk(Collection $listOfTypeIds): Collection {
             $strListofIds = $listOfTypeIds->implode(",");
-            Log::channel("itempricecalculator")->info("Appraising in bulk: ". $strListofIds);
             return Cache::remember("aft.bulkestimator.".md5($strListofIds), now()->addMinutes(30), function() use ($listOfTypeIds) {
                 $estimators = $this->getBulkItemEstimators();
                 foreach ($estimators as $i => $estimator) {
