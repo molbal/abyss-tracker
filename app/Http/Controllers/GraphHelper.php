@@ -22,16 +22,60 @@
 
     class GraphHelper extends Controller {
 
+
+        /** @var BarkController */
+        private $barkController;
+
+
         const HOME_PIE_RADIUS = [50, 90];
 
+        /**
+         * GraphHelper constructor.
+         *
+         * @param BarkController $barkController
+         */
+        public function __construct(BarkController $barkController) {
+            $this->barkController = $barkController;
+        }
 
-        public function getFitPopularityChart(string $ids, string $name) {
+        public function getFitLootStrategyChart(string $ids) {
             $ids_int = json_decode($ids, 1);
+            $this->checkValidIds($ids_int);
+
+            $loot_chart = new LootAveragesChart();
+            $loot_strategy = DB::table("runs")
+                               ->whereIn("FIT_ID", $ids_int)
+                               ->whereNotNull("LOOT_TYPE")
+                               ->where("SURVIVED", true)
+                               ->selectRaw("count(ID) as CNT, LOOT_TYPE")
+                               ->groupBy("LOOT_TYPE")
+                               ->get();
+
+            $labels = [];
+            $data = [];
+            foreach ($loot_strategy as $reason) {
+                $labels[] = ucfirst(trim(str_ireplace("Looted the", "", $this->barkController->getLootStrategyDescription($reason))));
+                $data[] = $reason->CNT;
+            }
+            $loot_chart->labels($labels);
+            $loot_chart->dataset("Looting strategy", "pie", $data)->options([
+                'radius' => ShipsController::PIE_RADIUS_SMALL
+            ]);
+
+            return $loot_chart->api();
+        }
+
+        private function checkValidIds(array $ids_int) {
             foreach ($ids_int as $id) {
                 if(!is_numeric($id)) {
                     throw new \InvalidArgumentException("IDs passed must be nulls");
                 }
             }
+        }
+
+        public function getFitPopularityChart(string $ids, string $name) {
+            $ids_int = json_decode($ids, 1);
+            $this->checkValidIds($ids_int);
             [ $values, $dead] = Cache::remember("ship.popularity-ffh.".md5($ids), now()->addHour(), function() use ($ids_int, $name) {
                 $values = [];
                 $dead = [];

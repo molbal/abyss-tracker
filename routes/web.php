@@ -102,6 +102,7 @@
     Route::get("/api/chart/run/distribution/cruisers", 'GraphHelper@getHomeRunBellGraphsCruisers')->name("chart.home.distribution.cruisers");
     Route::get("/api/chart/run/distribution/frigates", 'GraphHelper@getHomeRunBellGraphsFrigates')->name("chart.home.distribution.frigates");
     Route::get("/api/chart/fit/popularity/{ids}/{name}", 'GraphHelper@getFitPopularityChart')->name("chart.fit.popularity");
+    Route::get("/api/chart/fit/loot-strategy/{ids}", 'GraphHelper@getFitLootStrategyChart')->name("chart.fit.loot-strategy");
 
     /**
      * Search routes

@@ -15,15 +15,11 @@
     use App\Http\Controllers\EFT\Tags\TagsController;
     use App\Http\Controllers\Partners\EveWorkbench;
     use App\Http\Controllers\Youtube\YoutubeController;
-    use Carbon\Carbon;
     use ChrisKonnertz\OpenGraph\OpenGraph;
     use Cohensive\Embed\Embed;
-    use DOMDocument;
-    use DOMXPath;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Http;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Validator;
 
@@ -35,8 +31,6 @@
         /** @var FitHelper */
         protected $fitHelper;
 
-        /** @var BarkController */
-        private $barkController;
 
         /** @var FitParser */
         protected $fitParser;
@@ -594,30 +588,14 @@
          * @return LootAveragesChart
          */
         public function getFitLootStrategyChart(array $ids): LootAveragesChart {
-            $loot_strategy = DB::table("runs")
-                               ->whereIn("FIT_ID", $ids)
-                               ->whereNotNull("LOOT_TYPE")
-                               ->where("SURVIVED", true)
-                               ->selectRaw("count(ID) as CNT, LOOT_TYPE")
-                               ->groupBy("LOOT_TYPE")
-                               ->get();
 
-            $labels = [];
-            $data = [];
-            foreach ($loot_strategy as $reason) {
-                $labels[] = ucfirst(trim(str_ireplace("Looted the", "", $this->barkController->getLootStrategyDescription($reason))));
-                $data[] = $reason->CNT;
-            }
             $loot_chart = new LootAveragesChart();
             $loot_chart->displayAxes(false);
             $loot_chart->export(true, "Download");
             $loot_chart->height(400);
             $loot_chart->theme(ThemeController::getChartTheme());
             $loot_chart->displayLegend(true);
-            $loot_chart->labels($labels);
-            $loot_chart->dataset("Looting strategy", "pie", $data)->options([
-                'radius' => ShipsController::PIE_RADIUS_SMALL
-            ]);
+            $loot_chart->load(route("chart.fit.loot-strategy", ['ids' => json_encode($ids)]));
             return $loot_chart;
         }
     }
