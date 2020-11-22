@@ -143,11 +143,12 @@
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/light.png"/><a class="text-white" href="{{route("customize_set_dark", 0)}}">Light theme</a></p>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/partly-cloudy-night.png"/><a class="text-white" href="{{route("customize_set_dark", true)}}">Dark theme</a></p>
 
-                    <h5 class="font-weight-bold text-white mt-3">Supporters</h5>
+                    <h5 class="font-weight-bold text-white mt-3">Supporters &amp; Contributors</h5>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/charity.png"/><a class="text-white" href="{{route("donors.index")}}">Patreon and ISK donors</a></p>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/icons8-new-logo.png"/><a class="text-white" href="https://icons8.com" target="_blank" rel="nofollow">Icons8</a></p>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/settings-3.png"/><a class="text-white" href="https://eveworkbench.com" target="_blank" rel="nofollow">EVE Workbench</a></p>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/settings-3.png"/><a class="text-white" href="https://market.fuzzwork.co.uk/" target="_blank" rel="nofollow">Fuzzwork Market Data</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/user.png"/><a class="text-white" href="https://twitter.com/manicvelocity" target="_blank" rel="nofollow">Manic Velocity</a></p>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/idea.png"/><a class="text-white" href="https://www.jetbrains.com/community/opensource/" target="_blank" rel="nofollow">JetBrains (IDE license)</a></p>
                 </div>
                 <div class="col-md-4 footer-links">

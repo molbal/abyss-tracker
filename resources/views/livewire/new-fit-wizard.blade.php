@@ -7,8 +7,8 @@
                     <div class="card-overlay" wire:loading>
                         <div class="loading-indicator-container">
 {{--                            <img src="{{asset('loader.png')}}" alt="">--}}
-                            <div class="spinner-border {{\App\Http\Controllers\ThemeController::isDarkTheme() ? "text-white" : 'text-dark'}}" role="status">
-                                <span class="sr-only">Loading...</span>
+                            <div class="{{\App\Http\Controllers\ThemeController::isDarkTheme() ? "text-white" : 'text-dark'}}" role="status">
+                                <img src="{{asset('loader-lg.png')}}" alt="">
                             </div>
                         </div>
                     </div>

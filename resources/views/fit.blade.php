@@ -79,8 +79,8 @@
                                   style="font-family: 'Fira Code', 'Consolas', fixed">{{$fit->RAW_EFT}}</textarea>
                     </div>
                     <div id="history" class="tab-pane fade">
-                        <h3>History</h3>
-                        <table class="tabme table-sm w-100">
+                        <h5 class="font-weight-bold">History</h5>
+                        <table class="table table-sm w-100">
                             <tr>
                                 <th>Datetime</th>
                                 <th>Event</th>
@@ -102,23 +102,29 @@
                         @endcomponent
                     </div>
                     <div id="render3d" class="tab-pane fade">
-                        <h3>3D view</h3>
-
+                        <h5 class="font-weight-bold">3D view</h5>
+                        TBA
                     </div>
                     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                         <div id="settings" class="tab-pane fade">
-                            <h3>Fit settings</h3>
-                            <p class="mb-0">You submitted this fit so you can delete it or modify its privacy.</p>
-                            <br>
+                            <h5 class="font-weight-bold">Fit privacy</h5>
+                            <p class="mb-3">You submitted this fit so you can delete it or modify its privacy.</p>
                             <div class="btn-group mb-2 d-block">
                                 <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn btn-outline-secondary">Set privacy to 'Public'
                                 </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn btn-outline-secondary">Set privacy to 'Anonym'
                                 </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn btn-outline-secondary">Set privacy to 'Private'
                                 </a>
                             </div>
-                            <hr class="mt-5">
-                            <p class="text-danger">Danger zone</p>
-                            <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="btn btn-outline-danger">Delete fit</a>
+                            <h5 class="font-weight-bold mt-5">Upgrade fit</h5>
+                            <p class="mb-3">To upgrade a fit's version</p>
+                            <div class="btn-group mb-2 d-block">
+                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn btn-outline-secondary">Set privacy to 'Public'
+                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn btn-outline-secondary">Set privacy to 'Anonym'
+                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn btn-outline-secondary">Set privacy to 'Private'
+                                </a>
+                            </div>
+                            <h5 class="font-weight-bold text-danger mt-5">Danger zone</h5>
+                            <p>If you want to delete this fit, you may click the red link: <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="text-danger">Delete fit</a></p>
 
 
                         </div>

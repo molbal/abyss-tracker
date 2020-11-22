@@ -134,7 +134,7 @@
          */
         public function getHomeRunBellGraphsCruisers(Request $request) {
             $chart = new BellChart1();
-
+//sleep(5);
 
             $dataCruiser = collect([]);
             $dataDestroyer = collect([]);

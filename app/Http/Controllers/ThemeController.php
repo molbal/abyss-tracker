@@ -46,6 +46,10 @@
             }
         }
 
+        public static function getLoader(string $size = "lg") {
+
+        }
+
         public function setTheme(bool $isDark) {
             if ($isDark) {
                 Cookie::queue("bright-theme", "false", time()+60*60*24*60);
