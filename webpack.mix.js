@@ -33,4 +33,8 @@ mix.js('resources/js/app.js', 'public/js/app.js')
         'resources/js/dependencies-all/simplemde.min.js',
         'resources/js/new-fit/wizard.js'
     ], 'public/js/new-fit.js')
+    .scripts([
+        'resources/js/dependencies-all/simplemde.min.js',
+        'resources/js/fit.js'
+    ], 'public/js/fit.js')
   ;

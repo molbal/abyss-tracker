@@ -111,7 +111,7 @@
             if (!session()->has("login_id")) {
                 return view("403", ["error" => "Please sign in first"]);
             }
-            $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+            $fit = DB::table("fits")->where("ID", $id)->first();
 
             if ($fit->CHAR_ID != session()->get("login_id", -1)) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
@@ -153,21 +153,19 @@
 
             $id = null;
             try {
-                if (
-                    $request->get("ELECTRICAL") == 0 &&
+                if ($request->get("ELECTRICAL") == 0 &&
                     $request->get("DARK") == 0 &&
                     $request->get("EXOTIC") == 0 &&
                     $request->get("FIRESTORM") == 0 &&
-                    $request->get("GAMMA") == 0
-                )
-                {
-                    $error = \Illuminate\Validation\ValidationException::withMessages([
+                    $request->get("GAMMA") == 0) {
+                    throw\Illuminate\Validation\ValidationException::withMessages([
                         'ELECTRICAL' => ['Please mark at least one type/tier possible in this fit.']
                     ]);
-                    throw $error;
                 }
+
                 $eft = $request->get("eft");
                 $shipId = self::getShipIDFromEft($eft);
+
                 if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {
                     throw new \Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
                 }
@@ -222,6 +220,49 @@
             }
 
             return redirect(route('fit_single', ['id' => $id]));
+	    }
+
+
+        public function updateDescription(Request $request) {
+
+            Validator::make($request->all(), [
+                'id'  => 'required|numeric',
+                'description' => 'required'
+            ], [
+                'required' => "Please fill :attribute",
+            ])->validate();
+
+
+            $id = $request->get('id');
+            $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID'])->first();
+
+            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            }
+
+            // Actually edit
+            DB::beginTransaction();
+            try {
+                DB::table('fits')
+                    ->where('id', $id)
+                    ->update(['DESCRIPTION' => $request->get('description')]);
+
+                // Write history
+                FitHistoryController::addEntry($id, "Updated description");
+                DB::commit();
+            }
+            catch (\Exception $e) {
+                Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
+                return view("error", ["error" => "Something went wrong while updating description, sorry. ".$e->getMessage()]);
+            }
+
+
+            // Redirect with message
+            return view('autoredirect', [
+                'title' => "Success",
+                'message' => "The description of this fit was updated",
+                'redirect' => route('fit_single', ['id' => $id])
+            ]);
 	    }
 
         /**

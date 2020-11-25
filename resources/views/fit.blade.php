@@ -110,23 +110,22 @@
                             <h5 class="font-weight-bold">Fit privacy</h5>
                             <p class="mb-3">You submitted this fit so you can delete it or modify its privacy.</p>
                             <div class="btn-group mb-2 d-block">
-                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn btn-outline-secondary">Set privacy to 'Public'
-                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn btn-outline-secondary">Set privacy to 'Anonym'
-                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn btn-outline-secondary">Set privacy to 'Private'
+                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Public'
+                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Anonym'
+                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Private'
                                 </a>
                             </div>
                             <h5 class="font-weight-bold mt-5">Upgrade fit</h5>
                             <p class="mb-3">To upgrade a fit's version</p>
                             <div class="btn-group mb-2 d-block">
-                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn btn-outline-secondary">Set privacy to 'Public'
-                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn btn-outline-secondary">Set privacy to 'Anonym'
-                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn btn-outline-secondary">Set privacy to 'Private'
-                                </a>
+                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" data-toggle="tooltip" title="Allows you to change all fields. Switches to a new revision." class="btn text-dark btn-outline-secondary">Edit fit
+                                </a><button id="editDescription" data-toggle="tooltip" title="Only changes the description field. Stays on the current revision." class="btn text-dark btn-outline-secondary">Change description
+                                </button>
                             </div>
                             <h5 class="font-weight-bold text-danger mt-5">Danger zone</h5>
                             <p>If you want to delete this fit, you may click the red link: <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="text-danger">Delete fit</a></p>
 
-
+                        @component('components.fits.fit_new_description_modal', ['id' => $fit->ID, 'description' => $fit->DESCRIPTION]) @endcomponent
                         </div>
                     @endif
                 </div>
@@ -298,4 +297,5 @@
 @section("scripts")
     {!! $popularity->script() !!}
     {!! $loots->script() !!}
+    <script src="{{asset('js/fit.js')}}" type="text/javascript"></script>
 @endsection

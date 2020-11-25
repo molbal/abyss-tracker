@@ -10461,6 +10461,8 @@ ul.infolinks {
   display: inline-block;
   height: 100%;
   box-shadow: inset 0 -4px 8px -2px rgba(1, 5, 54, 0.59);
+  -webkit-animation: scale-in-hor-left 0.8s cubic-bezier(0.86, 0, 0.07, 1) 1500ms both;
+          animation: scale-in-hor-left 0.8s cubic-bezier(0.86, 0, 0.07, 1) 1500ms both;
 }
 
 .resist-label {
@@ -10479,6 +10481,36 @@ table.fit-results tr.border-bottom:last-child {
   border-bottom-width: 0 !important;
 }
 
+.scale-in-hor-left {
+  -webkit-animation: scale-in-hor-left 0.8s cubic-bezier(0.86, 0, 0.07, 1) 150ms both;
+          animation: scale-in-hor-left 0.8s cubic-bezier(0.86, 0, 0.07, 1) 150ms both;
+}
+
+@-webkit-keyframes scale-in-hor-left {
+  0% {
+    transform: scaleX(0);
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in-hor-left {
+  0% {
+    transform: scaleX(0);
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+}
 .footer-top {
   padding: 60px 0;
   background: #0f1113;
