@@ -60,11 +60,30 @@
          * Renders the new fit screen
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
-        public function new() {
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please sign in first to add a new fit"]);
+        public function new(int $id = null) {
+
+            if (!$id) {
+                $oldFitId = null;
+                $oldFitName = null;
             }
-            return view("new_fit");
+            else {
+                $fit = DB::table("fits")->where("ID", $id)->first();
+                if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                    return view('403', ['error' => "You cannot update someone else's fit."]);
+                }
+                if (!$fit) {
+                    return view('error', ['error' => "Fit does not exist."]);
+                }
+
+                $oldFitId = $id;
+                $oldFitName = $fit->NAME;
+            }
+
+
+            return view("new_fit", [
+                'oldFitId' => $oldFitId,
+                'oldFitName' => $oldFitName
+            ]);
 	    }
 
         /**
@@ -77,7 +96,7 @@
             if (!session()->has("login_id")) {
                 return view("403", ["error" => "Please sign in first"]);
             }
-            $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+            $fit = DB::table("fits")->where("ID", $id)->first();
 
             if ($fit->CHAR_ID != session()->get("login_id", -1)) {
                 return view('403', ['error' => sprintf("You cannot delete someone else's fit.")]);
@@ -145,7 +164,8 @@
                 'GAMMA' => 'required|numeric|min:0|max:6',
                 'eft'  => 'required',
 //                'description' => 'required',
-                'privacy' => 'required'
+                'privacy' => 'required',
+                'rootId' => 'numeric|exists:fits,ID'
             ], [
                 'required' => "Please fill :attribute before saving your fit",
             ])->validate();
@@ -158,9 +178,18 @@
                     $request->get("EXOTIC") == 0 &&
                     $request->get("FIRESTORM") == 0 &&
                     $request->get("GAMMA") == 0) {
-                    throw\Illuminate\Validation\ValidationException::withMessages([
+                    throw \Illuminate\Validation\ValidationException::withMessages([
                         'ELECTRICAL' => ['Please mark at least one type/tier possible in this fit.']
                     ]);
+                }
+
+                $charId = session()->get("login_id", 0);
+                if ($request->has('rootId')) {
+                    if (!DB::table('fits')->where('ID', $request->get('rootId'))->where('CHAR_ID', $charId)->exists()) {
+                        throw \Illuminate\Validation\ValidationException::withMessages([
+                            'rootId' => ["You must not update someone else\'s fit"]
+                        ]);
+                    }
                 }
 
                 $eft = $request->get("eft");
@@ -181,7 +210,7 @@
 
                 DB::beginTransaction();
                 $id = DB::table("fits")->insertGetId([
-                    'CHAR_ID' => session()->get("login_id", 0),
+                    'CHAR_ID' => $charId,
                     'SHIP_ID' => $shipId,
                     'NAME' => $fitObj->getFitName(),
                     'DESCRIPTION' => $request->get("description") ?? "",
@@ -193,7 +222,7 @@
                     'VIDEO_LINK' => $request->get("video_link") ?? '',
                     'PRIVACY' => $request->get('privacy'),
                     'FFH' => $hash,
-                    'ROOT_ID' => $id,
+                    'ROOT_ID' => $request->get('rootId', null)
                 ]);
 
                 if (!$this->submitSvcFitService($this->fitHelper->pyfaBugWorkaround($eft, $shipId), $id)) {
@@ -210,7 +239,14 @@
                 ]);
 
                 $fitObj->persistLines($id);
-                FitHistoryController::addEntry($id, "Fit submitted to the Abyss Tracker");
+
+                if ($request->has('rootId')) {
+                    FitHistoryController::addEntry($id, "This fit was updated.");
+                }
+                else {
+                    FitHistoryController::addEntry($id, "Fit submitted to the Abyss Tracker");
+                }
+
                 DB::commit();
             }
             catch (\Exception $e) {

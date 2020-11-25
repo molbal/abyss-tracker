@@ -1,7 +1,10 @@
 @extends("layout.app")
 @section("browser-title", "Add a new fit")
 @section("content")
-    @livewire('new-fit-wizard')
+    @livewire('new-fit-wizard', [
+        'oldFitId' => $oldFitId,
+        'oldFitName' => $oldFitName
+    ])
 @endsection
 
 @section("styles")

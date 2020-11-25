@@ -64,7 +64,11 @@ class NewFitWizard extends Component
     public $Gamma;
 
 
+    /** @var int */
+    public $oldFitId;
 
+    /** @var string */
+    public $oldFitName;
 
     public function mount() {
         $this->step = 0;
@@ -73,6 +77,21 @@ class NewFitWizard extends Component
         $this->wizardTitle = "New fit";
         $this->stepsReady = collect([]);
         $this->privacy = 'public';
+
+        if ($this->oldFitId != null) {
+            $this->wizardTitle = "Updating fit: ".$this->oldFitName;
+            $fit = DB::table("fits")->where("ID", $this->oldFitId)->first();
+            $this->fitName = $this->oldFitName;
+            $this->description = $fit->DESCRIPTION;
+            $this->youtubeLink = $fit->VIDEO_LINK;
+            $this->privacy = $fit->PRIVACY;
+            $fitreco = DB::table("fit_recommendations")->where('FIT_ID', $fit->ID)->first();
+            $this->Electrical = $fitreco->ELECTRICAL;
+            $this->Dark = $fitreco->DARK;
+            $this->Exotic = $fitreco->EXOTIC;
+            $this->Firestorm = $fitreco->FIRESTORM;
+            $this->Gamma = $fitreco->GAMMA;
+        }
     }
 
     public function updatingEft($value) {
@@ -170,6 +189,7 @@ class NewFitWizard extends Component
             "FIRESTORM" => $this->Firestorm,
             "GAMMA" => $this->Gamma,
             "privacy" => $this->privacy,
+            "rootId" => $this->oldFitId
         ]);
     }
 

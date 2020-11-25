@@ -137,7 +137,7 @@
                                                             <select name="{{$weather}}" id="{{$weather}}" class="form-control select2-nosearch">
                                                                 <option value="0">-</option>
                                                                 @for($i=1;$i<=6;$i++)
-                                                                    <option value="{{$i}}">@lang("tiers.$i")</option>
+                                                                    <option value="{{$i}}" @if($$weather==$i) selected @endif >@lang("tiers.$i")</option>
                                                                 @endfor
                                                             </select>
                                                         </div>
@@ -190,7 +190,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="w-100 d-flex justify-content-between align-items-center">
-                            <a href="{{route("fit_new")}}" class="text-muted">Restart wizard</a>
+                            <a href="javascript:void(0)" onclick="window.location.reload(false)" class="text-muted">Restart wizard</a>
                             @switch($step)
                                 @case(0)
 
