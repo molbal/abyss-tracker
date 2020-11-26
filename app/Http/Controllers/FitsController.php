@@ -336,7 +336,6 @@
 
 
                 // Check credentials
-
                 clock()->startEvent("Checking privacy", "");
                 if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
                     return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('fit.search') . "'>View public fits</a></p>")]);
@@ -453,6 +452,11 @@
                 $history = FitHistoryController::getFitHistory($id)->reverse();
                 clock()->endEvent("Load history");
 
+                // Check revisions history
+                clock()->startEvent("Load revision", "");
+                $newestRevision = FitHistoryController::getLastRevision($id);
+                clock()->endEvent("Load revision");
+
                 return view('fit', [
                     'fit' => $fit,
                     'ship_name' => $ship_name,
@@ -475,7 +479,8 @@
                     'fitIdsNonPrivate' => $fitIdsNonPrivate,
                     'similars' => $similars,
                     'runsCountAll' => $runsCountAll,
-                    'history' => $history
+                    'history' => $history,
+                    'lastRevision' => $newestRevision
                 ]);
 
             }

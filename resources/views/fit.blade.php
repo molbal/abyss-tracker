@@ -4,13 +4,23 @@
     <div class="d-flex justify-content-between align-items-center mb-1 mt-5">
         <h4 class="font-weight-bold fit-title">{{$fit->NAME}}</h4><small class="ml-3">Fit #{{$id}}</small>
     </div>
+    @if($id != $lastRevision)
+        <div class="card card-body border-info shadow-sm mb-3 p-2">
+            <div class="d-flex justify-content-start  align-items-center">
+                <img src="https://img.icons8.com/cotton/64/000000/info--v1.png" class="mr-3" style="height: 32px; width: 32px"/>
+                <span>
+                    This fit has a newer version. To see the changes, go to <a class="font-italic" data-toggle="tab" href="javascript:void(0)" onclick="$('#history_a').tab('show')">History</a> or <a class="font-italic" href="{{route('fit_single', ['id' => $lastRevision])}}">jump to the latest revision</a>.
+                </span>
+            </div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-sm-8">
 
             @if(strtoupper($fit->STATUS) == "DONE" && intval(json_decode($fit->STATS)->offense->weaponDps) == 0)
-                <div class="card card-body border-warning shadow-sm mb-3">
-                    <div class="d-flex justify-content-start">
-                        <img src="https://img.icons8.com/cotton/64/000000/error--v1.png" class="mr-3"/>
+                <div class="card card-body border-warning shadow-sm mb-3 p-2">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <img src="https://img.icons8.com/cotton/64/000000/error--v1.png" class="mr-3" style="height: 32px; width: 32px"/>
                         <span>
                         This fit's weapon DPS is 0. Maybe the submitter forgot to load ammo before uploading the fit or this fit only relies on drones.
                         </span>
@@ -28,8 +38,8 @@
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Modules</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#eft">Export</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history">History</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#render3d">3D</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history" id="history_a">History</a></li>
+{{--                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#render3d">3D</a></li>--}}
                 @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings"><span class="text-danger">Settings</span></a></li>
                 @endif
@@ -101,10 +111,10 @@
                             @lang("fits.records-notice", ['date' => config("tracker.fit.logs.initial-date")])
                         @endcomponent
                     </div>
-                    <div id="render3d" class="tab-pane fade">
-                        <h5 class="font-weight-bold">3D view</h5>
-                        TBA
-                    </div>
+{{--                    <div id="render3d" class="tab-pane fade">--}}
+{{--                        <h5 class="font-weight-bold">3D view</h5>--}}
+{{--                        TBA--}}
+{{--                    </div>--}}
                     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                         <div id="settings" class="tab-pane fade">
                             <h5 class="font-weight-bold">Fit privacy</h5>

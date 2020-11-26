@@ -13,6 +13,17 @@ class FitHistoryController extends Controller
 {
 
     /**
+     * @param int $id
+     */
+    public static function getLastRevision(int $id) {
+        $rootId = self::getFitRootId($id);
+
+//        if ($rootId == $id) return $id;
+
+        return DB::table('fits')->where('ROOT_ID', $rootId)->max('ID') ?? $id;
+    }
+
+    /**
      * @param int $fitId
      *
      * @return FitHistoryItem[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
