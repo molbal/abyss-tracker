@@ -87,6 +87,12 @@
         'fit' => [
             'logs' => [
                 'initial-date' => "2020-10-18"
+            ],
+
+            'patch-status' => [
+                'works' => "success",
+                'untested' => "warning",
+                'deprecated' => "danger"
             ]
         ]
 

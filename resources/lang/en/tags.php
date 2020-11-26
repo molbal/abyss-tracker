@@ -15,5 +15,11 @@
         "TagStrongCapacitor"  => "Reinforced capacitor",
         "TagVideo" => " With video",
         'show-only' => "Must have",
-        'exclude' => "Exclude"
+        'exclude' => "Exclude",
+        'untested' => "Untested",
+        'deprecated' => "Deprecated",
+        'works' => "Works",
+        'untested-tooltip' => "Untested with the last patch - it might work, might not work, nobody knows yet.",
+        'deprecated-tooltip' => "Tested: This fit does not work any more, after the last patch",
+        'works-tooltip' => "Tested: This fit works with the last patch",
     ];

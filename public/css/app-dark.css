@@ -11047,6 +11047,10 @@ nav.bg-white {
   color: #fff;
 }
 
+.badge-success, .badge-danger {
+  color: #fff !important;
+}
+
 .text-dark, a {
   color: #eee !important;
 }
