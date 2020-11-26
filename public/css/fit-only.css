@@ -14,7 +14,7 @@ img.fit-ammo-icon {
   margin-right: 4px;
 }
 
-.last-patch {
+span.fit-header-line .last-patch {
   position: relative;
   top: -5px;
   margin-left: 12px;

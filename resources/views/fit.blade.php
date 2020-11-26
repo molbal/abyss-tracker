@@ -2,9 +2,9 @@
 @section("browser-title", $ship_name." fit")
 @section("content")
     <div class="d-flex justify-content-between align-items-center mb-1 mt-5">
-        <span class="">
+        <span class="fit-header-line">
             <h4 class="font-weight-bold fit-title d-inline-block mb-0">{{$fit->NAME}}</h4>
-            <span class="last-patch badge badge-{{config('tracker.fit.patch-status.'.$fit->LAST_PATCH)}}" data-toggle="tooltip" title="@lang('tags.'.$fit->LAST_PATCH.'-tooltip')">@lang('tags.'.$fit->LAST_PATCH)</span>
+            @component('components.fits.patch-tag', ['status' => $fit->LAST_PATCH]) @endcomponent
         </span>
         <small class="ml-3" data-toggle="tooltip" title="The fit number uniquely identifies a fit on the Abyss Tracker.">Fit #{{$id}}</small>
     </div>

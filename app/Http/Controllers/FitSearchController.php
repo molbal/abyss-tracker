@@ -282,7 +282,8 @@
                                "fit_recommendations.FIRESTORM as Firestorm",
                                "fit_recommendations.GAMMA as Gamma",
                                "fits.SUBMITTED as Submitted",
-                               "fits.PRIVACY"])
+                               "fits.PRIVACY",
+                               "fits.LAST_PATCH"])
                      ->distinct("fits.ID");
             if ($excludePrivate) {
                 $query->where("PRIVACY", '!=', 'private');
