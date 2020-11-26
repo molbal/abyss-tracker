@@ -122,15 +122,23 @@
                     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                         <div id="settings" class="tab-pane fade">
                             <h5 class="font-weight-bold">Fit privacy</h5>
-                            <p class="mb-3">You submitted this fit so you can delete it or modify its privacy.</p>
+{{--                            <p class="mb-3">You submitted this fit so you can delete it or modify its privacy.</p>--}}
                             <div class="btn-group mb-2 d-block">
                                 <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Public'
                                 </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Anonym'
                                 </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Private'
                                 </a>
                             </div>
+                            <h5 class="font-weight-bold mt-5">Is the fit tested with the latest patch?</h5>
+{{--                            <p class="mb-3"></p>--}}
+                            <div class="btn-group mb-2 d-block">
+                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn text-dark btn-outline-secondary">Set to 'Untested'
+                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn text-dark btn-outline-secondary">Set to 'Works'
+                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn text-dark btn-outline-secondary">Set to 'Deprecated'
+                                </a>
+                            </div>
                             <h5 class="font-weight-bold mt-5">Upgrade fit</h5>
-                            <p class="mb-3">To upgrade a fit's version</p>
+{{--                            <p class="mb-3">To upgrade a fit's version</p>--}}
                             <div class="btn-group mb-2 d-block">
                                 <a href="{{route("fit_new", ['id' => $fit->ROOT_ID ?? $fit->ID])}}" data-toggle="tooltip" title="Allows you to change all fields. Switches to a new revision." class="btn text-dark btn-outline-secondary">Edit fit
                                 </a><button id="editDescription" data-toggle="tooltip" title="Only changes the description field. Stays on the current revision." class="btn text-dark btn-outline-secondary">Change description
