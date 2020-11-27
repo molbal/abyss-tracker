@@ -516,6 +516,11 @@
                 $newestRevision = FitHistoryController::getLastRevision($id);
                 clock()->endEvent("Load revision");
 
+                // Check revisions history
+                clock()->startEvent("Load questions and answers", "");
+                $questions = FitQuestionsController::getFitQuestions($id);
+                clock()->endEvent("Load revision");
+
                 return view('fit', [
                     'fit' => $fit,
                     'ship_name' => $ship_name,
