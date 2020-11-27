@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Schema;
         $consoleOutput = new ConsoleOutput();
         Schema::create('fit_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("fit_root_id")->index();
+            $table->unsignedBigInteger("fit_root_id");
             $table->unsignedBigInteger('fit_it');
             $table->string("event");
             $table->timestamp('created_at')->useCurrent();

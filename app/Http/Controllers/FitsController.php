@@ -259,10 +259,17 @@
 	    }
 
 
+        /**
+         * Handles updating the description for a fit
+         * @param Request $request
+         *
+         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         * @throws \Illuminate\Validation\ValidationException
+         */
         public function updateDescription(Request $request) {
 
             Validator::make($request->all(), [
-                'id'  => 'required|numeric',
+                'id'  => 'required|numeric|exists:fits,ID',
                 'description' => 'required'
             ], [
                 'required' => "Please fill :attribute",
@@ -270,7 +277,7 @@
 
 
             $id = $request->get('id');
-            $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID'])->first();
+            $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
 
             if ($fit->CHAR_ID != session()->get("login_id", -1)) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
@@ -286,6 +293,8 @@
                 // Write history
                 FitHistoryController::addEntry($id, "Updated description");
                 DB::commit();
+
+                self::uncache($id);
             }
             catch (\Exception $e) {
                 Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
@@ -296,10 +305,60 @@
             // Redirect with message
             return view('autoredirect', [
                 'title' => "Success",
-                'message' => "The description of this fit was updated",
+                'message' => "The description of ".$fit->NAME." fit was updated",
                 'redirect' => route('fit_single', ['id' => $id])
             ]);
 	    }
+
+        /**
+         * @param Request $request
+         *
+         * @param int     $id
+         * @param string  $status
+         *
+         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function updateLastPatch(Request $request, int $id, string $status) {
+
+            Validator::make(['id' => $id, 'status' => $status], [
+                'id'  => 'required|numeric|exists:fits,ID',
+                'status' => 'required|in:works,untested,deprecated'
+            ], [
+                'required' => "Please fill :attribute",
+            ])->validate();
+
+            $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
+
+            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            }
+
+            // Actually edit
+            DB::beginTransaction();
+            try {
+                DB::table('fits')
+                  ->where('id', $id)
+                  ->update(['LAST_PATCH' => $status]);
+
+                // Write history
+                FitHistoryController::addEntry($id, "Updated status to ".__('tags.'.$status));
+                DB::commit();
+                self::uncache($id);
+            }
+            catch (\Exception $e) {
+                Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
+                return view("error", ["error" => "Something went wrong while updating last patch status, sorry. ".$e->getMessage()]);
+            }
+
+
+            // Redirect with message
+            return view('autoredirect', [
+                'title' => "Success",
+                'message' => "The patch status of ".$fit->NAME." fit was updated to ".__('tags.'.$status),
+                'redirect' => route('fit_single', ['id' => $id])
+            ]);
+        }
+
 
         /**
          * @return FitHelper
@@ -679,5 +738,9 @@
             $loot_chart->displayLegend(true);
             $loot_chart->load(route("chart.fit.loot-strategy", ['ids' => json_encode($ids)]));
             return $loot_chart;
+        }
+
+        public static function uncache(int $id):void {
+            Cache::forget("aft.fit-record-full.".$id);
         }
     }

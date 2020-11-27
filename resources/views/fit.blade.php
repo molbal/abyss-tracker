@@ -21,6 +21,23 @@
     <div class="row">
         <div class="col-sm-8">
 
+            @if (session()->has('message') || (isset($errors) && $errors->any()))
+                <div class="wizard-message border-{{session('messageType', 'danger')}} mb-3" style="border-width: 0 0 0 3px; border-style: solid">
+                    <div>
+                        {!! config('new-fit-wizard.images.'.session('messageType', 'danger')) !!}
+                    </div>
+                    <div>
+                        <h4>Message</h4>
+                        {{ session('message') }}
+                        <ul style="list-style: none">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
+
             @if(strtoupper($fit->STATUS) == "DONE" && intval(json_decode($fit->STATS)->offense->weaponDps) == 0)
                 <div class="card card-body border-warning shadow-sm mb-3 p-2">
                     <div class="d-flex justify-content-start align-items-center">
@@ -132,9 +149,9 @@
                             <h5 class="font-weight-bold mt-5">Is the fit tested with the latest patch?</h5>
 {{--                            <p class="mb-3"></p>--}}
                             <div class="btn-group mb-2 d-block">
-                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn text-dark btn-outline-secondary">Set to 'Untested'
-                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn text-dark btn-outline-secondary">Set to 'Works'
-                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn text-dark btn-outline-secondary">Set to 'Deprecated'
+                                <a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'untested'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.untested-tooltip')">Set to 'Untested'
+                                </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'works'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.works-tooltip')">Set to 'Works'
+                                </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'deprecated'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.deprecated-tooltip')">Set to 'Deprecated'
                                 </a>
                             </div>
                             <h5 class="font-weight-bold mt-5">Upgrade fit</h5>

@@ -76,6 +76,7 @@
     Route::any("/fits/search", 'FitSearchController@search')->name("fit.search");
     Route::post("/fits/search/ajax", 'FitSearchController@searchAjax')->name("fit.search.ajax");
     Route::post("/fits/update/description", 'FitsController@updateDescription')->name("fit.update.description")->middleware("sso");
+    Route::get("/fits/update/last_patch/{id}/{status}", 'FitsController@updateLastPatch')->name("fit.update.last-patch")->middleware("sso");
     Route::get("/fits/search/select/{shipId}/{nameOrId?}", 'FitSearchController@getFitsForNewRunDropdown')->name("fit.search.select");
     Route::get("/fits/newrun/select", 'FitSearchController@getIntegratedTypeList')->name("fit.newrun.select")->middleware("sso");
 
