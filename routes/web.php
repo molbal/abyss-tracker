@@ -81,6 +81,12 @@
     Route::get("/fits/newrun/select", 'FitSearchController@getIntegratedTypeList')->name("fit.newrun.select")->middleware("sso");
 
     /**
+     * Fit questions and answers
+     */
+    Route::post('/fit/questions/new', 'FitQuestionController@postQuestion')->name('fit.questions.new')->middleware('sso');
+    Route::post('/fit/questions/answer', 'FitQuestionController@postAnswer')->name('fit.questions.new')->middleware('sso');
+
+    /**
      * Item check
      */
     Route::get("/loot/item/{item_id}/", 'ItemController@get_single')->name("item_single");
