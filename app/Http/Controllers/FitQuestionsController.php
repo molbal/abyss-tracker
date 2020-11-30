@@ -33,7 +33,7 @@ class FitQuestionsController extends Controller
                        ->whereIn('fit_answers.question_id', $qIds)->get();
 
         return $questions->map(function ($item, $key) use ($answers) {
-            $item->ansers = $answers->where('question_id', $item->id)->sortBy('created_at');
+            $item->answers = $answers->where('question_id', $item->id)->sortBy('created_at');
             return $item;
         });
     }

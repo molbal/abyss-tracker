@@ -40,7 +40,7 @@
             if ($typeId == 0) return null;
             try {
                 $dto = Cache::remember("app.ipc.".$typeId, now()->addMinute(), function() use ($typeId) {
-                   return  $this->appraise($typeId);
+                   return $this->appraise($typeId);
                 });
             }
             catch (RemoteAppraisalToolException $exc) {
@@ -130,38 +130,41 @@
          * @return ItemObject
          */
         private function appraise(int $typeId): ?ItemObject {
-            $estimators = $this->getSingleItemEstimators();
-            foreach ($estimators as $i => $estimator) {
+            return Cache::remember('tracker.cache.id.'.$typeId, now()->addMinute(), function() use ($typeId) {
 
-                /** @var ISingleItemEstimator $estimatorImpl */
-                $estimatorImpl = resolve($estimator, ["typeId" => $typeId]);
+                $estimators = $this->getSingleItemEstimators();
+                foreach ($estimators as $i => $estimator) {
 
-                try {
-                    $itemObj = $estimatorImpl->getPrice();
+                    /** @var ISingleItemEstimator $estimatorImpl */
+                    $estimatorImpl = resolve($estimator, ["typeId" => $typeId]);
 
-                    if ($itemObj != null) {
+                    try {
+                        $itemObj = $estimatorImpl->getPrice();
 
-                        if ($itemObj->getAveragePrice() == 0 && stripos($itemObj->getName(), "blueprint") === false) {
-                            continue;
+                        if ($itemObj != null) {
+
+                            if ($itemObj->getAveragePrice() == 0 && stripos($itemObj->getName(), "blueprint") === false) {
+                                continue;
+                            }
+
+                            if ($i>0) {
+                                $this->updateItemPricesTable($itemObj);
+                            }
+
+                            Cache::put("aft.singleitemestimator." . $typeId, now()->addMinutes(30), $itemObj->serialize());
+                            return $itemObj;
                         }
-
-                        if ($i>0) {
-                            $this->updateItemPricesTable($itemObj);
-                        }
-
-                        Cache::put("aft.singleitemestimator." . $typeId, now()->addMinutes(30), $itemObj->serialize());
-                        return $itemObj;
+                    }
+                    catch (RemoteAppraisalToolException $retex) {
+                        Log::channel("itempricecalculator")->warning("RemoteAppraisalToolException: Error while calculating typeId ".$typeId.": ".$retex->getMessage()."\n".$retex->getTraceAsString());
+                    }
+                    catch (\Exception $retex) {
+                        Log::channel("itempricecalculator")->error("Unexpected exception: Error while calculating typeId ".$typeId.": ".$retex->getMessage()."\n".$retex->getTraceAsString());
                     }
                 }
-                catch (RemoteAppraisalToolException $retex) {
-                    Log::channel("itempricecalculator")->warning("RemoteAppraisalToolException: Error while calculating typeId ".$typeId.": ".$retex->getMessage()."\n".$retex->getTraceAsString());
-                }
-                catch (\Exception $retex) {
-                    Log::channel("itempricecalculator")->error("Unexpected exception: Error while calculating typeId ".$typeId.": ".$retex->getMessage()."\n".$retex->getTraceAsString());
-                }
-            }
 
-            return null;
+                return null;
+            });
         }
 
         /**

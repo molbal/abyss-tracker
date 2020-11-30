@@ -412,14 +412,20 @@
                 clock()->endEvent("Lookup ship name and character name");
 
                 // Parse description, get ship type ID and ship name
-                clock()->startEvent("Parse description, get ship type ID and ship name", "");
+                clock()->startEvent("Parse description", "");
                 $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
+                clock()->endEvent("Parse description");
+
+                clock()->startEvent("Get ship type ID", "");
                 $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
+                clock()->endEvent("Get ship type ID");
+
+                clock()->startEvent("Get shipitemObject", "");
                 $shipitemObject = $this->sipc->getFromTypeId($fit->SHIP_ID);
                 if (!$shipitemObject) {
                     throw new \Exception("Could not find the ship name from the ship ID (".$fit->SHIP_ID.") - This happens frequently during EVE downtime and will solve itself when EVE comes back online");
                 }
-                clock()->endEvent("Parse description, get ship type ID and ship name");
+                clock()->endEvent("Get shipitemObject");
 
                 // Get ship price
                 clock()->startEvent("Get ship price", "");
@@ -519,7 +525,7 @@
                 // Check revisions history
                 clock()->startEvent("Load questions and answers", "");
                 $questions = FitQuestionsController::getFitQuestions($id);
-                clock()->endEvent("Load revision");
+                clock()->endEvent("Load questions and answers");
 
                 return view('fit', [
                     'fit' => $fit,
@@ -544,7 +550,8 @@
                     'similars' => $similars,
                     'runsCountAll' => $runsCountAll,
                     'history' => $history,
-                    'lastRevision' => $newestRevision
+                    'lastRevision' => $newestRevision,
+                    'questions' => $questions
                 ]);
 
             }

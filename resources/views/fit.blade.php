@@ -60,14 +60,13 @@
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Modules</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#eft">Export</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history" id="history_a">History</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#questions">Questions</a></li>
 {{--                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#render3d">3D</a></li>--}}
                 @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings"><span class="text-danger">Settings</span></a></li>
                 @endif
             </ul>
             <div class="card card-body border-0 shadow-sm pt-3">
-
-
                 <div class="tab-content">
                     <div id="home" class="tab-pane active">
                         <table class="table table-responsive-sm table-sm w-100 mb-4">
@@ -136,6 +135,44 @@
 {{--                        <h5 class="font-weight-bold">3D view</h5>--}}
 {{--                        TBA--}}
 {{--                    </div>--}}
+                    <div id="questions" class="tab-pane fade">
+                        <h5 class="font-weight-bold">Questions &amp; Answers</h5>
+                        @forelse($questions as $question)
+                            <div class="d-flex w-100 justify-content-start align-items-top">
+                                <span class="comment-image">
+                                    <img src="https://images.evetech.net/characters/{{$question->char_id}}/portrait?size=128" class="shadow rounded-circle" alt="Avatar">
+                                </span>
+                                <div class="comment-content pl-3 w-100">
+                                    <div class="w-100 d-inline-flex justify-content-between align-items-center">
+                                        <span class="font-weight-bold text-uppercase"><a href="{{route('profile.index', ['id' => $question->char_id])}}">{{$question->NAME}}</a>
+                                        @if($question->char_id == $fit->CHAR_ID) <span class="badge badge-secondary text-white ml-1 bu-3">Fit uploader</span> @endif</span>
+                                        <small data-toggle="tooltip" title="{{$question->created_at}}" class="text-uppercase">{{\App\Http\Controllers\TimeHelper::timeElapsedString($question->created_at)}}</small>
+                                    </div>
+                                    <p class="text-justify mb-3">{{$question->question}}</p>
+                                    @forelse($question->answers as $answer)
+
+                                        <div class="d-flex w-100 justify-content-start align-items-top mb-2">
+                                            <span class="answer-image">
+                                                <img src="https://images.evetech.net/characters/{{$answer->char_id}}/portrait?size=128" class="shadow rounded-circle" alt="Avatar">
+                                            </span>
+                                            <span class="answer-content pl-3 w-100">
+                                                <div class="w-100 d-inline-flex justify-content-between align-items-center">
+                                                    <span class="font-weight-bold text-uppercase"><a href="{{route('profile.index', ['id' => $answer->char_id])}}">{{$answer->NAME}}</a>
+                                                    @if($answer->char_id == $fit->CHAR_ID) <span class="badge badge-secondary text-white ml-1 bu-3">Fit uploader</span> @endif</span>
+                                                    <small data-toggle="tooltip" title="{{$answer->created_at}}" class="text-uppercase">{{\App\Http\Controllers\TimeHelper::timeElapsedString($answer->created_at)}}</small>
+                                                </div>
+                                                <p class="text-justify">{{$answer->text}}</p>
+                                            </span>
+                                        </div>
+                                    @empty
+                                        No Answers.
+                                    @endforelse
+                                </div>
+                            </div>
+                        @empty
+                            No questions.
+                        @endforelse
+                    </div>
                     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                         <div id="settings" class="tab-pane fade">
                             <h5 class="font-weight-bold">Fit privacy</h5>
@@ -332,6 +369,12 @@
 @endsection
 @section("styles")
     <link rel="stylesheet" href="{{asset("css/fit-only.css")}}">
+
+    <style>
+
+
+    </style>
+
 @endsection
 @section("scripts")
     {!! $popularity->script() !!}

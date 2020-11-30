@@ -228,7 +228,7 @@
             }
 
             // Get old dumps
-            $tables = Cache::remember("aft.dump-tablelist", now()->addHour(), function () {
+            $tables = Cache::remember("aft.dump-tablelists", now()->addHour(), function () {
                return DB::table("previous_dumps_tables")->orderBy("ORDER_ASC", "ASC")->get();
             });
 

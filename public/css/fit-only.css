@@ -18,9 +18,38 @@ span.fit-header-line .last-patch {
   position: relative;
   top: -5px;
   margin-left: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .icon-overusage {
   width: 16px;
   height: 16px;
+}
+
+.comment-image, .comment-image img {
+  width: 72px !important;
+  height: 72px !important;
+  padding: 0;
+  margin: 0;
+}
+
+.comment-image img {
+  border: 2px solid #fff;
+}
+
+.answer-image, .answer-image img {
+  width: 48px !important;
+  height: 48px !important;
+  padding: 0;
+  margin: 0;
+}
+
+.answer-image img {
+  border: 1px solid #fff;
+}
+
+.comment-content .badge {
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }

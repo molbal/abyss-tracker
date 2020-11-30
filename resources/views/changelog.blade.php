@@ -33,6 +33,7 @@
                         <li>Fit stats calculator updated to process EDENCOM ships and get updated balance changes</li>
                         <li>Adds <strong>Fit questions</strong></li>
                         <li>Adds <strong>Fit patch status: untested/works/deprecated</strong></li>
+                        <li>Updates module list to November 10 EVE dumppr</li>
                     </ul>
                 </div>
             </div>
