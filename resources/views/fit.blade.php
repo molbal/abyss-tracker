@@ -67,8 +67,7 @@
                         @component("components.info-line", ['class' => 'mb-3 mt-1'])
                             On the left side of the ingame fitting window, click the wrench icon. Then at the bottom left of the page click 'Import &amp; Export' then 'Import from clipboard' to import this fit to EVE Online.
                         @endcomponent
-                        <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" onclick="this.focus();this.select()"
-                                  style="font-family: 'Fira Code', 'Consolas', fixed">{{$fit->RAW_EFT}}</textarea>
+                        <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" onclick="this.focus();this.select()" style="font-family: 'Fira Code', 'Consolas', monospace">{{$fit->RAW_EFT}}</textarea>
                     </div>
                     <div id="history" class="tab-pane fade">
                         <h5 class="font-weight-bold">History</h5>
@@ -89,22 +88,7 @@
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Maximum suggested Abyssal difficulty</h5>
-                <table class="w-100 table-sm">
-                    <tr>
-                        @foreach(['DARK','ELECTRICAL','EXOTIC','FIRESTORM','GAMMA'] as $type)
-                            <td class="text-center" style="width: 20%">
-                                <p class="h3 mb-1">
-                                    @if($recommendations->$type == 0)
-                                        <img src="_icons/unavailable.png" class="smallicon" alt="Nope" data-toggle="tooltip" title="Not recommended for any {{strtolower($type)}} runs">
-                                        @else
-                                        {{$recommendations->$type}}
-                                    @endif
-                                </p>
-                                <img src="types/{{ucfirst(strtolower($type))}}.png"  class="tinyicon" alt=""> {{ucfirst(strtolower($type))}}
-                            </td>
-                        @endforeach
-                    </tr>
-                </table>
+                @component('components.fits.recommendations', ['recommendations' => $recommendations]) @endcomponent
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Description</h5>
@@ -124,48 +108,11 @@
         </div>
         <div class="col-sm-4">
             <div class="card card-body shadow-sm border-0 text-center">
-                @if($fit->PRIVACY == 'public')
-                    <div class="text-small">
-                        <img src="https://images.evetech.net/characters/{{$fit->CHAR_ID}}/portrait?size=256" alt="{{$char_name}}"  id="char_prof">
-                        <br>
-                        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark mb-1 d-inline-block">{{$char_name}} </a>
-                        <br>
-                        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">profile</a> &centerdot;
-                        <a href="{{route("fit.search", ['CHAR_ID' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">fits</a> &centerdot;
-                        <a href="https://zkillboard.com/character/{{$fit->CHAR_ID}}/" target="_blank" class="text-muted mx-1 ">killboard</a> &centerdot;
-                        <a href="{{$eve_workbench_url}}" target="_blank" class="text-muted mx-1 ">eve workbench</a>
-                    </div>
-                @else
-                    <p class="mb-0">This is an anonym fit, so its uploader is hidden.</p>
-                @endif
+                @component('components.fits.fit-uploader', ["fit" => $fit, "char_name" => $char_name, 'eve_workbench_url' => $eve_workbench_url]) @endcomponent
             </div>
-            <div class="card card-body shadow-sm border-0 mt-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="" style="width: 191px; text-align: center;">
-                            <img src="https://images.evetech.net/types/{{$fit->SHIP_ID}}/render?size=128"
-                                 id="ship_prof">
-                            <br>
-                            <div>
-                                <h2 class="font-weight-bold mb-0 mt-3" style="line-height: 1.6rem">
-                                    <a class="text-dark" href="{{route("ship_single", ["id" => $fit->SHIP_ID])}}">{{$ship_name}}</a>
-                                </h2>
-                                <small class="text-muted font-weight-bold">{{$ship_type}}</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <ul class="infolinks text-small">
-                            <li><a href="{{route('ship_single', ['id' => $fit->SHIP_ID])}}" class="text-muted">ship usage</a></li>
-                            <li><a href="{{route('fit.search', ['SHIP_ID' => $fit->SHIP_ID])}}" class="text-muted">ship fits</a></li>
-                            <li><a href="https://zkillboard.com/ship/{{$fit->SHIP_ID}}/" target="_blank" class="text-muted">killboard</a></li>
-                            <li><a href="https://www.eveworkbench.com/fitting/search?ships={{$fit->SHIP_ID}}" target="_blank" class="text-muted">eve wbench</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            @component('components.fits.ship-type', ['fit' => $fit, 'ship_name' => $ship_name, 'ship_type' => $ship_type]) @endcomponent
             @if(strtoupper($fit->STATUS) == "DONE")
-                @component('components.fit_stats', ["stats" => $fit->STATS])@endcomponent
+                @component('components.fit_stats', ["stats" => $fit->STATS]) @endcomponent
             @elseif(strtoupper($fit->STATUS) == "QUEUED")
                 <div class="card card-body border-warning shadow-sm text-center mt-3">
                     <div class="mb-0">
@@ -237,7 +184,7 @@
     </div>
 
     <div class="card card-body border-0 shadow-sm mt-3">
-        <p>This fit has {{count($fitIdsAll)}} almost identical fits (which are counted against loot and popularity statistics). Out of these fits, {{count($fitIdsNonPrivate)}} are not set to private:</p>
+        <p>THere are {{count($fitIdsAll)}} almost identical fits to this one (which are counted against loot and popularity statistics). {{count($fitIdsAll)-count($fitIdsNonPrivate)}} are private so the list below shows {{count($fitIdsNonPrivate)}} fits:</p>
         @component("components.fits.filter.result-list", ["results" => $similars]) @endcomponent
         @if($fitIdsAll > $fitIdsNonPrivate)
             <p class="italic mb-0">+ {{(count($fitIdsAll) - count($fitIdsNonPrivate))}} hidden fit(s).</p>
@@ -249,12 +196,6 @@
 @endsection
 @section("styles")
     <link rel="stylesheet" href="{{asset("css/fit-only.css")}}">
-
-    <style>
-
-
-    </style>
-
 @endsection
 @section("scripts")
     {!! $popularity->script() !!}

@@ -44,10 +44,27 @@
                                             </span>
                 </div>
             @empty
-                No Answers.
+                <em class="d-block w-100 py-3 text-center text-muted">No answers yet to this question.</em>
             @endforelse
         </div>
     </div>
 @empty
     <em class="d-block w-100 py-5 text-center text-muted">No questions yet</em>
 @endforelse
+<hr>
+@if (session()->get("login_id", -1) == $fit->CHAR_ID)
+    @if (session()->get('login_id') == $fit->CHAR_ID)
+        @component('components.info-line') This is your fit. A badge like this will show up next to your question: <span class="badge badge-secondary text-white ml-1 bu-3">Fit uploader</span>. If the fit is set to public, your name will be displayed in the comment, if its set to Anonym or Private, your name and avatar will be hidden from both questions and answers. @endcomponent
+    @endif
+    <form action="{{true}}" method="post">
+        @csrf
+        <input type="hidden" name="id" value="{{$fit->ID}}">
+        <div class="form-group">
+            <label for="question">Question</label>
+            <textarea name="question" id="question" class="form-control w-100" rows="3" title="No formatting allowed"></textarea>
+        </div>
+        <input type="submit" value="Submit question" class="btn btn-outline-primary">
+    </form>
+@else
+    @component('components.info-line') You have to sign in to comment @endcomponent
+@endif

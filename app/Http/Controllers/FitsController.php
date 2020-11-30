@@ -104,6 +104,10 @@
 
             try {
                 DB::beginTransaction();
+                $ids = DB::table('fit_questions')->where('fit_id', $id)->select('id')->get()->pluck('fit_id');
+                DB::table("fit_answers")->whereIn("question_id", $ids)->delete();
+                DB::table("fit_logs")->where("fit_it", $id)->delete();
+                DB::table("fit_questions")->where("fit_id", $id)->delete();
                 DB::table("fit_tags")->where("FIT_ID", $id)->delete();
                 DB::table("fit_recommendations")->where("FIT_ID", $id)->delete();
                 DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->delete();

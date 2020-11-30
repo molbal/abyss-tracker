@@ -31,7 +31,7 @@
                         <li>New fit submission form overhauled</li>
                         <li>New feature for importing fits from <a href="https://zkillboard.com" target="_blank" rel="nofollow">zKillboard</a> or <a href="https://eveworkbench.com" target="_blank" rel="nofollow">EVE Workbench</a></li>
                         <li>Fit stats calculator updated to process EDENCOM ships and get updated balance changes</li>
-                        <li>Adds <strong>Fit questions</strong></li>
+                        <li>Adds <strong>Fit questions and answers</strong></li>
                         <li>Adds <strong>Fit patch status: untested/works/deprecated</strong></li>
                         <li>Updates module list to November 10 EVE dumppr</li>
                     </ul>
