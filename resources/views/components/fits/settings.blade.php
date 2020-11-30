@@ -1,0 +1,26 @@
+{{--                            <p class="mb-3">You submitted this fit so you can delete it or modify its privacy.</p>--}}
+<div class="btn-group mb-2 d-block">
+    <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Public'
+    </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Anonym'
+    </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Private'
+    </a>
+</div>
+<h5 class="font-weight-bold mt-5">Is the fit tested with the latest patch?</h5>
+{{--                            <p class="mb-3"></p>--}}
+<div class="btn-group mb-2 d-block">
+    <a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'untested'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.untested-tooltip')">Set to 'Untested'
+    </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'works'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.works-tooltip')">Set to 'Works'
+    </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'deprecated'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.deprecated-tooltip')">Set to 'Deprecated'
+    </a>
+</div>
+<h5 class="font-weight-bold mt-5">Upgrade fit</h5>
+{{--                            <p class="mb-3">To upgrade a fit's version</p>--}}
+<div class="btn-group mb-2 d-block">
+    <a href="{{route("fit_new", ['id' => $fit->ROOT_ID ?? $fit->ID])}}" data-toggle="tooltip" title="Allows you to change all fields. Switches to a new revision." class="btn text-dark btn-outline-secondary">Edit fit
+    </a><button id="editDescription" data-toggle="tooltip" title="Only changes the description field. Stays on the current revision." class="btn text-dark btn-outline-secondary">Change description
+    </button>
+</div>
+<h5 class="font-weight-bold text-danger mt-5">Danger zone</h5>
+<p>If you want to delete this fit, you may click the red link: <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="text-danger">Delete fit</a></p>
+
+@component('components.fits.fit_new_description_modal', ['id' => $fit->ID, 'description' => $fit->DESCRIPTION]) @endcomponent

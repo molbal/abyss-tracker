@@ -41,27 +41,18 @@
             @if(strtoupper($fit->STATUS) == "DONE" && intval(json_decode($fit->STATS)->offense->weaponDps) == 0)
                 <div class="card card-body border-warning shadow-sm mb-3 p-2">
                     <div class="d-flex justify-content-start align-items-center">
-                        <img src="https://img.icons8.com/cotton/64/000000/error--v1.png" class="mr-3" style="height: 32px; width: 32px"/>
+                        {!! config('new-fit-wizard.images.alert') !!}
                         <span>
                         This fit's weapon DPS is 0. Maybe the submitter forgot to load ammo before uploading the fit or this fit only relies on drones.
                         </span>
                     </div>
                 </div>
             @endif
-{{--            <ul class="nav nav-tabs" id="myTab" role="tablist">--}}
-{{--                <li class="nav-item" role="presentation">--}}
-{{--                    <a class="nav-link active" id="tab-head-distribution" data-toggle="tab" href="#tab-distribution" role="tab" aria-controls="home" aria-selected="true">Loot values</a>--}}
-{{--                </li>--}}
-{{--                <li class="nav-item" role="presentation">--}}
-{{--                    <a class="nav-link" id="tab-head-activity" data-toggle="tab" href="#tab-activity" role="tab" aria-controls="profile" aria-selected="false">Abyss activity (daily)</a>--}}
-{{--                </li>--}}
-{{--            </ul>--}}
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Modules</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#eft">Export</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history" id="history_a">History</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#questions">Questions</a></li>
-{{--                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#render3d">3D</a></li>--}}
                 @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings"><span class="text-danger">Settings</span></a></li>
                 @endif
@@ -69,36 +60,7 @@
             <div class="card card-body border-0 shadow-sm pt-3">
                 <div class="tab-content">
                     <div id="home" class="tab-pane active">
-                        <table class="table table-responsive-sm table-sm w-100 mb-4">
-                            @component("components.fit_group", ["items" => $fit_quicklook["high"], "section" => "High slot modules"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["mid"], "section" => "Mid slot modules"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["low"], "section" => "Low slot modules"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["rig"], "section" => "Rigs"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["drone"], "section" => "Drones"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["ammo"], "section" => "Ammunition"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["booster"], "section" => "Boosters"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["cargo"], "section" => "Other cargo and implants"])@endcomponent
-                            <tr>
-                                <td colspan="3" class="font-weight-bold text-right">Total without ship: {{number_format($items_price, 0, ","," ")}} ISK</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-left text-uppercase font-weight-bold">Ship</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 36px;">
-                                    <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID}}_64.png" alt="{{$ship_name}} icon" class="fit-item-icon">
-                                </td>
-                                <td>
-                                    {{$ship_name}}
-                                </td>
-                                <td class="text-right">
-                                    {{number_format($ship_price, 0, ",", " ")}} ISK
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="font-weight-bold text-right">Total: {{number_format($ship_price+$items_price, 0, ","," ")}} ISK</td>
-                            </tr>
-                        </table>
+                        @component("components.fits.display-structured", ['fit' => $fit, 'fit_quicklook' => $fit_quicklook, 'ship_name' => $ship_name, 'ship_price' => $ship_price, 'items_price' => $items_price]) @endcomponent
                     </div>
                     <div id="eft" class="tab-pane fade">
                         <h5 class="font-weight-bold">Export fit</h5>
@@ -110,98 +72,16 @@
                     </div>
                     <div id="history" class="tab-pane fade">
                         <h5 class="font-weight-bold">History</h5>
-                        <table class="table table-sm w-100">
-                            <tr>
-                                <th>Datetime</th>
-                                <th>Event</th>
-                                <th>Fit version</th>
-                            </tr>
-                            @forelse($history as $item)
-                                @component("components.fits.fithistory", ['item'=>$item]) @endcomponent
-                            @empty
-                                <tr>
-                                   <td colspan="3">
-                                       <p class="py-5 text-center font-italic text-muted">No fit history available</p>
-                                   </td>
-                                </tr>
-                            @endforelse
-                        </table>
-                        <hr>
-                        @component("components.info-line")
-                            @lang("fits.records-notice", ['date' => config("tracker.fit.logs.initial-date")])
-                        @endcomponent
+                        @component("components.fits.history-full", ['history' => $history]) @endcomponent
                     </div>
-{{--                    <div id="render3d" class="tab-pane fade">--}}
-{{--                        <h5 class="font-weight-bold">3D view</h5>--}}
-{{--                        TBA--}}
-{{--                    </div>--}}
                     <div id="questions" class="tab-pane fade">
                         <h5 class="font-weight-bold">Questions &amp; Answers</h5>
-                        @forelse($questions as $question)
-                            <div class="d-flex w-100 justify-content-start align-items-top">
-                                <span class="comment-image">
-                                    <img src="https://images.evetech.net/characters/{{$question->char_id}}/portrait?size=128" class="shadow rounded-circle" alt="Avatar">
-                                </span>
-                                <div class="comment-content pl-3 w-100">
-                                    <div class="w-100 d-inline-flex justify-content-between align-items-center">
-                                        <span class="font-weight-bold text-uppercase"><a href="{{route('profile.index', ['id' => $question->char_id])}}">{{$question->NAME}}</a>
-                                        @if($question->char_id == $fit->CHAR_ID) <span class="badge badge-secondary text-white ml-1 bu-3">Fit uploader</span> @endif</span>
-                                        <small data-toggle="tooltip" title="{{$question->created_at}}" class="text-uppercase">{{\App\Http\Controllers\TimeHelper::timeElapsedString($question->created_at)}}</small>
-                                    </div>
-                                    <p class="text-justify mb-3">{{$question->question}}</p>
-                                    @forelse($question->answers as $answer)
-
-                                        <div class="d-flex w-100 justify-content-start align-items-top mb-2">
-                                            <span class="answer-image">
-                                                <img src="https://images.evetech.net/characters/{{$answer->char_id}}/portrait?size=128" class="shadow rounded-circle" alt="Avatar">
-                                            </span>
-                                            <span class="answer-content pl-3 w-100">
-                                                <div class="w-100 d-inline-flex justify-content-between align-items-center">
-                                                    <span class="font-weight-bold text-uppercase"><a href="{{route('profile.index', ['id' => $answer->char_id])}}">{{$answer->NAME}}</a>
-                                                    @if($answer->char_id == $fit->CHAR_ID) <span class="badge badge-secondary text-white ml-1 bu-3">Fit uploader</span> @endif</span>
-                                                    <small data-toggle="tooltip" title="{{$answer->created_at}}" class="text-uppercase">{{\App\Http\Controllers\TimeHelper::timeElapsedString($answer->created_at)}}</small>
-                                                </div>
-                                                <p class="text-justify">{{$answer->text}}</p>
-                                            </span>
-                                        </div>
-                                    @empty
-                                        No Answers.
-                                    @endforelse
-                                </div>
-                            </div>
-                        @empty
-                            No questions.
-                        @endforelse
+                        @component("components.fits.comments", ['fit' => $fit, 'questions' => $questions]) @endcomponent
                     </div>
                     @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                         <div id="settings" class="tab-pane fade">
                             <h5 class="font-weight-bold">Fit privacy</h5>
-{{--                            <p class="mb-3">You submitted this fit so you can delete it or modify its privacy.</p>--}}
-                            <div class="btn-group mb-2 d-block">
-                                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Public'
-                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Anonym'
-                                </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Private'
-                                </a>
-                            </div>
-                            <h5 class="font-weight-bold mt-5">Is the fit tested with the latest patch?</h5>
-{{--                            <p class="mb-3"></p>--}}
-                            <div class="btn-group mb-2 d-block">
-                                <a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'untested'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.untested-tooltip')">Set to 'Untested'
-                                </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'works'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.works-tooltip')">Set to 'Works'
-                                </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'deprecated'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.deprecated-tooltip')">Set to 'Deprecated'
-                                </a>
-                            </div>
-                            <h5 class="font-weight-bold mt-5">Upgrade fit</h5>
-{{--                            <p class="mb-3">To upgrade a fit's version</p>--}}
-                            <div class="btn-group mb-2 d-block">
-                                <a href="{{route("fit_new", ['id' => $fit->ROOT_ID ?? $fit->ID])}}" data-toggle="tooltip" title="Allows you to change all fields. Switches to a new revision." class="btn text-dark btn-outline-secondary">Edit fit
-                                </a><button id="editDescription" data-toggle="tooltip" title="Only changes the description field. Stays on the current revision." class="btn text-dark btn-outline-secondary">Change description
-                                </button>
-                            </div>
-                            <h5 class="font-weight-bold text-danger mt-5">Danger zone</h5>
-                            <p>If you want to delete this fit, you may click the red link: <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="text-danger">Delete fit</a></p>
-
-                        @component('components.fits.fit_new_description_modal', ['id' => $fit->ID, 'description' => $fit->DESCRIPTION]) @endcomponent
+                            @component("components.fits.settings", ['fit' => $fit]) @endcomponent
                         </div>
                     @endif
                 </div>
