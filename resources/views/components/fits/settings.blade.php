@@ -1,16 +1,16 @@
 {{--                            <p class="mb-3">You submitted this fit so you can delete it or modify its privacy.</p>--}}
 <div class="btn-group mb-2 d-block">
-    <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Public'
-    </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Anonym'
-    </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn text-dark btn-outline-secondary">Set privacy to 'Private'
+    <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="btn text-dark {{$fit->PRIVACY == 'public' ? 'active btn-outline-primary' : 'btn-outline-secondary '}}">Set privacy to 'Public'
+    </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="btn text-dark {{$fit->PRIVACY == 'incognito' ? 'active btn-outline-primary' : 'btn-outline-secondary '}}">Set privacy to 'Anonym'
+    </a><a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="btn text-dark {{$fit->PRIVACY == 'private' ? 'active btn-outline-primary' : 'btn-outline-secondary '}}">Set privacy to 'Private'
     </a>
 </div>
 <h5 class="font-weight-bold mt-5">Is the fit tested with the latest patch?</h5>
 {{--                            <p class="mb-3"></p>--}}
 <div class="btn-group mb-2 d-block">
-    <a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'untested'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.untested-tooltip')">Set to 'Untested'
-    </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'works'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.works-tooltip')">Set to 'Works'
-    </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'deprecated'])}}" class="btn text-dark btn-outline-secondary" data-toggle="tooltip" title="@lang('tags.deprecated-tooltip')">Set to 'Deprecated'
+    <a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'untested'])}}" class="btn text-dark  {{$fit->LAST_PATCH == 'untested' ? 'active btn-outline-primary' : 'btn-outline-secondary'}}" data-toggle="tooltip" title="@lang('tags.untested-tooltip')">Untested
+    </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'works'])}}" class="btn text-dark  {{$fit->LAST_PATCH == 'works' ? 'active btn-outline-primary' : 'btn-outline-secondary'}}" data-toggle="tooltip" title="@lang('tags.works-tooltip')">Works
+    </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'deprecated'])}}" class="btn text-dark  {{$fit->LAST_PATCH == 'deprecated' ? 'active btn-outline-primary' : 'btn-outline-secondary'}}" data-toggle="tooltip" title="@lang('tags.deprecated-tooltip')">Deprecated
     </a>
 </div>
 <h5 class="font-weight-bold mt-5">Upgrade fit</h5>

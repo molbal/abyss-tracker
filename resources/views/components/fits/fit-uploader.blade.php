@@ -2,7 +2,7 @@
     <div class="text-small">
         <img src="https://images.evetech.net/characters/{{$fit->CHAR_ID}}/portrait?size=256" alt="{{$char_name}}"  id="char_prof">
         <br>
-        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark mb-1 d-inline-block">{{$char_name}} </a>
+        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark mb-1 d-inline-block">{{$char_name}}</a>
         <br>
         <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">profile</a> &centerdot;
         <a href="{{route("fit.search", ['CHAR_ID' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">fits</a> &centerdot;
@@ -10,5 +10,8 @@
         <a href="{{$eve_workbench_url}}" target="_blank" class="text-muted mx-1 ">eve workbench</a>
     </div>
 @else
-    <p class="mb-0">This is an anonym fit, so its uploader is hidden.</p>
+    <div class="text-small text-center">
+        <img src="https://images.evetech.net/characters/1/portrait?size=256" alt="Mr./Ms. Incognito"  id="char_prof" class="avatar-incognito">
+        <p class="mb-0">This is an anonym fit, so its uploader is hidden.</p>
+    </div>
 @endif

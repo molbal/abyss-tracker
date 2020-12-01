@@ -131,6 +131,14 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
          */
         public function changePrivacy(int $id, string $privacySetting) {
+
+            Validator::make(['id' => $id, 'status' => $privacySetting], [
+                'id'  => 'required|numeric|exists:fits,ID',
+                'status' => 'required|in:public,incognito,private'
+            ], [
+                'required' => "Please fill :attribute",
+            ])->validate();
+
             if (!session()->has("login_id")) {
                 return view("403", ["error" => "Please sign in first"]);
             }
@@ -141,12 +149,22 @@
             }
 
             try {
+
+                DB::beginTransaction();
+                FitHistoryController::addEntry($id, "Updated privacy to $privacySetting");
                 DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->update([
                     'PRIVACY' => $privacySetting
                 ]);
-                return redirect(route("fit_single",['id' => $id]));
+                DB::commit();
+                self::uncache($id);
+                return view('autoredirect', [
+                    'title' => "Success",
+                    'message' => "Privacy changed to $privacySetting",
+                    'redirect' => route('fit_single', ['id' => $id])
+                ]);
             }
             catch (\Exception $e) {
+                DB::rollBack();
                 Log::error("Transaction rolled back - Could not change fit privacy $id - ".$e->getMessage(). " ".$e->getFile()."@".$e->getLine());
                 return view("error", ["error" => "Something went wrong and could not delete this fit. Modifications reverted."]);
             }

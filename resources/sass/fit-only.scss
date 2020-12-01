@@ -50,9 +50,22 @@ span.fit-header-line .last-patch {
 .answer-image img {
     border: 1px solid #fff;
 }
+.answer-image img.compose {
+    border: 1px dashed #fff;
+    opacity: 0.8;
+    filter: grayscale(60%);
+}
 
-
+.question-container:not(:first-child) {
+    margin-top: 12px;
+}
 .comment-content .badge {
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+#char_prof.avatar-incognito {
+    border-style: dashed !important;
+    width: 72px !important;
+    height: 72px !important;
 }
