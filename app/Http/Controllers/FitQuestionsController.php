@@ -42,7 +42,7 @@ class FitQuestionsController extends Controller
     public function postQuestion(PostQuestionRequest $request) {
         $model = new FitQuestion();
         $model->fit_id = $request->get('fit_id');
-        $model->char_id = session()->get('char_id');
+        $model->char_id = session()->get('login_id');
         $model->question = $request->get('question');
         $model->save();
         // TODO notify fit owner
@@ -57,7 +57,7 @@ class FitQuestionsController extends Controller
 
     public function postAnswer(PostAnswerRequest $request) {
         $model = new FitAnswer();
-        $model->char_id = session()->get('char_id');
+        $model->char_id = session()->get('login_id');
         $model->question_id = $request->get('question_id');
         $model->text = $request->get('text');
         $model->save();

@@ -83,8 +83,8 @@
     /**
      * Fit questions and answers
      */
-    Route::post('/fit/questions/new', 'FitQuestionController@postQuestion')->name('fit.questions.new')->middleware('sso');
-    Route::post('/fit/questions/answer', 'FitQuestionController@postAnswer')->name('fit.questions.new')->middleware('sso');
+    Route::post('/fit/questions/new', 'FitQuestionsController@postQuestion')->name('fit.questions.new')->middleware('sso');
+    Route::post('/fit/questions/answer', 'FitQuestionsController@postAnswer')->name('fit.questions.answer')->middleware('sso');
 
     /**
      * Item check

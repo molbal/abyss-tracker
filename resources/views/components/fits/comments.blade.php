@@ -56,9 +56,9 @@
     @if (session()->get('login_id') == $fit->CHAR_ID)
         @component('components.info-line') This is your fit. A badge like this will show up next to your question: <span class="badge badge-secondary text-white ml-1 bu-3">Fit uploader</span>. If the fit is set to public, your name will be displayed in the comment, if its set to Anonym or Private, your name and avatar will be hidden from both questions and answers. @endcomponent
     @endif
-    <form action="{{true}}" method="post">
+    <form action="{{route('fit.questions.new')}}" method="post">
         @csrf
-        <input type="hidden" name="id" value="{{$fit->ID}}">
+        <input type="hidden" name="fit_id" value="{{$fit->ID}}">
         <div class="form-group">
             <label for="question">Question</label>
             <textarea name="question" id="question" class="form-control w-100" rows="3" title="No formatting allowed"></textarea>
