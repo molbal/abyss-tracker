@@ -61,7 +61,10 @@ class FitQuestionsController extends Controller
         $model->question_id = $request->get('question_id');
         $model->text = $request->get('text');
         $model->save();
-        // TODO notify fit owner
+        // TODO question asker
+
+
+
 
         // Redirect with message
         return view('autoredirect', [

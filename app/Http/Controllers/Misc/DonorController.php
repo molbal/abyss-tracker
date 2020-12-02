@@ -9,6 +9,7 @@
     use Illuminate\Contracts\Filesystem\FileNotFoundException;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Storage;
 
 
@@ -20,34 +21,36 @@
         private function getPatreonList():\Illuminate\Support\Collection {
             return Cache::remember("aft.patreon.donors", now()->addMinute(), function () {
 
-            try {
-                $file = Storage::disk('private')
-                               ->get("Members.csv");
-            } catch (FileNotFoundException $e) {
-                return collect([]);
-            }
-            $lines = collect(explode("\r\n", $file));
-            $list = collect([]);
-            foreach ($lines as $i => $line) {
-                if ($line == "") continue;
-                if ($i == 0) continue;
+                try {
+                    $file = Storage::disk('private')->get("Members.csv");
+                } catch (FileNotFoundException $e) {
+                    Log::warning('Could not find members.csv');
+                    return collect([]);
+                }
 
-                $raw = explode(",",$line);
-                if (floatval($raw[5]) == 0.00) continue;
-                $donor = new PatreonDonor();
+                $lines = collect(explode("\r\n", $file));
+                $list = collect([]);
 
-                $donor->setName($raw[0])
-                    ->setPatreonId($raw[21])
-                    ->setTotalAmount($raw[5])
-                    ->setActivePatron($raw[3] == 'Active patron');
+                foreach ($lines as $i => $line) {
+                    if ($line == "") continue;
+                    if ($i == 0) continue;
 
-                $list->add($donor);
-            }
-            $list = $list->sortByDesc(function (PatreonDonor $item, $key) {
-                return $item->getTotalAmount();
-            });
+                    $raw = explode(",", $line);
+                    if (floatval($raw[5]) == 0.00) continue;
+                    $donor = new PatreonDonor();
 
-            return $list;
+                    $donor->setName($raw[0])
+                          ->setPatreonId($raw[21])
+                          ->setTotalAmount($raw[5])
+                          ->setActivePatron($raw[3] == 'Active patron');
+                    $list->add($donor);
+                }
+
+                $list = $list->sortByDesc(function (PatreonDonor $item, $key) {
+                    return $item->getTotalAmount();
+                });
+
+                return $list;
             });
         }
 

@@ -54,33 +54,35 @@
                     </span>
                 </div>
             @empty
-                <em class="d-block w-100 pt-2 pb-3 text-center text-muted">No answers yet to this question yet.</em>
+                <em class="d-block w-100 pt-2 pb-3 text-center text-muted">No answers yet to this question.</em>
             @endforelse
 
-            @if (session()->get("login_id", -1) == $fit->CHAR_ID)
+            @if (session()->has("login_id"))
                 <div class="d-flex w-100 justify-content-start align-items-top mb-2">
                     <span class="answer-image">
                         <img src="https://images.evetech.net/characters/{{session('login_id')}}/portrait?size=128" class="shadow rounded-circle compose" alt="Avatar">
                     </span>
                     <span class="answer-content pl-3 w-100">
-{{--                        <div class="w-100 d-inline-flex justify-content-between align-items-center">--}}
-{{--                            <span class="font-weight-bold text-uppercase">{{session('login_name')}}</span>--}}
-{{--                        </div>--}}
-                        <label for="text">Answer this question as {{session('login_name')}}</label>
-                        <textarea name="text" id="text" class="form-control w-100" rows="1" title="No formatting allowed"></textarea>
-                        <input type="submit" value="Submit answer" class="btn btn-sm btn-outline-primary mt-3">
+                        <form action="{{route('fit.questions.answer')}}" method="post">
+                            @csrf
+                            <input type="hidden" name="question_id" value="{{$question->id}}">
+                            <input type="hidden" name="fit_id" value="{{$fit->ID}}">
+                            <label for="text">Answer this question as {{session('login_name')}}</label>
+                            <textarea name="text" id="text" class="form-control w-100" rows="1" title="No formatting allowed"></textarea>
+                            <input type="submit" value="Submit answer" class="btn btn-sm btn-outline-primary mt-3">
+                        </form>
                     </span>
                 </div>
             @else
-                @component('components.info-line') You have to sign in to answer @endcomponent
+                @component('components.info-line') Sign in to answer this question. @endcomponent
             @endif
         </div>
     </div>
 @empty
-    <em class="d-block w-100 py-5 text-center text-muted">No questions yet</em>
+    <em class="d-block w-100 py-5 text-center text-muted">No questions yet - be the first to ask one.</em>
 @endforelse
 <hr>
-@if (session()->get("login_id", -1) == $fit->CHAR_ID)
+@if (session()->has("login_id"))
     <form action="{{route('fit.questions.new')}}" method="post" class="mb-3">
         @csrf
         <input type="hidden" name="fit_id" value="{{$fit->ID}}">
@@ -97,5 +99,5 @@
         <strong>{{$fit->PRIVACY == 'public' ? 'displayed' : 'hidden'}}</strong>. @endcomponent
     @endif
 @else
-    @component('components.info-line') You have to sign in to comment @endcomponent
+    @component('components.info-line') You have to sign in to comment. @endcomponent
 @endif
