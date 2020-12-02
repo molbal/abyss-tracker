@@ -139,6 +139,8 @@
     Route::get("/eve/auth/callback", 'Auth\AuthController@handleProviderCallback');
     Route::get("/eve/scoped/auth/start", 'Auth\AuthController@redirectToScopedProvider')->name("auth-scoped-start");
     Route::get("/eve/scoped/auth/callback", 'Auth\AuthController@handleScopedProviderCallback');
+    Route::get("/eve/mail-scoped/auth/start", 'Auth\AuthController@redirectToMailProvider')->name("auth-mail-start");
+    Route::get("/eve/mail-scoped/auth/callback", 'Auth\AuthController@handleMailProviderCallback');
     Route::get("/logout", 'Auth\AuthController@logout')->name("logout");
 
     /**

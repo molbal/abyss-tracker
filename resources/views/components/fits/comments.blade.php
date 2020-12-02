@@ -73,8 +73,6 @@
                         </form>
                     </span>
                 </div>
-            @else
-                @component('components.info-line') Sign in to answer this question. @endcomponent
             @endif
         </div>
     </div>
@@ -82,12 +80,13 @@
     <em class="d-block w-100 py-5 text-center text-muted">No questions yet - be the first to ask one.</em>
 @endforelse
 <hr>
+<h5 class="font-weight-bold">Ask a new question</h5>
 @if (session()->has("login_id"))
     <form action="{{route('fit.questions.new')}}" method="post" class="mb-3">
         @csrf
         <input type="hidden" name="fit_id" value="{{$fit->ID}}">
         <div class="form-group">
-            <label for="question" class="w-100 d-flex justify-content-between align-items-center"><span>Type your question below.</span><small>The fit uploader will be notified
+            <label for="question" class="w-100 d-flex justify-content-between align-items-center"><span>Type your question below</span><small>The fit uploader will be notified
                     ingame.</small></label>
             <textarea name="question" id="question" class="form-control w-100" rows="3" title="No formatting allowed"></textarea>
         </div>
@@ -99,5 +98,5 @@
         <strong>{{$fit->PRIVACY == 'public' ? 'displayed' : 'hidden'}}</strong>. @endcomponent
     @endif
 @else
-    @component('components.info-line') You have to sign in to comment. @endcomponent
+    @component('components.info-line') Sign in to add questions or answers. @endcomponent
 @endif

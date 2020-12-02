@@ -84,17 +84,17 @@
 		}
 
 
-		/**
-		 * Makes a POST call to ESI with authentication
-		 *
-		 * @param int    $charId
-		 * @param string $fullPath
-		 * @param string $requestBody
-		 * @param bool   $jsonReply Set to true if the expected response is JSON
-		 *
-		 * @return mixed
-		 * @throws \Exception
-		 */
+        /**
+         * Makes a POST call to ESI with authentication
+         *
+         * @param int|null $charId
+         * @param string   $fullPath
+         * @param string   $requestBody
+         * @param bool     $jsonReply Set to true if the expected response is JSON
+         *
+         * @return mixed
+         * @throws \Exception
+         */
 		protected function simplePost(?int $charId, string $fullPath, string $requestBody, bool $jsonReply = true)
 		{
 
@@ -107,7 +107,7 @@
 			curl_setopt_array($curl, [
 			    CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_POST => true,
-                CURLOPT_USERAGENT => $this->userAgent,
+                CURLOPT_USERAGENT => $this->usecrAgent,
                 CURLOPT_URL => $this->apiRoot . $fullPath,
                 CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json', "Content-type: application/json"],
                 CURLOPT_POSTFIELDS => $requestBody

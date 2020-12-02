@@ -32,6 +32,13 @@
             'client_scopes' => env('EVEONLINE_SCOPED_CLIENT_SCOPES'),
         ],
 
+        'mail-scope' => [
+            'client_id'     => env('EVEONLINE_MAIL_SCOPED_CLIENT_ID'),
+            'client_secret' => env('EVEONLINE_MAIL_SCOPED_CLIENT_SECRET'),
+            'redirect'      => env('EVEONLINE_MAIL_SCOPED_REDIRECT'),
+            'client_scopes' => env('EVEONLINE_MAIL_SCOPED_CLIENT_SCOPES'),
+        ],
+
         'donation-scope' => [
             'client_id' => env("EVEONLINE_DONATION_SCOPED_CLIENT_ID"),
             'client_secret' => env("EVEONLINE_DONATION_SCOPED_CLIENT_SECRET"),
@@ -94,6 +101,9 @@
                 'untested' => "warning",
                 'deprecated' => "danger"
             ]
-        ]
+        ],
 
+        'accountant' => [
+            'char-id' => env('ACCOUNTANT_CHAR_ID', 2117658503)
+        ]
     ];

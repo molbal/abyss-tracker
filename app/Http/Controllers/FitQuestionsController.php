@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Char;
+use App\Connector\EveAPI\Mail\MailService;
+use App\Fit;
 use App\FitAnswer;
 use App\FitQuestion;
+use App\Http\Controllers\Profile\NotificationController;
 use App\Http\Requests\PostAnswerRequest;
 use App\Http\Requests\PostQuestionRequest;
 use Illuminate\Http\Request;
@@ -12,6 +16,20 @@ use Illuminate\Support\Facades\DB;
 
 class FitQuestionsController extends Controller
 {
+
+    /** @var NotificationController */
+    public $notificationController;
+
+    /**
+     * FitQuestionsController constructor.
+     *
+     * @param NotificationController $notificationController
+     */
+    public function __construct(NotificationController $notificationController) {
+        $this->notificationController = $notificationController;
+    }
+
+
     /**
      * Gets questions for a fit
      * @param int $fitId
@@ -40,36 +58,41 @@ class FitQuestionsController extends Controller
 
 
     public function postQuestion(PostQuestionRequest $request) {
-        $model = new FitQuestion();
-        $model->fit_id = $request->get('fit_id');
-        $model->char_id = session()->get('login_id');
-        $model->question = $request->get('question');
-        $model->save();
+        $fit = Fit::where('ID',$request->get('fit_id'))->first();
+        $char = Char::where('CHAR_ID',session()->get('login_id'))->first();
+        $fitQuestion = new FitQuestion();
+        $fitQuestion->fit_id = $fit->ID;
+        $fitQuestion->char_id = $char->CHAR_ID;
+        $fitQuestion->question = $request->get('question');
+        $fitQuestion->save();
+
+        $this->notificationController->sendNewFitQuestionNotification($fit, $fitQuestion, $char);
         // TODO notify fit owner
 
         // Redirect with message
         return view('autoredirect', [
             'title' => "Success",
-            'message' => "New question posted",
-            'redirect' => route('fit_single', ['id' => $request->get('fit_id')])
+            'message' => "New question posted - thank you for your contribution",
+            'redirect' => route('fit_single', ['id' => $fit->ID])
         ]);
     }
 
     public function postAnswer(PostAnswerRequest $request) {
+        $questionId = $request->get('question_id');
         $model = new FitAnswer();
         $model->char_id = session()->get('login_id');
-        $model->question_id = $request->get('question_id');
+        $model->question_id = $questionId;
         $model->text = $request->get('text');
         $model->save();
         // TODO question asker
 
-
+        $charIdToNotify = FitQuestion::whereId($questionId)->first()->char_id;
 
 
         // Redirect with message
         return view('autoredirect', [
             'title' => "Success",
-            'message' => "New answer posted",
+            'message' => "New answer saved - thank you for your contribution",
             'redirect' => route('fit_single', ['id' => $request->get('fit_id')])
         ]);
     }
