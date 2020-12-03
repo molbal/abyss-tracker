@@ -93,7 +93,7 @@
 
         'fit' => [
             'logs' => [
-                'initial-date' => "2020-10-18"
+                'initial-date' => "2020-11-03"
             ],
 
             'patch-status' => [
