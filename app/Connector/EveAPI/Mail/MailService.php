@@ -29,7 +29,8 @@
                     ]
                 ],
                 "subject" => $title];
-            $id = $this->simplePost($charId, "characters/$charId/mail/", json_encode($params), false);
+
+            $id = $this->simplePost($charId, "characters/$charId/mail/", json_encode($params), false,true);
 
             if ($this->isJson($id) && isset(json_decode($id)->error)) {
                 throw new \Exception("Unable to send email: " . $id->error);

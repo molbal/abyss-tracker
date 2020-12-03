@@ -27,8 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class FitAnswer extends Model
 {
-    public function question() {
-        return $this->hasOne('App\FitQuestion');
-
+    public function char() {
+        return $this->hasOne('App\Char', 'CHAR_ID', 'char_id');
     }
 }

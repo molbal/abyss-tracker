@@ -95,25 +95,24 @@
          * @return mixed
          * @throws \Exception
          */
-		protected function simplePost(?int $charId, string $fullPath, string $requestBody, bool $jsonReply = true)
+		protected function simplePost(?int $charId, string $fullPath, string $requestBody, bool $jsonReply = true, $tokenMail = false)
 		{
 
 			$curl = curl_init();
 
 			if ($charId) {
-				$tokenController = new ESITokenController($charId);
+				$tokenController = new ESITokenController($charId, $tokenMail);
 				$accessToken = $tokenController->getAccessToken();
 			}
 			curl_setopt_array($curl, [
 			    CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_POST => true,
-                CURLOPT_USERAGENT => $this->usecrAgent,
+                CURLOPT_USERAGENT => $this->userAgent,
                 CURLOPT_URL => $this->apiRoot . $fullPath,
                 CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json', "Content-type: application/json"],
                 CURLOPT_POSTFIELDS => $requestBody
 			]);
 			$ret = curl_exec($curl);
-//			dd($requestBody, $ret);
 			curl_close($curl);
 
 			if ($jsonReply) {

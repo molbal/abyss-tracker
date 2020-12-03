@@ -52,7 +52,7 @@
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Modules</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#eft">Export</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history" id="history_a">History</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#questions">Questions</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#questions">Questions {{$questions->count() > 0 ? '('.$questions->count().')' : ''}}</a></li>
                 @if (session()->get("login_id", -1) == $fit->CHAR_ID)
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings"><span class="text-danger">Settings</span></a></li>
                 @endif

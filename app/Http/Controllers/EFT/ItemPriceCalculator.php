@@ -119,6 +119,8 @@
                     }
                     catch (\Exception $retex) {
                         Log::channel("itempricecalculator")->error("BULK Unexpected exception: Error while calculating typeId ".$listOfTypeIds->implode(",").": ".$retex->getMessage()."\n".$retex->getTraceAsString());
+                    } finally {
+                        return collect([]);
                     }
                 }
             });

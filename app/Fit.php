@@ -45,12 +45,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Fit whereSUBMITTED($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fit whereVIDEOLINK($value)
  * @mixin \Eloquent
+ * @property-read \App\Char|null $char
+ * @property-read \App\Ship|null $ship
  */
 class Fit extends Model
 {
     protected $primaryKey = 'ID';
 
     public function char() {
-        return $this->hasOne('App\Char', 'CHAR_ID');
+        return $this->hasOne('App\Char', 'CHAR_ID', 'CHAR_ID');
+    }
+
+    public function ship() {
+        return $this->hasOne('App\Ship', 'ID', 'SHIP_ID');
     }
 }

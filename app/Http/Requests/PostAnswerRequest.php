@@ -24,6 +24,7 @@ class PostAnswerRequest extends FormRequest
     public function rules()
     {
         return [
+            'fit_id' => 'required|exists:fits,ID',
             'question_id' => 'required|exists:fit_questions,id',
             'text' => 'required|max:1000'
         ];

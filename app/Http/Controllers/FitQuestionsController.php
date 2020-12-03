@@ -57,6 +57,11 @@ class FitQuestionsController extends Controller
     }
 
 
+    /**
+     * @param PostQuestionRequest $request
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function postQuestion(PostQuestionRequest $request) {
         $fit = Fit::where('ID',$request->get('fit_id'))->first();
         $char = Char::where('CHAR_ID',session()->get('login_id'))->first();
@@ -67,7 +72,6 @@ class FitQuestionsController extends Controller
         $fitQuestion->save();
 
         $this->notificationController->sendNewFitQuestionNotification($fit, $fitQuestion, $char);
-        // TODO notify fit owner
 
         // Redirect with message
         return view('autoredirect', [
@@ -78,15 +82,16 @@ class FitQuestionsController extends Controller
     }
 
     public function postAnswer(PostAnswerRequest $request) {
-        $questionId = $request->get('question_id');
-        $model = new FitAnswer();
-        $model->char_id = session()->get('login_id');
-        $model->question_id = $questionId;
-        $model->text = $request->get('text');
-        $model->save();
-        // TODO question asker
+        $fit = Fit::where('ID',$request->get('fit_id'))->first();
+        $char = Char::where('CHAR_ID',session()->get('login_id'))->first();
+        $question = FitQuestion::where('id', $request->get('question_id'))->first();
+        $fitAnswer = new FitAnswer();
+        $fitAnswer->char_id = $char->CHAR_ID;
+        $fitAnswer->question_id = $question->id;
+        $fitAnswer->text = $request->get('text');
+        $fitAnswer->save();
 
-        $charIdToNotify = FitQuestion::whereId($questionId)->first()->char_id;
+        $this->notificationController->sendNewFitAnswerNotification($fit, $question, $fitAnswer, $char);
 
 
         // Redirect with message

@@ -26,5 +26,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class FitQuestion extends Model
 {
-    //
+
+    public function char() {
+        return $this->hasOne('App\Char', 'CHAR_ID', 'char_id');
+    }
 }
