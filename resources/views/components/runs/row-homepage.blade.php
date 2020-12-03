@@ -24,6 +24,6 @@
     </td>
     <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}"
                              title="Open"><img
-                src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/view-file.png"></a>
+                src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/chevron-right.png" class="tinyicon"></a>
     </td>
 </tr>

@@ -3,26 +3,27 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-8 mb-3 offset-md-2">
-            <div class="card card-body border-warning shadow-sm mb-3">
-                <small class="text-capitalize font-weight-bold text-dark pt-0">IN DEVELOPMENT / PLANNED</small>
-                <h4 class="mb-0 pb-0">Future releases</h4>
-                <p>
-                    The following features are planned (in no particular order or grouping).
-                <ul>
-                    <li>Blueprint price estimation</li>
-                    <li>Dynamically adding and removing search filters</li>
-                    <li>Dynamically adding and removing fit search filters</li>
-                    <li>General search</li>
-                </ul>
+            <div class="card card-body border-warning shadow-sm mb-3 p-0 overflow-hidden">
+                <img src="{{asset("home/roadmap-1.8.png")}}" alt="" class="w-100 shadow">
+{{--                <small class="text-capitalize font-weight-bold text-dark pt-0">IN DEVELOPMENT / PLANNED</small>--}}
+{{--                <h4 class="mb-0 pb-0">Future releases</h4>--}}
+{{--                <p>--}}
+{{--                    The following features are planned (in no particular order or grouping).--}}
+{{--                <ul>--}}
+{{--                    <li>Blueprint price estimation</li>--}}
+{{--                    <li>Dynamically adding and removing search filters</li>--}}
+{{--                    <li>Dynamically adding and removing fit search filters</li>--}}
+{{--                    <li>General search</li>--}}
+{{--                </ul>--}}
 
-                </p>
+{{--                </p>--}}
             </div>
-            <div class="card card-body border-danger shadow-sm mb-3 p-0">
-{{--                <img src="{{asset("home/1.7.jpg")}}" alt="1.7.0 release" class="w-100 shadow">--}}
+            <div class="card card-body border-danger shadow-sm mb-3 p-0 overflow-hidden">
+                <img src="{{asset("home/1.8.jpg")}}" alt="1.8.0 release" class="w-100 shadow">
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
-                    <h4 class="mb-0 pb-0"><strong>1.8</strong> 'Wetu' release</h4>
-                    <small class="mt-0">2020 october ?</small>
+                    <h4 class="mb-0 pb-0"><strong>1.8</strong> 'Undock' release</h4>
+                    <small class="mt-0">2020 november 3</small>
                     <p class="text-justify">
                         Feature expansion release
                     </p>
@@ -34,10 +35,11 @@
                         <li>Adds <strong>Fit questions and answers</strong></li>
                         <li>Adds <strong>Fit patch status: untested/works/deprecated</strong></li>
                         <li>Updates module list to November 10 EVE dumppr</li>
+                        <li>New loader gif spinner by <a class="text-white" href="https://twitter.com/manicvelocity" target="_blank" rel="nofollow">Manic Velocity</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="card card-body border-0 shadow-sm mb-3 p-0">
+            <div class="card card-body border-0 shadow-sm mb-3 p-0 overflow-hidden">
                 <img src="{{asset("home/1.7.jpg")}}" alt="1.7.0 release" class="w-100 shadow">
                 <div class="p-3">
                     <h4 class="mb-0 pb-0"><strong>1.7</strong> KurodaAkira's modified release</h4>
@@ -53,7 +55,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="card card-body border-0 shadow-sm mb-3 p-0">
+            <div class="card card-body border-0 shadow-sm mb-3 p-0 overflow-hidden">
                 <img src="{{asset("home/1.6.0b.jpg")}}" alt="1.6.0 release" class="w-100 shadow">
                 <div class="p-3">
                     <h4 class="mb-0 pb-0"><strong>1.6.0 <sup>beta</sup></strong> 'Howitzer' release</h4>
@@ -74,7 +76,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="card card-body border-0 shadow-sm mb-3 p-0">
+            <div class="card card-body border-0 shadow-sm mb-3 p-0 overflow-hidden">
                 <img src="{{asset("home/1.5.6.jpg")}}" alt="1.5.6 release" class="w-100 shadow">
                 <div class="p-3">
                     <h4 class="mb-0 pb-0"><strong>1.5.6</strong> 'SOE' release</h4>
@@ -91,7 +93,7 @@
                     <small>The next release will consist of bugfixes and user requested enhanchements.</small>
                 </div>
             </div>
-            <div class="card card-body border-0 shadow-sm mb-3 p-0">
+            <div class="card card-body border-0 shadow-sm mb-3 p-0 overflow-hidden">
                 <img src="{{asset("home/1.5.5.jpg")}}" alt="1.5.5 release" class="w-100 shadow">
                 <div class="p-3">
                     <h4 class="mb-0 pb-0"><strong>1.5.5</strong> 'Bolt' release</h4>

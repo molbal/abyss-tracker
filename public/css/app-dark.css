@@ -10195,7 +10195,7 @@ body {
 }
 
 .action-hover-only .td-action {
-  opacity: 0;
+  opacity: 0.45;
 }
 .action-hover-only:hover .td-action {
   opacity: 1;
@@ -10401,6 +10401,11 @@ a.text-normal:hover {
 
 td.tinyhead {
   line-height: 0.6rem;
+}
+
+img.icon12p {
+  width: 12px;
+  height: 12px;
 }
 
 img.tinyicon {

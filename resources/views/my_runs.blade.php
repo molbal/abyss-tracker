@@ -13,36 +13,36 @@
                     <tr>
                         <th>&nbsp;</th>
                         <th>Ship name</th>
-                        <th class="text-center">Abyss type <a href="{{route("runs_mine", ["order_by" => 'TYPE', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs_mine", ["order_by" => 'TYPE', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
-                        <th class="text-center">Abyss tier <a href="{{route("runs_mine", ["order_by" => 'TIER', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs_mine", ["order_by" => 'TIER', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
-                        <th class="text-right">Loot value <a href="{{route("runs_mine", ["order_by" => 'LOOT_ISK', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs_mine", ["order_by" => 'LOOT_ISK', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
-                        <th class="text-right">Run at <a href="{{route("runs_mine", ["order_by" => 'RUN_DATE', "order_type" => "DESC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs_mine", ["order_by" => 'RUN_DATE', "order_type" => "ASC"])}}"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
+                        <th class="text-center">Abyss type <a href="{{route("runs_mine", ["order_by" => 'TYPE', "order_type" => "DESC"])}}"><img class="icon12p" src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs_mine", ["order_by" => 'TYPE', "order_type" => "ASC"])}}"><img class="icon12p" src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
+                        <th class="text-center">Abyss tier <a href="{{route("runs_mine", ["order_by" => 'TIER', "order_type" => "DESC"])}}"><img class="icon12p" src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs_mine", ["order_by" => 'TIER', "order_type" => "ASC"])}}"><img class="icon12p" src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
+                        <th class="text-right">Loot value <a href="{{route("runs_mine", ["order_by" => 'LOOT_ISK', "order_type" => "DESC"])}}"><img class="icon12p" src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs_mine", ["order_by" => 'LOOT_ISK', "order_type" => "ASC"])}}"><img class="icon12p" src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
+                        <th class="text-right">Run at <a href="{{route("runs_mine", ["order_by" => 'RUN_DATE', "order_type" => "DESC"])}}"><img class="icon12p" src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-down.png"></a><a href="{{route("runs_mine", ["order_by" => 'RUN_DATE', "order_type" => "ASC"])}}"><img class="icon12p" src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/sort-up.png"></a> </th>
                         <th class="text-right">Run time</th>
                         <th>&nbsp;</th>
                     </tr>
                     @foreach($items as $item)
                         <tr class="action-hover-only">
                             <td>
-                                {!!$item->SHIP_NAME ? "<img src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->HULL_SIZE)."' style='width:20px;height:20px;' alt='Ship class icon'>" : '' !!}
+                                {!!$item->SHIP_NAME ? "<img src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->HULL_SIZE)."' style='width:20px;height:20px;'   alt='Ship class icon'>" : '' !!}
 {{--                                {!!$item->SHIP_NAME ? ($item->IS_CRUISER ? '<img src="/overview/cruiser.png" data-toggle="tooltip" title="Cruiser run">' : '<img src="/overview/frigate.png" data-toggle="tooltip" title="Frigate run">') : '' !!}--}}
-                                {!! $item->SURVIVED ? '' : '<img src="/dead.png" data-toggle="tooltip" title="Run failed, ship and capsule lost"/>' !!}
+                                {!! $item->SURVIVED ? '' : '<img src="/dead.png" class="icon12p" data-toggle="tooltip" title="Run failed, ship and capsule lost"/>' !!}
                             </td>
                             <td>
                                 @if($item->SHIP_ID === null)
                                     <em class="font-italic text-black-50 ">Unknown</em>
                                 @else
-                                    <img src="https://imageserver.eveonline.com/Type/{{$item->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" height="24px" width="24px" alt="">&nbsp;
+                                    <img src="https://imageserver.eveonline.com/Type/{{$item->SHIP_ID}}_32.png" class="rounded-circle shadow-sm smallicon" style="border: 1px solid #fff" alt="">&nbsp;
                                     <a class="text-dark" href="{{route("search.do", ["ship_id" => $item->SHIP_ID])}}">{{$item->SHIP_NAME}}</a>
                                 @endif
                             </td>
-                            <td class="text-center"><img src="types/{{$item->TYPE}}.png" style="width:16px;height:16px;" alt=""> <a class="text-dark" href="{{route("search.do", ["type" => $item->TYPE])}}">{{$item->TYPE}}</a></td>
-                            <td class="text-center"><img src="tiers/{{$item->TIER}}.png" style="width:16px;height:16px;" alt=""> <a class="text-dark" href="{{route("search.do", ["tier" => $item->TIER])}}">{{$item->TIER}}</a></td>
+                            <td class="text-left"><img src="types/{{$item->TYPE}}.png" class="tinyicon" alt=""> <a class="text-dark" href="{{route("search.do", ["type" => $item->TYPE])}}">{{$item->TYPE}}</a></td>
+                            <td class="text-left"><img src="tiers/{{$item->TIER}}.png" class="tinyicon" alt=""> <a class="text-dark" href="{{route("search.do", ["tier" => $item->TIER])}}">{{$item->TIER}}</a></td>
                             <td class="text-right">{{number_format($item->LOOT_ISK, 0, " ",",")}} ISK</td>
                             <td class="text-right">{{$item->RUN_DATE}}</td>
                             <td class="text-right">
                                 {{sprintf("%02d", $item->RUNTIME_SECONDS/60)}}:{{sprintf("%02d", $item->RUNTIME_SECONDS%60)}}
                             </td>
-                            <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}" title="Open"><img src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/view-file.png"></a></td>
+                            <td class="td-action"><a href="{{route("view_single", ["id" => $item->ID])}}" title="Open"><img class="tinyicon" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/chevron-right.png"></a></td>
                         </tr>
                     @endforeach
                 </table>
