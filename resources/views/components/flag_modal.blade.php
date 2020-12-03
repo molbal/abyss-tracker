@@ -22,10 +22,11 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <div class="btn-group">
-                            <button type="button" role="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancel
-                            </button>
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Submit</button>
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <button type="button" role="button" class="btn btn-sm btn-link text-muted" data-dismiss="modal">Cancel</button>
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Submit</button>
+                            </div>
                         </div>
                     </div>
                 @else

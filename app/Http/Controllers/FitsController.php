@@ -9,11 +9,12 @@
     use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
+    use App\Http\Controllers\EFT\FitHistoryController;
     use App\Http\Controllers\EFT\FitParser;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
+    use App\Http\Controllers\EFT\Tags\TagsController;
     use App\Http\Controllers\Partners\EveWorkbench;
     use App\Http\Controllers\Youtube\YoutubeController;
-    use Carbon\Carbon;
     use ChrisKonnertz\OpenGraph\OpenGraph;
     use Cohensive\Embed\Embed;
     use Illuminate\Http\Request;
@@ -30,8 +31,7 @@
         /** @var FitHelper */
         protected $fitHelper;
 
-        /** @var BarkController */
-        private $barkController;
+
         /** @var FitParser */
         protected $fitParser;
 
@@ -60,11 +60,30 @@
          * Renders the new fit screen
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
-        public function new() {
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please sign in first to add a new fit"]);
+        public function new(int $id = null) {
+
+            if (!$id) {
+                $oldFitId = null;
+                $oldFitName = null;
             }
-            return view("new_fit");
+            else {
+                $fit = DB::table("fits")->where("ID", $id)->first();
+                if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                    return view('403', ['error' => "You cannot update someone else's fit."]);
+                }
+                if (!$fit) {
+                    return view('error', ['error' => "Fit does not exist."]);
+                }
+
+                $oldFitId = $id;
+                $oldFitName = $fit->NAME;
+            }
+
+
+            return view("new_fit", [
+                'oldFitId' => $oldFitId,
+                'oldFitName' => $oldFitName
+            ]);
 	    }
 
         /**
@@ -77,7 +96,7 @@
             if (!session()->has("login_id")) {
                 return view("403", ["error" => "Please sign in first"]);
             }
-            $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+            $fit = DB::table("fits")->where("ID", $id)->first();
 
             if ($fit->CHAR_ID != session()->get("login_id", -1)) {
                 return view('403', ['error' => sprintf("You cannot delete someone else's fit.")]);
@@ -85,6 +104,10 @@
 
             try {
                 DB::beginTransaction();
+                $ids = DB::table('fit_questions')->where('fit_id', $id)->select('id')->get()->pluck('fit_id');
+                DB::table("fit_answers")->whereIn("question_id", $ids)->delete();
+                DB::table("fit_logs")->where("fit_it", $id)->delete();
+                DB::table("fit_questions")->where("fit_id", $id)->delete();
                 DB::table("fit_tags")->where("FIT_ID", $id)->delete();
                 DB::table("fit_recommendations")->where("FIT_ID", $id)->delete();
                 DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->delete();
@@ -108,22 +131,40 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
          */
         public function changePrivacy(int $id, string $privacySetting) {
+
+            Validator::make(['id' => $id, 'status' => $privacySetting], [
+                'id'  => 'required|numeric|exists:fits,ID',
+                'status' => 'required|in:public,incognito,private'
+            ], [
+                'required' => "Please fill :attribute",
+            ])->validate();
+
             if (!session()->has("login_id")) {
                 return view("403", ["error" => "Please sign in first"]);
             }
-            $fit = DB::table("fits")->where("ID", $id)->get()->get(0);
+            $fit = DB::table("fits")->where("ID", $id)->first();
 
             if ($fit->CHAR_ID != session()->get("login_id", -1)) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
             }
 
             try {
+
+                DB::beginTransaction();
+                FitHistoryController::addEntry($id, "Updated privacy to $privacySetting");
                 DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->update([
                     'PRIVACY' => $privacySetting
                 ]);
-                return redirect(route("fit_single",['id' => $id]));
+                DB::commit();
+                self::uncache($id);
+                return view('autoredirect', [
+                    'title' => "Success",
+                    'message' => "Privacy changed to $privacySetting",
+                    'redirect' => route('fit_single', ['id' => $id])
+                ]);
             }
             catch (\Exception $e) {
+                DB::rollBack();
                 Log::error("Transaction rolled back - Could not change fit privacy $id - ".$e->getMessage(). " ".$e->getFile()."@".$e->getLine());
                 return view("error", ["error" => "Something went wrong and could not delete this fit. Modifications reverted."]);
             }
@@ -136,18 +177,17 @@
          * @throws \Exception
          */
         public function new_store(Request $request) {
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please sign in first to add a new fit"]);
-            }
+
             Validator::make($request->all(), [
-                'ELECTRICAL'     => 'required|numeric|min:0|max:5',
-                'DARK'     => 'required|numeric|min:0|max:5',
-                'EXOTIC' => 'required|numeric|min:0|max:5',
-                'FIRESTORM'   => 'required|numeric|min:0|max:5',
-                'GAMMA' => 'required|numeric|min:0|max:5',
+                'ELECTRICAL'     => 'required|numeric|min:0|max:6',
+                'DARK'     => 'required|numeric|min:0|max:6',
+                'EXOTIC' => 'required|numeric|min:0|max:6',
+                'FIRESTORM'   => 'required|numeric|min:0|max:6',
+                'GAMMA' => 'required|numeric|min:0|max:6',
                 'eft'  => 'required',
 //                'description' => 'required',
-                'privacy' => 'required'
+                'privacy' => 'required',
+                'rootId' => 'numeric|exists:fits,ID'
             ], [
                 'required' => "Please fill :attribute before saving your fit",
             ])->validate();
@@ -155,18 +195,28 @@
 
             $id = null;
             try {
-                if (
-                    $request->get("ELECTRICAL") == 0 &&
+                if ($request->get("ELECTRICAL") == 0 &&
                     $request->get("DARK") == 0 &&
                     $request->get("EXOTIC") == 0 &&
                     $request->get("FIRESTORM") == 0 &&
-                    $request->get("GAMMA") == 0
-                )
-                {
-                    throw new \Exception("Please mark at least one type/tier possible in this fit.");
+                    $request->get("GAMMA") == 0) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'ELECTRICAL' => ['Please mark at least one type/tier possible in this fit.']
+                    ]);
                 }
+
+                $charId = session()->get("login_id", 0);
+                if ($request->has('rootId')) {
+                    if (!DB::table('fits')->where('ID', $request->get('rootId'))->where('CHAR_ID', $charId)->exists()) {
+                        throw \Illuminate\Validation\ValidationException::withMessages([
+                            'rootId' => ["You must not update someone else\'s fit"]
+                        ]);
+                    }
+                }
+
                 $eft = $request->get("eft");
-                $shipId = $this->getShipIDFromEft($eft);
+                $shipId = self::getShipIDFromEft($eft);
+
                 if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {
                     throw new \Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
                 }
@@ -175,9 +225,14 @@
                 $totalPrice = $fitObj->getFitValue(); // Let's get this before the DB transaction starts
 
                 $hash = $this->fitHelper->getFitFFH($eft);
+
+                if ($request->filled("fitName")) {
+                    $fitObj->setFitName($request->get("fitName"));
+                }
+
                 DB::beginTransaction();
                 $id = DB::table("fits")->insertGetId([
-                    'CHAR_ID' => session()->get("login_id"),
+                    'CHAR_ID' => $charId,
                     'SHIP_ID' => $shipId,
                     'NAME' => $fitObj->getFitName(),
                     'DESCRIPTION' => $request->get("description") ?? "",
@@ -188,7 +243,8 @@
                     'SUBMITTED' => now(),
                     'VIDEO_LINK' => $request->get("video_link") ?? '',
                     'PRIVACY' => $request->get('privacy'),
-                    'FFH' => $hash
+                    'FFH' => $hash,
+                    'ROOT_ID' => $request->get('rootId', null)
                 ]);
 
                 if (!$this->submitSvcFitService($this->fitHelper->pyfaBugWorkaround($eft, $shipId), $id)) {
@@ -205,6 +261,14 @@
                 ]);
 
                 $fitObj->persistLines($id);
+
+                if ($request->has('rootId')) {
+                    FitHistoryController::addEntry($id, "This fit was updated.");
+                }
+                else {
+                    FitHistoryController::addEntry($id, "Fit submitted to the Abyss Tracker");
+                }
+
                 DB::commit();
             }
             catch (\Exception $e) {
@@ -215,6 +279,108 @@
 
             return redirect(route('fit_single', ['id' => $id]));
 	    }
+
+
+        /**
+         * Handles updating the description for a fit
+         * @param Request $request
+         *
+         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         * @throws \Illuminate\Validation\ValidationException
+         */
+        public function updateDescription(Request $request) {
+
+            Validator::make($request->all(), [
+                'id'  => 'required|numeric|exists:fits,ID',
+                'description' => 'required'
+            ], [
+                'required' => "Please fill :attribute",
+            ])->validate();
+
+
+            $id = $request->get('id');
+            $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
+
+            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            }
+
+            // Actually edit
+            DB::beginTransaction();
+            try {
+                DB::table('fits')
+                    ->where('id', $id)
+                    ->update(['DESCRIPTION' => $request->get('description')]);
+
+                // Write history
+                FitHistoryController::addEntry($id, "Updated description");
+                DB::commit();
+
+                self::uncache($id);
+            }
+            catch (\Exception $e) {
+                Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
+                return view("error", ["error" => "Something went wrong while updating description, sorry. ".$e->getMessage()]);
+            }
+
+
+            // Redirect with message
+            return view('autoredirect', [
+                'title' => "Success",
+                'message' => "The description of ".$fit->NAME." fit was updated",
+                'redirect' => route('fit_single', ['id' => $id])
+            ]);
+	    }
+
+        /**
+         * @param Request $request
+         *
+         * @param int     $id
+         * @param string  $status
+         *
+         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
+        public function updateLastPatch(Request $request, int $id, string $status) {
+
+            Validator::make(['id' => $id, 'status' => $status], [
+                'id'  => 'required|numeric|exists:fits,ID',
+                'status' => 'required|in:works,untested,deprecated'
+            ], [
+                'required' => "Please fill :attribute",
+            ])->validate();
+
+            $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
+
+            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            }
+
+            // Actually edit
+            DB::beginTransaction();
+            try {
+                DB::table('fits')
+                  ->where('id', $id)
+                  ->update(['LAST_PATCH' => $status]);
+
+                // Write history
+                FitHistoryController::addEntry($id, "Updated status to ".__('tags.'.$status));
+                DB::commit();
+                self::uncache($id);
+            }
+            catch (\Exception $e) {
+                Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
+                return view("error", ["error" => "Something went wrong while updating last patch status, sorry. ".$e->getMessage()]);
+            }
+
+
+            // Redirect with message
+            return view('autoredirect', [
+                'title' => "Success",
+                'message' => "The patch status of ".$fit->NAME." fit was updated to ".__('tags.'.$status),
+                'redirect' => route('fit_single', ['id' => $id])
+            ]);
+        }
+
 
         /**
          * @return FitHelper
@@ -232,101 +398,183 @@
          * @throws \Exception
          */
         public function get(int $id) {
-            if (!$this->getFitsQB($id)->exists()) {
-                return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
-            }
+            clock()->startEvent("Checking if exists", "");
+                if (!$this->getFitsQB($id)
+                          ->exists()) {
+                    clock()->endEvent("Checking if exists");
+                    return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
+                }
+            clock()->endEvent("Checking if exists");
 
             try {
 
-            $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
-                return $this->getFitsQB($id)->first();
-            });
+                // Get the fit - with some caching
+                clock()->startEvent("Getting the fit from DB", "");
+                $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
+                    return $this->getFitsQB($id)->first();
+                });
+                clock()->endEvent("Getting the fit from DB");
 
 
-            if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
-                return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('fit.search') . "'>View public fits</a></p>")]);
-            }
-            $ship_name = DB::table('ship_lookup')
-                           ->where('ID', $fit->SHIP_ID)
-                           ->value('NAME');
-            $char_name = DB::table('chars')
-                           ->where('CHAR_ID', $fit->CHAR_ID)
-                           ->value('NAME');
-
-
-            $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
-            $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
-            $shipPrice = $this->sipc->getFromTypeId($fit->SHIP_ID)->getAveragePrice() ?? 0.0;
-
-            if (trim($fit->VIDEO_LINK)) {
-                try {
-                    $embed = YoutubeController::getEmbed($fit->VIDEO_LINK);
-                } catch (\Exception $exception) {
-                    Log::warning(sprintf("Could not generate embed for %s", $fit->VIDEO_LINK));
-                    $embed = "<div class='alert alert-warning'>Could not generate embed for link: " . htmlentities($fit->VIDEO_LINK) . '</div>';
+                // Check credentials
+                clock()->startEvent("Checking privacy", "");
+                if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
+                    return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('fit.search') . "'>View public fits</a></p>")]);
                 }
-            } else { $embed = "";}
+                clock()->endEvent("Checking privacy");
 
-            $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
+                // Get ship name and character name
+                clock()->startEvent("Lookup ship name and character name", "");
+                $ship_name = DB::table('ship_lookup')
+                               ->where('ID', $fit->SHIP_ID)
+                               ->value('NAME');
+                $char_name = DB::table('chars')
+                               ->where('CHAR_ID', $fit->CHAR_ID)
+                               ->value('NAME');
+                clock()->endEvent("Lookup ship name and character name");
 
-            $og = new OpenGraph();
-            $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
-               ->type('profile')
-               ->description(sprintf("%s fit - %s", $ship_name, config('app.name')))
-               ->url()
-               ->locale('en_US')
-               ->localeAlternate(['en_UK'])
-               ->siteName(config('app.name'))
-               ->determiner('an')
-               ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
-            $og->profile(["first_name" => trim($fit->NAME)]);
+                // Parse description, get ship type ID and ship name
+                clock()->startEvent("Parse description", "");
+                $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
+                clock()->endEvent("Parse description");
 
+                clock()->startEvent("Get ship type ID", "");
+                $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
+                clock()->endEvent("Get ship type ID");
 
-            $runs = DB::table("runs")
-              ->where("FIT_ID", $id)
-              ->orderBy("CREATED_AT", 'DESC')
-              ->paginate(25);
+                clock()->startEvent("Get shipitemObject", "");
+                $shipitemObject = $this->sipc->getFromTypeId($fit->SHIP_ID);
+                if (!$shipitemObject) {
+                    throw new \Exception("Could not find the ship name from the ship ID (".$fit->SHIP_ID.") - This happens frequently during EVE downtime and will solve itself when EVE comes back online");
+                }
+                clock()->endEvent("Get shipitemObject");
 
-            $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
-            $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
+                // Get ship price
+                clock()->startEvent("Get ship price", "");
+                $shipPrice = $shipitemObject->getAveragePrice() ?? 0.0;
+                clock()->endEvent("Get ship price");
 
-            $eftObj = Eft::loadFromId($id);
-            $eftParsed = $eftObj->getStructuredDisplay();
-            $fit->PRICE = $eftObj->getFitValue();
-            $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
+                // Get video link
+                clock()->startEvent("Parse fit video link", "");
+                if (trim($fit->VIDEO_LINK)) {
+                    try {
+                        $embed = YoutubeController::getEmbed($fit->VIDEO_LINK);
+                    } catch (\Exception $exception) {
+                        Log::warning(sprintf("Could not generate embed for %s", $fit->VIDEO_LINK));
+                        $embed = "<div class='alert alert-warning'>Could not generate embed for link: " . htmlentities($fit->VIDEO_LINK) . '</div>';
+                    }
+                } else { $embed = "";}
+                clock()->endEvent("Parse fit video link");
 
-            $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
-            $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
-            $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
-            $loots = $this->getFitLootStrategyChart($fitIdsAll);
-            $similars = $this->getFitsFromIds($fitIdsNonPrivate);
+                // Get recommendations
+                clock()->startEvent("Load fit recommendations", "");
+                $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
+                clock()->endEvent("Load fit recommendations");
 
-            $runsCountAll = DB::table("runs")
+                // Make open graph tags
+                clock()->startEvent("Generate Open Graph tags", "");
+                $og = new OpenGraph();
+                $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
+                   ->type('profile')
+                   ->description(sprintf("%s fit with %s on %s", $ship_name,TagsController::getFitTags($id)->join(", ", ", and "), config('app.name')))
+                   ->url()
+                   ->locale('en_US')
+                   ->localeAlternate(['en_UK'])
+                   ->siteName(config('app.name'))
+                   ->determiner('an')
+                   ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
+                $og->profile(["first_name" => trim($fit->NAME)]);
+                clock()->endEvent("Generate Open Graph tags");
+
+                // Get last runs with this fit
+                clock()->startEvent("Load fit's saved runs", "");
+                $runs = DB::table("runs")
                   ->where("FIT_ID", $id)
-                  ->orderBy("CREATED_AT", 'DESC')->count();
-            return view('fit', [
-                'fit' => $fit,
-                'ship_name' => $ship_name,
-                'char_name' => $char_name,
-                'ship_type' => $shipType,
-                'ship_price' => $shipPrice,
-                'items_price' => $eftObj->getItemsValue(),
-                'fit_quicklook' => $eftParsed,
-                'description' => $description,
-                'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),
-                'embed' => $embed,
-                'recommendations' => $recommendations,
-                'og' => $og,
-                'id' => $id,
-                'runs' => $runs,
-                "breaksEven" => $breaksEven,
-                'popularity' => $popularity,
-                'loots' => $loots,
-                'fitIdsAll' => $fitIdsAll,
-                'fitIdsNonPrivate' => $fitIdsNonPrivate,
-                'similars' => $similars,
-                'runsCountAll' => $runsCountAll
-            ]);
+                  ->orderBy("CREATED_AT", 'DESC')
+                  ->paginate(25);
+                clock()->endEvent("Load fit's saved runs");
+
+                // Get max tiers and "break even" stats
+                clock()->startEvent("'Break even calculation' - determine max tiers", "");
+                $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
+                clock()->endEvent("'Break even calculation' - determine max tiers");
+                clock()->startEvent("'Break even calculation' - calculate break even time", "");
+                $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
+                clock()->endEvent("'Break even calculation' - calculate break even time");
+
+
+                // Get parsed items and price
+                clock()->startEvent("Load EFT from ID", "");
+                $eftObj = Eft::loadFromId($id);
+                clock()->endEvent("Load EFT from ID");
+                clock()->startEvent("Load structured, pre-parsed display", "");
+                $eftParsed = $eftObj->getStructuredDisplay();
+                clock()->endEvent("Load structured, pre-parsed display");
+                clock()->startEvent("Calculate fit value", "");
+                $fit->PRICE = $eftObj->getFitValue();
+                $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
+                clock()->endEvent("Calculate fit value");
+
+                // Get similar fits
+                clock()->startEvent("Get similar fits", "");
+                $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
+                $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
+                $similars = $this->getFitsFromIds($fitIdsNonPrivate);
+                clock()->endEvent("Get similar fits");
+
+                clock()->startEvent("Make charts", "");
+                $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
+                $loots = $this->getFitLootStrategyChart($fitIdsAll);
+                clock()->endEvent("Make charts");
+
+                // Get all runs count with this fit
+                clock()->startEvent("Count all runs", "");
+                $runsCountAll = DB::table("runs")
+                      ->where("FIT_ID", $id)
+                      ->orderBy("CREATED_AT", 'DESC')->count();
+                clock()->endEvent("Count all runs");
+
+                // Get history
+                clock()->startEvent("Load history", "");
+                $history = FitHistoryController::getFitHistory($id)->reverse();
+                clock()->endEvent("Load history");
+
+                // Check revisions history
+                clock()->startEvent("Load revision", "");
+                $newestRevision = FitHistoryController::getLastRevision($id);
+                clock()->endEvent("Load revision");
+
+                // Check revisions history
+                clock()->startEvent("Load questions and answers", "");
+                $questions = FitQuestionsController::getFitQuestions($id);
+                clock()->endEvent("Load questions and answers");
+
+                return view('fit', [
+                    'fit' => $fit,
+                    'ship_name' => $ship_name,
+                    'char_name' => $char_name,
+                    'ship_type' => $shipType,
+                    'ship_price' => $shipPrice,
+                    'items_price' => $eftObj->getItemsValue(),
+                    'fit_quicklook' => $eftParsed,
+                    'description' => $description,
+                    'eve_workbench_url' => EveWorkbench::getProfileUrl($char_name),
+                    'embed' => $embed,
+                    'recommendations' => $recommendations,
+                    'og' => $og,
+                    'id' => $id,
+                    'runs' => $runs,
+                    "breaksEven" => $breaksEven,
+                    'popularity' => $popularity,
+                    'loots' => $loots,
+                    'fitIdsAll' => $fitIdsAll,
+                    'fitIdsNonPrivate' => $fitIdsNonPrivate,
+                    'similars' => $similars,
+                    'runsCountAll' => $runsCountAll,
+                    'history' => $history,
+                    'lastRevision' => $newestRevision,
+                    'questions' => $questions
+                ]);
 
             }
             catch (\Exception $e)  {
@@ -334,7 +582,7 @@
                     throw $e;
                 }
                 Log::error("Error viewing fit: ".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString());
-                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit.".$e." - ".$e->getMessage()." ".$e->getFile()." ".$e->getTraceAsString()]);
+                return view("error", ["message" => "Sorry, we ran into trouble viewing this fit. Reason: ".$e->getMessage()]);
             }
 	    }
 
@@ -366,18 +614,23 @@
             $responseData = json_decode($response, true);
             if (!$responseData) {
                 Log::error("Invalid response from fit stat service: ".$responseData." for input ".$query);
+
+                FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
                 throw new \Exception("The fit stat service returned malformed response");
             }
 
             if(!isset($responseData["success"])) {
+                FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
                 throw new \RuntimeException("No 'status' key in SVCFITSTAT response: ".print_r($responseData, 1));
             }
 
             if ($responseData["success"]) {
-                Log::info("Submitted fit to svcfitstat. ".print_r($responseData, 1));
+                FitHistoryController::addEntry($fitId, "Submitted fit for stats calculation");
+                Log::info("Submitted fit to svcfitstat.");
                 return true;
             }
             else {
+                FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
                 Log::error("Negative response input ".$query.": ".print_r($responseData, true));
                 return false;
             }
@@ -413,7 +666,7 @@
          * @return mixed
          * @throws \Exception
          */
-        private function getShipIDFromEft(string $fit) {
+        public static function getShipIDFromEft(string $fit) {
 
             // Get lines
             $lines = explode("\n", trim($fit));
@@ -436,7 +689,9 @@
             }
 
             return $shipId;
-	    }
+        }
+
+
 
         /**
          * @param int $id
@@ -455,38 +710,11 @@
          * @return PersonalDaily
          */
         public function getFitPopularityChart(array $ids, $name): PersonalDaily {
-            [$dates, $values, $dead] = Cache::remember("ship.popularity-ffh.".implode("-", $ids), now()->addHour(), function() use ($ids, $name) {
-                $dates = [];
-                $values = [];
-                $dead = [];
-                for ($i = -90; $i <= 0; $i++) {
-                    $date = strtotime("now $i days");
-                    $query = "select
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=?) as 'ALL',
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids) . ")) as 'SHIP',
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids) . ") and SURVIVED=0) as 'DEAD';";
-                    $val = DB::select($query,
-                        [
-                            (new Carbon($date))->addDays(-3),
-                            (new Carbon($date))->addDays(+3),
-                            (new Carbon($date))->addDays(-3),
-                            (new Carbon($date))->addDays(+3),
-                            (new Carbon($date))->addDays(-3),
-                            (new Carbon($date))->addDays(+3),
-                        ]);
-                    $dates[] = date("M.d.", $date);
-                    if ($val[0]->ALL == 0) {
-                        $values[] = 0.0;
-                        $dead[] = 0.0;
-                    }
-                    else {
-                        $values[] = round(($val[0]->SHIP / $val[0]->ALL) * 100, 2);
-                        $dead[] = round(($val[0]->DEAD / ($val[0]->SHIP > 0 ? $val[0]->SHIP : 1)) * 100, 2);
-                    }
-                }
-                return [$dates, $values, $dead];
-            });
 
+            $dates = [];
+            for($i=-90; $i<=0; $i++) {
+                $dates[] = date("M.d.", strtotime("now $i days"));
+            }
             $pop = new PersonalDaily();
             $pop->displayAxes(true);
             $pop->export(true, "Download");
@@ -494,25 +722,9 @@
             $pop->theme(ThemeController::getChartTheme());
             $pop->displayLegend(true);
             $pop->labels($dates);
+            $pop->load(route("chart.fit.popularity", ['ids' => json_encode($ids), 'name' => $name]));
             $pop->options([
                 'tooltip' => [
-                    'trigger' => "axis"
-                ]
-            ]);
-            $pop->dataset("Fit popularity (Percentage of all runs)", "line", $values)->options([
-                'smooth'         => true,
-                'symbolSize'     => 0,
-                'smoothMonotone' => 'x',
-                'tooltip'        => [
-                    'trigger' => "axis"
-                ]
-            ]);
-            $pop->dataset("Failure ratio (Percentage of failed runs)", "line", $dead)->options([
-                'smooth'         => true,
-                'symbolSize'     => 0,
-                'smoothMonotone' => 'x',
-                'color'          => 'red',
-                'tooltip'        => [
                     'trigger' => "axis"
                 ]
             ]);
@@ -551,30 +763,18 @@
          * @return LootAveragesChart
          */
         public function getFitLootStrategyChart(array $ids): LootAveragesChart {
-            $loot_strategy = DB::table("runs")
-                               ->whereIn("FIT_ID", $ids)
-                               ->whereNotNull("LOOT_TYPE")
-                               ->where("SURVIVED", true)
-                               ->selectRaw("count(ID) as CNT, LOOT_TYPE")
-                               ->groupBy("LOOT_TYPE")
-                               ->get();
 
-            $labels = [];
-            $data = [];
-            foreach ($loot_strategy as $reason) {
-                $labels[] = ucfirst(trim(str_ireplace("Looted the", "", $this->barkController->getLootStrategyDescription($reason))));
-                $data[] = $reason->CNT;
-            }
             $loot_chart = new LootAveragesChart();
             $loot_chart->displayAxes(false);
             $loot_chart->export(true, "Download");
             $loot_chart->height(400);
             $loot_chart->theme(ThemeController::getChartTheme());
             $loot_chart->displayLegend(true);
-            $loot_chart->labels($labels);
-            $loot_chart->dataset("Looting strategy", "pie", $data)->options([
-                'radius' => ShipsController::PIE_RADIUS_SMALL
-            ]);
+            $loot_chart->load(route("chart.fit.loot-strategy", ['ids' => json_encode($ids)]));
             return $loot_chart;
+        }
+
+        public static function uncache(int $id):void {
+            Cache::forget("aft.fit-record-full.".$id);
         }
     }

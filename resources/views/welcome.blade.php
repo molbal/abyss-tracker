@@ -6,28 +6,29 @@
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
     <div class="row mt-3">
-        <div class="col-xs-12 col-sm-12 col-md-8 row">
+        <div class="col-xs-12 col-sm-12 col-md-8">
+            <div class="row">
 
 
             {{--        NEWS START --}}
-            <div class="col-xs-12 col-md-6">
+            <div class="col-xs-12 col-md-12">
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
-                    <img src="{{asset("home/1.7.jpg")}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
+                    <img src="{{asset("home/1.8.jpg")}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
                     <div class="p-3 text-center">
                         <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to {{config('tracker.version')}}</a>
                         <p class="mb-0">See changes and new features</p>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-6">
-                <div class="card card-body border-0 shadow-sm p-0 mb-3">
-                    <img src="{{asset('home/alliance-open.jpg')}}" alt="Alliance Open" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
-                    <div class="p-3 text-center">
-                        <a href="https://open.eve-nt.uk" target="_blank" class="font-weight-bold h5 text-dark">EVE-NT Alliance Open</a>
-                        <p class="mb-0">We made our own Alliance Tournament with 200000+ PLEX in the prizes</p>
-                    </div>
-                </div>
-            </div>
+{{--            <div class="col-xs-12 col-md-6">--}}
+{{--                <div class="card card-body border-0 shadow-sm p-0 mb-3">--}}
+{{--                    <img src="{{asset('home/alliance-open.jpg')}}" alt="Alliance Open" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">--}}
+{{--                    <div class="p-3 text-center">--}}
+{{--                        <a href="https://open.eve-nt.uk" target="_blank" class="font-weight-bold h5 text-dark">EVE-NT Alliance Open</a>--}}
+{{--                        <p class="mb-0">We made our own Alliance Tournament with 200000+ PLEX in the prizes</p>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
             {{--        NEWS END--}}
 
 
@@ -58,6 +59,7 @@
                 </div>
             </div>
             {{--        LOOT GRAPH ENDS--}}
+            </div>
         </div>
 
         <div class="col-xs-12 col-sm-12 col-md-4">

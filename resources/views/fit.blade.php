@@ -1,87 +1,94 @@
 @extends("layout.app")
 @section("browser-title", $ship_name." fit")
 @section("content")
-    <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
-        <h4 class="font-weight-bold">{{$fit->NAME}} <small class="ml-3">(Fit #{{$id}})</small></h4>
+    <div class="d-flex justify-content-between align-items-center mb-1 mt-5">
+        <span class="fit-header-line">
+            <h4 class="font-weight-bold fit-title d-inline-block mb-0">{{$fit->NAME}}</h4>
+            @component('components.fits.patch-tag', ['status' => $fit->LAST_PATCH]) @endcomponent
+        </span>
+        <small class="ml-3" data-toggle="tooltip" title="The fit number uniquely identifies a fit on the Abyss Tracker.">Fit #{{$id}}</small>
     </div>
+    @if($id != $lastRevision)
+        <div class="card card-body border-info shadow-sm mb-3 p-2">
+            <div class="d-flex justify-content-start  align-items-center">
+                <img src="https://img.icons8.com/cotton/64/000000/info--v1.png" class="mr-3" style="height: 32px; width: 32px"/>
+                <span>
+                    This fit has a newer version. To see the changes, go to <a class="font-italic" data-toggle="tab" href="javascript:void(0)" onclick="$('#history_a').tab('show')">History</a> or <a class="font-italic" href="{{route('fit_single', ['id' => $lastRevision])}}">jump to the latest revision</a>.
+                </span>
+            </div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-sm-8">
 
+            @if (session()->has('message') || (isset($errors) && $errors->any()))
+                <div class="wizard-message border-{{session('messageType', 'danger')}} mb-3" style="border-width: 0 0 0 3px; border-style: solid">
+                    <div>
+                        {!! config('new-fit-wizard.images.'.session('messageType', 'danger')) !!}
+                    </div>
+                    <div>
+                        <h4>Message</h4>
+                        {{ session('message') }}
+                        <ul style="list-style: none">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
+
             @if(strtoupper($fit->STATUS) == "DONE" && intval(json_decode($fit->STATS)->offense->weaponDps) == 0)
-                <div class="card card-body border-warning shadow-sm mb-3">
-                    <div class="d-flex justify-content-start">
-                        <img src="https://img.icons8.com/cotton/64/000000/error--v1.png" class="mr-3"/>
+                <div class="card card-body border-warning shadow-sm mb-3 p-2">
+                    <div class="d-flex justify-content-start align-items-center">
+                        {!! config('new-fit-wizard.images.alert') !!}
                         <span>
                         This fit's weapon DPS is 0. Maybe the submitter forgot to load ammo before uploading the fit or this fit only relies on drones.
                         </span>
                     </div>
                 </div>
             @endif
-            <div class="card card-body border-0 shadow-sm">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home">Modules</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#eft">Export</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history" id="history_a">History</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#questions">Questions {{$questions->count() > 0 ? '('.$questions->count().')' : ''}}</a></li>
+                @if (session()->get("login_id", -1) == $fit->CHAR_ID)
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings"><span class="text-danger">Settings</span></a></li>
+                @endif
+            </ul>
+            <div class="card card-body border-0 shadow-sm pt-3">
                 <div class="tab-content">
                     <div id="home" class="tab-pane active">
-                        <h5 class="font-weight-bold">Fit's modules</h5>
-                        <table class="table table-responsive-sm table-sm w-100 mb-4">
-                            @component("components.fit_group", ["items" => $fit_quicklook["high"], "section" => "High slot modules"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["mid"], "section" => "Mid slot modules"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["low"], "section" => "Low slot modules"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["rig"], "section" => "Rigs"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["drone"], "section" => "Drones"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["ammo"], "section" => "Ammunition"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["booster"], "section" => "Boosters"])@endcomponent
-                            @component("components.fit_group", ["items" => $fit_quicklook["cargo"], "section" => "Other cargo and implants"])@endcomponent
-                            <tr>
-                                <td colspan="3" class="font-weight-bold text-right">Total without ship: {{number_format($items_price, 0, ","," ")}} ISK</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-left text-uppercase font-weight-bold">Ship</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 36px;">
-                                    <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID}}_32.png" alt="{{$ship_name}} icon" style="width: 32px;height: 32px;">
-                                </td>
-                                <td>
-                                    {{$ship_name}}
-                                </td>
-                                <td class="text-right">
-                                    {{number_format($ship_price, 0, ",", " ")}} ISK
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="font-weight-bold text-right">Total: {{number_format($ship_price+$items_price, 0, ","," ")}} ISK</td>
-                            </tr>
-                        </table>
+                        @component("components.fits.display-structured", ['fit' => $fit, 'fit_quicklook' => $fit_quicklook, 'ship_name' => $ship_name, 'ship_price' => $ship_price, 'items_price' => $items_price]) @endcomponent
                     </div>
                     <div id="eft" class="tab-pane fade">
-                        <h3>EFT</h3>
-                        <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" onclick="this.focus();this.select()"
-                                  style="font-family: 'Fira Code', 'Consolas', fixed">{{$fit->RAW_EFT}}</textarea>
+                        <h5 class="font-weight-bold">Export fit</h5>
+                        @component("components.info-line", ['class' => 'mb-3 mt-1'])
+                            On the left side of the ingame fitting window, click the wrench icon. Then at the bottom left of the page click 'Import &amp; Export' then 'Import from clipboard' to import this fit to EVE Online.
+                        @endcomponent
+                        <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" onclick="this.focus();this.select()" style="font-family: 'Fira Code', 'Consolas', monospace">{{$fit->RAW_EFT}}</textarea>
                     </div>
+                    <div id="history" class="tab-pane fade">
+                        <h5 class="font-weight-bold">History</h5>
+                        @component("components.fits.history-full", ['history' => $history]) @endcomponent
+                    </div>
+                    <div id="questions" class="tab-pane fade">
+                        <h5 class="font-weight-bold">Questions &amp; Answers</h5>
+                        @component("components.fits.comments", ['fit' => $fit, 'questions' => $questions]) @endcomponent
+                    </div>
+                    @if (session()->get("login_id", -1) == $fit->CHAR_ID)
+                        <div id="settings" class="tab-pane fade">
+                            <h5 class="font-weight-bold">Fit privacy</h5>
+                            @component("components.fits.settings", ['fit' => $fit]) @endcomponent
+                        </div>
+                    @endif
                 </div>
 
-                <ul class="nav nav-pills">
-                    <li class="active nav-item mr-3"><a data-toggle="tab" href="#home">Formatted</a></li>
-                    <li class="nav-item mr-3"><a data-toggle="tab" href="#eft">EFT</a></li>
-                </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Maximum suggested Abyssal difficulty</h5>
-                <table class="w-100 table-sm">
-                    <tr>
-                        @foreach(['DARK','ELECTRICAL','EXOTIC','FIRESTORM','GAMMA'] as $type)
-                            <td class="text-center" style="width: 20%">
-                                <p class="h3 mb-1">
-                                    @if($recommendations->$type == 0)
-                                        <img src="_icons/unavailable.png" class="smallicon" alt="Nope" data-toggle="tooltip" title="Not recommended for any {{strtolower($type)}} runs">
-                                        @else
-                                        {{$recommendations->$type}}
-                                    @endif
-                                </p>
-                                <img src="types/{{ucfirst(strtolower($type))}}.png"  class="tinyicon" alt=""> {{ucfirst(strtolower($type))}}
-                            </td>
-                        @endforeach
-                    </tr>
-                </table>
+                @component('components.fits.recommendations', ['recommendations' => $recommendations]) @endcomponent
             </div>
             <div class="card card-body border-0 shadow-sm mt-3">
                 <h5 class="font-weight-bold">Description</h5>
@@ -101,49 +108,11 @@
         </div>
         <div class="col-sm-4">
             <div class="card card-body shadow-sm border-0 text-center">
-                @if($fit->PRIVACY == 'public')
-                    <div class="text-small">
-                        <img src="https://images.evetech.net/characters/{{$fit->CHAR_ID}}/portrait?size=128" alt="{{$char_name}}" class="rounded-circle shadow" id="char_prof">
-                        <br>
-                        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="h5 font-weight-bold text-dark mb-1 d-inline-block">{{$char_name}} </a>
-                        <br>
-                        <a href="{{route("profile.index", ['id' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">profile</a> &centerdot;
-                        <a href="{{route("fit.search", ['CHAR_ID' => $fit->CHAR_ID])}}" class="text-muted mx-1 ">fits</a> &centerdot;
-                        <a href="https://zkillboard.com/character/{{$fit->CHAR_ID}}/" target="_blank" class="text-muted mx-1 ">killboard</a> &centerdot;
-                        <a href="{{$eve_workbench_url}}" target="_blank" class="text-muted mx-1 ">eve workbench</a>
-                    </div>
-                @else
-                    <p class="mb-0">This is an anonym fit, so its uploader is hidden.</p>
-                @endif
+                @component('components.fits.fit-uploader', ["fit" => $fit, "char_name" => $char_name, 'eve_workbench_url' => $eve_workbench_url]) @endcomponent
             </div>
-            <div class="card card-body shadow-sm border-0 mt-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="" style="width: 191px;
-text-align: center;">
-                            <img src="https://images.evetech.net/types/{{$fit->SHIP_ID}}/render?size=64"
-                                 class="rounded-circle shadow" style="border: 2px solid #fff; width: 64px;height: 64px;">
-                            <br>
-                            <div>
-                                <h2 class="font-weight-bold mb-0 mt-3" style="line-height: 1.6rem">
-                                    <a class="text-dark" href="{{route("ship_single", ["id" => $fit->SHIP_ID])}}">{{$ship_name}}</a>
-                                </h2>
-                                <small class="text-muted font-weight-bold">{{$ship_type}}</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <ul class="infolinks text-small">
-                            <li><a href="{{route('ship_single', ['id' => $fit->SHIP_ID])}}" class="text-muted">ship usage</a></li>
-                            <li><a href="{{route('fit.search', ['SHIP_ID' => $fit->SHIP_ID])}}" class="text-muted">ship fits</a></li>
-                            <li><a href="https://zkillboard.com/ship/{{$fit->SHIP_ID}}/" target="_blank" class="text-muted">killboard</a></li>
-                            <li><a href="https://www.eveworkbench.com/fitting/search?q={{$ship_name}}" target="_blank" class="text-muted">eve wbench</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            @component('components.fits.ship-type', ['fit' => $fit, 'ship_name' => $ship_name, 'ship_type' => $ship_type]) @endcomponent
             @if(strtoupper($fit->STATUS) == "DONE")
-                @component('components.fit_stats', ["stats" => $fit->STATS])@endcomponent
+                @component('components.fit_stats', ["stats" => $fit->STATS]) @endcomponent
             @elseif(strtoupper($fit->STATUS) == "QUEUED")
                 <div class="card card-body border-warning shadow-sm text-center mt-3">
                     <div class="mb-0">
@@ -215,45 +184,21 @@ text-align: center;">
     </div>
 
     <div class="card card-body border-0 shadow-sm mt-3">
-        <p>This fit has {{count($fitIdsAll)}} almost identical fits (which are counted against loot and popularity statistics). Out of these fits, {{count($fitIdsNonPrivate)}} are not set to private:</p>
+        <p>THere are {{count($fitIdsAll)}} almost identical fits to this one (which are counted against loot and popularity statistics). {{count($fitIdsAll)-count($fitIdsNonPrivate)}} are private so the list below shows {{count($fitIdsNonPrivate)}} fits:</p>
         @component("components.fits.filter.result-list", ["results" => $similars]) @endcomponent
+        @if($fitIdsAll > $fitIdsNonPrivate)
+            <p class="italic mb-0">+ {{(count($fitIdsAll) - count($fitIdsNonPrivate))}} hidden fit(s).</p>
+        @endif
     </div>
     @endif
 
-    @if (session()->get("login_id", -1) == $fit->CHAR_ID)
-    <div class="row mt-5">
-        <div class="card card-body border-danger shadow-sm text-center mt-3">
-            <div class="mb-0">
-                <h5 class="font-weight-bold">Fit settings</h5>
-                <p class="mb-0">You submitted this fit so you can delete it or modify its privacy. If you would like to modify it, please delete this an create a new one instead.</p>
-                <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="text-danger">Delete fit</a> &centerdot;
-                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'public'])}}" class="">Set privacy to 'Public'</a> &centerdot;
-                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'incognito'])}}" class="">Set privacy to 'Anonym'</a> &centerdot;
-                <a href="{{route("fit.change_privacy", ['id' => $fit->ID, 'privacySetting' => 'private'])}}" class="">Set privacy to 'Private'</a>
-            </div>
-        </div>
-    </div>
-    @endif
+
 @endsection
 @section("styles")
-    <style>
-        .table-sm td, .table-sm th {
-            padding: .1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="{{asset("css/fit-only.css")}}">
 @endsection
 @section("scripts")
     {!! $popularity->script() !!}
     {!! $loots->script() !!}
-{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>--}}
-{{--    <script>--}}
-{{--        $(function () {--}}
-{{--            $('.inline-pie').sparkline('html', {--}}
-{{--                type: 'pie',--}}
-{{--                sliceColors: ['#78b7aa', 'rgba(0,0,0,0)'],--}}
-{{--                disableInteraction: true--}}
-{{--            });--}}
-{{--            $('.inline-pie').animate({'opacity': 1}, 1500);--}}
-{{--        });--}}
-{{--    </script>--}}
+    <script src="{{asset('js/fit.js')}}" type="text/javascript"></script>
 @endsection

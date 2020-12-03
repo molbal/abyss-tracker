@@ -4,6 +4,9 @@
 @import 'variables';
 $tab-active-color: #212529;
 $tab-active-bg: #fff;
+$callout-background: #f4f4f4;
+$text-strongest: #000;
+$text-muted: #565656;
 
 $footer-up-bg: #333;
 $footer-down-bg: #444;
@@ -24,6 +27,8 @@ $footer-down-bg: #444;
 @import "steps";
 @import "all_styles";
 @import "white_only";
-//@import "jquery.inputpicker";
+@import "msform-steps";
 @import "select2";
 @import "~toastify-js/src/toastify.css";
+
+@import "new-fit";

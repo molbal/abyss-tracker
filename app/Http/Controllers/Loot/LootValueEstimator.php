@@ -248,7 +248,6 @@
             $item = json_decode($response->getBody()->getContents());
 
             if ($item->error != false) {
-                dd("error: ", $item);
                 throw new RemoteAppraisalToolException("EVE Workbench returned an error: " . $item->message);
             }
             if ($item->resultCount == 0) {

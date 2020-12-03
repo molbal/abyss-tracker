@@ -56,19 +56,19 @@
                 $shipName = explode(",", explode("[", $first,2)[1], 2)[0];
                 $eftObj->setShipId($this->getItemID($shipName));
             } catch (\Exception $e) {
-                throw new MalformedEFTException("Could not extract ship name or ID from line <$shipName>: ".$e->getMessage());
+                throw new MalformedEFTException("Could not extract ship name or ID from line [".($shipName ?? 'Unknown shipName')."]: ".$e->getMessage());
             }
             try {
                 $fitName = explode("]", explode(",", $first, 2)[1])[0];
                 $eftObj->setFitName($fitName);
             } catch (\Exception $e) {
-                throw new MalformedEFTException("Could not extract fit name from line <$fitName>: ".$e->getMessage());
+                throw new MalformedEFTException("Could not extract fit name from line [".($fitName ?? 'Unknown fitName')."]: ".$e->getMessage());
             }
 
             $eftLines = collect([]);
 
             foreach ($lines as $line) {
-                Log::info("Processing <$line>");
+//                Log::info("Processing <$line>");
                 $line = trim($line);
                 if ($line == "") continue;
                 $eftLine = new EftLine();

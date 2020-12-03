@@ -16,7 +16,7 @@ return [
 	|
 	*/
 
-	'enable' => false,//env('CLOCKWORK_ENABLE', null),
+	'enable' => true,//env('CLOCKWORK_ENABLE', null),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -244,7 +244,7 @@ return [
 	|
 	*/
 
-	'storage_expiration' => env('CLOCKWORK_STORAGE_EXPIRATION', 60 * 24 * 7),
+	'storage_expiration' => env('CLOCKWORK_STORAGE_EXPIRATION', 60),
 
 	/*
 	|--------------------------------------------------------------------------

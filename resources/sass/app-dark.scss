@@ -3,6 +3,9 @@
 $body-bg: #030303;
 $tab-active-color: #fff;
 $tab-active-bg: #212529;
+$text-strongest: #fff;
+$text-muted-2: #9b9b9b;
+$callout-background: #2a2f35;
 
 $footer-up-bg: #0f1113;
 $footer-down-bg: #191d21;
@@ -27,3 +30,5 @@ $footer-down-bg: #191d21;
 @import "simplemde-dark-base";
 @import "select2";
 @import "~toastify-js/src/toastify.css";
+@import "msform-steps";
+@import "new-fit";

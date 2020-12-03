@@ -5,6 +5,7 @@
 
     use App\Helpers\ConversationCache;
     use App\Http\Controllers\Controller;
+    use http\Client\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -33,8 +34,20 @@
             ]]);
 
             return Socialite::driver('eveonline')
-                ->setScopes(explode(' ', config("tracker.scoped.client_scopes")))
-                ->redirect();
+                            ->setScopes(explode(' ', config("tracker.scoped.client_scopes")))
+                            ->redirect();
+        }
+
+        public function redirectToMailProvider() {
+            config(['services.eveonline' => [
+                'client_id'     => config("tracker.mail-scope.client_id"),
+                'client_secret' => config("tracker.mail-scope.client_secret"),
+                'redirect'      => config("tracker.mail-scope.redirect"),
+            ]]);
+
+            return Socialite::driver('eveonline')
+                            ->setScopes(explode(' ', config("tracker.mail-scope.client_scopes")))
+                            ->redirect();
         }
 
         /**
@@ -110,6 +123,32 @@
                 \session()->put("login_id", $id);
                 \session()->put("login_name", $name);
                 return redirect(route("new"));
+            }
+            catch (\Exception $e) {
+                return view('error', ["error" => "The EVE API had an error: " . ($e->getMessage() ?? 'No error message provided by ESI') . " - if you try logging in again it will probably work."]);
+            }
+        }
+
+
+        /**
+         * Obtain the user information from Eve Online.
+         *
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         */
+        public function handleMailProviderCallback() {
+            try {
+
+                config(['services.eveonline' => [
+                    'client_id'     => config("tracker.mail-scope.client_id"),
+                    'client_secret' => config("tracker.mail-scope.client_secret"),
+                    'redirect'      => config("tracker.mail-scope.redirect"),
+                ]]);
+
+                /** @var User $user */
+                $user = Socialite::driver('eveonline')->user();
+
+                dd($user);
+
             }
             catch (\Exception $e) {
                 return view('error', ["error" => "The EVE API had an error: " . ($e->getMessage() ?? 'No error message provided by ESI') . " - if you try logging in again it will probably work."]);

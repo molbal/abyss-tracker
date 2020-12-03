@@ -7,8 +7,10 @@
 	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
+    use App\Http\Controllers\Loot\ValueEstimator\BulkItemEstimator\IBulkItemEstimator;
     use App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\ISingleItemEstimator;
 //    use DebugBar\DebugBar;
+    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -37,14 +39,11 @@
         public function getFromTypeId(int $typeId): ?ItemObject {
             if ($typeId == 0) return null;
             try {
-//                \debugbar()->startMeasure("Appraisal for $typeId");
                 $dto = Cache::remember("app.ipc.".$typeId, now()->addMinute(), function() use ($typeId) {
-                   return  $this->appraise($typeId);
+                   return $this->appraise($typeId);
                 });
-//                \debugbar()->stopMeasure("Appraisal for $typeId");
             }
             catch (RemoteAppraisalToolException $exc) {
-                \debugbar()->warning("Could not appraise typeId $typeId ".$exc->getMessage());
                 Log::channel("itempricecalculator")->warning("Could not appraise typeId $typeId ".$exc->getMessage()."\n".$exc->getTraceAsString());
                 $dto = null;
             }
@@ -103,44 +102,71 @@
             }
         }
 
+        public function appraiseBulk(Collection $listOfTypeIds): Collection {
+            $strListofIds = $listOfTypeIds->implode(",");
+            return Cache::remember("aft.bulkestimator.".md5($strListofIds), now()->addMinutes(30), function() use ($listOfTypeIds) {
+                $estimators = $this->getBulkItemEstimators();
+                foreach ($estimators as $i => $estimator) {
+
+                    /** @var IBulkItemEstimator $estimatorImpl */
+                    $estimatorImpl = resolve($estimator, ["listOfTypeIds" => $listOfTypeIds]);
+
+                    try {
+                        return $estimatorImpl->getPrices();
+                    }
+                    catch (RemoteAppraisalToolException $retex) {
+                        Log::channel("itempricecalculator")->warning("BULK RemoteAppraisalToolException: Error while calculating typeId ".$listOfTypeIds->implode(",").": ".$retex->getMessage()."\n".$retex->getTraceAsString());
+                    }
+                    catch (\Exception $retex) {
+                        Log::channel("itempricecalculator")->error("BULK Unexpected exception: Error while calculating typeId ".$listOfTypeIds->implode(",").": ".$retex->getMessage()."\n".$retex->getTraceAsString());
+                    } finally {
+                        return collect([]);
+                    }
+                }
+            });
+        }
+
         /**
          * @param int $typeId
          *
          * @return ItemObject
          */
         private function appraise(int $typeId): ?ItemObject {
-            $estimators = $this->getSingleItemEstimators();
-            foreach ($estimators as $i => $estimator) {
+            return Cache::remember('tracker.cache.id.'.$typeId, now()->addMinute(), function() use ($typeId) {
 
-                /** @var ISingleItemEstimator $estimatorImpl */
-                $estimatorImpl = resolve($estimator, ["typeId" => $typeId]);
+                $estimators = $this->getSingleItemEstimators();
+                foreach ($estimators as $i => $estimator) {
 
-                try {
-                    $itemObj = $estimatorImpl->getPrice();
+                    /** @var ISingleItemEstimator $estimatorImpl */
+                    $estimatorImpl = resolve($estimator, ["typeId" => $typeId]);
 
-                    if ($itemObj != null) {
+                    try {
+                        $itemObj = $estimatorImpl->getPrice();
 
-                        if ($itemObj->getAveragePrice() == 0 && stripos($itemObj->getName(), "blueprint") === false) {
-                            continue;
+                        if ($itemObj != null) {
+
+                            if ($itemObj->getAveragePrice() == 0 && stripos($itemObj->getName(), "blueprint") === false) {
+                                continue;
+                            }
+
+                            if ($i>0) {
+                                $this->updateItemPricesTable($itemObj);
+                            }
+
+                            Cache::put("aft.singleitemestimator." . $typeId, now()->addMinutes(30), $itemObj->serialize());
+                            return $itemObj;
                         }
-
-                        if ($i>0) {
-                            $this->updateItemPricesTable($itemObj);
-                        }
-
-                        Cache::put("aft.singleitemestimator." . $typeId, now()->addMinutes(30), $itemObj->serialize());
-                        return $itemObj;
+                    }
+                    catch (RemoteAppraisalToolException $retex) {
+                        Log::channel("itempricecalculator")->warning("RemoteAppraisalToolException: Error while calculating typeId ".$typeId.": ".$retex->getMessage()."\n".$retex->getTraceAsString());
+                    }
+                    catch (\Exception $retex) {
+                        Log::channel("itempricecalculator")->error("Unexpected exception: Error while calculating typeId ".$typeId.": ".$retex->getMessage()."\n".$retex->getTraceAsString());
                     }
                 }
-                catch (RemoteAppraisalToolException $retex) {
-                    Log::channel("itempricecalculator")->warning("RemoteAppraisalToolException: Error while calculating typeId ".$typeId.": ".$retex->getMessage()."\n".$retex->getTraceAsString());
-                }
-                catch (\Exception $retex) {
-                    Log::channel("itempricecalculator")->error("Unexpected exception: Error while calculating typeId ".$typeId.": ".$retex->getMessage()."\n".$retex->getTraceAsString());
-                }
-            }
 
-            return null;
+                return null;
+            });
         }
 
         /**
@@ -148,12 +174,11 @@
          * @return array
          */
         private function getSingleItemEstimators() {
-            return [
-              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\CacheSingleItemEstimator',
-              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\ItemPriceTableSingleItemEstimator',
-              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\FuzzworkMarketDataSingleItemEstimator',
-              'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\EveWorkbenchSingleItemEstimator'
-            ];
+            return config('tracker.market.estimators.single-item');
+        }
+
+        protected function getBulkItemEstimators() {
+            return config('tracker.market.estimators.bulk');
         }
 
 	}

@@ -37,7 +37,7 @@ class NewRunRequest extends FormRequest
             'PUBLIC'   => 'required',
             'vessel'   => 'required',
             'RUN_DATE' => 'required|date',
-            'KILLMAIL' => 'nullable|regex:/https?:\/\/zkillboard\.com\/kill\/\d+\/?/m',
+            'KILLMAIL' => 'nullable|regex:'.config('tracker.verification.zkillboard', '/https?:\/\/zkillboard\.com\/kill\/\d+\/?$/m'),
             'RUN_LENGTH_M' => 'nullable|numeric|min:0|max:20',
             'RUN_LENGTH_S' => 'nullable|numeric|min:0|max:59',
         ];

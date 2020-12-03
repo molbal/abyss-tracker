@@ -40,6 +40,8 @@
             /** @var \App\Http\Controllers\EFT\Tags\TagsController $tags */
             $tags = resolve("\App\Http\Controllers\EFT\Tags\TagsController");
             $tags->applyTags($id, DB::table("fits")->where("ID", $id)->value("RAW_EFT"), $data);
+
+            FitHistoryController::addEntry($id, "Fit stats calculation finished.");
             return [true];
         }
 	}

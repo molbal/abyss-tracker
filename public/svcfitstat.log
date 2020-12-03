@@ -1,6 +1,6 @@
-*   Trying 172.67.147.215:443...
+*   Trying 104.27.145.139:443...
 * TCP_NODELAY set
-* Connected to svcfitstat.eve-nt.uk (172.67.147.215) port 443 (#0)
+* Connected to svcfitstat.eve-nt.uk (104.27.145.139) port 443 (#0)
 * ALPN, offering h2
 * ALPN, offering http/1.1
 * successfully set certificate verify locations:
@@ -10,29 +10,29 @@
 * ALPN, server accepted to use h2
 * Server certificate:
 *  subject: C=US; ST=CA; L=San Francisco; O=Cloudflare, Inc.; CN=sni.cloudflaressl.com
-*  start date: Jan 31 00:00:00 2020 GMT
-*  expire date: Oct  9 12:00:00 2020 GMT
+*  start date: Aug 14 00:00:00 2020 GMT
+*  expire date: Aug 14 12:00:00 2021 GMT
 *  subjectAltName: host "svcfitstat.eve-nt.uk" matched cert's "*.eve-nt.uk"
-*  issuer: C=US; ST=CA; L=San Francisco; O=CloudFlare, Inc.; CN=CloudFlare Inc ECC CA-2
+*  issuer: C=US; O=Cloudflare, Inc.; CN=Cloudflare Inc ECC CA-3
 *  SSL certificate verify ok.
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x1e80a2b17d0)
+* Using Stream ID: 1 (easy handle 0x2485e99b320)
 > POST /api/calculate/async HTTP/2
 Host: svcfitstat.eve-nt.uk
 accept: */*
-content-length: 941
+content-length: 915
 content-type: application/x-www-form-urlencoded
 
 * We are completely uploaded and fine
 * old SSL session ID is stale, removing
 * Connection state changed (MAX_CONCURRENT_STREAMS == 256)!
 < HTTP/2 200 
-< date: Wed, 10 Jun 2020 19:38:27 GMT
+< date: Mon, 30 Nov 2020 14:34:45 GMT
 < content-type: application/json
-< set-cookie: __cfduid=d13bca15de967573cd551601b784d213d1591817906; expires=Fri, 10-Jul-20 19:38:26 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
-< x-powered-by: PHP/7.4.6
+< set-cookie: __cfduid=db44ca2c404c6ca9a10f1a5314e5cfe701606746884; expires=Wed, 30-Dec-20 14:34:44 GMT; path=/; domain=.eve-nt.uk; HttpOnly; SameSite=Lax
+< x-powered-by: PHP/7.4.12
 < cache-control: private, must-revalidate
 < pragma: no-cache
 < expires: -1
@@ -40,9 +40,11 @@ content-type: application/x-www-form-urlencoded
 < x-ratelimit-remaining: 59
 < x-powered-by: PleskLin
 < cf-cache-status: DYNAMIC
-< cf-request-id: 034156c2580000d41b661ad200000001
+< cf-request-id: 06bb2ce1bd0000047e7d8e4000000001
 < expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+< report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report?s=X8ETZzd3D2VFgDxiT%2BkhTakGf1vEX5uZEc1VsjCsdTrqLND7bbvfsbDUpDznJwigBv%2BpwR2LnfyHch7FqhtMJKF4Ms4gPpgbsS0rKpkpPkZqPl2p2w%3D%3D"}],"group":"cf-nel","max_age":604800}
+< nel: {"report_to":"cf-nel","max_age":604800}
 < server: cloudflare
-< cf-ray: 5a158d7d58d8d41b-BUD
+< cf-ray: 5fa54a7c6e19047e-CDG
 < 
 * Connection #0 to host svcfitstat.eve-nt.uk left intact

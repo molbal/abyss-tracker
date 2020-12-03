@@ -84,24 +84,24 @@
 		}
 
 
-		/**
-		 * Makes a POST call to ESI with authentication
-		 *
-		 * @param int    $charId
-		 * @param string $fullPath
-		 * @param string $requestBody
-		 * @param bool   $jsonReply Set to true if the expected response is JSON
-		 *
-		 * @return mixed
-		 * @throws \Exception
-		 */
-		protected function simplePost(?int $charId, string $fullPath, string $requestBody, bool $jsonReply = true)
+        /**
+         * Makes a POST call to ESI with authentication
+         *
+         * @param int|null $charId
+         * @param string   $fullPath
+         * @param string   $requestBody
+         * @param bool     $jsonReply Set to true if the expected response is JSON
+         *
+         * @return mixed
+         * @throws \Exception
+         */
+		protected function simplePost(?int $charId, string $fullPath, string $requestBody, bool $jsonReply = true, $tokenMail = false)
 		{
 
 			$curl = curl_init();
 
 			if ($charId) {
-				$tokenController = new ESITokenController($charId);
+				$tokenController = new ESITokenController($charId, $tokenMail);
 				$accessToken = $tokenController->getAccessToken();
 			}
 			curl_setopt_array($curl, [
@@ -113,7 +113,6 @@
                 CURLOPT_POSTFIELDS => $requestBody
 			]);
 			$ret = curl_exec($curl);
-//			dd($requestBody, $ret);
 			curl_close($curl);
 
 			if ($jsonReply) {

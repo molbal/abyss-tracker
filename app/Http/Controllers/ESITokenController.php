@@ -15,13 +15,18 @@
         /** @var int EVE Character ID */
         protected $charId;
 
+        /** @var bool */
+        protected $tokenMail;
+
         /**
          * ESITokenController constructor.
          *
-         * @param int $charId
+         * @param int  $charId
+         * @param bool $tokenMail
          */
-        public function __construct(int $charId) {
+        public function __construct(int $charId, bool $tokenMail = false) {
             $this->charId = $charId;
+            $this->tokenMail = $tokenMail;
         }
 
 
@@ -54,10 +59,20 @@
                 'grant_type' => "refresh_token",
                 'refresh_token' => $this->getRefreshToken()
             ]));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                "Content-Type:application/json",
-                "Authorization:Basic ".base64_encode(config('tracker.scoped.client_id').":".config('tracker.scoped.client_secret'))
-            ]);
+
+            if ($this->tokenMail) {
+                Log::info("Using MAIL refresh token");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "Content-Type:application/json",
+                    "Authorization:Basic ".base64_encode(config('tracker.mail-scope.client_id').":".config('tracker.mail-scope.client_secret'))
+                ]);
+            }
+            else {
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "Content-Type:application/json",
+                    "Authorization:Basic ".base64_encode(config('tracker.scoped.client_id').":".config('tracker.scoped.client_secret'))
+                ]);
+            }
 
             curl_setopt($ch,CURLOPT_VERBOSE ,true);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -74,22 +89,22 @@
             curl_close($ch);
 
             if (!$esiResponse) {
-                Log::error("Could not get access token!");
+                Log::error("Could not get access token - empty ESI response.");
                 return null;
             }
 
             /** @var array $esiResponseDecoded */
             $esiResponseDecoded = @json_decode($esiResponse, true);
-            /** @var int $expiresInMinutes */
-            $expiresInMinutes = max(floor(($esiResponseDecoded["expires_in"] ?? 0)/60)-1, 1);
             /** @var string $newAccessToken */
             $newAccessToken = $esiResponseDecoded["access_token"] ?? null;
 
             if (!$newAccessToken) {
+
+                Log::error("Could not get auth token for char ID ".$this->charId." ".print_r($esiResponse, 1));
                 throw new ESIAuthException("Could not get auth token for char ID ".$this->charId);
             }
             Cache::forget("AccessToken-".$this->charId);
-            Cache::put("AccessToken-".$this->charId, $newAccessToken, now()->addMinutes($expiresInMinutes));
+            Cache::put("AccessToken-".$this->charId, $newAccessToken, now()->addSeconds(intval($esiResponseDecoded["expires_in"])-15));
             return $newAccessToken;
         }
 

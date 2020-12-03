@@ -20,6 +20,13 @@ tr, td {
     animation: rotating 2s linear infinite;
 }
 
+.btn:hover:not([disabled]) {
+    @extend .shadow
+}
+
+.modal-backdrop {
+    backdrop-filter: blur(10px);
+}
 
 * {
     font-family: 'Shentox 13';
@@ -293,4 +300,11 @@ ul.pagination {
 
 .select2-results__option--highlighted[aria-selected] {
     background-color: #0f1113 !important;
+}
+
+
+.nav-tabs .nav-link {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.8rem
 }

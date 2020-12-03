@@ -66,8 +66,8 @@
      */
     Route::get("/ships/", 'ShipsController@get_all')->name("ships_all");
     Route::get("/ship/{id}", 'ShipsController@get_single')->name("ship_single");
-    Route::get("/fits/new", 'FitsController@new')->name("fit_new")->middleware("sso");
-    Route::post("/fits/new/submit", 'FitsController@new_store')->name("fit_new_store")->middleware("sso");
+    Route::get("/fits/new-or-update/{id?}", 'FitsController@new')->name("fit_new")->middleware("sso");
+    Route::any("/fits/new-do/submit", 'FitsController@new_store')->name("fit_new_store")->middleware("sso");
     Route::get("/fit/{id}/delete", 'FitsController@delete')->name('fit.delete')->middleware("sso");
     Route::get("/fit/{id}/change-privacy/{privacySetting}", 'FitsController@changePrivacy')->name('fit.change_privacy')->middleware("sso");
     Route::get("/fit/{id}", 'FitsController@get')->name('fit_single');
@@ -75,8 +75,16 @@
     Route::get("/fits/mine", 'FitSearchController@mine')->name("fit.mine")->middleware("sso");
     Route::any("/fits/search", 'FitSearchController@search')->name("fit.search");
     Route::post("/fits/search/ajax", 'FitSearchController@searchAjax')->name("fit.search.ajax");
+    Route::post("/fits/update/description", 'FitsController@updateDescription')->name("fit.update.description")->middleware("sso");
+    Route::get("/fits/update/last_patch/{id}/{status}", 'FitsController@updateLastPatch')->name("fit.update.last-patch")->middleware("sso");
     Route::get("/fits/search/select/{shipId}/{nameOrId?}", 'FitSearchController@getFitsForNewRunDropdown')->name("fit.search.select");
     Route::get("/fits/newrun/select", 'FitSearchController@getIntegratedTypeList')->name("fit.newrun.select")->middleware("sso");
+
+    /**
+     * Fit questions and answers
+     */
+    Route::post('/fit/questions/new', 'FitQuestionsController@postQuestion')->name('fit.questions.new')->middleware('sso');
+    Route::post('/fit/questions/answer', 'FitQuestionsController@postAnswer')->name('fit.questions.answer')->middleware('sso');
 
     /**
      * Item check
@@ -101,6 +109,8 @@
     Route::get("/api/chart/run/distribution/{tier}/{isCruiser}/{thisRun}", 'GraphHelper@getRunBellGraphs')->name("chart.run.averages");
     Route::get("/api/chart/run/distribution/cruisers", 'GraphHelper@getHomeRunBellGraphsCruisers')->name("chart.home.distribution.cruisers");
     Route::get("/api/chart/run/distribution/frigates", 'GraphHelper@getHomeRunBellGraphsFrigates')->name("chart.home.distribution.frigates");
+    Route::get("/api/chart/fit/popularity/{ids}/{name}", 'GraphHelper@getFitPopularityChart')->name("chart.fit.popularity");
+    Route::get("/api/chart/fit/loot-strategy/{ids}", 'GraphHelper@getFitLootStrategyChart')->name("chart.fit.loot-strategy");
 
     /**
      * Search routes
@@ -129,6 +139,8 @@
     Route::get("/eve/auth/callback", 'Auth\AuthController@handleProviderCallback');
     Route::get("/eve/scoped/auth/start", 'Auth\AuthController@redirectToScopedProvider')->name("auth-scoped-start");
     Route::get("/eve/scoped/auth/callback", 'Auth\AuthController@handleScopedProviderCallback');
+    Route::get("/eve/mail-scoped/auth/start", 'Auth\AuthController@redirectToMailProvider')->name("auth-mail-start");
+    Route::get("/eve/mail-scoped/auth/callback", 'Auth\AuthController@handleMailProviderCallback');
     Route::get("/logout", 'Auth\AuthController@logout')->name("logout");
 
     /**

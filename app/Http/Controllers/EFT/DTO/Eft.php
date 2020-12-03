@@ -4,12 +4,14 @@
 	namespace App\Http\Controllers\EFT\DTO;
 
 
-	use App\Http\Controllers\EFT\Exceptions\FitNotFoundException;
+	use App\Connector\EveAPI\Universe\ResourceLookupService;
+    use App\Http\Controllers\EFT\Exceptions\FitNotFoundException;
     use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Str;
 
     class Eft {
 
@@ -21,6 +23,12 @@
 
 	    /** @var string */
 	    private $fitName;
+
+	    /** @var FitHelper */
+	    private $fitHelper;
+
+	    /** @var ItemPriceCalculator */
+	    private $priceEstimator;
 
         /**
          * @return Collection
@@ -45,6 +53,12 @@
          */
         public function getShipId() : int {
             return $this->shipId;
+        }
+
+        public function getShipName(): string {
+            /** @var ResourceLookupService $resouceLookupService */
+            $resouceLookupService = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+            return $resouceLookupService->generalNameLookup($this->getShipId());
         }
 
         /**
@@ -74,6 +88,10 @@
             $this->fitName = $fitName;
 
             return $this;
+        }
+
+        public function canGoToAbyss() {
+            return DB::table("ship_lookup")->where('ID', $this->shipId)->exists();
         }
 
         /**
@@ -124,20 +142,43 @@
             return $eft;
         }
 
+        /**
+         * @return FitHelper
+         */
+        public function getFitHelper() : FitHelper {
+            if ($this->fitHelper == null) {
+                $this->fitHelper = resolve('App\Http\Controllers\EFT\FitHelper');
+            }
+            return $this->fitHelper;
+        }
+
+
+
         public function getStructuredDisplay() {
             $struct = ['high' => [], 'mid' => [], 'low' => [], 'rig' => [], 'drone' => [], 'ammo' => [], 'cargo' => [], 'booster' => [], 'implant' => []];
             /** @var FitHelper $helper */
-            $helper = resolve('App\Http\Controllers\EFT\FitHelper');
             foreach ($this->lines as $line) {
                 /** @var EftLine $line */
                 try {
-                    $struct[$helper->getItemSlot($line->getTypeId())][] = $line;
+                    $struct[$this->getFitHelper()->getItemSlot($line->getTypeId())][] = $line;
                 } catch (\Exception $e) {
                     $struct['cargo'][] = $line;
                 }
             }
             return $struct;
         }
+
+        /**
+         * @return ItemPriceCalculator
+         */
+        public function getPriceEstimator() : ItemPriceCalculator {
+            if ($this->priceEstimator == null) {
+                $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+            }
+            return $this->priceEstimator;
+        }
+
+
 
 
         /**
@@ -147,9 +188,7 @@
         public function getFitValue():int {
             $value = $this->getItemsValue();
 
-            /** @var ItemPriceCalculator $priceEstimator */
-            $priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
-            $itemObject = $priceEstimator->getFromTypeId($this->getShipId());
+            $itemObject = $this->getPriceEstimator()->getFromTypeId($this->getShipId());
             if ($itemObject) {
                 $value += $itemObject->getAveragePrice();
             }
@@ -162,18 +201,38 @@
          * @return float|int
          */
         public function getItemsValue() {
-            $value =  0;
+            $itemsValue = 0;
 
-            /** @var ItemPriceCalculator $priceEstimator */
-            $priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
-            /** @var EftLine $line */
-            foreach ($this->lines as $line) {
-                $itemObject = $priceEstimator->getFromTypeId($line->getTypeId());
+            $typeIds = $this->lines->map(function( /** @var $item EftLine */ $item) {
+                return $item->getTypeId();
+            })->unique();
+
+            $prices = $this->getPriceEstimator()->appraiseBulk($typeIds);
+
+            $this->lines->transform(function ($line) use (&$itemsValue, $prices) {
+                /** @var EftLine $line */
+                $itemObject = $prices->filter(function ($item) use ($line) {
+                    return $line->getTypeId() == $item->getTypeId();
+                })->first();
+
                 if ($itemObject) {
-                    $value += $itemObject->getAveragePrice();
+                    $itemsValue += $itemObject->getAveragePrice();
+                    $line->setAveragePrice(intval($itemObject->getAveragePrice()));
                 }
-            }
+                return $line;
 
-            return $value;
+            });
+
+            return $itemsValue;
+        }
+
+        public function isDefaultName() {
+            $fitName = strval(Str::of($this->getFitName())->upper()->trim());
+            $shipName = Str::upper($this->getShipName());
+
+            return (
+                   $fitName == "SIMULATED $shipName FITTING"
+                || $fitName == "$shipName FIT")
+                || $fitName == $shipName;
         }
     }

@@ -1,7 +1,7 @@
 <?php
     return [
         'maintenance-token' => env('MAINTENANCE_TOKEN'),
-        'version' => '1.7',
+        'version' => '1.8',
         'discord' => 'https://discord.gg/FyNsM5k',
         'submit-tutorial' => 'https://forms.gle/ct4Yc75W4zjbR6Xi7',
         'flag-address' => env('FLAG_ADDRESS'),
@@ -32,6 +32,13 @@
             'client_scopes' => env('EVEONLINE_SCOPED_CLIENT_SCOPES'),
         ],
 
+        'mail-scope' => [
+            'client_id'     => env('EVEONLINE_MAIL_SCOPED_CLIENT_ID'),
+            'client_secret' => env('EVEONLINE_MAIL_SCOPED_CLIENT_SECRET'),
+            'redirect'      => env('EVEONLINE_MAIL_SCOPED_REDIRECT'),
+            'client_scopes' => env('EVEONLINE_MAIL_SCOPED_CLIENT_SCOPES'),
+        ],
+
         'donation-scope' => [
             'client_id' => env("EVEONLINE_DONATION_SCOPED_CLIENT_ID"),
             'client_secret' => env("EVEONLINE_DONATION_SCOPED_CLIENT_SECRET"),
@@ -55,6 +62,18 @@
                 'service-root' => env('EVEWORKBENCH_API_ROOT'),
                 'app-key' =>env('EVEWORKBENCH_API_APP_KEY'),
                 'client-id' =>env('EVEWORKBENCH_API_CLIENT_ID'),
+            ],
+
+            'estimators' => [
+                'single-item' => [
+                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\CacheSingleItemEstimator',
+                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\ItemPriceTableSingleItemEstimator',
+                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\FuzzworkMarketDataSingleItemEstimator',
+                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\EveWorkbenchSingleItemEstimator'
+                ],
+                'bulk' => [
+                    'App\Http\Controllers\Loot\ValueEstimator\BulkItemEstimator\Impl\FuzzworkMarketDataBulkEstimator'
+                ]
             ]
         ],
 
@@ -67,4 +86,24 @@
             'bonus-room' => "T5-BONUS"
         ],
 
+        'verification' => [
+            'zkillboard' => '/https?:\/\/zkillboard\.com\/kill\/\d+\/?$/m',
+            'eveworkbench' => '/https?:\/\/(www.)?eveworkbench.com\/fitting\/[a-z \-]+\/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\/?$/m'
+        ],
+
+        'fit' => [
+            'logs' => [
+                'initial-date' => "2020-11-03"
+            ],
+
+            'patch-status' => [
+                'works' => "success",
+                'untested' => "warning",
+                'deprecated' => "danger"
+            ]
+        ],
+
+        'accountant' => [
+            'char-id' => env('ACCOUNTANT_CHAR_ID', 2117658503)
+        ]
     ];

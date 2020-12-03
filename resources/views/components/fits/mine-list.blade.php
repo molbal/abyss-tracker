@@ -9,7 +9,7 @@
         <div class="col-sm-12" id="results">
             <div class="card card-body border-0 shadow-sm pb-0">
                 <h5 class="font-weight-bold">My fits</h5>
-                <p>Here is a list of all the fits you submitted</p>
+                <p>Here is a list of all the fits you submitted - only fits that already finished stats calculation show up.</p>
                 @component("components.fits.filter.result-list", ["results" => $results, "admin" => true])@endcomponent
             </div>
 {{--            <div class="card-footer">--}}

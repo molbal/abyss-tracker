@@ -1,7 +1,7 @@
 <tr>
     <td style="width: 36px;">
         @if($item->getTypeId())
-            <img src="https://imageserver.eveonline.com/Type/{{$item->getTypeId()}}_32.png" alt="{{$item->getItemName()}} icon" style="width: 32px;height: 32px;">
+            <img src="https://imageserver.eveonline.com/Type/{{$item->getTypeId()}}_64.png" alt="{{$item->getItemName()}} icon" class="fit-item-icon">
         @else
 
         @endif
@@ -9,8 +9,7 @@
     <td>
         {{$item->getItemName() ?? '[Unknown item - typeId: '.$item->getTypeId().']'}}
         @if ($item->hasAmmo())
-            <sub class="bringupper">with <img src="https://imageserver.eveonline.com/Type/{{$item->getAmmoTypeId()}}_32.png" alt="{{$item->getAmmoName()}} icon"
-                                              style="width: 16px;height: 16px;"> {{$item->getAmmoName()}}</sub>
+            <sub class="bringupper">with <img src="https://imageserver.eveonline.com/Type/{{$item->getAmmoTypeId()}}_32.png" alt="{{$item->getAmmoName()}} icon" class="fit-ammo-icon">{{$item->getAmmoName()}}</sub>
         @endif
         @if ($item->getCount() > 1)
             <sub class="bringupper">x{{$item->getCount()}}</sub>

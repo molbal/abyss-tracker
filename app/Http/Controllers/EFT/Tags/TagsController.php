@@ -43,6 +43,14 @@
             return $tags;
         }
 
+        public static function getFitTags(int $fitId) {
+            return DB::table("fit_tags")->where("FIT_ID", $fitId)->where("TAG_VALUE", 1)->select(["TAG_NAME"])->get()->pluck("TAG_NAME")->map(function ($item, $key) {
+
+                return __("tags.".$item);
+            });
+
+        }
+
         /**
          * @return array
          */

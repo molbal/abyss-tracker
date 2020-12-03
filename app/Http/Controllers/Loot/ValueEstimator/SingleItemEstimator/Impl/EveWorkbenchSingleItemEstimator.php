@@ -52,11 +52,9 @@
                 $item = json_decode($response->getBody()
                                              ->getContents());
                 if ($item->error != false) {
-                    dd("error: ", $item);
                     throw new RemoteAppraisalToolException("EVE Workbench returned an error: " . $item->message);
                 }
                 if ($item->resultCount != 1) {
-                    dd("iv res co: ", $item);
                     throw new RemoteAppraisalToolException("EVE Workbench returned an invalid result count: " . $item->resultCount . ", 1 expected.");
                 }
 

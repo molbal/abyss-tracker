@@ -1,0 +1,168 @@
+$counter-size: 25px;
+$msform-border-radius: 1rem;
+$msform-corner-size: 65px;
+$msform-line-gap: 5px;
+$msform-content-color: $text-base;
+
+$step-bg: #F5F3FB;
+$step-100: darken($step-bg, 10%);
+$step-200: darken($step-bg, 20%);
+$step-300: darken($step-bg, 30%);
+$step-400: darken($step-bg, 40%);
+$step-500: darken($step-bg, 50%);
+$step-600: darken($step-bg, 60%);
+$step-700: darken($step-bg, 70%);
+$step-800: darken($step-bg, 80%);
+
+.msform-steps {
+    list-style-type: none;
+    counter-reset: step;
+    padding: 1rem;
+    margin-bottom: 0;
+    //height: 100%;
+
+
+    & > li:before {
+        content: counter(step);
+        counter-increment: step;
+        display: inline-flex;
+        width: $counter-size;
+        height: $counter-size;
+        line-height: $counter-size;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 1.4px solid $text-muted;
+        font-size: 15px;
+        margin-right: 1rem;
+        letter-spacing: 0;
+        @extend .shadow-sm
+    }
+
+    & li {
+        z-index: 2;
+    }
+
+    & > li {
+        color: $text-muted;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+        letter-spacing: 2px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        position: relative;
+
+        &:not(:last-child):not(.is-active):not(.is-completed):after {
+            content: '';
+            position: absolute;
+            top: calc(100% + #{$msform-line-gap});
+            left: 11.5px;
+            width: 2px;
+            height: calc(100% - #{$msform-line-gap * 2});
+            background-color: $text-muted;
+            border-radius: 1px;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &.is-completed {
+            color: $body-color;
+
+            &:not(:last-child):after {
+                content: '';
+                position: absolute;
+                top: calc(100% + #{$msform-line-gap});
+                left: 11.5px;
+                width: 2px;
+                height: calc(100% - #{$msform-line-gap * 2});
+                background-color: $success;
+                border-radius: 1px;
+            }
+
+            a {
+                color: $body-color;
+
+                &:hover {
+                    color: $tab-active-color;
+                    text-decoration: none;
+                }
+            }
+
+            &:before {
+                content: ' ';
+                font-size: 10px;
+                border-color: $green;
+                background-image: url('/_icons/tick-light.svg');
+                background-color: $green;
+                background-position: center;
+                background-repeat: no-repeat;
+                color: $white;
+            }
+        }
+
+        &.is-active {
+            color: $text-strongest;
+
+            &:not(:last-child):after {
+                content: '';
+                position: absolute;
+                top: calc(24px + #{$msform-line-gap});
+                left: 11.5px;
+                width: 2px;
+                height: calc(100% - #{$msform-line-gap * 2});
+                background-color: $text-strongest;
+                border-radius: 1px;
+            }
+
+            &.is-active a {
+                color: $text-strongest;
+            }
+
+            &:before {
+                border-color: $text-strongest;
+            }
+        }
+    }
+}
+
+.msform-steps ul {
+    counter-reset: step;
+    list-style-type: none;
+    margin: 0.5rem 0 0 0;
+    padding: 0 0 0 2.5rem;
+    width: 100%;
+    z-index: 2;
+
+    li {
+        margin-bottom: 0.15rem;
+    }
+
+    & .msform-step-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: $tab-active-color;
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: 0;
+
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &.is-active {
+            font-weight: 700;
+            color: $tab-active-color;
+
+        }
+    }
+}
