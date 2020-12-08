@@ -19,9 +19,9 @@
          * @param Carbon $to
          * @param string $hullSize
          *
-         * @return int
+         * @return ?int
          */
-        public static function getLootForRange(int $tier, string $type, int $fromInt, Carbon $to, string $hullSize) {
+        public static function getLootForRange(int $tier, string $type, int $fromInt, Carbon $to, string $hullSize) : ?int {
 
             $from = (new Carbon($to))->addDays(-$fromInt);
 
@@ -66,7 +66,7 @@ order by r.LOOT_ISK asc
 WHERE
   i.rowindex IN (?,?);", [strval($tier), $hullSize, $type, $from, $to, ceil($rowIndex / 2), intval($rowIndex / 2)])[0]->MEDIAN_ISK;
 
-            return $median ?? 0;
+            return $median ?? null;
 
         }
 
@@ -113,7 +113,9 @@ SELECT a.LI FROM (
 
         /**
          * Gets loot at a distribution threshold
+         *
          * @param int    $tier
+         * @param string $type
          * @param int    $percent
          * @param string $hullSize
          *
@@ -122,17 +124,16 @@ SELECT a.LI FROM (
         public static function getLootAtThresholdWeather(int $tier, string $type, int $percent, string $hullSize) {
 
 
-                $rank = DB::select("
+            $rank = DB::select("
             select count(*) as CNT from runs r WHERE
                           r.LOOT_ISK>0
                       and r.SURVIVED=1
     and r.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
-                      and r.TIER=cast(? as char)
+                      and r.TIER=?
                       and r.TYPE=?;
-            ",
-                    [$hullSize, strval($tier), $type])[0]->CNT;
+            ", [$hullSize, strval($tier), $type])[0]->CNT;
 
-                return DB::select("
+            $ret = DB::select("
 SELECT a.LI FROM (
                       SELECT
                           r.LOOT_ISK as LI,
@@ -142,12 +143,13 @@ SELECT a.LI FROM (
                               r.LOOT_ISK>0 and
                               r.SURVIVED=1 and
                               r.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
-                        and r.TIER=cast(? as char)
+                        and r.TIER=?
                       and r.TYPE=?) a
  WHERE a.RNK=?;
 
-",
-                        [$hullSize, strval($tier), round($rank*$percent*0.01), $type])[0]->LI ?? 0;
+", [$hullSize, strval($tier), $type, round($rank * $percent * 0.01)])[0]->LI ?? 0;
+
+            return $ret;
         }
 
         /**

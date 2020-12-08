@@ -68,9 +68,9 @@
                 set_time_limit(3600);
                 $startDate = $startDate->addDay();
                 $dataset->add([
-                    'median3day' => MedianController::getLootForRange($tier, $type, 3, $startDate, $hullSize),
-                    'median7day' => MedianController::getLootForRange($tier, $type, 7, $startDate, $hullSize),
-                    'median30day' => MedianController::getLootForRange($tier, $type, 30, $startDate, $hullSize)
+                    'median3day' => MedianController::getLootForRange($tier, $type, 3, $startDate, $hullSize) ?? $dataset->last()['median3day'] ?? 0,
+                    'median7day' => MedianController::getLootForRange($tier, $type, 7, $startDate, $hullSize) ?? $dataset->last()['median7day'] ?? 0,
+                    'median30day' => MedianController::getLootForRange($tier, $type, 30, $startDate, $hullSize) ?? $dataset->last()['median30day'] ?? 0
                 ]);
 
             }
