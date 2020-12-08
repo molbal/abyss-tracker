@@ -103,6 +103,10 @@
             ]
         ],
 
+        'historic-loot' => [
+            'from' => "2020-02-01"
+        ],
+
         'accountant' => [
             'char-id' => env('ACCOUNTANT_CHAR_ID', 2117658503)
         ]

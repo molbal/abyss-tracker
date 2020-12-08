@@ -208,7 +208,6 @@
             })->unique();
 
             $prices = $this->getPriceEstimator()->appraiseBulk($typeIds);
-
             $this->lines->transform(function ($line) use (&$itemsValue, $prices) {
                 /** @var EftLine $line */
                 $itemObject = $prices->filter(function ($item) use ($line) {

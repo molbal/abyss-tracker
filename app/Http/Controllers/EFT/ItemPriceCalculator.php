@@ -104,7 +104,7 @@
 
         public function appraiseBulk(Collection $listOfTypeIds): Collection {
             $strListofIds = $listOfTypeIds->implode(",");
-            return Cache::remember("aft.bulkestimator.".md5($strListofIds), now()->addMinutes(30), function() use ($listOfTypeIds) {
+            return Cache::remember("aft.bulkestimators.".md5($strListofIds), now()->addMinutes(30), function() use ($listOfTypeIds) {
                 $estimators = $this->getBulkItemEstimators();
                 foreach ($estimators as $i => $estimator) {
 
@@ -119,9 +119,8 @@
                     }
                     catch (\Exception $retex) {
                         Log::channel("itempricecalculator")->error("BULK Unexpected exception: Error while calculating typeId ".$listOfTypeIds->implode(",").": ".$retex->getMessage()."\n".$retex->getTraceAsString());
-                    } finally {
-                        return collect([]);
                     }
+                    return collect([]);
                 }
             });
         }

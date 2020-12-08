@@ -133,7 +133,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 footer-about">
-                    <img class="logo-footer" src="icon.png" alt="logo-footer">
+                    <img class="logo-footer" src="icon.png" style="width: 96px; height: 96px;" alt="logo-footer">
+                    <img src="partner.png" style="width: 152px; height: 96px;" alt="logo-footer">
                     <p class="text-justify">
                         The Abyss Tracker is a "killboard" for your Abyssal Deadspace runs - you can save your exact loot saved, aggregated and compared with others.
                         <br>

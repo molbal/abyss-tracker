@@ -4,11 +4,72 @@
 	namespace App\Http\Controllers\DS;
 
 
-	use Illuminate\Support\Facades\Cache;
+	use Illuminate\Support\Carbon;
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
 
     class MedianController {
+
+        /**
+         * Gets median loot for
+         * @param int    $tier
+         * @param string $type
+         * @param int $from
+         * @param Carbon $to
+         * @param string $hullSize
+         *
+         * @return int
+         */
+        public static function getLootForRange(int $tier, string $type, int $fromInt, Carbon $to, string $hullSize) {
+
+            $from = (new Carbon($to))->addDays(-$fromInt);
+
+                $rowIndex = DB::select("
+SELECT
+  COUNT(*) + 1 as ROWINDEX
+FROM
+  runs r
+    LEFT JOIN ship_lookup sl on r.SHIP_ID = sl.ID
+WHERE
+          r.LOOT_ISK>0
+      and r.SURVIVED=1
+      and r.TIER=?
+      and sl.HULL_SIZE=?
+      and r.TYPE=?
+      and r.RUN_DATE >=?
+      and r.RUN_DATE <?
+order by r.LOOT_ISK asc
+", [strval($tier), $hullSize, $type, $from, $to])[0]->ROWINDEX;
+
+            $median = DB::select("
+SELECT
+  AVG(i.LOOT_ISK) AS MEDIAN_ISK
+FROM
+  (
+  SELECT
+    r.LOOT_ISK LOOT_ISK,
+    ROW_NUMBER() OVER (ORDER BY r.LOOT_ISK) AS rowindex
+  FROM
+    runs r
+    LEFT JOIN ship_lookup sl on r.SHIP_ID = sl.ID
+WHERE
+          r.LOOT_ISK>0
+      and r.SURVIVED=1
+      and r.TIER=?
+      and sl.HULL_SIZE=?
+      and r.TYPE=?
+      and r.RUN_DATE >=?
+      and r.RUN_DATE <?
+order by r.LOOT_ISK asc
+) as i
+WHERE
+  i.rowindex IN (?,?);", [strval($tier), $hullSize, $type, $from, $to, ceil($rowIndex / 2), intval($rowIndex / 2)])[0]->MEDIAN_ISK;
+
+            return $median ?? 0;
+
+        }
+
 
         /**
          * Gets loot at a distribution threshold

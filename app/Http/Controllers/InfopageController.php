@@ -4,25 +4,95 @@
 	namespace App\Http\Controllers;
 
 
-	use App\Charts\LootTypesChart;
+	use App\Charts\CruiserChart;
+    use App\Charts\DestroyerChart;
+    use App\Charts\FrigateChart;
+    use App\Charts\LootTypesChart;
     use App\Charts\SurvivalLevelChart;
+    use App\Http\Controllers\DS\HistoricLootController;
     use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Validator;
 
     class InfopageController extends Controller {
 
         /** @var FitSearchController */
         private $fitSearchController;
 
+        /** @var HistoricLootController */
+        private $historicLootController;
+
         /**
          * InfopageController constructor.
          *
-         * @param FitSearchController $fitSearchController
+         * @param FitSearchController    $fitSearchController
+         * @param HistoricLootController $historicLootController
          */
-        public function __construct(FitSearchController $fitSearchController) {
+        public function __construct(FitSearchController $fitSearchController, HistoricLootController $historicLootController) {
             $this->fitSearchController = $fitSearchController;
+            $this->historicLootController = $historicLootController;
+        }
+
+
+        public function tierType(int $tier, string $type) {
+
+            $type = ucfirst(strtolower($type));
+            Validator::make(['tier' => $tier, 'type' => $type], [
+                'tier'  => 'required|numeric|exists:tier,TIER',
+                'type' => 'required|exists:type,TYPE'
+            ])->validate();
+
+            $labels = $this->historicLootController->getLabel();
+
+            $cc = new CruiserChart();
+            $cc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => $type, 'hullSize' => ShipHullSize::CRUISER]));
+            $cc->displayAxes(true);
+            $cc->displayLegend(true);
+            $cc->export(true, "Download");
+            $cc->height("300");
+            $cc->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $cc->labels($labels);
+
+            $dc = new DestroyerChart();
+            $dc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => $type, 'hullSize' => ShipHullSize::DESTROYER]));
+            $dc->displayAxes(true);
+            $dc->displayLegend(true);
+            $dc->export(true, "Download");
+            $dc->height("300");
+            $dc->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $dc->labels($labels);
+
+            $fc = new FrigateChart();
+            $fc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => $type, 'hullSize' => ShipHullSize::FRIGATE]));
+            $fc->displayAxes(true);
+            $fc->displayLegend(true);
+            $fc->export(true, "Download");
+            $fc->height("300");
+            $fc->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ]
+            ]);
+            $fc->labels($labels);
+
+            return view('infopages.weather', [
+                'tier' => $tier,
+                'type' => $type,
+
+                'cruiserChart' => $cc,
+                'destroyerChart' => $dc,
+                'frigateChart' => $fc,
+            ]);
         }
 
 

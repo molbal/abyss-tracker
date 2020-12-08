@@ -152,6 +152,8 @@
      * Aggregator routes
      */
     Route::get('/info-page/tier/{tier}', 'InfopageController@tier')->name("infopage.tier");
+    Route::get('/info-page/tier/{tier}/weather/{type}', 'InfopageController@tierType')->name("infopage.tier-type");
+    Route::get('/info-page/weather/chart/{tier}/{type}/{hullSize}', 'DS\HistoricLootController@getChartData')->name('infopage.weather.chart');
 
     /**
      * Maintenance routes
