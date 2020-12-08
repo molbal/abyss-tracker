@@ -24,7 +24,7 @@
          */
         public function getChartData(int $tier, string $type, string $hullSize) {
 
-            return Cache::remember('ao.char-weather-data.%d.%s.%s', now()->addHours(3), function () use ($tier, $type, $hullSize) {
+            return Cache::remember(sprintf('ao.char-weather-data.%d.%s.%s', $tier, $type, $hullSize), now()->addHours(12), function () use ($tier, $type, $hullSize) {
                 /** @var CruiserChart $chart */
                 $chart = resolve('App\Charts\\'.ucfirst($hullSize).'Chart');
 

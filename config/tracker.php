@@ -1,7 +1,7 @@
 <?php
     return [
         'maintenance-token' => env('MAINTENANCE_TOKEN'),
-        'version' => '1.8',
+        'version' => '1.9',
         'discord' => 'https://discord.gg/FyNsM5k',
         'submit-tutorial' => 'https://forms.gle/ct4Yc75W4zjbR6Xi7',
         'flag-address' => env('FLAG_ADDRESS'),

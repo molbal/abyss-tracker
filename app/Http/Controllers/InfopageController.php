@@ -12,6 +12,7 @@
     use App\Http\Controllers\DS\HistoricLootController;
     use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\Misc\Enums\ShipHullSize;
+    use App\Run;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Validator;
@@ -52,6 +53,7 @@
             $cc->displayLegend(true);
             $cc->export(true, "Download");
             $cc->height("300");
+            $cc->theme(ThemeController::getChartTheme());
             $cc->options([
                 'tooltip' => [
                     'trigger' => "axis"
@@ -65,6 +67,7 @@
             $dc->displayLegend(true);
             $dc->export(true, "Download");
             $dc->height("300");
+            $dc->theme(ThemeController::getChartTheme());
             $dc->options([
                 'tooltip' => [
                     'trigger' => "axis"
@@ -78,6 +81,7 @@
             $fc->displayLegend(true);
             $fc->export(true, "Download");
             $fc->height("300");
+            $fc->theme(ThemeController::getChartTheme());
             $fc->options([
                 'tooltip' => [
                     'trigger' => "axis"
@@ -85,10 +89,47 @@
             ]);
             $fc->labels($labels);
 
+
+            list($medianCruiser, $medianDestroyer, $medianFrigate, $atLoCruiser, $atHiCruiser, $atLoDestroyer, $atHiDestroyer, $atLoFrigate, $atHiFrigate) = Cache::remember('ao.runs.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($tier, $type) {
+
+                $medianCruiser = MedianController::getTierTypeMedian($tier,$type, ShipHullSize::CRUISER);
+                $medianDestroyer = MedianController::getTierTypeMedian($tier,$type, ShipHullSize::DESTROYER);
+                $medianFrigate = MedianController::getTierTypeMedian($tier,$type, ShipHullSize::FRIGATE);
+                $atLoCruiser = MedianController::getLootAtThresholdWeather($tier,$type, 20, ShipHullSize::CRUISER);
+                $atHiCruiser = MedianController::getLootAtThresholdWeather($tier, $type,80, ShipHullSize::CRUISER);
+                $atLoDestroyer = MedianController::getLootAtThresholdWeather($tier,$type, 20, ShipHullSize::DESTROYER);
+                $atHiDestroyer = MedianController::getLootAtThresholdWeather($tier,$type, 80, ShipHullSize::DESTROYER);
+                $atLoFrigate = MedianController::getLootAtThresholdWeather($tier,$type, 20, ShipHullSize::FRIGATE);
+                $atHiFrigate = MedianController::getLootAtThresholdWeather($tier,$type, 80, ShipHullSize::FRIGATE);
+
+                return [$medianCruiser, $medianDestroyer, $medianFrigate, $atLoCruiser, $atHiCruiser, $atLoDestroyer, $atHiDestroyer, $atLoFrigate, $atHiFrigate];
+            });
+
+
+
+
+            $count = Cache::remember('at.runs.count.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($type,$tier) {
+                return Run::where('TIER', $tier)->where('TYPE', $type)->count();
+            });
+
             return view('infopages.weather', [
                 'tier' => $tier,
                 'type' => $type,
 
+                'medianCruiser' => $medianCruiser,
+                'medianFrigate' => $medianFrigate,
+                'medianDestroyer' => $medianDestroyer,
+
+                'atLoCruiser' => $atLoCruiser,
+                'atHiCruiser' => $atHiCruiser,
+
+                'atLoFrigate' => $atLoFrigate,
+                'atHiFrigate' => $atHiFrigate,
+
+                'atLoDestroyer' => $atLoDestroyer,
+                'atHiDestroyer' => $atHiDestroyer,
+
+                'count' => $count,
                 'cruiserChart' => $cc,
                 'destroyerChart' => $dc,
                 'frigateChart' => $fc,
