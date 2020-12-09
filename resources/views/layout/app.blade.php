@@ -242,6 +242,11 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86961430-8"></script>
     <script>
+        // jQuery code
+        // Prevent closing from click inside dropdown
+        $(document).on('click', '.dropdown-menu', function (e) {
+            e.stopPropagation();
+        });
         window.dataLayer = window.dataLayer || [];
         function gtag() {
             dataLayer.push(arguments);

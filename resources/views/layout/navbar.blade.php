@@ -7,7 +7,6 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
 {{--            <li class="nav-item">--}}
@@ -17,49 +16,70 @@
             <li class="nav-item">
                 <a class="nav-link {{"search.index" == $currentRoute || "search.do" == $currentRoute ? "active" : ""}}"
                    href="{{route("search.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("search.index" == $currentRoute || "search.index" == $currentRoute)}}/search.png">
-                Search</a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("search.index" == $currentRoute || "search.index" == $currentRoute)}}/search.png">Search</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"item_all" == $currentRoute ? "active" : ""}}"
                    href="{{route("item_all")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("item_all" == $currentRoute)}}/empty-box.png"> Loot table</a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("item_all" == $currentRoute)}}/empty-box.png">Loot table</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"leaderboard.index" == $currentRoute ? "active" : ""}}"
                    href="{{route("leaderboard.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == $currentRoute)}}/trophy.png"> Leaderboard</a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == $currentRoute)}}/trophy.png">Leaderboard</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"ships_all" == $currentRoute ? "active" : ""}}"
                    href="{{route("ships_all")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("ships_all" == $currentRoute)}}/rocket.png"> Ships</a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("ships_all" == $currentRoute)}}/rocket.png">Ships</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"fit.index" == $currentRoute ? "active" : ""}}"
                    href="{{route("fit.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.index" == $currentRoute)}}/job.png"> Fits</a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.index" == $currentRoute)}}/job.png">Fits</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"tutorials.index" == $currentRoute ? "active" : ""}}"
                    href="{{route("tutorials.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("tutorials.index" == $currentRoute)}}/signpost.png"> Tutorials</a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("tutorials.index" == $currentRoute)}}/signpost.png">Tutorials</a>
             </li>
-            <li class="nav-item dropdown {{"infopage.tier" == $currentRoute ? "active" : ""}}" style="list-style: none">
-                <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == $currentRoute)}}/info.png"> Overview</a>
-                </a>
-                <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
-                    @for($i=0;$i<=6;$i++)
-                    <a href="{{route("infopage.tier", ['tier' => $i])}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"> @lang("tiers.$i") <small class="bringupper">(Tier {{ $i }})</small></a>
-                    @endfor
-                </div>
+
+            <li class="nav-item dropdown has-megamenu">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == $currentRoute)}}/info.png">Overview</a></a>
+                <div class="dropdown-menu megamenu fade-down shadow">
+                    <div class="container-fluid">
+                        <div class="row w-100">
+                            <div class="col-lg-2 col-md-6 col-sx-12">
+{{--                                <h6 class="mm-head">Overview pages</h6>--}}
+{{--                                <small class="d-inline-block">These pages aggregate the most needed information on one page: loot, drops, profitability and fits.</small>--}}
+                                <h6 class="mm-head">All weathers</h6>
+                                <ul class="list-unstyled">
+                                @for($i=0;$i<=6;$i++)
+                                        <li><a href="{{route("infopage.tier", ['tier' => $i])}}" class=""><img class="tinyicon mr-2" src="{{asset("tiers/{$i}.png")}}" alt="">@lang("tiers.$i")</a></li>
+                                @endfor
+                                </ul>
+                            </div>
+
+                            @foreach(['Dark','Electrical','Exotic','Firestorm','Gamma'] as $type)
+                                <div class="col-lg-2 col-md-6 col-sx-12">
+                                    <h6 class="mm-head"><img src="{{asset('types/'.$type.'.png')}}" alt="" class="tinyicon mr-1">{{$type}}</h6>
+                                    <ul class="list-unstyled">
+                                    @for($i=0;$i<=6;$i++)
+                                        <li><a href="{{route("infopage.tier-type", ['tier' => $i, 'type' => $type])}}" class=""><img class="tinyicon mr-2" src="{{asset("tiers/{$i}.png")}}" alt="">@lang("tiers.$i")</a></li>
+                                    @endfor
+                                    </ul>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div> <!-- dropdown-mega-menu.// -->
             </li>
             <li class="nav-item dropdown" style="list-style: none">
                 <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/medical-id.png"> Community <sup>({{config("tracker.version")}})</sup></a>
+                    <img src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/medical-id.png">Community <sup>({{config("tracker.version")}})</sup></a>
                 </a>
-                <div class="dropdown-menu shadow animate slideIn" aria-labelledby="newsDropdown">
+                <div class="dropdown-menu fade-down shadow" aria-labelledby="newsDropdown">
                     <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
                     <a href="{{route("donors.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/like.png"> Donations</a>
                     <a href="{{route('community.discord')}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/discord-logo.png"> Join Abyssal Lurkers</a>
@@ -75,7 +95,7 @@
                 <li class="nav-item dropdown" style="list-style: none">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="https://images.evetech.net/characters/{{session()->get("login_id")}}/portrait?size=32" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm" style="border:1px solid #fff;"> {{session()->get('login_name')}}</a>
-                    <div class="dropdown-menu shadow animate slideIn" aria-labelledby="navbarDropdown">
+                    <div class="dropdown-menu fade-down shadow" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item pl-2 {{"new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("new")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == $currentRoute)}}/new-by-copy.png" class="tinyicon mr-1"/>Add run</a>
                         <a class="dropdown-item pl-2 {{"fit_new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("fit_new")}}" ><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit_new" == $currentRoute)}}.png" class="tinyicon mr-1">New fit</a>
                         <a class="dropdown-item pl-2 {{"runs_mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("runs_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs_mine" == $currentRoute)}}/bulleted-list.png" class="tinyicon mr-1"/>My runs</a>

@@ -145,7 +145,7 @@ SELECT a.LI FROM (
                               r.SHIP_ID in (select ID from ship_lookup where HULL_SIZE=?)
                         and r.TIER=?
                       and r.TYPE=?) a
- WHERE a.RNK=?;
+ WHERE a.RNK=?;a
 
 ", [$hullSize, strval($tier), $type, round($rank * $percent * 0.01)])[0]->LI ?? 0;
 

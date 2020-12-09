@@ -162,7 +162,7 @@
                 @component("components.fits.filter.result-list", ["results" => $popularFits])@endcomponent
             </div>
             <div class="card-footer">
-                <a href="{{route("fit.search", ["TIER" => $tier])}}" target="_blank" class="btn btn-outline-secondary">Show more</a>
+                <a href="{{route("fit.search", ["TIER" => $tier])}}" target="_blank" class="text-dark"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/eeeeee/job.png">View more popular fits</a>
             </div>
         </div>
     </div>
@@ -194,7 +194,7 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-start mt-2">
+    <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">Last runs and loot</h4>
         <p>What are the last tier {{$tier}} runs and what loot did they get?</p>
     </div>

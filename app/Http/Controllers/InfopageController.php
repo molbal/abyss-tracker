@@ -57,6 +57,11 @@
             $cc->options([
                 'tooltip' => [
                     'trigger' => "axis"
+                ],
+                'yAxis' =>  [
+                    'axisLabel' => [
+                        'formatter' => '{value} ISK'
+                    ]
                 ]
             ]);
             $cc->labels($labels);
@@ -71,6 +76,11 @@
             $dc->options([
                 'tooltip' => [
                     'trigger' => "axis"
+                ],
+                'yAxis' =>  [
+                    'axisLabel' => [
+                        'formatter' => '{value} ISK'
+                    ]
                 ]
             ]);
             $dc->labels($labels);
@@ -85,9 +95,48 @@
             $fc->options([
                 'tooltip' => [
                     'trigger' => "axis"
+                ],
+                'yAxis' =>  [
+                    'axisLabel' => [
+                        'formatter' => '{value} ISK'
+                    ]
                 ]
             ]);
             $fc->labels($labels);
+
+
+            $runs =  DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->where("TIER", strval($tier))->where('TYPE', $type)->limit(20)->get();
+            $drops = DB::select("SELECT          ip.ITEM_ID,
+                MAX(ip.PRICE_BUY) as PRICE_BUY,
+                MAX(ip.PRICE_SELL) as PRICE_SELL,
+                MAX(ip.NAME) as NAME,
+                MAX(ip.GROUP_NAME) as GROUP_NAME,
+  (SELECT SUM(drci.DROPPED_COUNT)/SUM(drci.RUNS_COUNT)
+   FROM droprates_cache drci
+   WHERE drci.ITEM_ID=ip.ITEM_ID
+     AND drci.TIER=?
+     AND drci.TYPE=?) DROP_CHANCE
+FROM item_prices ip
+LEFT JOIN droprates_cache drc ON ip.ITEM_ID=drc.ITEM_ID
+WHERE drc.TIER=?
+AND drc.TYPE=?
+GROUP BY ip.ITEM_ID
+ORDER BY 6 DESC LIMIT ?;
+", [$tier, $type, $tier,$type, 10]);
+
+            $heroes = Cache::remember("aft.infopage.tier.$tier.$type.people", now()->addMinutes(15), function() use ($tier, $type) {
+                return DB::table("runs")
+                         ->where("runs.TIER", strval($tier))
+                         ->where("runs.TYPE", $type)
+                         ->where("runs.PUBLIC", true)
+                         ->groupBy("runs.CHAR_ID")
+                         ->groupBy("chars.NAME")
+                         ->select(["runs.CHAR_ID", DB::raw("COUNT(runs.ID) as CNT"), "chars.NAME"])
+                         ->orderBy('CNT', "DESC")
+                         ->join("chars", "runs.CHAR_ID","=","chars.CHAR_ID")
+                         ->limit(6)
+                         ->get();
+            });
 
 
             list($medianCruiser, $medianDestroyer, $medianFrigate, $atLoCruiser, $atHiCruiser, $atLoDestroyer, $atHiDestroyer, $atLoFrigate, $atHiFrigate) = Cache::remember('ao.runs.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($tier, $type) {
@@ -106,6 +155,15 @@
             });
 
 
+            $popularFits = Cache::remember("aft.infopage.tier.$tier.$type.fits", now()->addMinutes(15), function() use ($tier, $type) {
+                $query = $this->fitSearchController->getStartingQuery()->where('fit_recommendations.'.strtoupper($type), $tier)->limit(7)->orderByDesc("RUNS_COUNT");
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
+                }
+
+                return $popularFits;
+            });
 
 
             $count = Cache::remember('at.runs.count.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($type,$tier) {
@@ -133,6 +191,12 @@
                 'cruiserChart' => $cc,
                 'destroyerChart' => $dc,
                 'frigateChart' => $fc,
+
+                'runs' => $runs,
+                'drops'=> $drops,
+                'heroes' => $heroes,
+
+                'popularFits' => $popularFits,
             ]);
         }
 

@@ -1,5 +1,5 @@
 @extends("layout.app")
-@section("browser-title", sprintf("%s / %s difficulty overview",__("tiers.".$tier), $type))
+@section("browser-title", sprintf("%s %s difficulty overview",__("tiers.".$tier), $type))
 
 @section("content")
     <div class="d-flex justify-content-between align-items-start mt-3">
@@ -187,6 +187,100 @@
     </div>
 
 
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">Popular fits</h4>
+        <p>What fit shall I use?</p>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold">Most popular @lang("tiers.".$tier) fits</h5>
+                @component("components.fits.filter.result-list", ["results" => $popularFits])@endcomponent
+            </div>
+            <div class="card-footer">
+                <a class="text-dark" href="{{route("fit.search", ["TIER" => $tier, 'TYPE' => $type])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/eeeeee/job.png">View more popular fits</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">The Professionals</h4>
+        <p>Who has completed more tier {{$tier}} {{$type}} runs than anyone else?</p>
+    </div>
+    <div class="row mt-2">
+        @foreach($heroes as $hero)
+            <div class="col-md-4">
+                <div class="card card-body border-0 shadow-sm mb-3">
+                    <div class="row">
+                        <img src="https://images.evetech.net/characters/{{$hero->CHAR_ID}}/portrait?size=64"
+                             class="pull-left ml-2 rounded-circle shadow-sm b2w">
+                        <div class="col">
+                            <h2 class="font-weight-bold mb-0"><a class="text-dark" href="{{route("profile.index", ["id" => $hero->CHAR_ID])}}">{{$hero->NAME}}</a></h2>
+                            <small class="text-muted font-weight-bold">{{number_format($hero->CNT, 0, ","," ")}} @lang("tiers.".$tier) runs</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-body shadow-sm border-0 text-center mb-3">
+                <p class="mb-0">If you have a question you will probably get it answered in the <a class="text-dark" href="{{route('community.discord')}}">Abyssal Lurkers discord</a> or ingame in the <b>Abyssal Lurkers</b> channel.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">Last runs and loot</h4>
+        <p>What are the last tier {{$tier}} {{$type}} runs and what loot did they get?</p>
+    </div>
+    <div class="row mt-2">
+        <div class="col-xs-12 col-sm-8">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Last @lang("tiers.".$tier) runs</h5>
+                <table class="table table-striped table-sm m-0 table-hover table-responsive-sm">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Ship name</th>
+                        <th>Abyss type</th>
+                        <th>Abyss tier</th>
+                        <th class="text-right">Loot value</th>
+                        <th class="text-right" colspan="2">Duration</th>
+                    </tr>
+                    @foreach($runs as $item)
+                        @component("components.runs.row-homepage", ['item' => $item]) @endcomponent
+                    @endforeach
+                </table>
+            </div>
+            <div class="card-footer">
+                <a class="text-dark" href="{{route("search.do", ["tier" => $tier, "type" => $type])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/database.png">View all @lang("tiers.".$tier) {{$type}} runs</a>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Most common @lang("tiers.".$tier) drops</h5>
+                @foreach($drops as $drop)
+                    <div class="d-flex justify-content-start">
+                        <img src="https://imageserver.eveonline.com/Type/{{$drop->ITEM_ID}}_32.png"
+                             style="width: 32px;height: 32px;" class="mr-2" alt="">
+                        <div class="text-left">
+                            <span class="font-weight-bold"><a
+                                    href="{{route("item_single", ["item_id" => $drop->ITEM_ID])}}">{{$drop->NAME}}</a></span><br>
+                            <small>{{number_format($drop->PRICE_BUY, 0, ",", " ")}} ISK
+                                - {{number_format($drop->PRICE_SELL, 0, ",", " ")}} ISK</small><br>
+                            <small>{{round(min(1,$drop->DROP_CHANCE)*100,2)}}% drop chance</small><br>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="card-footer">
+                <a class="text-dark" href="{{route("item_all")}}"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/empty-box.png">View drop table</a>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
