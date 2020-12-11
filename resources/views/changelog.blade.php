@@ -22,6 +22,25 @@
                 <img src="{{asset("home/1.8.jpg")}}" alt="1.8.0 release" class="w-100 shadow">
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                    <h4 class="mb-0 pb-0"><strong>1.9</strong> 'Forecast' release</h4>
+                    <small class="mt-0">2020 november 3</small>
+                    <p class="text-justify">
+                        Feature expansion release
+                    </p>
+                    <ul>
+                        <li>Improves tier overview pages by adding historical values</li>
+                        <li>Adds combined tier+weather overview pages</li>
+                        <li>Little enhancement: Adds tooltip indicator to run views</li>
+                        <li>Little enhancement: Disallows accidentally clicking on submit run buttons multiple times</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="card card-body border-danger shadow-sm mb-3 p-0 overflow-hidden">
+                <img src="{{asset("home/1.8.jpg")}}" alt="1.8.0 release" class="w-100 shadow">
+                <div class="p-3">
+                    <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                     <h4 class="mb-0 pb-0"><strong>1.8</strong> 'Undock' release</h4>
                     <small class="mt-0">2020 november 3</small>
                     <p class="text-justify">
