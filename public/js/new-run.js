@@ -335,6 +335,13 @@ $(function () {
   if (window.advanced_open_) {
     $("#advanced-loot-view").click();
   }
+
+  $(".disable-all-on-click").click(function (e) {
+    var pw = $(this).width();
+    $(this).text('Working...');
+    $(this).width(pw);
+    $(".disable-all-on-click").addClass('disabled').prop('disabled', true);
+  });
 });
 
 /***/ }),

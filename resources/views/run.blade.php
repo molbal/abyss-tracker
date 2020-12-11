@@ -7,7 +7,7 @@
                                                                   title="Loot value compared to median loot of this tier with the same ship size: {{round($percent)}}%">{{$run_summary}}</span>
             Abyssal run</h4>
         <p class="text-right font-italic text-sm mb-0 pb-0">
-            Saved <span data-toggle="tooltip" title="Exact date and time (EVE time): {{$run->CREATED_AT ?? $run->RUN_DATE}}">{{\App\Http\Controllers\TimeHelper::timeElapsedString($run->CREATED_AT ?? $run->RUN_DATE)}}</span>
+            Saved <span data-toggle="tooltip" title="Exact date and time (EVE time): {{$run->CREATED_AT ?? $run->RUN_DATE}}" style="border: 1px dashed #{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}; border-width: 0 0 1px 0">{{\App\Http\Controllers\TimeHelper::timeElapsedString($run->CREATED_AT ?? $run->RUN_DATE)}}</span>
         </p>
     </div>
 
