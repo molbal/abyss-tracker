@@ -137,6 +137,50 @@
             </div>
         </div>
     </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12 col-sm-12">
+            <div class="d-flex justify-content-between align-items-start ">
+                <h4 class="font-weight-bold">Historic loot values</h4>
+                <p>These graphs show how tier {{$tier}} loot worth changes over time.</p>
+            </div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="tab-head-cruiser" data-toggle="tab" href="#tab-graph-cruiser" role="tab" aria-controls="home" aria-selected="true">Cruiser size</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-head-destroyer" data-toggle="tab" href="#tab-graph-destroyer" role="tab" aria-controls="home" aria-selected="true">Destroyer size</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-head-frigate" data-toggle="tab" href="#tab-graph-frigate" role="tab" aria-controls="home" aria-selected="true">Frigate size</a>
+                </li>
+            </ul>
+            <div class="card card-body border-0 shadow-sm top-left-no-round">
+                <div class="tab-content" id="historic-loot-tab-content">
+                    <div class="tab-pane show active" id="tab-graph-cruiser" role="tabpanel" aria-labelledby="tab-head-distribution">
+                        <div class="graph-container h-300px">
+                            <h5><img src="{{\App\Http\Controllers\ThemeController::getShipSizeIconPath(\App\Http\Controllers\Misc\Enums\ShipHullSize::CRUISER)}}" class="smallicon mr-1" />Cruiser size median loot history</h5>
+                            {!! $cruiserChart->container(); !!}
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-graph-destroyer" role="tabpanel" aria-labelledby="tab-graph-destroyer">
+                        <div class="graph-container h-300px">
+                            <h5><img src="{{\App\Http\Controllers\ThemeController::getShipSizeIconPath(\App\Http\Controllers\Misc\Enums\ShipHullSize::DESTROYER)}}" class="smallicon mr-1" />Destroyer size median loot history</h5>
+                            {!! $destroyerChart->container(); !!}
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-graph-frigate" role="tabpanel" aria-labelledby="tab-head-distribution">
+                        <div class="graph-container h-300px">
+                            <h5><img src="{{\App\Http\Controllers\ThemeController::getShipSizeIconPath(\App\Http\Controllers\Misc\Enums\ShipHullSize::FRIGATE)}}" class="smallicon mr-1" />Frigate size median loot history</h5>
+                            {!! $frigateChart->container(); !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">Fits and types</h4>
         <p>What fit shall I use and what types are popular?</p>
@@ -249,6 +293,24 @@
 @section("scripts")
     {!! $chartTypes->script(); !!}
     {!! $chartSurvival->script(); !!}
+    {!! $cruiserChart->script(); !!}
+    {!! $destroyerChart->script(); !!}
+    {!! $frigateChart->script(); !!}
+
+    <script>
+        $(function () {
+
+            $('#tab-head-cruiser').on('shown.bs.tab', function (e) {
+                window.{{$cruiserChart->id}}.resize();
+            });
+            $('#tab-head-destroyer').on('shown.bs.tab', function (e) {
+                window.{{$destroyerChart->id}}.resize();
+            });
+            $('#tab-head-frigate').on('shown.bs.tab', function (e) {
+                window.{{$frigateChart->id}}.resize();
+            });
+        })
+    </script>
 @endsection
 
 @section('styles')

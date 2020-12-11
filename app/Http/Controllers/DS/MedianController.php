@@ -8,20 +8,26 @@
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Facades\Validator;
 
     class MedianController {
 
         /**
          * Gets median loot for
+         *
          * @param int    $tier
          * @param string $type
-         * @param int $from
+         * @param int    $fromInt
          * @param Carbon $to
          * @param string $hullSize
          *
          * @return ?int
          */
         public static function getLootForRange(int $tier, string $type, int $fromInt, Carbon $to, string $hullSize) : ?int {
+
+            Validator::make(['type' => $type], [
+                'type' => 'required|in:Electrical,Dark,Exotic,Firestorm,Gamma,%'
+            ])->validate();
 
             $from = (new Carbon($to))->addDays(-$fromInt);
 
@@ -36,7 +42,7 @@ WHERE
       and r.SURVIVED=1
       and r.TIER=?
       and sl.HULL_SIZE=?
-      and r.TYPE=?
+      and r.TYPE like ?
       and r.RUN_DATE >=?
       and r.RUN_DATE <?
 order by r.LOOT_ISK asc
@@ -58,7 +64,7 @@ WHERE
       and r.SURVIVED=1
       and r.TIER=?
       and sl.HULL_SIZE=?
-      and r.TYPE=?
+      and r.TYPE like ?
       and r.RUN_DATE >=?
       and r.RUN_DATE <?
 order by r.LOOT_ISK asc

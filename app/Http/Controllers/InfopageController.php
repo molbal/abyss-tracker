@@ -223,6 +223,65 @@ ORDER BY 6 DESC LIMIT ?;
             $atHiFrigate = MedianController::getLootAtThreshold($tier, 80, ShipHullSize::FRIGATE);
 
 
+            $labels = $this->historicLootController->getLabel();
+
+            $cc = new CruiserChart();
+            $cc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => '%', 'hullSize' => ShipHullSize::CRUISER]));
+            $cc->displayAxes(true);
+            $cc->displayLegend(true);
+            $cc->export(true, "Download");
+            $cc->height("300");
+            $cc->theme(ThemeController::getChartTheme());
+            $cc->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ],
+                'yAxis' =>  [
+                    'axisLabel' => [
+                        'formatter' => '{value} ISK'
+                    ]
+                ]
+            ]);
+            $cc->labels($labels);
+
+            $dc = new DestroyerChart();
+            $dc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => '%', 'hullSize' => ShipHullSize::DESTROYER]));
+            $dc->displayAxes(true);
+            $dc->displayLegend(true);
+            $dc->export(true, "Download");
+            $dc->height("300");
+            $dc->theme(ThemeController::getChartTheme());
+            $dc->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ],
+                'yAxis' =>  [
+                    'axisLabel' => [
+                        'formatter' => '{value} ISK'
+                    ]
+                ]
+            ]);
+            $dc->labels($labels);
+
+            $fc = new FrigateChart();
+            $fc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => '%', 'hullSize' => ShipHullSize::FRIGATE]));
+            $fc->displayAxes(true);
+            $fc->displayLegend(true);
+            $fc->export(true, "Download");
+            $fc->height("300");
+            $fc->theme(ThemeController::getChartTheme());
+            $fc->options([
+                'tooltip' => [
+                    'trigger' => "axis"
+                ],
+                'yAxis' =>  [
+                    'axisLabel' => [
+                        'formatter' => '{value} ISK'
+                    ]
+                ]
+            ]);
+            $fc->labels($labels);
+
             $lootTypesChart = new LootTypesChart();
             $lootTypesChart->load(route("chart.home.type.tier", ["tier" => $tier]));
             $lootTypesChart->displayAxes(false);
@@ -353,6 +412,12 @@ ORDER BY 6 DESC LIMIT ?;
                 'runs' => $runs,
                 'count' => $count,
                 'drops'=> $drops,
+
+
+                'cruiserChart' => $cc,
+                'destroyerChart' => $dc,
+                'frigateChart' => $fc,
+
 
                 'heroes' => $heroes,
 
