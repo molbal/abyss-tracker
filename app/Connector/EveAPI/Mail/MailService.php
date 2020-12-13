@@ -33,6 +33,7 @@
             $id = $this->simplePost($charId, "characters/$charId/mail/", json_encode($params), false,true);
 
             if ($this->isJson($id) && isset(json_decode($id)->error)) {
+                $this->logError($this->apiRoot."characters/$charId/mail/", "sendMaiItoCharacter failed: ".print_r($id, 1));
                 throw new \Exception("Unable to send email: " . $id->error);
             } else {
                 return $id;

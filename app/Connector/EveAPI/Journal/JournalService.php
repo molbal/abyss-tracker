@@ -35,6 +35,7 @@
             curl_close($ch);
 
             if (!$esiResponse) {
+                $this->logError('https://login.eveonline.com/oauth/token', 'NULL response');
                 return null;
             }
 
@@ -58,6 +59,11 @@
             ]);
             $ret = curl_exec($curl);
             curl_close($curl);
+
+            if (!$ret) {
+                $this->logError($url, 'NULL response');
+                return null;
+            }
 
             $list = json_decode($ret, 1);
             $donators = collect([]);

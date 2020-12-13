@@ -99,7 +99,8 @@
                 return $this->forevercacheGet($stationId);
             }
 
-            $stationName = $this->simpleGet(null, "universe/stations/{$stationId}/")->name;
+            $stationName = $this->simpleGet(null, "universe/stations/{$stationId}/")->name ?? "[unknown station $stationId]";
+
 
             $this->forevercachePut($stationId, $stationName);
             return $stationName;
@@ -125,7 +126,7 @@
             curl_close($ch);
 
             /** @var string $stationName */
-            $stationName = json_decode($ret)->name;
+            $stationName = json_decode($ret)->name ;
 
             $this->forevercachePut($systemId, $stationName);
             return $stationName;
@@ -152,8 +153,8 @@
                 $stationName = json_decode($ret)->name;
             }
             catch (\Exception $e) {
-                //Log::error("Could not get structure name for $structureId - ESI Rsponse: ".$ret);
-                $stationName = "Unknown structure";
+                $this->logError($this->apiRoot . "universe/structures/{$structureId}/", $e->getMessage());
+                $stationName = "[Unknown structure $structureId]";
             }
             return $stationName;
         }
@@ -171,6 +172,7 @@
             if (isset($response->stations)) {
                 $stationId = $response->stations[0]->id;
             } else {
+                $this->logError($this->apiRoot . "universe/ids", "Cannot find the Eve ID number for station [$stationFullName].");
                 throw new \InvalidArgumentException("Cannot find the Eve ID number for this station.");
             }
             return $stationId;
@@ -189,6 +191,7 @@
             if (isset($response->structure)) {
                 $stationId = $response->structure[0]->id;
             } else {
+                $this->logError($this->apiRoot . "universe/ids", "Cannot find the Eve ID number for structure [$fullName].");
                 throw new \InvalidArgumentException("Cannot find the Eve ID number for this structure.");
             }
             return $stationId;
@@ -207,6 +210,7 @@
             if (isset($response->systems[0]->id)) {
                 $systemId = $response->systems[0]->id;
             } else {
+                $this->logError($this->apiRoot . "universe/ids", "Cannot find the Eve ID number for solar system [$fullName].");
                 throw new \InvalidArgumentException("Cannot find the Eve ID number for this ID: $fullName.");
             }
             return $systemId;
@@ -245,7 +249,8 @@
             if (isset($response->inventory_types[0]->id)) {
                 $invType = $response->inventory_types[0]->id;
             } else {
-                Log::warning("Cannot find the Eve ID number for this name: [$fullName]"." response: <".print_r($response, 1).">");
+                $this->logError($this->apiRoot . "universe/ids", "Cannot find the Eve ID number for item [$fullName].");
+//                Log::warning("Cannot find the Eve ID number for this name: [$fullName]"." response: <".print_r($response, 1).">");
                 throw new \InvalidArgumentException("Cannot find the Eve ID number for this name: $fullName");
             }
 
@@ -272,6 +277,7 @@
                     $this->forevercachePut($id, $name);
                     return $name;
                 }
+                $this->logError($this->apiRoot . "universe/names", "Cannot find the name for ID [$id].");
                 throw new \InvalidArgumentException("No item ID with name $id found in ESI");
             });
         }
@@ -286,6 +292,9 @@
         public function getItemInformation(int $id): array {
             return Cache::remember("ast.getItemInformation.$id", now()->addMinute(), function() use ($id) {
                 $resp = $this->simpleGet(null, sprintf("universe/types/%d", $id), true);
+                if (!$resp) {
+                    $this->logError(sprintf("%suniverse/types/%d", $this->apiRoot,$id), "getItemInformation failed for [$id].");
+                }
                 return $resp;
             });
         }
@@ -300,6 +309,9 @@
         public function getCategoryGroups(int $categoryId): array {
             return Cache::remember("ast.getCategoryGroups.$categoryId", now()->addMinute(), function() use ($categoryId) {
                 $resp = $this->simpleGet(null, sprintf("universe/categories/%d", $categoryId), true);
+                if (!$resp) {
+                    $this->logError(sprintf("%suniverse/categories/%d", $this->apiRoot,$categoryId), "getCategoryGroups failed for [$id].");
+                }
                 return $resp["groups"] ?? null;
             });
         }
