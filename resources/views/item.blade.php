@@ -113,12 +113,30 @@
         </div>
     </div>
 
+
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold">Market history</h5>
+                <div class="h-400px graph-container">{{$marketHistory->container()}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold">Market volume history</h5>
+                <div class="h-400px graph-container">{{$volumeHistory->container()}}</div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
 @section("scripts")
-    <script type="text/javascript">
-    </script>
+    {{$marketHistory->script()}}
+    {{$volumeHistory->script()}}
 @endsection
 
 @section("styles")
