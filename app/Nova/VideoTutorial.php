@@ -50,7 +50,7 @@ class VideoTutorial extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             Text::make("Youtube ID", 'youtube_id'),
             Text::make("Name", 'name'),
-            Select::make("Tier", "tier")->options(['1' => '1','2' => '2','3' => '3','4' => '4','5' => '5']),
+            Select::make("Tier", "tier")->options(['0' => '0', '1' => '1','2' => '2','3' => '3','4' => '4','5' => '5', '6' => '6']),
             Select::make("Type", "type")->options(['Electrical' => 'Electrical', 'Dark' => 'Dark', 'Exotic' => 'Exotic', 'Firestorm' => 'Firestorm', 'Gamma' => 'Gamma']),
             Markdown::make("Description",'description')->alwaysShow()->required(true),
             KeyValue::make("Bookmarks", "video_bookmarks"),

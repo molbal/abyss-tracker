@@ -68,6 +68,8 @@
                             On the left side of the ingame fitting window, click the wrench icon. Then at the bottom left of the page click 'Import &amp; Export' then 'Import from clipboard' to import this fit to EVE Online.
                         @endcomponent
                         <textarea class="w-100 form-control readonly" rows="20" readonly="readonly" onclick="this.focus();this.select()" style="font-family: 'Fira Code', 'Consolas', monospace">{{$fit->RAW_EFT}}</textarea>
+                        <hr>
+                        <a href="{{$eveworkbenchLink}}" class="text-dark" rel="nofollow" target="_blank">Export fit to Eve Workbench</a>
                     </div>
                     <div id="history" class="tab-pane fade">
                         <h5 class="font-weight-bold">History</h5>
