@@ -9,12 +9,13 @@
                 @endforeach
         </div>
         <div class="col-sm-12 col-md-3">
-            <h4 class="font-weight-bold">Submit</h4>
-            <div class="card card-body border-0 shadow-sm w-100">
-                <p class="text-justify mb-0 pb-0">If you know a tutorial that the community could benefit from, please submit it and I'll add it on my earliest convenience. Uploaders are always credited.</p>
-            </div>
-            <div class="card-footer shadow-sm">
-                <a href="{{config("tracker.submit-tutorial")}}" target="_blank" class="text-dark"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/clock.png" class="mr-1 bringupper tinyicon">Submit new video</a>
+
+            <div class="card card-body border-0 shadow-sm pb-2">
+                <div class="donor">
+                    <img src="https://images.evetech.net/characters/2115246489/portrait?size=128" class="portrait rounded-circle shadow-sm" alt="">
+                    <p class="h5 font-weight-bold mb-3 mt-2">KurodaAkira</p>
+                    <p>Tutorials are curated by <a href="{{route('profile.index', ['id' => 2115246489])}}"><u>KurodaAkira</u></a> - thank you for your hard work!</p>
+                </div>
             </div>
         </div>
 
