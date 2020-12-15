@@ -25,4 +25,6 @@ class Ship extends Model
     protected $table = 'ship_lookup';
 
     protected $primaryKey = 'ID';
+
+    public $timestamps = false;
 }

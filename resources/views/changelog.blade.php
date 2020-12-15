@@ -34,6 +34,7 @@
                         <li>Little enhancement: Adds tooltip indicator to run views</li>
                         <li>Little enhancement: Adds an option to export fits to <a href="https://eveworkbench.com" rel="nofollow" target="_blank">EVE Workbench</a></li>
                         <li>Little enhancement: Disallows accidentally clicking on submit run buttons multiple times</li>
+                        <li>Bugfix: Adds missing logistics frigates</li>
                     </ul>
                 </div>
             </div>

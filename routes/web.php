@@ -112,7 +112,7 @@
     Route::get("/api/chart/fit/popularity/{ids}/{name}", 'GraphHelper@getFitPopularityChart')->name("chart.fit.popularity");
     Route::get("/api/chart/fit/loot-strategy/{ids}", 'GraphHelper@getFitLootStrategyChart')->name("chart.fit.loot-strategy");
     Route::get("/api/chart/item/history/market/{id}", 'ItemController@itemMarketHistory')->name("chart.item.market-history");
-    Route::get("/api/chart/item/history/volume/{id}", 'ItemController@itemMarketTradedVolume')->name("chart.item.volume-history");
+    Route::get("/api/chart/item/history/drops/{id}", 'ItemController@itemDroppedVolume')->name("chart.item.volume-history");
     Route::get("/api/chart/item/history/drop/{id}/{from}", 'ItemController@itemDropHistory')->name("chart.item.drop-history");
 
 
