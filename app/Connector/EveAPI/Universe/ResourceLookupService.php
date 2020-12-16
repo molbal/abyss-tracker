@@ -310,9 +310,28 @@
             return Cache::remember("ast.getCategoryGroups.$categoryId", now()->addMinute(), function() use ($categoryId) {
                 $resp = $this->simpleGet(null, sprintf("universe/categories/%d", $categoryId), true);
                 if (!$resp) {
-                    $this->logError(sprintf("%suniverse/categories/%d", $this->apiRoot,$categoryId), "getCategoryGroups failed for [$id].");
+                    $this->logError(sprintf("%suniverse/categories/%d", $this->apiRoot,$categoryId), "getCategoryGroups failed for [$categoryId].");
                 }
                 return $resp["groups"] ?? null;
+            });
+        }
+
+
+        /**
+         * Returns group IDs for categories
+         *
+         * @param int $groupId
+         *
+         * @return array
+         * @throws \Exception
+         */
+        public function getGroupInfo(int $groupId): array {
+            return Cache::remember("ast.getGroupInfo.$groupId", now()->addMinute(), function () use ($groupId) {
+                $resp = $this->simpleGet(null, sprintf("universe/groups/%d", $groupId), true);
+                if (!$resp) {
+                    $this->logError(sprintf("%suniverse/groups/%d", $this->apiRoot,$groupId), "getGroupInfo failed for [$groupId].");
+                }
+                return $resp;
             });
         }
 

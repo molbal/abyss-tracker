@@ -5,6 +5,7 @@
 
 
     use App\Charts\CruiserChart;
+    use App\Charts\DropHistoryChart;
     use App\Charts\FrigateChart;
     use App\Charts\MarketESIChart;
     use App\Connector\EveAPI\Market\MarketService;
@@ -63,6 +64,8 @@
             $marketHistory = $this->itemMarketHistoryChart($item_id);
             $volumeHistory = $this->itemVolumeHistoryChart($item_id);
 
+            $item->DESCRIPTION = str_replace("
+", '<br/>', $item->DESCRIPTION);
             return view("item", [
                "item" => $item,
                "count" => $count,
@@ -158,7 +161,7 @@ order by 2 ASC;", [intval($group_id)]);
                 $labels->add($startDate->toDateString());
             }
 
-            $cc = new FrigateChart();
+            $cc = new DropHistoryChart();
 
             $cc->load(route('chart.item.volume-history', ['id' => $itemID]));
             $cc->export(true, "Download");
@@ -203,10 +206,10 @@ order by 2 ASC;", [intval($group_id)]);
             $volume = $history->pluck('volume');
 
 
-            $chart->dataset("Average sale", "line", $average);
-            $chart->dataset("Highest sale", "line", $highest);
-            $chart->dataset("Lowest sale", "line", $lowest);
-            $chart->dataset("Sale volume", "bar", $volume)->options([
+            $chart->dataset("Average sale", "line", $average)->options(['lineStyle' => ['width' => 1.25]]);
+            $chart->dataset("Highest sale", "line", $highest)->options(['lineStyle' => ['width' => 1.25]]);
+            $chart->dataset("Lowest sale", "line", $lowest)->options(['lineStyle' => ['width' => 1.25]]);
+            $chart->dataset("Traded daily", "bar", $volume)->options([
                 'yAxisIndex' => 1
             ]);
 
@@ -218,9 +221,9 @@ order by 2 ASC;", [intval($group_id)]);
 
             $history = collect($this->marketService->getItemHistory($id));
             $minDay = $history->min('date') ?? '2020-01-01';
-            $sql = "select SUM(dl.COUNT) as count, r.RUN_DATE as runDate, r.TYPE as type from detailed_loot dl left join runs r on r.ID = dl.RUN_ID where dl.ITEM_ID=48121 and r.RUN_DATE is not null and r.RUN_DATE >= ? GROUP BY r.RUN_DATE, r.TYPE order by 2 ASC";
+            $sql = "select SUM(dl.COUNT) as count, r.RUN_DATE as runDate, r.TYPE as type from detailed_loot dl left join runs r on r.ID = dl.RUN_ID where dl.ITEM_ID=? and r.RUN_DATE is not null and r.RUN_DATE >= ? GROUP BY r.RUN_DATE, r.TYPE order by 2 ASC";
 
-            $data = collect(DB::select($sql, [$minDay]));
+            $data = collect(DB::select($sql, [$id, $minDay]));
 
             $dataReturn = collect([]);
             $types = DB::table("type")->get()->pluck("TYPE");

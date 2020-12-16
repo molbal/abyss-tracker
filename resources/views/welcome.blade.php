@@ -43,7 +43,7 @@
                         <a class="nav-link" id="tab-head-activity" data-toggle="tab" href="#tab-activity" role="tab" aria-controls="profile" aria-selected="false">Abyss activity (daily)</a>
                     </li>
                 </ul>
-                <div class="card card-body border-0 shadow-sm top-left-no-round">
+                <div class="card card-body border-0 shadow-sm top-left-no-round px-1 py-3">
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="tab-distribution" role="tabpanel" aria-labelledby="tab-head-distribution">
                             <div class="graph-container h-400px">
@@ -197,14 +197,14 @@
 
 <div class="row mt-3">
     <div class="col-xs-12 col-sm-12 col-md-3">
-        <div class="card card-body border-0 shadow-sm">
-            <h5 class="font-weight-bold mb-2">Most popular hulls</h5>
+        <div class="card card-body border-0 shadow-sm p-0">
+            <h5 class="font-weight-bold mb-2 p-3">Most popular hulls</h5>
             <div class="graph-container h-300px">
                 {!! $popularShipsGraph->container(); !!}
             </div>
         </div>
-        <div class="card card-body border-0 shadow-sm mt-3">
-            <h5 class="font-weight-bold mb-2">Most popular classes</h5>
+        <div class="card card-body border-0 shadow-sm mt-3 p-0">
+            <h5 class="font-weight-bold mb-2 p-3">Most popular classes</h5>
             <div class="graph-container h-300px">
                 {!! $popularClassesGraph->container(); !!}
             </div>

@@ -43,16 +43,6 @@
             </div>
         </div>
     </div>
-    @if($item->DESCRIPTION && 0)
-        <div class="row mt-3">
-            <div class="col-sm-12">
-                <div class="card card-body border-0 shadow-sm">
-                    <h5 class="font-weight-bold">Item description</h5>
-                    <p class="text-justify mb-0">{!! $item->DESCRIPTION !!}</p>
-                </div>
-            </div>
-        </div>
-    @endif
     <div class="row mt-3">
         <div class="col-sm-12">
             @if(isset($drops["Dark"]))
@@ -94,14 +84,15 @@
                 </table>
             </div>
                 @elseif(DB::table("detailed_loot")->where("ITEM_ID", $item->ITEM_ID)->exists())
-
-                <div class="alert alert-warning mb-3 border-0 shadow-sm">
-                    <img src="https://img.icons8.com/cotton/32/000000/under-construction--v2.png"> Drop rates for this item will be calculated during the next downtime.
-                </div>
+                    <div class="alert alert-warning mb-3 border-0 shadow-sm">
+                        <img src="https://img.icons8.com/cotton/32/000000/under-construction--v2.png"> Drop rates for this item will be calculated during the next downtime.
+                    </div>
                 @else
-                <div class="alert mb-3 border-danger shadow-sm">
-                    <img src="https://img.icons8.com/cotton/32/000000/delete-message.png"> Drop rates for this item will not be calculated, because this is not an item that drops from the Abyss.
-                </div>
+                    <div class="alert mb-3 border-danger shadow-sm">
+                        @component('components.info-line')
+                            Drop rates for this item will not be calculated, because this is not an item that drops from the Abyss.
+                        @endcomponent
+                    </div>
             @endif
         </div>
     </div>
@@ -114,22 +105,62 @@
     </div>
 
 
-    <div class="row mt-3">
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">Historic data</h4>
+        <p>Daily drop rates and market details</p>
+    </div>
+    <div class="row">
         <div class="col-sm-12">
-            <div class="card card-body border-0 shadow-sm p-0">
+            <div class="card card-body border-0 shadow-sm px-0 pt-0 pb-2">
                 <h5 class="font-weight-bold p-3">Market history</h5>
                 <div class="h-400px graph-container">{{$marketHistory->container()}}</div>
             </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                Data source: ESI &middot; Cached for up to 12 hours &middot; Data displays Forge region aggregates
+                @endcomponent
+            </div>
         </div>
     </div>
     <div class="row mt-3">
         <div class="col-sm-12">
-            <div class="card card-body border-0 shadow-sm p-0">
+            <div class="card card-body border-0 shadow-sm px-0 pt-0 pb-2">
                 <h5 class="font-weight-bold p-3">Drop history</h5>
                 <div class="h-400px graph-container">{{$volumeHistory->container()}}</div>
             </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: Abyss Tracker &middot; Cached for up to 12 hours
+                @endcomponent
+            </div>
         </div>
     </div>
+    <div class="row mt-3">
+        <div class="col-sm-9">
+            <div class="card card-body border-0 shadow-sm p-3">
+                <h5 class="font-weight-bold">Item description</h5>
+                <p class="text-justify mb-0">{!! $item->DESCRIPTION !!}</p>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card card-body border-0 shadow-sm p-3">
+                <h5 class="font-weight-bold">External links</h5>
+                <small class="text-uppercase font-weight-bold">Market websites</small>
+                <ul class="pl-0 list-unstyled">
+                    <li class="ml-0"><a href="https://www.adam4eve.eu/commodity.php?typeID={{$item->ITEM_ID}}" rel="nofollow" target="_blank">Adam4Eve</a></li>
+                    <li class="ml-0"><a href="https://www.eveworkbench.com/market/sell/{{$item->ITEM_ID}}" rel="nofollow" target="_blank">Eve Workbench</a></li>
+                    <li class="ml-0"><a href="https://evemarketer.com/types/{{$item->ITEM_ID}}" rel="nofollow" target="_blank">Eve Marketer</a></li>
+                    <li class="ml-0"><a href="https://market.fuzzwork.co.uk/station/60003760/type/{{$item->ITEM_ID}}/" rel="nofollow" target="_blank">Fuzzwork Marketdata</a></li>
+                </ul>
+                <small class="text-uppercase font-weight-bold">Misc</small>
+                <ul class="pl-0 list-unstyled">
+                    <li class="ml-0"><a href="https://everef.net/type/{{$item->ITEM_ID}}" rel="nofollow" target="_blank">Eve ref</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
 @endsection
 
 

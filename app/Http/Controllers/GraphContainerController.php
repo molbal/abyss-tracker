@@ -72,7 +72,7 @@
         public function getHomeDailyRunCounts() : object
         {
 
-            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month, $count_destroyer] = Cache::remember("chart.daily_run_count_newf", now()->addMinutes(15), function () {
+            [$run_date, $count_unknown, $count_cruiser, $count_frigate, $rolling_avg_week, $rolling_avg_month, $count_destroyer] = Cache::remember("chart.daily_run_count", now()->addMinutes(15), function () {
 
                 $run_date = [];
                 $count_unknown = [];
@@ -130,12 +130,13 @@
             });
 
             $daily_add_chart = new DailyAdds();
-            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Unspecified runs", "bar", $count_unknown)->options(["stack" => "1"]);
-            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Cruiser runs", "bar", $count_cruiser)->options(["stack" => "1"]);
-            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Destroyer runs", "bar", $count_destroyer)->options(["stack" => "1"]);
-            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("Frigate runs", "bar", $count_frigate)->options(["stack" => "1"]);
-            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => true]);
-            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date)->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => true]);
+            $daily_add_chart->displayAxes(true)->export(true)->height(400)->labels($run_date);
+            $daily_add_chart->dataset("Unspecified runs", "bar", $count_unknown)->options(["stack" => "1"]);
+            $daily_add_chart->dataset("Cruiser runs", "bar", $count_cruiser)->options(["stack" => "1"]);
+            $daily_add_chart->dataset("Destroyer runs", "bar", $count_destroyer)->options(["stack" => "1"]);
+            $daily_add_chart->dataset("Frigate runs", "bar", $count_frigate)->options(["stack" => "1"]);
+            $daily_add_chart->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => true]);
+            $daily_add_chart->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => true]);
             $daily_add_chart->theme(ThemeController::getChartTheme());
             $daily_add_chart->displayLegend(true);
             $daily_add_chart->options([

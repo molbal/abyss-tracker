@@ -5,7 +5,7 @@ namespace App\Charts;
 use App\Http\Controllers\ThemeController;
 use ConsoleTVs\Charts\Classes\Echarts\Chart;
 
-class MarketESIChart extends Chart
+class DropHistoryChart extends Chart
 {
     /**
      * Initializes the chart.
@@ -20,34 +20,8 @@ class MarketESIChart extends Chart
 
     public function formatOptions(bool $strict = false, bool $noBraces = false) {
 
-$options ="
-    legend: {
-            show: true
-  },
-  tooltip: {
-            show: true,
-    trigger: 'axis'
-  },
-  xAxis: {
-            show: true,
-    data: ".$this->formatLabels()."
-  },
-  yAxis: [
-        {
-            type: 'value',
-            name: 'Item price',
-            axisLabel: {
-            formatter: '{value} ISK'
-            }
-        },
-        {
-            type: 'value',
-            name: 'Traded daily volume',
-            axisLabel: {
-            formatter: '{value} vol.'
-            }
-        }
-    ],
+        $options =  parent::formatOptions($strict, $noBraces);
+$options .=",
     dataZoom: [{
         type: 'inside',
         start: 80,
@@ -60,19 +34,11 @@ $options ="
         handleStyle: {
             color: '#".ThemeController::getThemedIconColor()."',
             shadowBlur: 3,
-            shadowColor: 'rgba(0, 0, 0, 0.6)',
-            shadowOffsetX: 2,
+            shadowColor: 'rgba(0, 0, 0, 0.2)',
+            shadowOffsetX: 0,
             shadowOffsetY: 2
         }
-    }],
-  toolbox: {
-            show: true,
-    feature: {
-                saveAsImage: {
-                    title: 'Download'
-      }
-    }
-    }";
+    }]";
 
         return $options;
     }
