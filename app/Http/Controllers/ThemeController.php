@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use App\Http\Controllers\Misc\Enums\ChartColor;
     use Illuminate\Support\Facades\Cookie;
 
     class ThemeController extends Controller {
@@ -48,6 +49,16 @@
 
         public static function getLoader(string $size = "lg") {
 
+        }
+
+        public static function getChartLineColor(string $color) {
+            switch ($color) {
+                case ChartColor::GREEN: return self::isDarkTheme() ? '#38c172' : '#38c172';
+                case ChartColor::GRAY:  return self::isDarkTheme() ? '#6c757d' : '#6c757d';
+                case ChartColor::RED:   return self::isDarkTheme() ? '#e3342f' : '#e3342f';
+                case ChartColor::BLUE:  return self::isDarkTheme() ? '#6cb2eb' : '#6cb2eb';
+            }
+            return '#fff';
         }
 
         public function setTheme(bool $isDark) {

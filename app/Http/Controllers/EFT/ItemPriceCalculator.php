@@ -4,7 +4,8 @@
 	namespace App\Http\Controllers\EFT;
 
 
-	use App\Connector\EveAPI\Universe\ResourceLookupService;
+	use App\Connector\EveAPI\Market\MarketService;
+    use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\Loot\ValueEstimator\BulkItemEstimator\IBulkItemEstimator;
@@ -39,7 +40,7 @@
         public function getFromTypeId(int $typeId): ?ItemObject {
             if ($typeId == 0) return null;
             try {
-                $dto = Cache::remember("app.ipc.".$typeId, now()->addMinute(), function() use ($typeId) {
+                $dto = Cache::remember("app.ipc.".$typeId, now()->addMinutes(30), function() use ($typeId) {
                    return $this->appraise($typeId);
                 });
             }
@@ -148,7 +149,7 @@
                                 continue;
                             }
 
-                            if ($i>0) {
+                            if ($i>1) {
                                 $this->updateItemPricesTable($itemObj);
                             }
 
@@ -164,7 +165,20 @@
                     }
                 }
 
-                return null;
+                $name = $this->resourceLookup->generalNameLookup($typeId);
+
+                $itemObj = new ItemObject();
+                $itemObj->setTypeId($typeId)
+                        ->setName($name ?? "[Unknown item's name $typeId]");
+
+                /** @var MarketService $market */
+                $market = resolve('App\Connector\EveAPI\Market\MarketService');
+
+                $a = collect($market->getItemHistory($typeId));
+                $itemObj->setBuyPrice($a->max('date')->lowest ?? 0)
+                        ->setBuyPrice($a->max('date')->highest ?? 0);
+
+                return $itemObj;
             });
         }
 

@@ -11,6 +11,7 @@
     use App\Connector\EveAPI\Market\MarketService;
     use App\Http\Controllers\Cache\DBCacheController;
     use App\Http\Controllers\Loot\LootCacheController;
+    use App\Http\Controllers\Misc\Enums\ChartColor;
     use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use Illuminate\Http\Request;
     use Illuminate\Support\Carbon;
@@ -206,11 +207,41 @@ order by 2 ASC;", [intval($group_id)]);
             $volume = $history->pluck('volume');
 
 
-            $chart->dataset("Average sale", "line", $average)->options(['lineStyle' => ['width' => 1.25]]);
-            $chart->dataset("Highest sale", "line", $highest)->options(['lineStyle' => ['width' => 1.25]]);
-            $chart->dataset("Lowest sale", "line", $lowest)->options(['lineStyle' => ['width' => 1.25]]);
+            $chart->dataset("Sell price", "line", $highest)->options([
+                'showSymbol' => false,
+                'lineStyle' => [
+                    'width' => 1.3,
+                    'color' => ThemeController::getChartLineColor(ChartColor::GREEN)
+                ],
+                'itemStyle' => [
+                    'color' => ThemeController::getChartLineColor(ChartColor::GREEN)
+                ]
+            ]);
+            $chart->dataset("Average sale", "line", $average)->options([
+                'showSymbol' => false,
+                'lineStyle' => [
+                    'width' => 1.3,
+                    'color' => ThemeController::getChartLineColor(ChartColor::GRAY)
+                ],
+                'itemStyle' => [
+                    'color' => ThemeController::getChartLineColor(ChartColor::GRAY)
+                ]
+            ]);
+            $chart->dataset("Buy price", "line", $lowest)->options([
+                'showSymbol' => false,
+                'lineStyle' => [
+                    'width' => 1.3,
+                    'color' => ThemeController::getChartLineColor(ChartColor::RED)
+                ],
+                'itemStyle' => [
+                    'color' => ThemeController::getChartLineColor(ChartColor::RED)
+                ]
+            ]);
             $chart->dataset("Traded daily", "bar", $volume)->options([
-                'yAxisIndex' => 1
+                'yAxisIndex' => 1,
+                'itemStyle' => [
+                    'color' => ThemeController::getChartLineColor(ChartColor::BLUE)
+                ]
             ]);
 
             return $chart->api();
