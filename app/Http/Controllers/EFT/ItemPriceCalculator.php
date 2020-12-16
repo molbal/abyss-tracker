@@ -165,11 +165,11 @@
                     }
                 }
 
-                $name = $this->resourceLookup->generalNameLookup($typeId);
+                $name = $this->resourceLookup->generalNameLookup($typeId) ?? "[Unknown item $typeId]";
 
                 $itemObj = new ItemObject();
                 $itemObj->setTypeId($typeId)
-                        ->setName($name ?? "[Unknown item's name $typeId]");
+                        ->setName($name);
 
                 /** @var MarketService $market */
                 $market = resolve('App\Connector\EveAPI\Market\MarketService');

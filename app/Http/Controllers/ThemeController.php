@@ -56,7 +56,7 @@
                 case ChartColor::GREEN: return self::isDarkTheme() ? '#38c172' : '#38c172';
                 case ChartColor::GRAY:  return self::isDarkTheme() ? '#6c757d' : '#6c757d';
                 case ChartColor::RED:   return self::isDarkTheme() ? '#e3342f' : '#e3342f';
-                case ChartColor::BLUE:  return self::isDarkTheme() ? '#6cb2eb' : '#6cb2eb';
+                case ChartColor::BLUE:  return self::isDarkTheme() ? '#397bb0' : '#397bb0';
             }
             return '#fff';
         }

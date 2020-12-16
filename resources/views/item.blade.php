@@ -1,13 +1,11 @@
 @extends("layout.app")
 @section("browser-title", $item->NAME)
 @section("content")
-    <div class="row mt-5">
-        <div class="col-sm-12">
-            <h4 class="font-weight-bold">
-                <img src="https://imageserver.eveonline.com/Type/{{$item->ITEM_ID}}_64.png"> {{$item->NAME}}
-                <a href="{{route("item_group", ["group_id" => $item->GROUP_ID])}}" class="btn float-right btn-outline-secondary group_link">{{$item->GROUP_NAME}}</a>
-            </h4>
-        </div>
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">
+            <img src="https://imageserver.eveonline.com/Type/{{$item->ITEM_ID}}_64.png" class="mr-2 rounded-circle shadow" style="border: 2px solid #fff; width: 48px; height: 48px;">{{$item->NAME}}
+        </h4>
+        <a href="{{route("item_group", ["group_id" => $item->GROUP_ID])}}" class="float-right group_link">{{$item->GROUP_NAME}}</a>
     </div>
     <div class="row mt-3">
         <div class="col-md-4 col-sm-6">
@@ -46,7 +44,7 @@
     <div class="row mt-3">
         <div class="col-sm-12">
             @if(isset($drops["Dark"]))
-            <div class="card card-body border-info shadow-sm">
+            <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Drops rates</h5>
                 <table class="table table-sm table-striped">
                     <thead>
@@ -83,10 +81,11 @@
                     </tbody>
                 </table>
             </div>
-                @elseif(DB::table("detailed_loot")->where("ITEM_ID", $item->ITEM_ID)->exists())
-                    <div class="alert alert-warning mb-3 border-0 shadow-sm">
-                        <img src="https://img.icons8.com/cotton/32/000000/under-construction--v2.png"> Drop rates for this item will be calculated during the next downtime.
-                    </div>
+            <div class="card-footer shadow-sm">
+                @component('components.info-line')
+                    Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates are updated every 24 hours.
+                @endcomponent
+            </div>
                 @else
                     <div class="alert mb-3 border-danger shadow-sm">
                         @component('components.info-line')
@@ -96,14 +95,6 @@
             @endif
         </div>
     </div>
-    <div class="row mt-3">
-        <div class="col-sm-12">
-            <p>
-                Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates are updated every 24 hours.
-            </p>
-        </div>
-    </div>
-
 
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">Historic data</h4>
@@ -134,6 +125,40 @@
                 @endcomponent
             </div>
         </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">Last runs with {{$item->NAME}}</h4>
+        <p>Here are the last runs where {{$item->NAME}}} dropped</p>
+    </div>
+    <div class="row mt-2">
+        <div class="col-xs-12 col-sm-8">
+            <div class="card card-body border-0 shadow-sm p-0">
+                <h5 class="font-weight-bold mb-2 p-3">Last runs</h5>
+                <table class="table table-striped table-sm m-0 table-hover table-responsive-sm">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Ship name</th>
+                        <th>Abyss type</th>
+                        <th>Abyss tier</th>
+                        <th class="text-right">Loot value</th>
+                        <th class="text-right">Duration</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    @forelse($runs as $run)
+                        @component("components.runs.row-homepage", ['item' => $run]) @endcomponent
+                    @empty
+                        <tr>
+                            <td colspan="7" class="py-3 text-center text-muted">No runs submitted with {{$item->NAME}} drop.</td>
+                        </tr>
+                    @endforelse
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">Item data</h4>
+        <p>Description and links to other websites</p>
     </div>
     <div class="row mt-3">
         <div class="col-sm-9">

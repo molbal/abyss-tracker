@@ -7,9 +7,9 @@
         @endif
     </td>
     <td>
-        {{$item->getItemName() ?? '[Unknown item - typeId: '.$item->getTypeId().']'}}
+        <a href="{{route('item_single', ['item_id' => $item->getTypeId()])}}">{{$item->getItemName() ?? '[Unknown item #'.$item->getTypeId().']'}}</a>
         @if ($item->hasAmmo())
-            <sub class="bringupper">with <img src="https://imageserver.eveonline.com/Type/{{$item->getAmmoTypeId()}}_32.png" alt="{{$item->getAmmoName()}} icon" class="fit-ammo-icon">{{$item->getAmmoName()}}</sub>
+            <sub class="bringupper">with <a href="{{route('item_single', ['item_id' => $item->getAmmoTypeId()])}}"><img src="https://imageserver.eveonline.com/Type/{{$item->getAmmoTypeId()}}_32.png" alt="{{$item->getAmmoName()}} icon" class="fit-ammo-icon">{{$item->getAmmoName()}}</a></sub>
         @endif
         @if ($item->getCount() > 1)
             <sub class="bringupper">x{{$item->getCount()}}</sub>

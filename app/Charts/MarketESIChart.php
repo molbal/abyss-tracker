@@ -21,31 +21,37 @@ class MarketESIChart extends Chart
     public function formatOptions(bool $strict = false, bool $noBraces = false) {
 
 $options ="
-    legend: {
-            show: true
+  legend: {
+    show: true
   },
   tooltip: {
-            show: true,
+    show: true,
     trigger: 'axis'
   },
   xAxis: {
-            show: true,
-    data: ".$this->formatLabels()."
+    show: true,
+     data: ".$this->formatLabels().",
+      splitLine: {
+         show: false
+      }
   },
   yAxis: [
         {
             type: 'value',
             name: 'Item price',
             axisLabel: {
-            formatter: '{value} ISK'
+                formatter: '{value} ISK'
             }
         },
         {
             type: 'value',
             name: 'Traded daily volume',
             axisLabel: {
-            formatter: '{value} vol.'
-            }
+                formatter: '{value} pcs.'
+            },
+              splitLine: {
+                 show: false
+              },
         }
     ],
     dataZoom: [{
@@ -70,7 +76,8 @@ $options ="
     feature: {
                 saveAsImage: {
                     title: 'Download'
-      }
+      },
+            dataView: {},
     }
     }";
 

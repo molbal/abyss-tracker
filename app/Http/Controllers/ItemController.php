@@ -65,6 +65,16 @@
             $marketHistory = $this->itemMarketHistoryChart($item_id);
             $volumeHistory = $this->itemVolumeHistoryChart($item_id);
 
+
+            $runs =  DB::table("v_runall")
+                ->join('detailed_loot', 'detailed_loot.RUN_ID', '=', 'v_runall.ID')
+                ->where('detailed_loot.ITEM_ID', $item_id)
+                ->orderBy("v_runall.ID", "DESC")
+                ->limit(20)
+                ->select(['v_runall.ID','v_runall.CHAR_ID','v_runall.PUBLIC','v_runall.TIER','v_runall.TYPE','v_runall.LOOT_ISK','v_runall.SURVIVED','v_runall.RUN_DATE','v_runall.NAME','v_runall.SHIP_NAME','v_runall.HULL_SIZE','v_runall.SHIP_ID','v_runall.CREATED_AT','v_runall.RUNTIME_SECONDS'])
+                ->get();
+
+
             $item->DESCRIPTION = str_replace("
 ", '<br/>', $item->DESCRIPTION);
             return view("item", [
@@ -75,6 +85,8 @@
                 "drop_rate" => $drop_rate_overall,
                 "ago_drop" =>  TimeHelper::timeElapsedString($drop_rates["Dark"]["1"]->UPDATED_AT ?? "never"),
                 "ago_price" => TimeHelper::timeElapsedString($item->PRICE_LAST_UPDATED),
+
+               'runs' => $runs,
 
                'marketHistory'=>$marketHistory,
                'volumeHistory'=>$volumeHistory,
@@ -172,6 +184,11 @@ order by 2 ASC;", [intval($group_id)]);
                 'tooltip' => [
                     'trigger' => "axis"
                 ],
+                'toolbox'=>[
+                    'feature' => [
+                        'dataView' => []
+                    ]
+                ],
                 'yAxis' =>  [
                     [
                         'id' => 1,
@@ -210,7 +227,6 @@ order by 2 ASC;", [intval($group_id)]);
             $chart->dataset("Sell price", "line", $highest)->options([
                 'showSymbol' => false,
                 'lineStyle' => [
-                    'width' => 1.3,
                     'color' => ThemeController::getChartLineColor(ChartColor::GREEN)
                 ],
                 'itemStyle' => [
@@ -220,7 +236,6 @@ order by 2 ASC;", [intval($group_id)]);
             $chart->dataset("Average sale", "line", $average)->options([
                 'showSymbol' => false,
                 'lineStyle' => [
-                    'width' => 1.3,
                     'color' => ThemeController::getChartLineColor(ChartColor::GRAY)
                 ],
                 'itemStyle' => [
@@ -230,14 +245,13 @@ order by 2 ASC;", [intval($group_id)]);
             $chart->dataset("Buy price", "line", $lowest)->options([
                 'showSymbol' => false,
                 'lineStyle' => [
-                    'width' => 1.3,
                     'color' => ThemeController::getChartLineColor(ChartColor::RED)
                 ],
                 'itemStyle' => [
                     'color' => ThemeController::getChartLineColor(ChartColor::RED)
                 ]
             ]);
-            $chart->dataset("Traded daily", "bar", $volume)->options([
+            $chart->dataset("Traded volume", "bar", $volume)->options([
                 'yAxisIndex' => 1,
                 'itemStyle' => [
                     'color' => ThemeController::getChartLineColor(ChartColor::BLUE)
