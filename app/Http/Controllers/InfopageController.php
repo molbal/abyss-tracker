@@ -25,15 +25,20 @@
         /** @var HistoricLootController */
         private $historicLootController;
 
+        /** @var ItemController */
+        private $itemController;
+
         /**
          * InfopageController constructor.
          *
          * @param FitSearchController    $fitSearchController
          * @param HistoricLootController $historicLootController
+         * @param ItemController         $itemController
          */
-        public function __construct(FitSearchController $fitSearchController, HistoricLootController $historicLootController) {
+        public function __construct(FitSearchController $fitSearchController, HistoricLootController $historicLootController, ItemController $itemController) {
             $this->fitSearchController = $fitSearchController;
             $this->historicLootController = $historicLootController;
+            $this->itemController = $itemController;
         }
 
 
@@ -139,7 +144,7 @@ ORDER BY 6 DESC LIMIT ?;
             });
 
 
-            list($medianCruiser, $medianDestroyer, $medianFrigate, $atLoCruiser, $atHiCruiser, $atLoDestroyer, $atHiDestroyer, $atLoFrigate, $atHiFrigate) = Cache::remember('ao.runs.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($tier, $type) {
+            [$medianCruiser, $medianDestroyer, $medianFrigate, $atLoCruiser, $atHiCruiser, $atLoDestroyer, $atHiDestroyer, $atLoFrigate, $atHiFrigate] = Cache::remember('ao.runs.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($tier, $type) {
 
                 $medianCruiser = MedianController::getTierTypeMedian($tier,$type, ShipHullSize::CRUISER);
                 $medianDestroyer = MedianController::getTierTypeMedian($tier,$type, ShipHullSize::DESTROYER);
@@ -170,6 +175,14 @@ ORDER BY 6 DESC LIMIT ?;
                 return Run::where('TIER', $tier)->where('TYPE', $type)->count();
             });
 
+
+            $filamentId = DB::table('filament_types')->where('TYPE', $type)->where('TIER', $tier)->first('ITEM_ID')->ITEM_ID;
+            $filamentName = DB::table('item_prices')->where('ITEM_ID', $filamentId)->first('NAME')->NAME;
+            $filamentChart = $this->itemController->itemMarketHistoryChart($filamentId);
+
+
+
+
             return view('infopages.weather', [
                 'tier' => $tier,
                 'type' => $type,
@@ -197,6 +210,10 @@ ORDER BY 6 DESC LIMIT ?;
                 'heroes' => $heroes,
 
                 'popularFits' => $popularFits,
+
+                'filamentId' => $filamentId,
+                'filamentName' => $filamentName,
+                'filamentChart' => $filamentChart,
             ]);
         }
 

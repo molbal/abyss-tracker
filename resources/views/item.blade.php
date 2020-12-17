@@ -102,15 +102,9 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-body border-0 shadow-sm px-0 pt-0 pb-2">
-                <h5 class="font-weight-bold p-3">Market history</h5>
-                <div class="h-400px graph-container">{{$marketHistory->container()}}</div>
-            </div>
-            <div class="card-footer">
-                @component("components.info-line")
-                Data source: ESI &middot; Cached for up to 12 hours &middot; Data displays Forge region aggregates
-                @endcomponent
-            </div>
+            @component('components.items.market-history', [
+		       'marketHistory' => $marketHistory
+]) @endcomponent
         </div>
     </div>
     <div class="row mt-3">

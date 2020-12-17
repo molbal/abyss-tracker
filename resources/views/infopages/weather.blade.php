@@ -1,5 +1,5 @@
 @extends("layout.app")
-@section("browser-title", sprintf("%s %s difficulty overview",__("tiers.".$tier), $type))
+@section("browser-title", sprintf("%s %s overview",__("tiers.".$tier), $type))
 
 @section("content")
     <div class="d-flex justify-content-between align-items-start mt-3">
@@ -183,6 +183,11 @@
                     </div>
                 </div>
             </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: Abyss Tracker &middot; Cached for up to 12 hours
+                @endcomponent
+            </div>
         </div>
     </div>
 
@@ -200,6 +205,20 @@
             <div class="card-footer">
                 <a class="text-dark" href="{{route("fit.search", ["TIER" => $tier, 'TYPE' => $type])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/eeeeee/job.png">View more popular fits</a>
             </div>
+        </div>
+    </div>
+
+
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">Filament data</h4>
+        <p>Daily prices and market data for {{$filamentName}}</p>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            @component('components.items.market-history', [
+		       'marketHistory' => $filamentChart,
+		       'itemName' => $filamentName
+]) @endcomponent
         </div>
     </div>
 
@@ -289,6 +308,7 @@
     {!! $cruiserChart->script(); !!}
     {!! $destroyerChart->script(); !!}
     {!! $frigateChart->script(); !!}
+    {!! $filamentChart->script(); !!}
 
     <script>
         $(function () {

@@ -202,7 +202,7 @@ group by runs.TIER;', [$itemID]);
 
 
 
-        private function itemMarketHistoryChart(int $itemID) {
+        public function itemMarketHistoryChart(int $itemID) {
 
             $history = collect($this->marketService->getItemHistory($itemID));
             $minDay = $history->min('date');
@@ -232,7 +232,7 @@ group by runs.TIER;', [$itemID]);
             return $cc;
         }
 
-        private function itemVolumeHistoryChart(int $itemID) {
+        public function itemVolumeHistoryChart(int $itemID) {
 
             $history = collect($this->marketService->getItemHistory($itemID));
             $minDay = $history->min('date') ?? '2020-01-01';;
