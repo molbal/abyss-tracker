@@ -127,17 +127,8 @@ order by 2 ASC;", [intval($group_id)]);
 
             $history = collect($this->marketService->getItemHistory($itemID));
             $minDay = $history->min('date');
-//            $a = collect(DB::select('select SUM(dl.COUNT) as DAY_COUNT, r.RUN_DATE as CNT from detailed_loot dl left join runs r on r.ID = dl.RUN_ID where dl.ITEM_ID=48121 and r.RUN_DATE is not null and r.RUN_DATE >= ? GROUP BY r.RUN_DATE order by 2 ASC', [
-//                $minDay
-//            ]));
 
-            $startDate = new Carbon($minDay);
-            $labels = collect([]);
-
-            while (!$startDate->isToday()) {
-                $startDate = $startDate->addDay();
-                $labels->add($startDate->toDateString());
-            }
+            $labels = $this->getLabels($minDay);
 
             $cc = new MarketESIChart();
 
@@ -166,13 +157,7 @@ order by 2 ASC;", [intval($group_id)]);
 
             $history = collect($this->marketService->getItemHistory($itemID));
             $minDay = $history->min('date') ?? '2020-01-01';;
-            $startDate = new Carbon($minDay);
-            $labels = collect([]);
-
-            while (!$startDate->isToday()) {
-                $startDate = $startDate->addDay();
-                $labels->add($startDate->toDateString());
-            }
+            $labels = $this->getLabels($minDay);
 
             $cc = new DropHistoryChart();
 
@@ -213,94 +198,114 @@ order by 2 ASC;", [intval($group_id)]);
         }
 
         public function itemMarketHistory(Request  $request, int $id) {
-            $history = collect($this->marketService->getItemHistory($id));
+            return Cache::remember('itemMarketHistory'.$id, now()->addMinute(), function () use ($id) {
+                $history = collect($this->marketService->getItemHistory($id));
 
-            $chart = new MarketESIChart();
+                $chart = new MarketESIChart();
 
-            $history->sortBy('date');
-            $average = $history->pluck('average');
-            $highest = $history->pluck('highest');
-            $lowest = $history->pluck('lowest');
-            $volume = $history->pluck('volume');
+                $history->sortBy('date');
+                $average = $history->pluck('average');
+                $highest = $history->pluck('highest');
+                $lowest = $history->pluck('lowest');
+                $volume = $history->pluck('volume');
 
 
-            $chart->dataset("Sell price", "line", $highest)->options([
-                'showSymbol' => false,
-                'lineStyle' => [
-                    'color' => ThemeController::getChartLineColor(ChartColor::GREEN)
-                ],
-                'itemStyle' => [
-                    'color' => ThemeController::getChartLineColor(ChartColor::GREEN)
-                ]
-            ]);
-            $chart->dataset("Average sale", "line", $average)->options([
-                'showSymbol' => false,
-                'lineStyle' => [
-                    'color' => ThemeController::getChartLineColor(ChartColor::GRAY)
-                ],
-                'itemStyle' => [
-                    'color' => ThemeController::getChartLineColor(ChartColor::GRAY)
-                ]
-            ]);
-            $chart->dataset("Buy price", "line", $lowest)->options([
-                'showSymbol' => false,
-                'lineStyle' => [
-                    'color' => ThemeController::getChartLineColor(ChartColor::RED)
-                ],
-                'itemStyle' => [
-                    'color' => ThemeController::getChartLineColor(ChartColor::RED)
-                ]
-            ]);
-            $chart->dataset("Traded volume", "bar", $volume)->options([
-                'yAxisIndex' => 1,
-                'itemStyle' => [
-                    'color' => ThemeController::getChartLineColor(ChartColor::BLUE)
-                ]
-            ]);
+                $chart->dataset("Sell price", "line", $highest)->options([
+                    'showSymbol' => false,
+                    'lineStyle' => [
+                        'color' => ThemeController::getChartLineColor(ChartColor::GREEN)
+                    ],
+                    'itemStyle' => [
+                        'color' => ThemeController::getChartLineColor(ChartColor::GREEN)
+                    ]
+                ]);
+                $chart->dataset("Average sale", "line", $average)->options([
+                    'showSymbol' => false,
+                    'lineStyle' => [
+                        'color' => ThemeController::getChartLineColor(ChartColor::GRAY)
+                    ],
+                    'itemStyle' => [
+                        'color' => ThemeController::getChartLineColor(ChartColor::GRAY)
+                    ]
+                ]);
+                $chart->dataset("Buy price", "line", $lowest)->options([
+                    'showSymbol' => false,
+                    'lineStyle' => [
+                        'color' => ThemeController::getChartLineColor(ChartColor::RED)
+                    ],
+                    'itemStyle' => [
+                        'color' => ThemeController::getChartLineColor(ChartColor::RED)
+                    ]
+                ]);
+                $chart->dataset("Traded volume", "bar", $volume)->options([
+                    'yAxisIndex' => 1,
+                    'itemStyle' => [
+                        'color' => ThemeController::getChartLineColor(ChartColor::BLUE)
+                    ]
+                ]);
 
-            return $chart->api();
+                return $chart->api();
+            });
         }
 
         public function itemDroppedVolume(int $id) {
 
+            return Cache::remember('itemDroppedVolume'.$id, now()->addMinute(), function () use ($id) {
 
-            $history = collect($this->marketService->getItemHistory($id));
-            $minDay = $history->min('date') ?? '2020-01-01';
-            $sql = "select SUM(dl.COUNT) as count, r.RUN_DATE as runDate, r.TYPE as type from detailed_loot dl left join runs r on r.ID = dl.RUN_ID where dl.ITEM_ID=? and r.RUN_DATE is not null and r.RUN_DATE >= ? GROUP BY r.RUN_DATE, r.TYPE order by 2 ASC";
+                $history = collect($this->marketService->getItemHistory($id));
+                $minDay = $history->min('date') ?? '2020-01-01';
+                $sql = "select SUM(dl.COUNT) as count, r.RUN_DATE as runDate, r.TYPE as type from detailed_loot dl left join runs r on r.ID = dl.RUN_ID where dl.ITEM_ID=? and r.RUN_DATE is not null and r.RUN_DATE >= ? GROUP BY r.RUN_DATE, r.TYPE order by 2 ASC";
 
-            $data = collect(DB::select($sql, [$id, $minDay]));
+                $data = collect(DB::select($sql, [$id, $minDay]));
 
-            $dataReturn = collect([]);
-            $types = DB::table("type")->get()->pluck("TYPE");
+                $dataReturn = collect([]);
+                $types = DB::table("type")->get()->pluck("TYPE");
 
 
 
-            $startDate = new Carbon($minDay);
-            while (!$startDate->isToday()) {
-                $t = [];
-                foreach ($types as $type) {
-                    $t[$type] = $data->where('runDate', $startDate->toDateString())->where('type',$type)->first()->count ?? 0;
+                $startDate = new Carbon($minDay);
+                while (!$startDate->isToday()) {
+                    $t = [];
+                    foreach ($types as $type) {
+                        $t[$type] = $data->where('runDate', $startDate->toDateString())->where('type',$type)->first()->count ?? 0;
+                    }
+
+                    $dataReturn->add($t);
+                    $startDate->addDay();
                 }
 
-                $dataReturn->add($t);
-                $startDate->addDay();
-            }
 
+                $chart = new FrigateChart();
 
-            $chart = new FrigateChart();
+                $history->sortBy('date');
+                $volume = $history->pluck('volume');
 
-            $history->sortBy('date');
-            $volume = $history->pluck('volume');
+                foreach ($types as $type) {
+                    $chart->dataset("$type drops", "bar", $dataReturn->pluck($type))->options([
+                        'stack' => 1
+                    ]);
+                }
 
-            foreach ($types as $type) {
-                $chart->dataset("$type drops", "bar", $dataReturn->pluck($type))->options([
-                    'stack' => 1
-                ]);
-            }
-
-            return $chart->api();
+                return $chart->api();
+            });
         }
 
+        /**
+         * @param $minDay
+         *
+         * @return \Illuminate\Support\Collection
+         */
+        private function getLabels($minDay) : \Illuminate\Support\Collection {
+            $startDate = new Carbon($minDay);
+            $labels = collect([]);
+
+            while (!$startDate->isToday()) {
+                $startDate = $startDate->addDay();
+                $labels->add($startDate->toDateString());
+            }
+
+            return $labels;
+        }
 
 
     }

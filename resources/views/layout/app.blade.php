@@ -22,23 +22,23 @@
     <link rel="preconnect" href="https://images.evetech.net" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
 
-    <link rel="stylesheet"
+    <link rel="stylesheet" media="print" onload="this.media='all'"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
           integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U=" crossorigin="anonymous"/>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"  media="print" onload="this.media='all'"/>
 
 {{--    <link rel="stylesheet"--}}
 {{--          href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"--}}
 {{--          integrity="sha256-nbyata2PJRjImhByQzik2ot6gSHSU4Cqdz5bNYL2zcU=" crossorigin="anonymous"/>--}}
     <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.css"  media="print" onload="this.media='all'"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"  media="print" onload="this.media='all'">
     @if(App\Http\Controllers\ThemeController::isDarkTheme())
-        <link rel="stylesheet" href="css/app-dark.css"/>
+        <link rel="stylesheet" href="css/app-dark.css" />
     @else
         <link rel="stylesheet" href="css/app.css"/>
         <link rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/bootstrap4-select2-theme@1.0.3/src/css/bootstrap4-select2-theme.css">
+              href="https://cdn.jsdelivr.net/npm/bootstrap4-select2-theme@1.0.3/src/css/bootstrap4-select2-theme.css"  media="print" onload="this.media='all'">
     @endif
 {{--    <link rel="stylesheet" href="{{asset("css/jquery.inputpicker.css")}}">--}}
     <title>@yield('browser-title', config('app.name')) | {{ config('app.name') }}</title>
@@ -96,19 +96,7 @@
                 opacity: 0;
             }
         }
-        .slideIn {
-            animation-name: slideIn;
-        }
-
-        .footer-about img.logo-footer {
-            width: 96px;
-            max-width: 96px;
-            height: 96px;
-            max-height: 96px;
-        }
-
     </style>
-
     @yield('styles')
     @if (isset($og))
         {!! $og->renderTags() !!}
@@ -226,10 +214,10 @@
         type="text/javascript" ></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
 ></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"
-></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"
-></script>
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" defer--}}
+{{--></script>--}}
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"--}}
+{{--></script>--}}
 <script src="{{asset("js/jquery.inputpicker.js")}}"
 ></script>
 <script src="https://cdn.jsdelivr.net/npm/maximize-select2-height@1.0.4/maximize-select2-height.min.js"

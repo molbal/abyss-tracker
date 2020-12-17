@@ -46,9 +46,10 @@ $(function () {
             } ),
             $.extend( true, {}, buttonExcelCopy, {
                 extend: 'excelHtml5'
-            } ),
-            $.extend( true, {}, buttonCommon, {
-                extend: 'pdfHtml5'
-            } )]
+            } )
+            // $.extend( true, {}, buttonCommon, {
+            //     extend: 'pdfHtml5'
+            // } )
+        ]
     });
 });

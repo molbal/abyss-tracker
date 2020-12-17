@@ -31,7 +31,7 @@
             <div>
                 @component('components.fits.patch-tag', ['status' => $row->LAST_PATCH]) @endcomponent
             @if($row->VIDEO_LINK)
-                @component("components.fits.filter.fit-tag-sm", ['prefix' => '<img src="https://img.icons8.com/ios-glyphs/10/ffffff/video-call.png"/>']) TagVideo @endcomponent
+                @component("components.fits.filter.fit-tag-sm", ['prefix' => '<img src="https://img.icons8.com/ios-glyphs/10/ffffff/video-call.png" width="8" height="8"/>']) TagVideo @endcomponent
             @endif
             @foreach($row->TAGS as $match)
                 @if ($match->TAG_VALUE == 1)

@@ -29,12 +29,15 @@
                     </p>
                     <ul>
                         <li>Improves tier overview pages by adding historical values</li>
+                        <li>Improves drop item pages by adding historical drop values, market details, last 90 days' drop aggregates, item description and external links</li>
                         <li>Adds combined tier+weather overview pages</li>
                         <li>Little enhancement: Improved how the main menu behaves and looks</li>
                         <li>Little enhancement: Adds tooltip indicator to run views</li>
                         <li>Little enhancement: Adds an option to export fits to <a href="https://eveworkbench.com" rel="nofollow" target="_blank">EVE Workbench</a></li>
                         <li>Little enhancement: Disallows accidentally clicking on submit run buttons multiple times</li>
+                        <li>Little enhancement: Updates fit stat calculator enigne to Pyfa 2.33 - supporting EVE patch 18.2</li>
                         <li>Bugfix: Adds missing logistics frigates</li>
+                        <li>Improved site performance (Partially deferred CSS rendering and removal of unused libraries)</li>
                     </ul>
                 </div>
             </div>
