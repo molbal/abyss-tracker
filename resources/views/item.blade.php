@@ -83,7 +83,7 @@
             </div>
             <div class="card-footer shadow-sm">
                 @component('components.info-line')
-                    Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita data. Drop rates are updated every 24 hours.
+                    Data source: Abyss Tracker &middot; Prices for this item were updated <strong>{{($ago_price)}}</strong> with Jita orders. &middot; Drop rates are updated every downtime.
                 @endcomponent
             </div>
                 @else
@@ -116,7 +116,7 @@
     <div class="row mt-3">
         <div class="col-sm-12">
             <div class="card card-body border-0 shadow-sm px-0 pt-0 pb-2">
-                <h5 class="font-weight-bold p-3">Drop history</h5>
+                <h5 class="font-weight-bold p-3">Abyss drop history</h5>
                 <div class="h-400px graph-container">{{$volumeHistory->container()}}</div>
             </div>
             <div class="card-footer">
@@ -131,8 +131,32 @@
         <p>Here are the last runs where {{$item->NAME}}} dropped</p>
     </div>
     <div class="row mt-2">
+        <div class="col-xs-12  col-sm-4">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Drop count by tier <small class="float-right d-inline-block mt-1">last 90 days</small></h5>
+                <div class="graph-container h-300px">
+                    {!! $itemTiers->container(); !!}
+                </div>
+            </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: Abyss Tracker &middot; Cached for up to 1 hour
+                @endcomponent
+            </div>
+            <div class="card card-body border-0 shadow-sm mt-3">
+                <h5 class="font-weight-bold mb-2">Drop count by type <small class="float-right d-inline-block mt-1">last 90 days</small></h5>
+                <div class="graph-container h-300px">
+                    {!! $itemTypes->container(); !!}
+                </div>
+            </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: Abyss Tracker &middot; Cached for up to 1 hour
+                @endcomponent
+            </div>
+        </div>
         <div class="col-xs-12 col-sm-8">
-            <div class="card card-body border-0 shadow-sm p-0">
+            <div class="card card-body border-0 shadow-sm p-0 pb-1">
                 <h5 class="font-weight-bold mb-2 p-3">Last runs</h5>
                 <table class="table table-striped table-sm m-0 table-hover table-responsive-sm">
                     <tr>
@@ -192,6 +216,8 @@
 @section("scripts")
     {{$marketHistory->script()}}
     {{$volumeHistory->script()}}
+    {{$itemTiers->script()}}
+    {{$itemTypes->script()}}
 @endsection
 
 @section("styles")

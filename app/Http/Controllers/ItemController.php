@@ -7,6 +7,8 @@
     use App\Charts\CruiserChart;
     use App\Charts\DropHistoryChart;
     use App\Charts\FrigateChart;
+    use App\Charts\ItemTierChart;
+    use App\Charts\ItemTypeChart;
     use App\Charts\MarketESIChart;
     use App\Connector\EveAPI\Market\MarketService;
     use App\Http\Controllers\Cache\DBCacheController;
@@ -77,6 +79,11 @@
 
             $item->DESCRIPTION = str_replace("
 ", '<br/>', $item->DESCRIPTION);
+
+
+            $itemTiersChart = $this->itemTiersChart($item_id);
+            $itemTypesChart = $this->itemTypesChart($item_id);
+
             return view("item", [
                "item" => $item,
                "count" => $count,
@@ -90,6 +97,9 @@
 
                'marketHistory'=>$marketHistory,
                'volumeHistory'=>$volumeHistory,
+
+               'itemTiers'=>$itemTiersChart,
+               'itemTypes'=>$itemTypesChart,
             ]);
         }
 
@@ -121,6 +131,75 @@ order by 2 ASC;", [intval($group_id)]);
                "items" => $items
             ]);
         }
+
+        /**
+         * @param int $itemID
+         *
+         * @return ItemTierChart
+         */
+        public function itemTypesChart(int $itemID):ItemTypeChart {
+            $cc = new ItemTypeChart();
+
+            $cc->displayAxes(false);
+            $cc->displayLegend(false);
+
+            $data = collect(Cache::remember('itemTypesChart' . $itemID, now()->addHour(), function () use ($itemID) {
+                return DB::select('select runs.TYPE as TYPE, sum(dl.COUNT) as COUNT
+from runs join detailed_loot dl on runs.ID = dl.RUN_ID
+where dl.ITEM_ID = ? and runs.RUN_DATE > now() - interval 90 day
+group by runs.TYPE;', [$itemID]);
+            }));
+
+            $cc->export(true, "Download");
+            $cc->displayAxes(false);
+            $cc->height(300);
+            $cc->theme(ThemeController::getChartTheme());
+            $cc->labels($data->pluck('TYPE'));
+            $cc->dataset("Types", "pie", $data->pluck('COUNT'))
+               ->options([
+                   "radius" => ShipsController::PIE_RADIUS_SMALL,
+                   "roseType" => "radius",
+                   'label' => ['position' => 'outer', 'alignTo' => 'none', 'bleedMargin' => 5]]);
+
+            return $cc;
+        }
+
+
+        /**
+         * @param int $itemID
+         *
+         * @return ItemTierChart
+         */
+        public function itemTiersChart(int $itemID):ItemTierChart {
+            $cc = new ItemTierChart();
+
+            $cc->displayAxes(false);
+            $cc->displayLegend(false);
+
+            $data = collect(Cache::remember('itemTiersChart' . $itemID, now()->addHour(), function () use ($itemID) {
+                return DB::select('select runs.TIER, sum(dl.COUNT) as COUNT
+from runs join detailed_loot dl on runs.ID = dl.RUN_ID
+where dl.ITEM_ID = ? and runs.RUN_DATE > now() - interval 90 day
+group by runs.TIER;', [$itemID]);
+            }));
+
+            $cc->export(true, "Download");
+            $cc->displayAxes(false);
+            $cc->height(300);
+            $cc->theme(ThemeController::getChartTheme());
+            $cc->labels($data->pluck('TIER')->map(function($item) {
+                return __('tiers.'.$item).' (T'.$item.')';
+            }));
+            $cc->dataset("Tiers", "pie", $data->pluck('COUNT'))
+               ->options([
+                   "radius" => ShipsController::PIE_RADIUS_SMALL,
+                   "roseType" => "radius",
+                   'label' => ['position' => 'outer', 'alignTo' => 'none', 'bleedMargin' => 5]]);
+
+            return $cc;
+        }
+
+
 
 
         private function itemMarketHistoryChart(int $itemID) {
