@@ -25,7 +25,7 @@
                     <h4 class="mb-0 pb-0"><strong>1.9</strong> 'Forecast' release</h4>
                     <small class="mt-0">2020 december 18</small>
                     <p class="text-justify">
-                        Feature expansion release
+                        Feature expansion and quality of life release
                     </p>
                     <ul>
                         <li>Improves tier overview pages by adding historical values</li>
@@ -37,6 +37,8 @@
                         <li>Little enhancement: Fixes typos (<a href="https://github.com/molbal/abyss-tracker/issues/16">Issue #16</a>)</li>
                         <li>Little enhancement: Adds an option to export fits to <a href="https://eveworkbench.com" rel="nofollow" target="_blank">EVE Workbench</a></li>
                         <li>Little enhancement: Disallows accidentally clicking on submit run buttons multiple times</li>
+                        <li>Little enhancement: Adds market history for ship info page</li>
+                        <li>Little enhancement: Makes item names clickable in fit detail view</li>
 {{--                        <li>Little enhancement: Updates fit stat calculator enigne to Pyfa 2.33 - supporting EVE patch 18.2</li>--}}
                         <li>Bugfix: Adds missing logistics frigates</li>
                         <li>Improved site performance (Partially deferred CSS rendering and removal of unused libraries)</li>
