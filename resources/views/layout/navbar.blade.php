@@ -47,12 +47,10 @@
             <li class="nav-item dropdown has-megamenu">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == $currentRoute)}}/info.png">Overview</a></a>
-                <div class="dropdown-menu megamenu fade-down shadow">
+                <div class="dropdown-menu megamenu fade-down shadow {{\App\Http\Controllers\ThemeController::isDarkTheme() ? "dark" : "light"}}">
                     <div class="container-fluid">
                         <div class="row w-100">
                             <div class="col-lg-2 col-md-6 col-sx-12">
-{{--                                <h6 class="mm-head">Overview pages</h6>--}}
-{{--                                <small class="d-inline-block">These pages aggregate the most needed information on one page: loot, drops, profitability and fits.</small>--}}
                                 <h6 class="mm-head">All weathers</h6>
                                 <ul class="list-unstyled">
                                 @for($i=0;$i<=6;$i++)

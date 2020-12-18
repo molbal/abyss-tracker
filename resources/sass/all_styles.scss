@@ -312,7 +312,7 @@ ul.pagination {
 /* ============ only desktop view ============ */
 @media all and (min-width: 992px) {
     .navbar .nav-item .dropdown-menu{  display:block; opacity: 0;  visibility: hidden; transition:.3s; margin-top:0;  }
-    .navbar .nav-item:hover .nav-link{ color: #fff;  }
+    //.navbar .nav-item:hover .nav-link{ color: #fff;  }
     .navbar .dropdown-menu.fade-down{ top:80%; transform: rotateX(-75deg); transform-origin: 0% 0%; }
     .navbar .dropdown-menu.fade-up{ top:180%;  }
     .navbar .nav-item:hover .dropdown-menu{ transition: .3s; opacity:1; visibility:visible; top:100%; transform: rotateX(0deg); }
@@ -321,11 +321,16 @@ ul.pagination {
     @media all and (min-width: 1140px) {
     .navbar{ padding-top: 0; padding-bottom: 0; }
     .navbar .has-megamenu{position:static!important;}
-    .navbar .megamenu {
-        width:1110px;
-        padding:20px;
-        left: calc((100vw - 1110px)/2 - 155px - 42px);
-    }
+        .navbar .megamenu.dark {
+            width:1110px;
+            padding:20px;
+            left: calc((100vw - 1110px)/2 - 155px - 42px);
+        }
+        .navbar .megamenu.light {
+            width:1110px;
+            padding:20px;
+            left: calc((100vw - 1110px)/2 - 10px);
+        }
     .navbar .nav-link{ padding-top:1rem; padding-bottom:1rem;  }
 }
 

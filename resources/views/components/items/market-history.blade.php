@@ -1,5 +1,5 @@
 <div class="card card-body border-0 shadow-sm px-0 pt-0 pb-2">
-    <h5 class="font-weight-bold p-3">Market history {{$itemName ? "for $itemName" : ""}}</h5>
+    <h5 class="font-weight-bold p-3">Market history {{$itemName ?? null ? "for $itemName" : ""}}</h5>
     <div class="h-400px graph-container">{{$marketHistory->container()}}</div>
 </div>
 <div class="card-footer">

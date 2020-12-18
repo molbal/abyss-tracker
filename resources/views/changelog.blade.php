@@ -3,8 +3,8 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-8 mb-3 offset-md-2">
-            <div class="card card-body border-warning shadow-sm mb-3 p-0 overflow-hidden">
-                <img src="{{asset("home/roadmap-1.8.png")}}" alt="" class="w-100 shadow">
+{{--            <div class="card card-body border-warning shadow-sm mb-3 p-0 overflow-hidden">--}}
+{{--                <img src="{{asset("home/roadmap-1.8.png")}}" alt="" class="w-100 shadow">--}}
 {{--                <small class="text-capitalize font-weight-bold text-dark pt-0">IN DEVELOPMENT / PLANNED</small>--}}
 {{--                <h4 class="mb-0 pb-0">Future releases</h4>--}}
 {{--                <p>--}}
@@ -17,13 +17,13 @@
 {{--                </ul>--}}
 
 {{--                </p>--}}
-            </div>
+{{--            </div>--}}
             <div class="card card-body border-danger shadow-sm mb-3 p-0 overflow-hidden">
-                <img src="{{asset("home/1.8.jpg")}}" alt="1.8.0 release" class="w-100 shadow">
+                <img src="{{asset("home/1.9.jpg")}}" alt="1.9 release" class="w-100 shadow">
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                     <h4 class="mb-0 pb-0"><strong>1.9</strong> 'Forecast' release</h4>
-                    <small class="mt-0">2020 november 3</small>
+                    <small class="mt-0">2020 december 18</small>
                     <p class="text-justify">
                         Feature expansion release
                     </p>
@@ -31,11 +31,13 @@
                         <li>Improves tier overview pages by adding historical values</li>
                         <li>Improves drop item pages by adding historical drop values, market details, last 90 days' drop aggregates, item description and external links</li>
                         <li>Adds combined tier+weather overview pages</li>
+                        <li>The tutorial section is now curated by KurodaAkira</li>
                         <li>Little enhancement: Improved how the main menu behaves and looks</li>
                         <li>Little enhancement: Adds tooltip indicator to run views</li>
+                        <li>Little enhancement: Fixes typos (<a href="https://github.com/molbal/abyss-tracker/issues/16">Issue #16</a>)</li>
                         <li>Little enhancement: Adds an option to export fits to <a href="https://eveworkbench.com" rel="nofollow" target="_blank">EVE Workbench</a></li>
                         <li>Little enhancement: Disallows accidentally clicking on submit run buttons multiple times</li>
-                        <li>Little enhancement: Updates fit stat calculator enigne to Pyfa 2.33 - supporting EVE patch 18.2</li>
+{{--                        <li>Little enhancement: Updates fit stat calculator enigne to Pyfa 2.33 - supporting EVE patch 18.2</li>--}}
                         <li>Bugfix: Adds missing logistics frigates</li>
                         <li>Improved site performance (Partially deferred CSS rendering and removal of unused libraries)</li>
                     </ul>
