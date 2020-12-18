@@ -161,7 +161,7 @@ ORDER BY 6 DESC LIMIT ?;
 
 
             $popularFits = Cache::remember("aft.infopage.tier.$tier.$type.fits", now()->addMinutes(15), function() use ($tier, $type) {
-                $query = $this->fitSearchController->getStartingQuery()->where('fit_recommendations.'.strtoupper($type), $tier)->limit(7)->orderByDesc("RUNS_COUNT");
+                $query = $this->fitSearchController->getStartingQuery()->where('fit_recommendations.'.strtoupper($type), DB::raw("'".$tier."'"))->limit(7)->orderByDesc("RUNS_COUNT");
                 $popularFits = $query->get();
                 foreach ($popularFits as $i => $result) {
                     $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
@@ -172,12 +172,13 @@ ORDER BY 6 DESC LIMIT ?;
 
 
             $count = Cache::remember('at.runs.count.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($type,$tier) {
-                return Run::where('TIER', $tier)->where('TYPE', $type)->count();
+                return Run::where('TIER', DB::raw("'".$tier."'"))->where('TYPE', $type)->count();
             });
 
-
-            $filamentId = DB::table('filament_types')->where('TYPE', $type)->where('TIER', $tier)->first('ITEM_ID')->ITEM_ID;
-            $filamentName = DB::table('item_prices')->where('ITEM_ID', $filamentId)->first('NAME')->NAME;
+//            DB::enableQueryLog();
+            $filamentId = DB::table('filament_types')->where('TYPE', $type)->where('TIER', DB::raw("'".$tier."'"))->first('ITEM_ID')->ITEM_ID ?? 0;
+            $filamentName = DB::table('item_prices')->where('ITEM_ID', $filamentId)->first('NAME')->NAME ?? "";
+//            dd(DB::getQueryLog());
             $filamentChart = $this->itemController->itemMarketHistoryChart($filamentId);
 
 
@@ -390,7 +391,7 @@ ORDER BY 6 DESC LIMIT ?;
 ", [$tier, $tier, 10]);
 
             $count = Cache::remember("aft.infopage.tier.$tier.count", now()->addMinutes(15), function() use ($tier) {
-                return DB::table("runs")->where("TIER", strval($tier))->count();
+                return DB::table("runs")->where("TIER", DB::raw("'".$tier."'"))->count();
             });
 
 

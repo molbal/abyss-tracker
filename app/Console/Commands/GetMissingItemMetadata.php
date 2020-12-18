@@ -52,7 +52,7 @@ class GetMissingItemMetadata extends Command
 
 
         foreach ($items as $i => $item) {
-            $this->line("[".Str::padLeft($i+1, 5)." / " . Str::padLeft($items->count(),5)."] - ".$item->NAME);
+//            $this->line("[".Str::padLeft($i+1, 5)." / " . Str::padLeft($items->count(),5)."] - ".$item->NAME);
             try {
                 $a = $esi->getItemInformation($item->ITEM_ID);
                 $groupName = $esi->getGroupInfo($a['group_id'])['name'] ?? "TBD";
