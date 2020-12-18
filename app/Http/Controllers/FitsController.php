@@ -474,9 +474,10 @@
                 // Make open graph tags
                 clock()->startEvent("Generate Open Graph tags", "");
                 $og = new OpenGraph();
+                $tags = TagsController::getFitTags($id);
                 $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
                    ->type('profile')
-                   ->description(sprintf("%s fit with %s on %s", $ship_name,TagsController::getFitTags($id)->join(", ", ", and "), config('app.name')))
+                   ->description(sprintf("%s fit with %s on %s", $ship_name, $tags->join(", ", ", and "), config('app.name')))
                    ->url()
                    ->locale('en_US')
                    ->localeAlternate(['en_UK'])
@@ -548,6 +549,15 @@
                 clock()->startEvent("Load questions and answers", "");
                 $questions = FitQuestionsController::getFitQuestions($id);
                 clock()->endEvent("Load questions and answers");
+                // Check revisions history
+                clock()->startEvent("Generate Eve Workbench export URL", "");
+                $eveworkbenchLink = 'https://www.eveworkbench.com/import/fit/'.base64_encode(json_encode([
+                        "name" => $fit->NAME,
+                        "eft" => $fit->RAW_EFT,
+                        "tags" => $tags->join(","),
+                        "youtube_url" => $fit->VIDEO_LINK ?? ''
+                    ]));
+                clock()->endEvent("Generate Eve Workbench export URL");
 
                 return view('fit', [
                     'fit' => $fit,
@@ -573,7 +583,8 @@
                     'runsCountAll' => $runsCountAll,
                     'history' => $history,
                     'lastRevision' => $newestRevision,
-                    'questions' => $questions
+                    'questions' => $questions,
+                    'eveworkbenchLink' => $eveworkbenchLink
                 ]);
 
             }

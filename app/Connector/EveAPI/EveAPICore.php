@@ -6,6 +6,7 @@
 
     use App\Http\Controllers\ESITokenController;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
 
     abstract class EveAPICore
 	{
@@ -52,15 +53,16 @@
 			return $curl;
 		}
 
-		/**
-		 * Makes a GET call to ESI with authentication
-		 *
-		 * @param int    $charId
-		 * @param string $fullPath
-		 *
-		 * @return mixed
-		 * @throws \Exception
-		 */
+        /**
+         * Makes a GET call to ESI with authentication
+         *
+         * @param int|null $charId
+         * @param string   $fullPath
+         * @param bool     $asAssocArray
+         *
+         * @return mixed
+         * @throws \Exception
+         */
 		protected function simpleGet(?int $charId, string $fullPath, bool $asAssocArray = false)
 		{
 
@@ -121,6 +123,15 @@
 				return $ret;
 			}
 		}
+
+        /**
+         * Logs the ESI error in the proper channel
+         * @param string $url
+         * @param string $error
+         */
+		protected function logError(string $url, string $error) {
+		     Log::channel('esi-errors')->error(sprintf("ESI related error: Url: [%s] Error message: [%s]", $url, $error));
+        }
 
 		/**
 		 * Creates a post CURL request with ESI authentication

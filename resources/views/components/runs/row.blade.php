@@ -1,6 +1,6 @@
 <tr class="action-hover-only">
     <td>
-        {!! $item->SURVIVED ? '' : '<img src="/dead.png" data-toggle="tooltip" title="Run railed, ship and capsule lost"/>' !!}
+        {!! $item->SURVIVED ? '' : '<img src="/dead.png" data-toggle="tooltip" title="Run failed, ship and capsule lost"/>' !!}
     </td>
     @if($item->RUNTIME_SECONDS)
         <td>{{sprintf("%02d", floor($item->RUNTIME_SECONDS/60))}}:{{sprintf("%02d", $item->RUNTIME_SECONDS%60)}}</td>

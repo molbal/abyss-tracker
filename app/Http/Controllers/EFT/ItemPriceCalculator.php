@@ -4,7 +4,8 @@
 	namespace App\Http\Controllers\EFT;
 
 
-	use App\Connector\EveAPI\Universe\ResourceLookupService;
+	use App\Connector\EveAPI\Market\MarketService;
+    use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\Loot\ValueEstimator\BulkItemEstimator\IBulkItemEstimator;
@@ -39,7 +40,7 @@
         public function getFromTypeId(int $typeId): ?ItemObject {
             if ($typeId == 0) return null;
             try {
-                $dto = Cache::remember("app.ipc.".$typeId, now()->addMinute(), function() use ($typeId) {
+                $dto = Cache::remember("app.ipc.".$typeId, now()->addMinutes(30), function() use ($typeId) {
                    return $this->appraise($typeId);
                 });
             }
@@ -104,7 +105,7 @@
 
         public function appraiseBulk(Collection $listOfTypeIds): Collection {
             $strListofIds = $listOfTypeIds->implode(",");
-            return Cache::remember("aft.bulkestimator.".md5($strListofIds), now()->addMinutes(30), function() use ($listOfTypeIds) {
+            return Cache::remember("aft.bulkestimators.".md5($strListofIds), now()->addMinutes(30), function() use ($listOfTypeIds) {
                 $estimators = $this->getBulkItemEstimators();
                 foreach ($estimators as $i => $estimator) {
 
@@ -119,9 +120,8 @@
                     }
                     catch (\Exception $retex) {
                         Log::channel("itempricecalculator")->error("BULK Unexpected exception: Error while calculating typeId ".$listOfTypeIds->implode(",").": ".$retex->getMessage()."\n".$retex->getTraceAsString());
-                    } finally {
-                        return collect([]);
                     }
+                    return collect([]);
                 }
             });
         }
@@ -149,7 +149,7 @@
                                 continue;
                             }
 
-                            if ($i>0) {
+                            if ($i>1) {
                                 $this->updateItemPricesTable($itemObj);
                             }
 
@@ -165,7 +165,20 @@
                     }
                 }
 
-                return null;
+                $name = $this->resourceLookup->generalNameLookup($typeId) ?? "[Unknown item $typeId]";
+
+                $itemObj = new ItemObject();
+                $itemObj->setTypeId($typeId)
+                        ->setName($name);
+
+                /** @var MarketService $market */
+                $market = resolve('App\Connector\EveAPI\Market\MarketService');
+
+                $a = collect($market->getItemHistory($typeId));
+                $itemObj->setBuyPrice($a->max('date')->lowest ?? 0)
+                        ->setBuyPrice($a->max('date')->highest ?? 0);
+
+                return $itemObj;
             });
         }
 

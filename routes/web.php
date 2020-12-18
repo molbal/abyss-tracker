@@ -111,6 +111,12 @@
     Route::get("/api/chart/run/distribution/frigates", 'GraphHelper@getHomeRunBellGraphsFrigates')->name("chart.home.distribution.frigates");
     Route::get("/api/chart/fit/popularity/{ids}/{name}", 'GraphHelper@getFitPopularityChart')->name("chart.fit.popularity");
     Route::get("/api/chart/fit/loot-strategy/{ids}", 'GraphHelper@getFitLootStrategyChart')->name("chart.fit.loot-strategy");
+    Route::get("/api/chart/item/history/market/{id}", 'ItemController@itemMarketHistory')->name("chart.item.market-history");
+    Route::get("/api/chart/item/history/drops/{id}", 'ItemController@itemDroppedVolume')->name("chart.item.volume-history");
+//    Route::get("/api/chart/item/history/drop/{id}/{from}", 'ItemController@itemDropHistory')->name("chart.item.drop-history");
+//    Route::get("/api/chart/item/tiers/{id}/", 'ItemController@itemTiers')->name("chart.item.tiers");
+//    Route::get("/api/chart/item/types/{id}/", 'ItemController@itemTypes')->name("chart.item.types");
+
 
     /**
      * Search routes
@@ -152,6 +158,8 @@
      * Aggregator routes
      */
     Route::get('/info-page/tier/{tier}', 'InfopageController@tier')->name("infopage.tier");
+    Route::get('/info-page/tier/{tier}/weather/{type}', 'InfopageController@tierType')->name("infopage.tier-type");
+    Route::get('/info-page/weather/chart/{tier}/{type}/{hullSize}', 'DS\HistoricLootController@getChartData')->name('infopage.weather.chart');
 
     /**
      * Maintenance routes

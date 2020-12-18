@@ -141,6 +141,12 @@ return [
             'days' => 14,
         ],
 
+        'esi-errors' => [
+            'path' => storage_path('logs/esi-errors.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+
 
     ],
 

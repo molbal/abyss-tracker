@@ -3,31 +3,27 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\KeyValue;
-use Laravel\Nova\Fields\Markdown;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class VideoTutorial extends Resource
+class ShipLookup extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\VideoTutorial::class;
+    public static $model = \App\Ship::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'NAME';
 
     /**
      * The columns that should be searched.
@@ -35,7 +31,7 @@ class VideoTutorial extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'NAME', 'ID', 'GROUP'
     ];
 
     /**
@@ -47,16 +43,15 @@ class VideoTutorial extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make(__('ID'), 'id')->sortable(),
-            Text::make("Youtube ID", 'youtube_id'),
-            Text::make("Name", 'name'),
-            Select::make("Tier", "tier")->options(['0' => '0', '1' => '1','2' => '2','3' => '3','4' => '4','5' => '5', '6' => '6']),
-            Select::make("Type", "type")->options(['Electrical' => 'Electrical', 'Dark' => 'Dark', 'Exotic' => 'Exotic', 'Firestorm' => 'Firestorm', 'Gamma' => 'Gamma']),
-            Markdown::make("Description",'description')->alwaysShow()->required(true),
-            KeyValue::make("Bookmarks", "video_bookmarks"),
-            BelongsTo::make("Content creator", "content_creator"),
+            Number::make('Type ID', 'ID')->sortable()->required(true),
+            Text::make('Name', 'NAME')->sortable()->required(true),
+            Text::make('Group', 'GROUP')->sortable()->required(true),
 
-            HasMany::make("Related fits", "fits", "App\Nova\VideoTutorialFit")
+            Select::make("Hull size", "HULL_SIZE")->options([
+                'frigate' => 'frigate',
+                'destroyer' => 'destroyer',
+                'cruiser' => 'cruiser'
+            ])->required(true),
         ];
     }
 

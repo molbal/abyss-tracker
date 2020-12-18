@@ -1,7 +1,7 @@
 <?php
     return [
         'maintenance-token' => env('MAINTENANCE_TOKEN'),
-        'version' => '1.8',
+        'version' => '1.9',
         'discord' => 'https://discord.gg/FyNsM5k',
         'submit-tutorial' => 'https://forms.gle/ct4Yc75W4zjbR6Xi7',
         'flag-address' => env('FLAG_ADDRESS'),
@@ -22,7 +22,7 @@
 
         'items' => [
             'group_whitelist' => [1992,1993,105,255,2019,1964,1088,1990,257,1995,1977,1979,1996,489,107,106,487,4050],
-            'items_blacklist' => [940, 32877]
+            'items_blacklist' => [940, 32877, 27361]
         ],
 
         'scoped' => [
@@ -66,7 +66,7 @@
 
             'estimators' => [
                 'single-item' => [
-                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\CacheSingleItemEstimator',
+//                    'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\CacheSingleItemEstimator',
                     'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\ItemPriceTableSingleItemEstimator',
                     'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\FuzzworkMarketDataSingleItemEstimator',
                     'App\Http\Controllers\Loot\ValueEstimator\SingleItemEstimator\Impl\EveWorkbenchSingleItemEstimator'
@@ -101,6 +101,10 @@
                 'untested' => "warning",
                 'deprecated' => "danger"
             ]
+        ],
+
+        'historic-loot' => [
+            'from' => "2020-02-01"
         ],
 
         'accountant' => [

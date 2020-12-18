@@ -30,6 +30,7 @@
                     'timeout' => 12
                 ]);
 
+
             } catch (\Exception $e) {
                 throw new RemoteAppraisalToolException("Fuzzwork Market connection error: " . $e->getMessage());
             }
@@ -59,8 +60,6 @@
 
                 $return->add($itemObj);
             }
-
-
             return $return;
         }
     }

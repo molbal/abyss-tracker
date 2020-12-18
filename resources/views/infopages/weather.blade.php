@@ -1,36 +1,41 @@
 @extends("layout.app")
-@section("browser-title", sprintf("%s difficulty overview",__("tiers.".$tier)))
+@section("browser-title", sprintf("%s %s overview",__("tiers.".$tier), $type))
 
 @section("content")
     <div class="d-flex justify-content-between align-items-start mt-3">
         @if($tier > 0)
-            <a class="text-dark" href="{{route('infopage.tier', ['tier' => $tier-1])}}">&leftarrow;&nbsp;@lang("tiers.".($tier-1)) information</a>
+            <a class="text-dark" href="{{route('infopage.tier-type', ['tier' => $tier-1, 'type' => $type])}}">&leftarrow;&nbsp;@lang("tiers.".($tier-1)) {{$type}} information</a>
         @else
             <span>&nbsp;</span>
         @endif
         @if($tier < 6)
-            <a class="text-dark" href="{{route('infopage.tier', ['tier' => $tier+1])}}">@lang("tiers.".($tier+1)) information&nbsp;&rightarrow;</a>
+            <a class="text-dark" href="{{route('infopage.tier-type', ['tier' => $tier+1, 'type' => $type])}}">@lang("tiers.".($tier+1)) {{$type}} information&nbsp;&rightarrow;</a>
         @else
             <span>&nbsp;</span>
         @endif
     </div>
-    <div class="row mt-5">
+    <div class="row mt-5 mb-2">
         <div class="col-sm-12 text-center">
             <h2 class="font-weight-bold title">
                 <div class="icon-wrapper shadow mb-3">
-                    <img src="/tiers/{{$tier}}.png" alt="@lang("tiers.".$tier) filament icon" class="page-top-icon">
+                    <img src="/tiers/{{$tier}}.png" title="@lang("tiers.".$tier) filament icon" class="page-top-icon" data-toggle="tooltip">
+                </div>
+                <div class="icon-wrapper shadow mb-3">
+                    <img src="/types/{{$type}}.png" title="{{$type}} weather icon" class="page-top-icon" data-toggle="tooltip">
                 </div>
                 <br>
-                @lang("tiers.".$tier) runs overview
+                @lang("tiers.".$tier) {{$type}} runs overview
                 <br>
                 <small class="subtitle">based on {{number_format($count, 0, ",", " ")}} user submissions</small>
             </h2>
         </div>
     </div>
 
+
+
     <div class="d-flex justify-content-between align-items-start ">
         <h4 class="font-weight-bold">Profitability</h4>
-        <p>How much you can make in a tier {{$tier}} abyss run?</p>
+        <p>How much you can make in a tier {{$tier}} {{$type}} abyss run?</p>
     </div>
     <div class="row mt-2">
         <div class="col-md-4 col-sm-12">
@@ -138,11 +143,12 @@
         </div>
     </div>
 
+
     <div class="row mt-5">
         <div class="col-md-12 col-sm-12">
             <div class="d-flex justify-content-between align-items-start ">
                 <h4 class="font-weight-bold">Historic loot values</h4>
-                <p>These graphs show how tier {{$tier}} loot worth changes over time.</p>
+                <p>These graphs show how tier {{$tier}} {{$type}} loot worth changes over time.</p>
             </div>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -177,42 +183,49 @@
                     </div>
                 </div>
             </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: Abyss Tracker &middot; Cached for up to 12 hours
+                @endcomponent
+            </div>
         </div>
     </div>
 
 
     <div class="d-flex justify-content-between align-items-start mt-5">
-        <h4 class="font-weight-bold">Fits and types</h4>
-        <p>What fit shall I use and what types are popular?</p>
+        <h4 class="font-weight-bold">Popular fits</h4>
+        <p>What fit shall I use?</p>
     </div>
     <div class="row mt-2">
-        <div class="col-md-4">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold mb-2">@lang("tiers.".$tier) filament popularity</h5>
-                <div class="graph-container h-300px">
-                    {!! $chartTypes->container(); !!}
-                </div>
-            </div>
-            <div class="card card-body border-0 shadow-sm mt-3">
-                <h5 class="font-weight-bold mb-2">@lang("tiers.".$tier) survival</h5>
-                <div class="graph-container h-300px">
-                    {!! $chartSurvival->container(); !!}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold">Most popular @lang("tiers.".$tier) fits</h5>
                 @component("components.fits.filter.result-list", ["results" => $popularFits])@endcomponent
             </div>
             <div class="card-footer">
-                <a href="{{route("fit.search", ["TIER" => $tier])}}" target="_blank" class="text-dark"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/eeeeee/job.png">View more popular fits</a>
+                <a class="text-dark" href="{{route("fit.search", ["TIER" => $tier, 'TYPE' => $type])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/eeeeee/job.png">View more popular fits</a>
             </div>
         </div>
     </div>
+
+
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <h4 class="font-weight-bold">Filament data</h4>
+        <p>Daily prices and market data for {{$filamentName}}</p>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            @component('components.items.market-history', [
+		       'marketHistory' => $filamentChart,
+		       'itemName' => $filamentName
+]) @endcomponent
+        </div>
+    </div>
+
+
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">The Professionals</h4>
-        <p>Who has completed more tier {{$tier}} runs than anyone else?</p>
+        <p>Who has completed more tier {{$tier}} {{$type}} runs than anyone else?</p>
     </div>
     <div class="row mt-2">
         @foreach($heroes as $hero)
@@ -238,9 +251,10 @@
         </div>
     </div>
 
+
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">Last runs and loot</h4>
-        <p>What are the last tier {{$tier}} runs and what loot did they get?</p>
+        <p>What are the last tier {{$tier}} {{$type}} runs and what loot did they get?</p>
     </div>
     <div class="row mt-2">
         <div class="col-xs-12 col-sm-8">
@@ -261,7 +275,7 @@
                 </table>
             </div>
             <div class="card-footer">
-                <a class="text-dark" href="{{route("search.do", ["tier" => $tier])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/database.png">View all @lang("tiers.".$tier) runs</a>
+                <a class="text-dark" href="{{route("search.do", ["tier" => $tier, "type" => $type])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/database.png">View all @lang("tiers.".$tier) {{$type}} runs</a>
             </div>
         </div>
         <div class="col-xs-12 col-sm-4">
@@ -291,11 +305,10 @@
 
 
 @section("scripts")
-    {!! $chartTypes->script(); !!}
-    {!! $chartSurvival->script(); !!}
     {!! $cruiserChart->script(); !!}
     {!! $destroyerChart->script(); !!}
     {!! $frigateChart->script(); !!}
+    {!! $filamentChart->script(); !!}
 
     <script>
         $(function () {
@@ -352,7 +365,6 @@
 @section('scripts')
     <script>
         $(function () {
-
             $(".select2-nosearch-narrow").select2({
                 theme: 'bootstrap',
                 minimumResultsForSearch: -1,

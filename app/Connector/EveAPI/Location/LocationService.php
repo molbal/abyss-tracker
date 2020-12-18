@@ -34,7 +34,7 @@
                 return $val;
             } catch (\Exception $e) {
                 Log::warning("Error during getCurrentLocation " . $e->getMessage() . " with response " . ($ret ?? "[no response]")." headers".print_r(curl_getinfo($c), 1));
-
+                $this->logError($this->apiRoot . "characters/$charId/location/", $e->getMessage() . " with response " . ($ret ?? "[no response]"));
                 return null;
             } finally {
                 curl_close($c);
