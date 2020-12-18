@@ -43,6 +43,15 @@
         </div>
     </div>
     <div class="row mt-3">
+
+        <div class="col-sm-12">
+            @component('components.items.market-history', [
+		       'marketHistory' => $priceChart,
+		       'itemName' => $name
+]) @endcomponent
+        </div>
+    </div>
+    <div class="row mt-3">
         <div class="col-xs-12 col-sm-8">
         @component("components.runs.list", ['title' => "Last $name runs", 'items' => $items]) @endcomponent
         </div>
@@ -66,4 +75,5 @@
     {!! $pop_types->script() !!}
     {!! $death_chart->script() !!}
     {!! $loot_chart->script() !!}
+    {!! $priceChart->script() !!}
 @endsection

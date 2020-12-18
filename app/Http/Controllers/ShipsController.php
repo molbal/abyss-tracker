@@ -27,15 +27,20 @@
         /** @var BarkController */
         private $barkController;
 
+        /** @var ItemController */
+        private $itemController;
+
         /**
          * ShipsController constructor.
          *
          * @param LootCacheController $lootCacheController
          * @param BarkController      $barkController
+         * @param ItemController      $itemController
          */
-        public function __construct(LootCacheController $lootCacheController, BarkController $barkController) {
+        public function __construct(LootCacheController $lootCacheController, BarkController $barkController, ItemController $itemController) {
             $this->lootCacheController = $lootCacheController;
             $this->barkController = $barkController;
+            $this->itemController = $itemController;
         }
 
 
@@ -94,6 +99,8 @@
             $loot_chart = $this->getShipLootStrategyChart($id);
 
 
+            $priceChart = $this->itemController->itemMarketHistoryChart($id);
+
             return view("ship", [
                 "id"           => $id,
                 "name"         => $name,
@@ -106,6 +113,7 @@
                 "items" => $items,
                 "death_chart" => $death_reason,
                 "loot_chart" => $loot_chart,
+                'priceChart' => $priceChart
             ]);
         }
 
