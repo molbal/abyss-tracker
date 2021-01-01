@@ -34,9 +34,9 @@
           href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.css"  media="print" onload="this.media='all'"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"  media="print" onload="this.media='all'">
     @if(App\Http\Controllers\ThemeController::isDarkTheme())
-        <link rel="stylesheet" href="css/app-dark.css" />
+        <link rel="stylesheet" href="css/app-dark.{{config('tracker.fileversion')}}.css" />
     @else
-        <link rel="stylesheet" href="css/app.css"/>
+        <link rel="stylesheet" href="css/app.{{config('tracker.fileversion')}}.css"/>
         <link rel="stylesheet"
               href="https://cdn.jsdelivr.net/npm/bootstrap4-select2-theme@1.0.3/src/css/bootstrap4-select2-theme.css"  media="print" onload="this.media='all'">
     @endif
@@ -222,7 +222,7 @@
 ></script>
 <script src="https://cdn.jsdelivr.net/npm/maximize-select2-height@1.0.4/maximize-select2-height.min.js"
         integrity="sha256-rOpd4voNU/iOOklhdb2rhwe4OaXfo7vIO3f7Tc8xe0o=" crossorigin="anonymous"></script>
-<script src="{{asset("js/app.js")}}"></script>
+<script src="{{asset("js/app.".config('tracker.fileversion').".js")}}"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @yield('scripts')
 <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>

@@ -138,11 +138,11 @@ return [
         'itemprices' => [
             'path' => storage_path('logs/itemprices.log'),
             'level' => 'debug',
-            'days' => 14,
+            'days' => 7,
         ],
 
         'esierrors' => [
-            'path' => storage_path('logs/esi-errors.log'),
+            'path' => storage_path('logs/esierrors.log'),
             'level' => 'debug',
             'days' => 7,
         ],

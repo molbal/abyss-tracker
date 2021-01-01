@@ -1,7 +1,8 @@
 <?php
     return [
         'maintenance-token' => env('MAINTENANCE_TOKEN'),
-        'version' => '1.9',
+        'version' => '1.10',
+        'fileversion' => '110',
         'discord' => 'https://discord.gg/FyNsM5k',
         'submit-tutorial' => 'https://forms.gle/ct4Yc75W4zjbR6Xi7',
         'flag-address' => env('FLAG_ADDRESS'),
@@ -62,6 +63,11 @@
                 'service-root' => env('EVEWORKBENCH_API_ROOT'),
                 'app-key' =>env('EVEWORKBENCH_API_APP_KEY'),
                 'client-id' =>env('EVEWORKBENCH_API_CLIENT_ID'),
+            ],
+
+            'janice' => [
+                'service-root'=> env('JANICE_API_ROOT', "https://janice.e-351.com/api/rest/v1/"),
+                'app-key' => env('JANICE_APP_KEY')
             ],
 
             'estimators' => [
