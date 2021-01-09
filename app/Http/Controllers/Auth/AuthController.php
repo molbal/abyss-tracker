@@ -14,6 +14,22 @@
 
     class AuthController extends Controller {
 
+        /**
+         * Gets whether a user is logged in
+         * @return bool
+         */
+        public static function isLoggedIn() {
+            return session()->has('login_id') && session()->has('login_name');
+        }
+
+        /**
+         * Gets a logged in user's EVE ID, null, if not logged in
+         * @return int|null
+         */
+        public static function getLoginId(): ?int {
+            return session()->get('login_id', null);
+        }
+
 
         /**
          * Redirect the user to the Eve Online authentication page.
