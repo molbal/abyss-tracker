@@ -585,7 +585,7 @@ select sl.`GROUP` as NAME, count(f.ID) as CNT, max(cj.cf), round(count(f.ID)/max
             foreach ($dataCruiser as $dat) {
                 if ($i++ % 3 == 0) continue;
                 $label = floatval(round($dat->LOOT_ISK / $million, 2));
-                $chartDataSet[] = [$label, round($this->calcNormalDist(floatval(round($dat->LOOT_ISK / $million, 2)), $meanCruiser, $sdevCruiser) * 100, 2)];
+                $chartDataSet[] = [$label, round($this->calcNormalDist(floatval(round($dat->LOOT_ISK / $million, 2)), $meanCruiser, $sdevCruiser) * 100, 3)];
             }
 
             usort($chartDataSet, function($a, $b) {

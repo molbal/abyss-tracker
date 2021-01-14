@@ -75,14 +75,14 @@
         /**
          * @return float
          */
-        public function getAveragePrice():float {
+        public function getAveragePrice():?float {
             return ($this->sellPrice+$this->buyPrice)/2;
         }
 
         /**
          * @return float
          */
-        public function getSellPrice() : float {
+        public function getSellPrice() : ?float {
             return $this->sellPrice;
         }
 
