@@ -35,7 +35,14 @@
             return session()->get('login_id', null);
         }
 
-        public function switchToAlt(int $altId) {
+        /**
+         * Switches to the specified alt character
+         *
+         * @param int $altId
+         *
+         * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+         */
+        public function switchToAlt(int $altId) : \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse {
             try {
                 $myAlts = AltRelationController::getMyAlts();
                 if (!$myAlts->containsStrict('id', $altId)) {
@@ -58,6 +65,11 @@
             return redirect()->route('home_mine');
         }
 
+
+        /**
+         * Switches to the main character
+         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+         */
         public function switchToMain() {
             try {
                 $myMain = AltRelationController::getMyMain();

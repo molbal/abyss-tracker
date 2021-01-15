@@ -185,3 +185,8 @@
      */
     Route::any("/guard/must-log-in", 'HelperController@showLoginNotice')->name("helper.message.login");
 
+    /**
+     * Alt switcher routes
+     */
+    Route::get('/character-relationships/switch/alt/{altId}', 'Auth\AuthController@switchToAlt')->name('alts.switch.alt')->middleware('sso');
+    Route::get('/character-relationships/switch/main', 'Auth\AuthController@switchToMain')->name('alts.switch.main')->middleware('sso');

@@ -3,30 +3,7 @@
 
 @section("content")
     <div class="row mt-5">
-        <div class="col-sm-12 col-md-10">
-            <h4 class="font-weight-bold">Most Valuable People</h4>
-        </div>
-        <div class="col-md-8">
-            <div class="card card-body border-0 mt-3">
-                <h5 class="font-weight-bold"><img src="https://img.icons8.com/cotton/64/000000/volunteering.png" class="bringupper smallicon"/> Patreon donations</h5>
-                <table class="w-100 table table-sm">
-                    <tr>
-                        <td>Name</td>
-                        <td class="text-right">Total donations</td>
-                        <td>&nbsp;</td>
-                    </tr>
-                    @foreach($patreon as $patreonDonor)
-                        <tr>
-                            <td><a class="text-dark" href="https://www.patreon.com/user?u={{$patreonDonor->getPatreonId()}}" target="_blank">{{$patreonDonor->getName()}}</a></td>
-                            <td class="text-right">{{number_format($patreonDonor->getTotalAmount(), 2, ",", "")}} €</td>
-                            <td>{!! $patreonDonor->isActivePatron() ? "Current patron" : "<span class='text-muted'>Former patron</span>" !!}</td>
-                        </tr>
-                    @endforeach
-                </table>
-            </div>
-        </div>
-
-        <div class="col-md-4">
+        <div class="col-md-4 offset-md-4 col-sm-6 offset-sm-3 col-xs-12">
             <img src="{{asset('veetor-sanders.jpg')}}" alt="" class="w-100 mt-3 mb-0 rounded-top">
 
             <div class="card card-body border-0 rounded-bottom mt-0" style="
@@ -36,8 +13,8 @@
                 <p>You can use <a href="https://www.patreon.com/veetor" class="text-dark" target="_blank">Patreon</a> to set up donations.</p>
                 <h5 class="font-weight-bold">What are donations used for?</h5>
                 <p class="text-justify">Monthly hosting bills are approximately 48€. Recurring donations cover a large part of that. It also allows me to experiment with new features that require a budget normally outside of a single person's hobby project.</p>
-                <h5 class="font-weight-bold">How often does this list update?</h5>
-                <p class="text-justify pb-0 mb-0">I haven't automated it yet, around the 5th of each month I manually update this list.</p>
+                <h5 class="font-weight-bold">Where did the list go?</h5>
+                <p class="text-justify pb-0 mb-0">it went opsec: I have been approached by multiple patrons, requesting privacy - turns out many of you registered to Patreon with your RL names and I would like to avoid doxxing anyone.</p>
             </div>
             <div class="card-footer">
                 <a href="https://patreon.com/veetor" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png">Donate on Patreon</a>
