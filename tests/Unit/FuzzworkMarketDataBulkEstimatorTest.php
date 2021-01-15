@@ -25,8 +25,9 @@ class FuzzworkMarketDataBulkEstimatorTest extends TestCase
         $c = collect([48112,12005]);
         /** @var FuzzworkMarketDataBulkEstimator $a */
         $a = resolve('App\Http\Controllers\Loot\ValueEstimator\BulkItemEstimator\Impl\FuzzworkMarketDataBulkEstimator', ['listOfTypeIds' =>$c]);
-        $a->getPrice();
+        $col = $a->getPrices();
 
+        $this->assertEquals($c->count(), $col->count());
 
         $this->assertTrue(true);
     }
