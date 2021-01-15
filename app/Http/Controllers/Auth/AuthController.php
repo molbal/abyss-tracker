@@ -3,8 +3,11 @@
 
     namespace App\Http\Controllers\Auth;
 
+    use App\Exceptions\BusinessLogicException;
+    use App\Exceptions\SecurityViolationException;
     use App\Helpers\ConversationCache;
     use App\Http\Controllers\Controller;
+    use App\Http\Controllers\Profile\AltRelationController;
     use http\Client\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -13,6 +16,8 @@
     use Laravel\Socialite\Two\User;
 
     class AuthController extends Controller {
+
+
 
         /**
          * Gets whether a user is logged in
@@ -30,6 +35,51 @@
             return session()->get('login_id', null);
         }
 
+        public function switchToAlt(int $altId) {
+            try {
+                $myAlts = AltRelationController::getMyAlts();
+                if (!$myAlts->containsStrict('id', $altId)) {
+                   throw new SecurityViolationException("You cannot switch to that character, because it is not your alt.");
+                }
+
+                session()->regenerate(true);
+
+                \session()->put("login_id", $altId);
+                \session()->put("login_name", $myAlts->where('id', $altId)['name']);
+
+            }
+            catch (\Exception $e) {
+                return view('error', [
+                    'title' => "Failed",
+                    'message' => $e->getMessage()
+                ]);
+            }
+
+            return redirect()->route('home_mine');
+        }
+
+        public function switchToMain() {
+            try {
+                $myMain = AltRelationController::getMyMain();
+
+                if (!$myMain) {
+                    throw new BusinessLogicException("You do not have a main character set");
+                }
+                session()->regenerate(true);
+
+                \session()->put("login_id", $myMain->id);
+                \session()->put("login_name", $myMain->name);
+
+            }
+            catch (\Exception $e) {
+                return view('error', [
+                    'title' => "Failed",
+                    'message' => $e->getMessage()
+                ]);
+            }
+
+            return redirect()->route('home_mine');
+        }
 
         /**
          * Redirect the user to the Eve Online authentication page.

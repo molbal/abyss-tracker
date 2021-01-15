@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Profile;
 use App\Exceptions\SecurityViolationException;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Misc\Enums\CharacterType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -12,6 +13,25 @@ use Illuminate\Support\Facades\DB;
 
 class AltRelationController extends Controller
 {
+
+    /**
+     * Determines if the given character is an alt, main, or single.
+     * @param int $charId
+     *
+     * @return string
+     */
+    public static function getCharacterType(int $charId): string {
+        $main = self::getMain($charId);
+        if ($main != null) {
+            return CharacterType::SINGLE;
+        }
+
+        $alts = self::getAlts($main);
+        if ($alts->count() > 0) {
+            return CharacterType::MAIN;
+        }
+        return CharacterType::SINGLE;
+    }
 
     /**
      * Gets the alt character IDs of the given char EVE ID.
@@ -85,6 +105,17 @@ class AltRelationController extends Controller
             'crated_at' => $now,
             'updated_at' => $now,
         ]);
+    }
+
+    /**
+     * Deletes a relation
+     * @param int $mainId
+     * @param int $altId
+     *
+     * @return bool
+     */
+    public static function deleteRelation(int $mainId, int $altId): bool {
+        return DB::table('char_relationships')->where('main', $mainId)->where('alt', $altId)->delete() == 1;
     }
 
 }
