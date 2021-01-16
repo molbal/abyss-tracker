@@ -30,14 +30,16 @@
                     <ul>
                     </ul>
                     <p class="text-justify">
-                        Under the hood
+                        Under the hood and bugfixes
                     </p>
                     <ul>
+                        <li><span class="badge badge-success">FIXED</span>  <em>Fit stats: tier 0 durations ignored <a href="https://github.com/molbal/abyss-tracker/issues/71" target="_blank">#71</a></em></li>
                         <li>Added <a href="https://janice.e-351.com/" rel="nofollow" target="_blank">E-351 Janice</a> as a loot appraisal tool. The buy and sell prices will show 5 day median values to better reflect loot prices. The appraisal tool of EVE Workbench remains in place, as an automatic failover service.</li>
                         <li>Under the hood performance optimization: Added filename based cache busting (no more Ctrl+F5s after patches) <a href="https://www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/" rel="nofollow" target="_blank">stevesouders.com</a> <small>(This was a long time due)</small></li>
                         <li>The Abyss Tracker will automatically update 'Event xx Proving Filament' item names as their details are announced.</li>
                         <li>Fixes the Fit performance calculation incorrectly calculating with 20 minute runtimes instead of the fit's max type/tier median value</li>
                         <li>Updates the Abyss Tracker to Laravel 8 and PHP 8</li>
+                        <li>Adds Redis to the uptime monitoring page: <a href="https://uptime.abyss.eve-nt.uk/" target="_blank">https://uptime.abyss.eve-nt.uk/</a></li>
                     </ul>
 
                 </div>
@@ -122,9 +124,9 @@
                         <li>Improves error message displays</li>
                         <li>Adds fit search filter: Ship usage</li>
                         <li>Merges Ship selection and Fit selection into one dropdown on the new run screen</li>
-                        <li>Fixes bug: New fit description field broken with dark theme</li>
-                        <li>Fixes bug: Selecting bonus room does nothing</li>
-                        <li>Fixes bug: Fit "break even" calculation will now correctly round up instead of rounding down resulting in more punctual data</li>
+                        <li><span class="badge badge-success">FIXED</span>  New fit description field broken with dark theme</li>
+                        <li><span class="badge badge-success">FIXED</span>  Selecting bonus room does nothing</li>
+                        <li><span class="badge badge-success">FIXED</span>  Fit "break even" calculation will now correctly round up instead of rounding down resulting in more punctual data</li>
                     </ul>
                 </div>
             </div>
@@ -175,12 +177,12 @@
                 </p>
                 <ul>
                     <li>Initial version of the Tier Overview pages.</li>
-                    <li>Fixes bug: <em>Cannot unselect fit when adding new run <a href="https://github.com/molbal/abyss-tracker/issues/42" target="_blank">#42</a></em></li>
-                    <li>Fixes bug: <em>Only filling the run minutes sets the duration as Unknown <a href="https://github.com/molbal/abyss-tracker/issues/40" target="_blank">#40</a></em></li>
-                    <li>Fixes bug: <em>Http Error 500 on new run with emtpy rows <a href="https://github.com/molbal/abyss-tracker/issues/43" target="_blank">#43</a></em></li>
-                    {{--                    <li>Fixes bug: <em>Fitting filter not re-applied after using browser "back" <a href="https://github.com/molbal/abyss-tracker/issues/34" target="_blank">#34</a></em></li>--}}
-                    <li>Fixes bug: <em>Ship size filter doesn't work <a href="https://github.com/molbal/abyss-tracker/issues/36" target="_blank">#36</a></em></li>
-                    <li>Fixes bug: <em>Cant select a fit when trying to "add a new run" <a href="https://github.com/molbal/abyss-tracker/issues/41" target="_blank">#41</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Cannot unselect fit when adding new run <a href="https://github.com/molbal/abyss-tracker/issues/42" target="_blank">#42</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Only filling the run minutes sets the duration as Unknown <a href="https://github.com/molbal/abyss-tracker/issues/40" target="_blank">#40</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Http Error 500 on new run with emtpy rows <a href="https://github.com/molbal/abyss-tracker/issues/43" target="_blank">#43</a></em></li>
+                    {{--                    <li><span class="badge badge-success">FIXED</span>  <em>Fitting filter not re-applied after using browser "back" <a href="https://github.com/molbal/abyss-tracker/issues/34" target="_blank">#34</a></em></li>--}}
+                    <li><span class="badge badge-success">FIXED</span>  <em>Ship size filter doesn't work <a href="https://github.com/molbal/abyss-tracker/issues/36" target="_blank">#36</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Cant select a fit when trying to "add a new run" <a href="https://github.com/molbal/abyss-tracker/issues/41" target="_blank">#41</a></em></li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">
@@ -192,8 +194,8 @@
                 <ul>
                     <li>Updates site style (Footer, icons)</li>
                     <li>Improves "My stats" page layout</li>
-                    <li>Fixes bug: <em>server error uploading fit <a href="https://github.com/molbal/abyss-tracker/issues/35" target="_blank">#35</a></em></li>
-                    <li>Fixes bug: <em>Abyssal modules breaking import <a href="https://github.com/molbal/abyss-tracker/issues/17" target="_blank">#17</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>server error uploading fit <a href="https://github.com/molbal/abyss-tracker/issues/35" target="_blank">#35</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Abyssal modules breaking import <a href="https://github.com/molbal/abyss-tracker/issues/17" target="_blank">#17</a></em></li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">
@@ -204,11 +206,11 @@
                 </p>
                 <ul>
                     <li>Upgrades the loot value estimator, removes Evepraisal data source and adds Fuzzwork Marketdata and EVE Workbench data source</li>
-                    <li>Fixes bug: <em>Incorrect item price displayed in fit view <a href="https://github.com/molbal/abyss-tracker/issues/31" target="_blank">#31</a></em></li>
-                    <li>Fixes bug: <em>Fit Picker not respecting fit privacy setting <a href="https://github.com/molbal/abyss-tracker/issues/30" target="_blank">#30</a></em></li>
-                    <li>Fixes bug: <em>Fit picker: "Last viewed fit" not updating correctly <a href="https://github.com/molbal/abyss-tracker/issues/29" target="_blank">#29</a></em></li>
-                    <li>Fixes bug: <em>Different detailed table ISK total and the summary total ISK show a different value <a href="https://github.com/molbal/abyss-tracker/issues/25" target="_blank">#25</a></em></li>
-                    <li>Fixes bug: <em>Cargo parsing of before repackaged / after unpackaged items <a href="https://github.com/molbal/abyss-tracker/issues/14" target="_blank">#14</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Incorrect item price displayed in fit view <a href="https://github.com/molbal/abyss-tracker/issues/31" target="_blank">#31</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Fit Picker not respecting fit privacy setting <a href="https://github.com/molbal/abyss-tracker/issues/30" target="_blank">#30</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Fit picker: "Last viewed fit" not updating correctly <a href="https://github.com/molbal/abyss-tracker/issues/29" target="_blank">#29</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Different detailed table ISK total and the summary total ISK show a different value <a href="https://github.com/molbal/abyss-tracker/issues/25" target="_blank">#25</a></em></li>
+                    <li><span class="badge badge-success">FIXED</span>  <em>Cargo parsing of before repackaged / after unpackaged items <a href="https://github.com/molbal/abyss-tracker/issues/14" target="_blank">#14</a></em></li>
                 </ul>
             </div>
             <div class="card card-body border-0 shadow-sm mb-3">

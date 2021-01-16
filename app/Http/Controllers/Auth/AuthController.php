@@ -36,6 +36,16 @@
         }
 
         /**
+         * Gets if the current user is the logged in
+         * @param int $id
+         *
+         * @return bool
+         */
+        public static function isItMe(int $id) {
+            return self::getLoginId() == $id;
+        }
+
+        /**
          * Switches to the specified alt character
          *
          * @param int $altId

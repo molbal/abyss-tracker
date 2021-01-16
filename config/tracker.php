@@ -54,6 +54,7 @@
         'veetor' => [
             'id' => env("ID_VEETOR"),
             'refresh-token' => env("RT_VEETOR"),
+            'invite-link' => 'https://www.eveonline.com/signup?invc=3fbe9153-83c9-4130-b47c-358d364a9be0'
         ],
 
         'market' => [

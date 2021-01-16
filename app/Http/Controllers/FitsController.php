@@ -6,6 +6,7 @@
 
 	use App\Charts\LootAveragesChart;
     use App\Charts\PersonalDaily;
+    use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
@@ -68,7 +69,7 @@
             }
             else {
                 $fit = DB::table("fits")->where("ID", $id)->first();
-                if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                if ($fit->CHAR_ID != AuthController::getLoginId()) {
                     return view('403', ['error' => "You cannot update someone else's fit."]);
                 }
                 if (!$fit) {
@@ -98,7 +99,7 @@
             }
             $fit = DB::table("fits")->where("ID", $id)->first();
 
-            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+            if ($fit->CHAR_ID != AuthController::getLoginId()) {
                 return view('403', ['error' => sprintf("You cannot delete someone else's fit.")]);
             }
 
@@ -106,11 +107,12 @@
                 DB::beginTransaction();
                 $ids = DB::table('fit_questions')->where('fit_id', $id)->select('id')->get()->pluck('fit_id');
                 DB::table("fit_answers")->whereIn("question_id", $ids)->delete();
+                DB::table("fit_logs")->where("fit_it", $fit->ROOT_ID ?? $id)->delete();
                 DB::table("fit_logs")->where("fit_it", $id)->delete();
                 DB::table("fit_questions")->where("fit_id", $id)->delete();
                 DB::table("fit_tags")->where("FIT_ID", $id)->delete();
                 DB::table("fit_recommendations")->where("FIT_ID", $id)->delete();
-                DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->delete();
+                DB::table("fits")->where("ID", $id)->where("CHAR_ID",  AuthController::getLoginId())->delete();
                 DB::commit();
                 return view("autoredirect", ['title' => "Fit deleted", 'message' =>"The fit and all its data was removed from the Abyss Tracker.", "redirect" => route("fit.mine")]);
             }
@@ -144,8 +146,8 @@
             }
             $fit = DB::table("fits")->where("ID", $id)->first();
 
-            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
-                return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            if (!AuthController::isItMe($fit->CHAR_ID)) {
+                return view('error', ['title' => "Not allowed", 'error' => sprintf("You cannot modify someone else's fit.")]);
             }
 
             try {
@@ -301,7 +303,7 @@
             $id = $request->get('id');
             $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
 
-            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+            if ($fit->CHAR_ID != AuthController::getLoginId()) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
             }
 
@@ -351,7 +353,7 @@
 
             $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
 
-            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+            if ($fit->CHAR_ID != AuthController::getLoginId()) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
             }
 
@@ -398,64 +400,64 @@
          * @throws \Exception
          */
         public function get(int $id) {
-            clock()->startEvent("Checking if exists", "");
+            clock()->event("Checking if exists", "")->begin();
                 if (!$this->getFitsQB($id)
                           ->exists()) {
-                    clock()->endEvent("Checking if exists");
+                    clock()->event("Checking if exists")->end();
                     return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
                 }
-            clock()->endEvent("Checking if exists");
+            clock()->event("Checking if exists")->end();
 
             try {
 
                 // Get the fit - with some caching
-                clock()->startEvent("Getting the fit from DB", "");
+                clock()->event("Getting the fit from DB", "")->begin();
                 $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
                     return $this->getFitsQB($id)->first();
                 });
-                clock()->endEvent("Getting the fit from DB");
+                clock()->event("Getting the fit from DB")->end();
 
 
                 // Check credentials
-                clock()->startEvent("Checking privacy", "");
-                if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
+                clock()->event("Checking privacy", "")->begin();
+                if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != AuthController::getLoginId()) {
                     return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('fit.search') . "'>View public fits</a></p>")]);
                 }
-                clock()->endEvent("Checking privacy");
+                clock()->event("Checking privacy")->end();
 
                 // Get ship name and character name
-                clock()->startEvent("Lookup ship name and character name", "");
+                clock()->event("Lookup ship name and character name", "")->begin();
                 $ship_name = DB::table('ship_lookup')
                                ->where('ID', $fit->SHIP_ID)
                                ->value('NAME');
                 $char_name = DB::table('chars')
                                ->where('CHAR_ID', $fit->CHAR_ID)
                                ->value('NAME');
-                clock()->endEvent("Lookup ship name and character name");
+                clock()->event("Lookup ship name and character name")->end();
 
                 // Parse description, get ship type ID and ship name
-                clock()->startEvent("Parse description", "");
+                clock()->event("Parse description", "")->begin();
                 $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
-                clock()->endEvent("Parse description");
+                clock()->event("Parse description")->end();
 
-                clock()->startEvent("Get ship type ID", "");
+                clock()->event("Get ship type ID", "")->begin();
                 $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
-                clock()->endEvent("Get ship type ID");
+                clock()->event("Get ship type ID")->end();
 
-                clock()->startEvent("Get shipitemObject", "");
+                clock()->event("Get shipitemObject", "")->begin();
                 $shipitemObject = $this->sipc->getFromTypeId($fit->SHIP_ID);
                 if (!$shipitemObject) {
                     throw new \Exception("Could not find the ship name from the ship ID (".$fit->SHIP_ID.") - This happens frequently during EVE downtime and will solve itself when EVE comes back online");
                 }
-                clock()->endEvent("Get shipitemObject");
+                clock()->event("Get shipitemObject")->end();
 
                 // Get ship price
-                clock()->startEvent("Get ship price", "");
+                clock()->event("Get ship price", "")->begin();
                 $shipPrice = $shipitemObject->getAveragePrice() ?? 0.0;
-                clock()->endEvent("Get ship price");
+                clock()->event("Get ship price")->end();
 
                 // Get video link
-                clock()->startEvent("Parse fit video link", "");
+                clock()->event("Parse fit video link", "")->begin();
                 if (trim($fit->VIDEO_LINK)) {
                     try {
                         $embed = YoutubeController::getEmbed($fit->VIDEO_LINK);
@@ -464,15 +466,15 @@
                         $embed = "<div class='alert alert-warning'>Could not generate embed for link: " . htmlentities($fit->VIDEO_LINK) . '</div>';
                     }
                 } else { $embed = "";}
-                clock()->endEvent("Parse fit video link");
+                clock()->event("Parse fit video link")->end();
 
                 // Get recommendations
-                clock()->startEvent("Load fit recommendations", "");
+                clock()->event("Load fit recommendations", "")->begin();
                 $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
-                clock()->endEvent("Load fit recommendations");
+                clock()->event("Load fit recommendations")->end();
 
                 // Make open graph tags
-                clock()->startEvent("Generate Open Graph tags", "");
+                clock()->event("Generate Open Graph tags", "")->begin();
                 $og = new OpenGraph();
                 $tags = TagsController::getFitTags($id);
                 $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
@@ -485,79 +487,79 @@
                    ->determiner('an')
                    ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
                 $og->profile(["first_name" => trim($fit->NAME)]);
-                clock()->endEvent("Generate Open Graph tags");
+                clock()->event("Generate Open Graph tags")->end();
 
                 // Get last runs with this fit
-                clock()->startEvent("Load fit's saved runs", "");
+                clock()->event("Load fit's saved runs", "")->begin();
                 $runs = DB::table("runs")
                   ->where("FIT_ID", $id)
                   ->orderBy("CREATED_AT", 'DESC')
                   ->paginate(25);
-                clock()->endEvent("Load fit's saved runs");
+                clock()->event("Load fit's saved runs")->end();
 
                 // Get max tiers and "break even" stats
-                clock()->startEvent("'Break even calculation' - determine max tiers", "");
+                clock()->event("'Break even calculation' - determine max tiers", "")->begin();
                 $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
-                clock()->endEvent("'Break even calculation' - determine max tiers");
-                clock()->startEvent("'Break even calculation' - calculate break even time", "");
+                clock()->event("'Break even calculation' - determine max tiers")->end();
+                clock()->event("'Break even calculation' - calculate break even time", "")->begin();
                 $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
-                clock()->endEvent("'Break even calculation' - calculate break even time");
+                clock()->event("'Break even calculation' - calculate break even time")->end();
 
 
                 // Get parsed items and price
-                clock()->startEvent("Load EFT from ID", "");
+                clock()->event("Load EFT from ID", "")->begin();
                 $eftObj = Eft::loadFromId($id);
-                clock()->endEvent("Load EFT from ID");
-                clock()->startEvent("Load structured, pre-parsed display", "");
+                clock()->event("Load EFT from ID")->end();
+                clock()->event("Load structured, pre-parsed display", "")->begin();
                 $eftParsed = $eftObj->getStructuredDisplay();
-                clock()->endEvent("Load structured, pre-parsed display");
-                clock()->startEvent("Calculate fit value", "");
+                clock()->event("Load structured, pre-parsed display")->end();
+                clock()->event("Calculate fit value", "")->begin();
                 $fit->PRICE = $eftObj->getFitValue();
                 $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
-                clock()->endEvent("Calculate fit value");
+                clock()->event("Calculate fit value")->end();
 
                 // Get similar fits
-                clock()->startEvent("Get similar fits", "");
+                clock()->event("Get similar fits", "")->begin();
                 $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
                 $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
                 $similars = $this->getFitsFromIds($fitIdsNonPrivate);
-                clock()->endEvent("Get similar fits");
+                clock()->event("Get similar fits")->end();
 
-                clock()->startEvent("Make charts", "");
+                clock()->event("Make charts", "")->begin();
                 $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
                 $loots = $this->getFitLootStrategyChart($fitIdsAll);
-                clock()->endEvent("Make charts");
+                clock()->event("Make charts")->end();
 
                 // Get all runs count with this fit
-                clock()->startEvent("Count all runs", "");
+                clock()->event("Count all runs", "")->begin();
                 $runsCountAll = DB::table("runs")
                       ->where("FIT_ID", $id)
                       ->orderBy("CREATED_AT", 'DESC')->count();
-                clock()->endEvent("Count all runs");
+                clock()->event("Count all runs")->end();
 
                 // Get history
-                clock()->startEvent("Load history", "");
+                clock()->event("Load history", "")->begin();
                 $history = FitHistoryController::getFitHistory($id)->reverse();
-                clock()->endEvent("Load history");
+                clock()->event("Load history")->end();
 
                 // Check revisions history
-                clock()->startEvent("Load revision", "");
+                clock()->event("Load revision", "")->begin();
                 $newestRevision = FitHistoryController::getLastRevision($id);
-                clock()->endEvent("Load revision");
+                clock()->event("Load revision")->end();
 
                 // Check revisions history
-                clock()->startEvent("Load questions and answers", "");
+                clock()->event("Load questions and answers", "")->begin();
                 $questions = FitQuestionsController::getFitQuestions($id);
-                clock()->endEvent("Load questions and answers");
+                clock()->event("Load questions and answers")->end();
                 // Check revisions history
-                clock()->startEvent("Generate Eve Workbench export URL", "");
+                clock()->event("Generate Eve Workbench export URL", "")->begin();
                 $eveworkbenchLink = 'https://www.eveworkbench.com/import/fit/'.base64_encode(json_encode([
                         "name" => $fit->NAME,
                         "eft" => $fit->RAW_EFT,
                         "tags" => $tags->join(","),
                         "youtube_url" => $fit->VIDEO_LINK ?? ''
                     ]));
-                clock()->endEvent("Generate Eve Workbench export URL");
+                clock()->event("Generate Eve Workbench export URL")->end();
 
                 return view('fit', [
                     'fit' => $fit,

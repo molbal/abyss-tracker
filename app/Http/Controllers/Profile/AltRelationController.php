@@ -119,7 +119,15 @@ class AltRelationController extends Controller
         return DB::table('char_relationships')->where('main', $mainId)->where('alt', $altId)->delete() == 1;
     }
 
-    public function addMain(int $mainId) {
+
+    /**
+     * Sets thet main character
+     * @param int $mainId
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     *
+     */
+    public function setMain(int $mainId) {
 
         try {
 
