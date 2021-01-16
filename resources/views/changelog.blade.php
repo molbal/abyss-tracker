@@ -25,9 +25,11 @@
                     <h4 class="mb-0 pb-0"><strong>1.10</strong> 'xxx' release</h4>
                     <small class="mt-0">2021 </small>
                     <p class="text-justify">
-                        Feature expansion and stability
+                        Feature expansion and quality of life changes
                     </p>
                     <ul>
+                        <li>Support for main/alt characters <a href="https://github.com/molbal/abyss-tracker/issues/57" target="_blank">#57</a></li>
+                        <li>Adds character count indicators for fit comments and answers <em>(Sorry, Caldari Joans!)</em></li>
                     </ul>
                     <p class="text-justify">
                         Under the hood and bugfixes

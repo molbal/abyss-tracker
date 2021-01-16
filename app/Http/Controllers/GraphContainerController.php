@@ -135,12 +135,11 @@
             $daily_add_chart->dataset("Cruiser runs", "bar", $count_cruiser)->options(["stack" => "1"]);
             $daily_add_chart->dataset("Destroyer runs", "bar", $count_destroyer)->options(["stack" => "1"]);
             $daily_add_chart->dataset("Frigate runs", "bar", $count_frigate)->options(["stack" => "1"]);
-            $daily_add_chart->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => true]);
-            $daily_add_chart->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => true]);
+            $daily_add_chart->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => 0.001, 'symbolSize' => 0]);
+            $daily_add_chart->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => 0.001, 'symbolSize' => 0]);
             $daily_add_chart->theme(ThemeController::getChartTheme());
             $daily_add_chart->displayLegend(true);
             $daily_add_chart->options([
-                'smooth'         => true,
                 'symbolSize'     => 0,
                 'smoothMonotone' => 'x',
                 'tooltip'        => [

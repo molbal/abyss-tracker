@@ -78,7 +78,6 @@
         public function home() {
 
             $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
-//            $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
             $last_runs = $this->homeQueriesController->getLastRuns();
             $drops = $this->homeQueriesController->getCommonDrops();
             $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
