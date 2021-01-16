@@ -33,7 +33,8 @@
                         Under the hood and bugfixes
                     </p>
                     <ul>
-                        <li><span class="badge badge-success">FIXED</span>  <em>Fit stats: tier 0 durations ignored <a href="https://github.com/molbal/abyss-tracker/issues/71" target="_blank">#71</a></em></li>
+                        <li><span class="badge badge-success">FIXED</span> <em>Fit stats: tier 0 durations ignored <a href="https://github.com/molbal/abyss-tracker/issues/71" target="_blank">#71</a></em></li>
+                        <li><span class="badge badge-success">FIXED</span> <em>Error: cannot delete fits<a href="https://github.com/molbal/abyss-tracker/issues/75" target="_blank">#75</a></em></li>
                         <li>Added <a href="https://janice.e-351.com/" rel="nofollow" target="_blank">E-351 Janice</a> as a loot appraisal tool. The buy and sell prices will show 5 day median values to better reflect loot prices. The appraisal tool of EVE Workbench remains in place, as an automatic failover service.</li>
                         <li>Under the hood performance optimization: Added filename based cache busting (no more Ctrl+F5s after patches) <a href="https://www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/" rel="nofollow" target="_blank">stevesouders.com</a> <small>(This was a long time due)</small></li>
                         <li>The Abyss Tracker will automatically update 'Event xx Proving Filament' item names as their details are announced.</li>
