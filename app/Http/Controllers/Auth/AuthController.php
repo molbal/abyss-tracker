@@ -55,6 +55,12 @@
                 \session()->put("login_name", $myAlts->where('id', $altId)['name']);
 
             }
+            catch (SecurityViolationException $e) {
+                return view('error', [
+                    'title' => "Not allowed ",
+                    'message' => $e->getMessage()
+                ]);
+            }
             catch (\Exception $e) {
                 return view('error', [
                     'title' => "Failed",
@@ -169,7 +175,6 @@
                     'redirect'      => config("tracker.scoped.redirect"),
                 ]]);
 
-//                dd(config("services.eveonline"));
 
                 /** @var User $user */
                 $user = Socialite::driver('eveonline')->user();

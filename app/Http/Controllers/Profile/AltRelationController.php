@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Profile;
 
+use App\Exceptions\BusinessLogicException;
 use App\Exceptions\SecurityViolationException;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
@@ -116,6 +117,47 @@ class AltRelationController extends Controller
      */
     public static function deleteRelation(int $mainId, int $altId): bool {
         return DB::table('char_relationships')->where('main', $mainId)->where('alt', $altId)->delete() == 1;
+    }
+
+    public function addMain(int $mainId) {
+
+        try {
+
+            if (!AuthController::isLoggedIn()) {
+                throw new SecurityViolationException('User must be logged in to access '.__FUNCTION__.' in '.__FILE__);
+            }
+            DB::beginTransaction();
+            $myMain = AltRelationController::getMyMain();
+            if ($myMain != null) {
+                throw new BusinessLogicException('You can only have one main character: Please remove '.$myMain->name.' as your main, before adding the new one.');
+            }
+
+            if (!DB::table('char_relationships')->where('main', $mainId)->where('alt', AuthController::getLoginId())->exists()) {
+                AltRelationController::addRelation($mainId, AuthController::getLoginId());
+            }
+            DB::commit();
+
+            return view('autoredirect', [
+                'redirect' => "", //TODO set rotue
+                'title' => "Saved",
+                'message' => "Your main character is now set!"
+            ]);
+
+        }
+        catch (SecurityViolationException $e) {
+            DB::rollBack();
+            return view('error', [
+                'title' => "Not allowed ",
+                'message' => $e->getMessage()
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollBack();
+            return view('error', [
+                'title' => "Failed",
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
 }
