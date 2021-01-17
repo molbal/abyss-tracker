@@ -14,6 +14,45 @@ use Illuminate\Support\Facades\DB;
 
 class AltRelationController extends Controller
 {
+    public function index() {
+        $type = self::getCharacterType(AuthController::getLoginId());
+
+        $allChars = self::getAllMyAvailableCharacters();
+
+        dd($allChars);
+        return view('alts', [
+
+        ]);
+    }
+
+
+    public static function getAllMyAvailableCharacters(bool $excludeCurrentCharacter = true) {
+
+        if (!AuthController::isLoggedIn()) {
+            throw new SecurityViolationException('User must be logged in to access '.__FUNCTION__.' in '.__FILE__);
+        }
+
+        $main = self::getMyMain();
+        if ($main) {
+            $alts = self::getAlts($main->id);
+            $alts->add($main);
+        }
+        else {
+            $alts = self::getMyAlts();
+            $alts->add(json_decode(json_encode([
+                'id' => AuthController::getLoginId(),
+                'name' => AuthController::getCharName()
+            ]))); // PHP bullshit
+        }
+
+        if ($excludeCurrentCharacter) {
+            $alts = $alts->reject(function ($item) {
+                return intval($item->id) == intval(AuthController::getLoginId());
+            });
+        }
+
+        return $alts->sortBy('name');
+    }
 
     /**
      * Determines if the given character is an alt, main, or single.
@@ -24,10 +63,10 @@ class AltRelationController extends Controller
     public static function getCharacterType(int $charId): string {
         $main = self::getMain($charId);
         if ($main != null) {
-            return CharacterType::SINGLE;
+            return CharacterType::ALT;
         }
 
-        $alts = self::getAlts($main);
+        $alts = self::getAlts($charId);
         if ($alts->count() > 0) {
             return CharacterType::MAIN;
         }

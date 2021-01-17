@@ -5,7 +5,7 @@
 
 
 	class CharacterType {
-        public const UNSET = 'unset';
+        public const ALT = 'alt';
         public const MAIN = 'main';
         public const SINGLE = 'single';
 	}

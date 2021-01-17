@@ -28,7 +28,7 @@
         }
 
         /**
-         * Gets a logged in user's EVE ID, null, if not logged in
+         * Gets the logged in user's EVE ID, null, if not logged in
          * @return int|null
          */
         public static function getLoginId(): ?int {
@@ -46,68 +46,31 @@
         }
 
         /**
-         * Switches to the specified alt character
-         *
-         * @param int $altId
-         *
-         * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+         * Gets the logged in user's EVE Name, null, if not logged in
+         * @return string
          */
-        public function switchToAlt(int $altId) : \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse {
-            try {
-                $myAlts = AltRelationController::getMyAlts();
-                if (!$myAlts->containsStrict('id', $altId)) {
-                   throw new SecurityViolationException("You cannot switch to that character, because it is not your alt.");
-                }
+		 public static function getCharName():string {
+            return session()->get('login_name', null);
+		 }
 
+        public function switch(int $charId) {
+            $all = AltRelationController::getAllMyAvailableCharacters(false);
+            if ($all->has('id', $charId)) {
                 session()->regenerate(true);
 
-                \session()->put("login_id", $altId);
-                \session()->put("login_name", $myAlts->where('id', $altId)['name']);
-
+                session()->put("login_id", $charId);
+                session()->put("login_name", $all->where('id', $charId)->name);
             }
-            catch (SecurityViolationException $e) {
+            else {
+
                 return view('error', [
                     'title' => "Not allowed ",
-                    'message' => $e->getMessage()
-                ]);
-            }
-            catch (\Exception $e) {
-                return view('error', [
-                    'title' => "Failed",
-                    'message' => $e->getMessage()
+                    'message' => "You cannot switch to that character, because it is not your alt."
                 ]);
             }
 
             return redirect()->route('home_mine');
-        }
-
-
-        /**
-         * Switches to the main character
-         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
-         */
-        public function switchToMain() {
-            try {
-                $myMain = AltRelationController::getMyMain();
-
-                if (!$myMain) {
-                    throw new BusinessLogicException("You do not have a main character set");
-                }
-                session()->regenerate(true);
-
-                \session()->put("login_id", $myMain->id);
-                \session()->put("login_name", $myMain->name);
-
-            }
-            catch (\Exception $e) {
-                return view('error', [
-                    'title' => "Failed",
-                    'message' => $e->getMessage()
-                ]);
-            }
-
-            return redirect()->route('home_mine');
-        }
+		 }
 
         /**
          * Redirect the user to the Eve Online authentication page.
