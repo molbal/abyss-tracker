@@ -5,7 +5,18 @@
 .navbar ul.navbar-nav li a img,
 li.nav-item.dropdown a#navbarDropdown.nav-link.dropdown-toggle img.rounded-circle{
     position: relative;
-    top: -2px
+    top: -2px;
+}
+
+.switcher-image {
+    @extend .shadow-sm;
+    @extend .rounded-circle;
+    @extend .mr-1;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    border: 1px solid #fff;
+
 }
 
 tr, td {

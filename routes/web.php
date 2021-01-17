@@ -189,6 +189,6 @@
      * Alt switcher routes
      */
     Route::get('/character-relationships', 'Profile\AltRelationController@index')->name('alts.index')->middleware('sso');
-    Route::get('/character-relationships/switch/{altId}', 'Auth\AuthController@switchToAlt')->name('alts.switch')->middleware('sso');
+    Route::get('/character-relationships/switch/{altId}', 'Auth\AuthController@switch')->name('alts.switch')->middleware('sso');
     Route::any('/character-relationships/add/alt/{altId}', 'Profile\AltRelationController@setMain')->name('alts.add.alt')->middleware('sso');
 

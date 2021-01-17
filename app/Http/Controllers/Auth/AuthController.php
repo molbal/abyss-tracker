@@ -55,11 +55,12 @@
 
         public function switch(int $charId) {
             $all = AltRelationController::getAllMyAvailableCharacters(false);
-            if ($all->has('id', $charId)) {
+            $alt = $all->where('id', strval($charId))->first();
+            if ($alt) {
                 session()->regenerate(true);
 
-                session()->put("login_id", $charId);
-                session()->put("login_name", $all->where('id', $charId)->name);
+                session()->put("login_id", intval($alt->id));
+                session()->put("login_name", $alt->name);
             }
             else {
 
