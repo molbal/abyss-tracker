@@ -10642,6 +10642,11 @@ li.nav-item.dropdown a#navbarDropdown.nav-link.dropdown-toggle img#ship_prof {
   border: 1px solid #fff;
 }
 
+.s-48 {
+  width: 48px;
+  height: 48px;
+}
+
 tr, td {
   vertical-align: middle !important;
 }

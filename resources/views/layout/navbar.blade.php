@@ -103,9 +103,12 @@
                         @component('layout.navbar-components.logged-in-dropdown-item', ['itemRoute' => "alts.index",'currentRoute' => $currentRoute,'icon' => 'group-foreground-selected']) Alts manager @endcomponent
                         <div class="dropdown-divider"></div>
                         <span class="dropdown-item pl-2 text-muted"><small>Quick char switch</small></span>
-                        @foreach(\App\Http\Controllers\Profile\AltRelationController::getAllMyAvailableCharacters() as $char)
+                        @forelse(\App\Http\Controllers\Profile\AltRelationController::getAllMyAvailableCharacters() as $char)
                             <a class="dropdown-item pl-2" href="{{route('alts.switch', ['altId' => $char->id])}}"><img src="https://images.evetech.net/characters/{{$char->id}}/portrait?size=32" alt="{{$char->name}}" class="switcher-image" >{{\Illuminate\Support\Str::of($char->name)->limit(12, '...')}}<a>
-                        @endforeach
+                            @empty
+                            @component('layout.navbar-components.logged-in-dropdown-item', ['itemRoute' => "alts.index",'currentRoute' => $currentRoute,'icon' => 'add-user-female']) Add an alt @endcomponent
+
+                       @endforelse
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item pl-2 {{"settings.index" == $currentRoute ? "active text-dark" : ""}}" href="{{route("settings.index")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("settings.index" == $currentRoute)}}/settings.png" class="tinyicon mr-1"/> Settings</a>
                         <a class="dropdown-item pl-2" href="{{route("logout")}}#"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/logout-rounded.png" class="tinyicon mr-1"/> Log out</a>

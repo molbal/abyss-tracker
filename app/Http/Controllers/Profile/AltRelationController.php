@@ -19,9 +19,14 @@ class AltRelationController extends Controller
 
         $allChars = self::getAllMyAvailableCharacters();
 
-        dd($allChars);
-        return view('alts', [
+        $main = self::getMyMain();
+        $alts = self::getMyAlts();
 
+//        dd($allChars);
+        return view('alts', [
+            'type' => $type,
+            'main' => $main,
+            'alts' => $alts,
         ]);
     }
 
@@ -158,6 +163,9 @@ class AltRelationController extends Controller
         return DB::table('char_relationships')->where('main', $mainId)->where('alt', $altId)->delete() == 1;
     }
 
+    public function delete(int $charId) {
+        
+    }
 
     /**
      * Sets thet main character
