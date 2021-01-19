@@ -163,8 +163,48 @@ class AltRelationController extends Controller
         return DB::table('char_relationships')->where('main', $mainId)->where('alt', $altId)->delete() == 1;
     }
 
-    public function delete(int $charId) {
-        
+
+    /**
+     * @param int $mainId
+     * @param int $altId
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function delete(int $mainId, int $altId) {
+
+        try {
+
+            if (!AuthController::isLoggedIn()) {
+                throw new SecurityViolationException('User must be logged in to access '.__FUNCTION__.' in '.__FILE__);
+            }
+
+            if (!in_array(AuthController::getLoginId(), [$altId, $mainId])) {
+                throw new SecurityViolationException(sprintf("Logged in user must be %s or %s", $mainId, $altId));
+            }
+
+            self::deleteRelation($mainId, $altId);
+
+            return view('autoredirect', [
+                'redirect' => route('alts.index'),
+                'title' => "Connection removed",
+                'message' => "The connection between the characters is removed!"
+            ]);
+        }
+        catch (SecurityViolationException $e) {
+            DB::rollBack();
+            return view('error', [
+                'title' => "Not allowed",
+                'message' => $e->getMessage()
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollBack();
+            return view('error', [
+                'title' => "Failed",
+                'message' => $e->getMessage()
+            ]);
+        }
+
     }
 
     /**
@@ -187,13 +227,14 @@ class AltRelationController extends Controller
                 throw new BusinessLogicException('You can only have one main character: Please remove '.$myMain->name.' as your main, before adding the new one.');
             }
 
+
             if (!DB::table('char_relationships')->where('main', $mainId)->where('alt', AuthController::getLoginId())->exists()) {
                 AltRelationController::addRelation($mainId, AuthController::getLoginId());
             }
             DB::commit();
 
             return view('autoredirect', [
-                'redirect' => "", //TODO set rotue
+                'redirect' => route('alts.index'),
                 'title' => "Saved",
                 'message' => "Your main character is now set!"
             ]);
