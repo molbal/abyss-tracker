@@ -3,12 +3,15 @@
 
     namespace App\Http\Controllers\Auth;
 
-    use App\Exceptions\BusinessLogicException;
+//    use App\Exceptions\BusinessLogicException;
+//    use App\Exceptions\SecurityViolationException;
+//    use App\Helpers\ConversationCache;
     use App\Exceptions\SecurityViolationException;
-    use App\Helpers\ConversationCache;
     use App\Http\Controllers\Controller;
+//    use App\Http\Controllers\Profile\AltRelationController;
+//    use http\Client\Request;
     use App\Http\Controllers\Profile\AltRelationController;
-    use http\Client\Request;
+    use Illuminate\Routing\Redirector;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -32,7 +35,7 @@
          * @return int|null
          */
         public static function getLoginId(): ?int {
-            return session()->get('login_id', null);
+            return session('login_id', null);
         }
 
         /**
@@ -50,17 +53,27 @@
          * @return string
          */
 		 public static function getCharName():string {
-            return session()->get('login_name', null);
+            return session('login_name', null);
 		 }
 
         public function switch(int $charId) {
-            $all = AltRelationController::getAllMyAvailableCharacters(false);
+
+            try {
+                $all = AltRelationController::getAllMyAvailableCharacters(false);
+            } catch (SecurityViolationException $e) {
+                return view('error', [
+                    'title' => "Not allowed ",
+                    'message' => $e->getMessage()
+                ]);
+            }
             $alt = $all->where('id', strval($charId))->first();
             if ($alt) {
                 session()->regenerate(true);
 
-                session()->put("login_id", intval($alt->id));
-                session()->put("login_name", $alt->name);
+                session()->put([
+                    'login_id' => intval($alt->id),
+                    'login_name' => $alt->name,
+                ]);
             }
             else {
 
@@ -111,7 +124,7 @@
         /**
          * Obtain the user information from Eve Online.
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|Redirector|\Illuminate\View\View
          */
         public function handleProviderCallback() {
             try {
@@ -138,7 +151,7 @@
         /**
          * Obtain the user information from Eve Online.
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|Redirector|\Illuminate\View\View
          */
         public function handleScopedProviderCallback() {
             try {
@@ -190,7 +203,7 @@
         /**
          * Obtain the user information from Eve Online.
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|Redirector|\Illuminate\View\View
          */
         public function handleMailProviderCallback() {
             try {

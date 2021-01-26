@@ -8,26 +8,41 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Misc\Enums\CharacterType;
 use Carbon\Carbon;
+//use Illuminate\Http\Request;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AltRelationController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws SecurityViolationException
+     */
     public function index() {
         $type = self::getCharacterType(AuthController::getLoginId());
 
-        $allChars = self::getAllMyAvailableCharacters();
+//        $allChars = self::getAllMyAvailableCharacters();
 
         $main = self::getMyMain();
         $alts = self::getMyAlts();
 
 //        dd($allChars);
+
         return view('alts', [
             'type' => $type,
             'main' => $main,
             'alts' => $alts,
+//            'chars' => $chars,
         ]);
+    }
+
+    public function filterAjax(Request $request) {
+        $chars = DB::table('chars')->whereRaw("chars.CHAR_ID not in (select privacy.CHAR_ID from privacy where privacy.PANEL='ALTS' and privacy.DISPLAY='private')")->where('chars.NAME', 'like', $request->get('q').'%')->limit(30)->get(['chars.CHAR_ID as id', 'chars.NAME as text']);
+        return [
+            'results' => $chars
+        ];
     }
 
 
@@ -197,7 +212,7 @@ class AltRelationController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             DB::rollBack();
             return view('error', [
                 'title' => "Failed",
@@ -247,7 +262,7 @@ class AltRelationController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             DB::rollBack();
             return view('error', [
                 'title' => "Failed",
