@@ -78,7 +78,8 @@
                 </div>
                 @break
                 @case(\App\Http\Controllers\Misc\Enums\CharacterType::SINGLE)
-                <form action="" method="post">
+                <form action="{{route('alts.add.alt')}}" method="post">
+                    @csrf
                     <div class="card card-body border-0 shadow-sm pb-2">
                             <div class="form-group">
 
@@ -87,7 +88,7 @@
                                     If you do not see your main here, sign in and then return to this screen.
                                 @endcomponent
                                 </label>
-                                <select name="CHAR_ID" id="select_CHAR_ID" class="form-control select2-character">
+                                <select name="char_id" id="select_CHAR_ID" class="form-control select2-character">
     {{--                                @foreach($chars as $user)--}}
     {{--                                    <option--}}
     {{--                                        value="{{$user->CHAR_ID}}">{{$user->NAME}}--}}
@@ -96,8 +97,7 @@
                                 </select>
                             </div>
                     </div>
-                    <div class="card-footer shadow-sm border-0">
-
+                    <div class="card-footer shadow-sm border-0 text-right">
                         <button class="btn btn-outline-primary" type="submit">Save</button>
                     </div>
                 </form>

@@ -192,5 +192,5 @@
     Route::get('/character-relationships/list/ajax', 'Profile\AltRelationController@filterAjax')->name('alts.ajax')->middleware('sso');
     Route::get('/character-relationships/switch/{altId}', 'Auth\AuthController@switch')->name('alts.switch')->middleware('sso');
     Route::get('/character-relationships/remove/{mainId}/{altId}', 'Profile\AltRelationController@delete')->name('alts.delete')->middleware('sso');
-    Route::any('/character-relationships/add/main/{mainId}', 'Profile\AltRelationController@setMain')->name('alts.add.alt')->middleware('sso');
+    Route::post('/character-relationships/add/main', 'Profile\AltRelationController@setMain')->name('alts.add.alt')->middleware('sso');
 

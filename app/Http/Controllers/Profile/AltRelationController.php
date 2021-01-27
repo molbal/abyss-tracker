@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Profile;
 
+use App\Char;
 use App\Exceptions\BusinessLogicException;
 use App\Exceptions\SecurityViolationException;
 use App\Http\Controllers\Auth\AuthController;
@@ -162,7 +163,7 @@ class AltRelationController extends Controller
         return DB::table('char_relationships')->insert([
             'main' => $mainId,
             'alt' => $altId,
-            'crated_at' => $now,
+            'created_at' => $now,
             'updated_at' => $now,
         ]);
     }
@@ -229,14 +230,25 @@ class AltRelationController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      *
      */
-    public function setMain(int $mainId) {
+    public function setMain(Request $request) {
+
+
+        $mainId = intval($request->get('char_id', null));
+
+
 
         try {
 
             if (!AuthController::isLoggedIn()) {
                 throw new SecurityViolationException('User must be logged in to access '.__FUNCTION__.' in '.__FILE__);
             }
+            if ($mainId == null) {
+                throw new BusinessLogicException('You must select a main character');
+            }
             DB::beginTransaction();
+            if (!Char::where('CHAR_ID', '=', $mainId)->exists()) {
+                throw new BusinessLogicException('The given character does not exist.');
+            }
             $myMain = AltRelationController::getMyMain();
             if ($myMain != null) {
                 throw new BusinessLogicException('You can only have one main character: Please remove '.$myMain->name.' as your main, before adding the new one.');
@@ -265,7 +277,7 @@ class AltRelationController extends Controller
         catch (Exception $e) {
             DB::rollBack();
             return view('error', [
-                'title' => "Failed",
+                'title' => "Could not set your main",
                 'message' => $e->getMessage()
             ]);
         }
