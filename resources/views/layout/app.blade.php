@@ -105,6 +105,7 @@
 <body>
 @component("layout.navbar")@endcomponent
 <div class="container">
+    {!! \App\Http\Controllers\Misc\NotificationController::renderInfoline() !!}
     @if(\Illuminate\Support\Facades\Cache::has("recalc-notice"))
         <div class="alert alert-warning border-0 shadow-sm mt-3">
             {{\Illuminate\Support\Facades\Cache::get("recalc-notice")}} <br>
@@ -227,15 +228,18 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @yield('scripts')
 <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+<script>
+
+    // Prevent closing from click inside dropdown
+    $(document).on('click', '.dropdown-menu', function (e) {
+        e.stopPropagation();
+    });
+    {!! \App\Http\Controllers\Misc\NotificationController::renderToast() !!}
+</script>
 @if(!config("app.debug"))
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86961430-8"></script>
     <script>
-        // jQuery code
-        // Prevent closing from click inside dropdown
-        $(document).on('click', '.dropdown-menu', function (e) {
-            e.stopPropagation();
-        });
         window.dataLayer = window.dataLayer || [];
         function gtag() {
             dataLayer.push(arguments);

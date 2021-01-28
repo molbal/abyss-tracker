@@ -141,7 +141,7 @@
     /**
      * EVE Authentication routes
      */
-    Route::get("/eve/auth/start", 'Auth\AuthController@redirectToProvider')->name("auth-start");
+    Route::get("/eve/auth/start/{addAltCharacter?}", 'Auth\AuthController@redirectToProvider')->name("auth-start");
     Route::get("/eve/auth/callback", 'Auth\AuthController@handleProviderCallback');
     Route::get("/eve/scoped/auth/start", 'Auth\AuthController@redirectToScopedProvider')->name("auth-scoped-start");
     Route::get("/eve/scoped/auth/callback", 'Auth\AuthController@handleScopedProviderCallback');

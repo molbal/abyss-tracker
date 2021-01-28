@@ -4,12 +4,13 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-6 offset-sm-3">
-            <h4 class="font-weight-bold">Character manager for {{\App\Http\Controllers\Auth\AuthController::getCharName()}}</h4>
-            <div class="card card-body border-info shadow-sm d-flex justify-content-start flex-row" style="align-items: center">
-                <img src="https://img.icons8.com/cotton/128/000000/woman-with-a-suitcase.png" class="s-48 mr-2"/>
-                <p class="m-0 p-0">
-                    Your character's type is <em>{{$type}}</em>, which means @lang('alts.'.$type, ['name' => \App\Http\Controllers\Auth\AuthController::getCharName()])
-                </p>
+
+            <div class="card card-body border-0 shadow-sm pb-2">
+                <div class="donor">
+                    <img src="https://images.evetech.net/characters/{{\App\Http\Controllers\Auth\AuthController::getLoginId()}}/portrait?size=128"  class="portrait rounded-circle shadow-sm" alt="">
+                    <p class="h5 font-weight-bold mb-0 mt-2">{{\App\Http\Controllers\Auth\AuthController::getCharName()}}</p>
+                    <p style="letter-spacing: 2px" class="text-uppercase font-bold">alts relationship manager</p>
+                </div>
             </div>
         </div>
     </div>
@@ -17,7 +18,7 @@
         <div class="col-sm-6 offset-sm-3">
             @switch($type)
                 @case(\App\Http\Controllers\Misc\Enums\CharacterType::MAIN)
-                <div class="card card-body rounded-top shadow-sm pb-0">
+                <div class="card card-body border-0 rounded-top shadow-sm pb-0">
                     <h5 class="font-weight-bold">Your alts</h5>
                     <table class="table table-sm table-hover w-100">
                         <thead class="mb-3">
@@ -44,20 +45,26 @@
                 </div>
                 @break
                 @case(\App\Http\Controllers\Misc\Enums\CharacterType::ALT)
-                    <div class="card card-body border-0 shadow-sm pb-2">
-                        <div class="donor">
-                            <img src="https://images.evetech.net/characters/{{$main->id}}/portrait?size=128"  class="portrait rounded-circle shadow-sm" alt="">
-                            <p class="h5 font-weight-bold mb-0 mt-2">{{$main->name}}</p>
-                            <p>{{$main->name}} is your main character.</p>
+                    <div class="card card-body border-0 shadow-sm pb-2 ">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <img src="https://images.evetech.net/characters/{{$main->id}}/portrait?size=128" style="border: 1px solid #fff; width: 64px; height: 64px;" class= rounded-circle shadow-sm" alt="">
+                            <p class="text-center mb-0 ml-3">{{\App\Http\Controllers\Auth\AuthController::getCharName()}} is an alt character of {{$main->name}}. Please <a href="{{route('alts.switch', ['altId' => $main->id])}}">switch to {{$main->name}}</a>, if you want to add an alt.</p>
                         </div>
                     </div>
-                    <div class="card-footer shadow-sm">
-                        <a href="{{route('alts.delete', ['altId' => \App\Http\Controllers\Auth\AuthController::getLoginId(), 'mainId' => $main->id])}}" class="text-muted">Delete main</a>
+                    <div class="card-footer shadow-sm text-center">
+                        <a href="{{route('alts.delete', ['altId' => \App\Http\Controllers\Auth\AuthController::getLoginId(), 'mainId' => $main->id])}}" class="text-muted">Remove main</a>
+                        <span class="mx-2">&middot;</span>
+                        <a href="{{route('alts.switch', ['altId' => $main->id])}}" class="text-muted">Switch to main</a>
                     </div>
                 @break
+
                 @case(\App\Http\Controllers\Misc\Enums\CharacterType::SINGLE)
                 <div class="card card-body border-0 shadow-sm pb-2">
-                    <p class="text-center py-4">If you add a main character, or add this character as a main, your alts or main will appear here.</p>
+                    <p class="text-center py-4 mb-0">You do not have any alts or mains added to {{\App\Http\Controllers\Auth\AuthController::getCharName()}}. You can add an alt character, if you sign in via the button below.
+                    </p>
+                    <p class="text-center">
+                        <a href="{{route("auth-start", ['addAltCharacter' => true])}}" class="my-sm-0"><img src="{{asset("sso.png")}}" alt="Log in with EVE Online Single sign on" width="195" height="30"></a>
+                    </p>
                 </div>
                 @break
             @endswitch
@@ -67,40 +74,14 @@
     <div class="row mt-3">
         <div class="col-sm-6 offset-sm-3">
             @switch($type)
-                @case(\App\Http\Controllers\Misc\Enums\CharacterType::ALT)
-                <div class="card card-body border-0 shadow-sm pb-2">
-                    <p class="text-center py-4">You can only have one main character. <a href="{{route('alts.delete', ['altId' => \App\Http\Controllers\Auth\AuthController::getLoginId(), 'mainId' => $main->id])}}" class="text-danger">Remove {{$main->name}} as your main</a> to add a new one.</p>
-                </div>
-                @break
                 @case(\App\Http\Controllers\Misc\Enums\CharacterType::MAIN)
                 <div class="card card-body border-0 shadow-sm pb-2">
-                    <p class="text-center py-4">You already have alt characters. You can add more alt characters by logging in them, and setting {{\App\Http\Controllers\Auth\AuthController::getCharName()}} as their main. To use {{\App\Http\Controllers\Auth\AuthController::getCharName()}} as an alt character, first it have to delete all their alts.</p>
+                    <p class="text-center py-4 mb-0">You already have alt characters. You can add another alt character by loggin in using the button below.
+                    </p>
+                    <p class="text-center">
+                        <a href="{{route("auth-start", ['addAltCharacter' => true])}}" class="my-sm-0"><img src="{{asset("sso.png")}}" alt="Log in with EVE Online Single sign on" width="195" height="30"></a>
+                    </p>
                 </div>
-                @break
-                @case(\App\Http\Controllers\Misc\Enums\CharacterType::SINGLE)
-                <form action="{{route('alts.add.alt')}}" method="post">
-                    @csrf
-                    <div class="card card-body border-0 shadow-sm pb-2">
-                            <div class="form-group">
-
-                                <label for="CHAR_ID">Please select your main character.
-                                @component('components.info-toggle')
-                                    If you do not see your main here, sign in and then return to this screen.
-                                @endcomponent
-                                </label>
-                                <select name="char_id" id="select_CHAR_ID" class="form-control select2-character">
-    {{--                                @foreach($chars as $user)--}}
-    {{--                                    <option--}}
-    {{--                                        value="{{$user->CHAR_ID}}">{{$user->NAME}}--}}
-    {{--                                    </option>--}}
-    {{--                                @endforeach--}}
-                                </select>
-                            </div>
-                    </div>
-                    <div class="card-footer shadow-sm border-0 text-right">
-                        <button class="btn btn-outline-primary" type="submit">Save</button>
-                    </div>
-                </form>
                 @break
             @endswitch
         </div>

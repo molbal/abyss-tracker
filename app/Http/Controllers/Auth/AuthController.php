@@ -10,6 +10,7 @@
     use App\Http\Controllers\Controller;
 //    use App\Http\Controllers\Profile\AltRelationController;
 //    use http\Client\Request;
+    use App\Http\Controllers\Misc\NotificationController;
     use App\Http\Controllers\Profile\AltRelationController;
     use Illuminate\Routing\Redirector;
     use Illuminate\Support\Facades\Cache;
@@ -20,6 +21,7 @@
 
     class AuthController extends Controller {
 
+        public const ALT_SESSION_VAR = 'flag_add_alt_character';
 
 
         /**
@@ -83,7 +85,9 @@
                 ]);
             }
 
-            return redirect()->route('home_mine');
+//            NotificationController::flashInfoLine("Switched active character to ".htmlentities($alt->name), 'info');
+            NotificationController::flashToast("Switched active character to ".htmlentities($alt->name));
+            return redirect(url()->previous(route('home')));
 		 }
 
         /**
@@ -91,7 +95,10 @@
          *
          * @return mixed
          */
-        public function redirectToProvider() {
+        public function redirectToProvider($addAltCharacter = false) {
+            if ($addAltCharacter) {
+                session()->put(self::ALT_SESSION_VAR, true);
+            }
             return Socialite::driver('eveonline')
                 ->redirect();
         }
@@ -138,9 +145,20 @@
                     "CHAR_ID" => $id,
                     "NAME"    => $name
                 ]);
-                \session()->put("login_id", $id);
-                \session()->put("login_name", $name);
-                return redirect(route("home_mine"));
+
+                if(session()->has(self::ALT_SESSION_VAR)) {
+                    session()->forget(self::ALT_SESSION_VAR);
+                    AltRelationController::addRelation(AuthController::getLoginId(), $id);
+                    NotificationController::flashInfoLine($name." was added as your alt.", 'success');
+                    redirect(route('alts.index'));
+                }
+                else {
+                    session()->put([
+                        'login_id' => intval($id),
+                        'login_name' => $name,
+                    ]);
+                    return redirect(route("home_mine"));
+                }
             }
             catch (\Exception $e) {
                 return view('error', ["error" => "The EVE API had an error: " . ($e->getMessage() ?? 'No error message provided by ESI') . " - if you try logging in again it will probably work."]);
@@ -190,8 +208,10 @@
                     Log::error("Database issue on the Abyss Tracker's end: " . $e->getMessage());
                     throw $e;
                 }
-                \session()->put("login_id", $id);
-                \session()->put("login_name", $name);
+                session()->put([
+                    'login_id' => intval($id),
+                    'login_name' => $name,
+                ]);
                 return redirect(route("new"));
             }
             catch (\Exception $e) {
@@ -217,7 +237,7 @@
                 /** @var User $user */
                 $user = Socialite::driver('eveonline')->user();
 
-                dd($user);
+//                dd($user);
 
             }
             catch (\Exception $e) {
