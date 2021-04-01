@@ -144,7 +144,7 @@
                     <thead>
                     <tr>
                         <th>Character</th>
-                        <th class="text-right">Average loot/run</th>
+                        <th class="text-right">Average run speed</th>
                     </tr>
                     @forelse($rtsloot_leaderboard_90 as $l)
                         @component("components.leaderboard_char_rts", ['item' => $l])@endcomponent
@@ -164,7 +164,7 @@
                     <thead>
                     <tr>
                         <th>Character</th>
-                        <th class="text-right">Average loot/run</th>
+                        <th class="text-right">Average run speed</th>
                     </tr>
                     @forelse($rtsloot_leaderboard_30 as $l)
                         @component("components.leaderboard_char_rts", ['item' => $l])@endcomponent
@@ -184,7 +184,7 @@
                     <thead>
                     <tr>
                         <th>Character</th>
-                        <th class="text-right">Average loot/run</th>
+                        <th class="text-right">Average run speed</th>
                     </tr>
                     @forelse($rtsloot_leaderboard_07 as $l)
                         @component("components.leaderboard_char_rts", ['item' => $l])@endcomponent
