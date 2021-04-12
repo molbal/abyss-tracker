@@ -63,7 +63,7 @@
         </div>
 
         <div class="col-xs-12 col-sm-12 col-md-4">
-            <div class="card card-body border-0 shadow-sm pb-2">
+            <div class="card card-body border-0 shadow-sm pb-2 mt-md-0 mt-3">
                 <div class="donor">
                     <img src="https://images.evetech.net/characters/{{$ingame_last->CHAR_ID}}/portrait?size=128"  class="portrait rounded-circle shadow-sm" alt="">
                     <p class="h5 font-weight-bold mb-0 mt-2">{{$ingame_last->NAME}}</p>
@@ -111,7 +111,7 @@
             <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/trophy.png" class="tinyicon bringupper mr-1">Leaderboard</a>
     </div>
     <div class="row mt-4">
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12  mt-md-0 mt-3">
             <div class="d-flex justify-content-between">
                 <h5 class="font-weight-bold mb-2">Top 10</h5>
                 <small>(last 90 days)</small>
@@ -134,7 +134,7 @@
                 </table>
             </div>
         </div>
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12  mt-md-0 mt-3">
             <div class="d-flex justify-content-between">
                 <h5 class="font-weight-bold mb-2">Top 10</h5>
                 <small>(last 30 days)</small>
@@ -157,7 +157,7 @@
                 </table>
             </div>
         </div>
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12  mt-md-0 mt-3">
             <div class="d-flex justify-content-between">
                 <h5 class="font-weight-bold mb-2">Top 10</h5>
                 <small>(last 7 days)</small>
@@ -183,11 +183,6 @@
     </div>
 
 
-
-
-
-
-
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">Ship fits for the Abyss</h4>
         <a class="text-dark"
@@ -210,7 +205,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-9 col-sm-12 col-xs-12">
+    <div class="col-md-9 col-sm-12 col-xs-12 mt-md-0 mt-3">
         <ul class="nav nav-tabs" id="fits-tabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="tab-head-fits-popular" data-toggle="tab" href="#tab-fits-popular" role="tab" aria-controls="home" aria-selected="true">Most popular fits</a>

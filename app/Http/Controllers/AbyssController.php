@@ -4,10 +4,12 @@
     namespace App\Http\Controllers;
 
 
+    use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Misc\DonorController;
     use App\Http\Controllers\Misc\Enums\ShipHullSize;
+    use App\Http\Controllers\Profile\ActivityChartController;
     use App\Http\Controllers\Profile\LeaderboardController;
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Requests\NewRunRequest;
@@ -132,40 +134,8 @@
 
             [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio] = $this->homeQueriesController->getPersonalStats();
 
-            $loginId = session()->get("login_id");
-            $personalDaily = $this->graphContainerController->getPersonalStatsCharts();
-
-            $table = [];
-            for($i=0; $i>-31; $i--) {
-                $date = date("Y-m-d", strtotime("now $i days"));
-                $val = DB::select("select
-                        COUNT(*) as COUNT,
-                        AVG(LOOT_ISK) as AVG,
-                        SUM(LOOT_ISK) as SUM,
-                        '$date' as RUN_DATE
-                           from runs
-                    where CHAR_ID=? and RUN_DATE=?" ,[$loginId, $date
-                ]);
-
-                $seconds = DB::table("runs")
-                    ->select("RUNTIME_SECONDS")
-                    ->where("CHAR_ID", $loginId)
-                    ->where("RUN_DATE", $date)->get();
-
-                $totalSeconds = 0;
-                foreach ($seconds as $second) {
-                    $totalSeconds += $second->RUNTIME_SECONDS ?? 1200;
-                }
-                $totalSeconds = max($totalSeconds, 3600);
-
-                $val[0]->IPH = $val[0]->SUM/($totalSeconds/3600);
-                $val[0]->TOTAL_SECONDS = $totalSeconds;
-                $val[0]->TOTAL_HOURS = $totalSeconds/3600;
-//                if ($date == "2020-06-01")
-//                    dd($val);
-                $table[]= $val;
-
-            }
+//            $personalDaily = $this->graphContainerController->getPersonalStatsCharts();
+            $activity_chart = ActivityChartController::getChartContainer(2020, [AuthController::getLoginId()]);
 
 
             return view("home_mine", [
@@ -173,8 +143,9 @@
                 'my_avg_loot'           => $my_avg_loot,
                 'my_sum_loot'           => $my_sum_loot,
                 'my_survival_ratio'     => $my_survival_ratio,
-                'personal_chart_loot'   => $personalDaily,
-                'activity_daily' => $table
+                'activity_chart'     => $activity_chart,
+//                'personal_chart_loot'   => $personalDaily,
+//                'activity_daily' => $table
             ]);
         }
 

@@ -11,6 +11,9 @@
     |
     */
 
+    use App\Http\Controllers\GraphHelper;
+    use App\Http\Controllers\ItemController;
+    use App\Http\Controllers\Profile\ActivityChartController;
     use Illuminate\Support\Facades\Route;
 
     Route::get("/", 'AbyssController@home')->name("home");
@@ -98,24 +101,24 @@
     /**
      * Chart APIs
      */
-    Route::get("/api/chart/home/types/tier/{tier}", 'GraphHelper@typeTier')->name("chart.home.type.tier");
-    Route::get("/api/chart/home/fits/popular/hull", 'GraphHelper@popularHulls')->name("chart.home.popular-hulls");
-    Route::get("/api/chart/home/fits/popular/class", 'GraphHelper@popularClasses')->name("chart.home.popular-classes");
-    Route::get("/api/chart/home/loot_levels", 'GraphHelper@homeLootLevels')->name("chart.home.loot_levels");
-    Route::get("/api/chart/home/survival/tier/{tier}", 'GraphHelper@homeSurvivalTier')->name("chart.home.survival.tier");
-    Route::get("/api/chart/home/tiers/averages", 'GraphHelper@tierAverages')->name("chart.home.tier_averages");
-    Route::get("/api/chart/personal/loot", 'GraphHelper@personalLoot')->name("chart.personal.loot");
-    Route::get("/api/chart/personal/isk_per_hour", 'GraphHelper@personalIsk')->name("chart.personal.ihp");
-    Route::get("/api/chart/run/distribution/{tier}/{isCruiser}/{thisRun}", 'GraphHelper@getRunBellGraphs')->name("chart.run.averages");
-    Route::get("/api/chart/run/distribution/cruisers", 'GraphHelper@getHomeRunBellGraphsCruisers')->name("chart.home.distribution.cruisers");
-    Route::get("/api/chart/run/distribution/frigates", 'GraphHelper@getHomeRunBellGraphsFrigates')->name("chart.home.distribution.frigates");
-    Route::get("/api/chart/fit/popularity/{ids}/{name}", 'GraphHelper@getFitPopularityChart')->name("chart.fit.popularity");
-    Route::get("/api/chart/fit/loot-strategy/{ids}", 'GraphHelper@getFitLootStrategyChart')->name("chart.fit.loot-strategy");
-    Route::get("/api/chart/item/history/market/{id}", 'ItemController@itemMarketHistory')->name("chart.item.market-history");
-    Route::get("/api/chart/item/history/drops/{id}", 'ItemController@itemDroppedVolume')->name("chart.item.volume-history");
-//    Route::get("/api/chart/item/history/drop/{id}/{from}", 'ItemController@itemDropHistory')->name("chart.item.drop-history");
-//    Route::get("/api/chart/item/tiers/{id}/", 'ItemController@itemTiers')->name("chart.item.tiers");
-//    Route::get("/api/chart/item/types/{id}/", 'ItemController@itemTypes')->name("chart.item.types");
+    Route::prefix('/api/chart')->group(function () {
+        Route::get("/home/types/tier/{tier}", [GraphHelper::class, 'typeTier'])->name("chart.home.type.tier");
+        Route::get("/home/fits/popular/hull", [GraphHelper::class, 'popularHulls'])->name("chart.home.popular-hulls");
+        Route::get("/home/fits/popular/class", [GraphHelper::class, 'popularClasses'])->name("chart.home.popular-classes");
+        Route::get("/home/loot_levels", [GraphHelper::class, 'homeLootLevels'])->name("chart.home.loot_levels");
+        Route::get("/home/survival/tier/{tier}", [GraphHelper::class, 'homeSurvivalTier'])->name("chart.home.survival.tier");
+        Route::get("/home/tiers/averages", [GraphHelper::class, 'tierAverages'])->name("chart.home.tier_averages");
+        Route::get("/personal/loot", [GraphHelper::class, 'personalLoot'])->name("chart.personal.loot");
+        Route::get('/personal/activity/{year}', [ActivityChartController::class, 'loadChart'])->name('chart.activity');
+        Route::get("/personal/isk_per_hour", [GraphHelper::class, 'personalIsk'])->name("chart.personal.ihp");
+        Route::get("/run/distribution/{tier}/{isCruiser}/{thisRun}", [GraphHelper::class, 'getRunBellGraphs'])->name("chart.run.averages");
+        Route::get("/run/distribution/cruisers", [GraphHelper::class, 'getHomeRunBellGraphsCruisers'])->name("chart.home.distribution.cruisers");
+        Route::get("/run/distribution/frigates", [GraphHelper::class, 'getHomeRunBellGraphsFrigates'])->name("chart.home.distribution.frigates");
+        Route::get("/fit/popularity/{ids}/{name}", [GraphHelper::class, 'getFitPopularityChart'])->name("chart.fit.popularity");
+        Route::get("/fit/loot-strategy/{ids}", [GraphHelper::class, 'getFitLootStrategyChart'])->name("chart.fit.loot-strategy");
+        Route::get("/item/history/market/{id}", [ItemController::class, 'itemMarketHistory'])->name("chart.item.market-history");
+        Route::get("/item/history/drops/{id}", [ItemController::class, 'itemDroppedVolume'])->name("chart.item.volume-history");
+    });
 
 
     /**

@@ -189,12 +189,21 @@ ul.pagination {
     background: url("/loader.png") no-repeat center center;
 }
 
-.h-400px {
-    height: 400px;
+$sizes: 400px, 300px, 200px, 150px, 100px, 32px, 24px, 16px, 12px;
+
+@each $size in $sizes {
+    .h-#{$size} {
+        height: $size;
+    }
 }
 
-.h-300px {
-    height: 300px;
+.rounded-b-none {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+.rounded-t-none {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
 }
 
 .top-left-no-round {

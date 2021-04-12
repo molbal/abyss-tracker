@@ -40,7 +40,7 @@
                  [
                      'body' => $body,
                      'timeout' => 12,
-                     'debug' => fopen("c:\\VM\\resource.txt", "w+")
+//                     'debug' => fopen("c:\\VM\\resource.txt", "w+")
                  ]);
 
                 if ($resp->getStatusCode() != 200) {

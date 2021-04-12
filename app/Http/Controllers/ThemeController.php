@@ -27,13 +27,16 @@
             return self::isDarkTheme() ? 'dark' : 'walden';
         }
 
-        public static function getThemedIconColor():string {
-            return self::isDarkTheme() ? "ffffff" : "191d21";
+        public static function getThemedIconColor(bool $addHash = false):string {
+            return ($addHash ? '#' : '') . (self::isDarkTheme() ? "ffffff" : "191d21");
         }
-        public static function getThemedBorderColor():string {
-            return self::isDarkTheme() ? "#191d21" : "#fff";
+        public static function getThemedBorderColor(bool $addHash = false):string {
+            return ($addHash ? '#' : '') . (self::isDarkTheme() ? "#191d21" : "#fff");
         }
 
+        public static function getActivityChartColors() {
+            return (self::isDarkTheme() ? ['#161b22','#003820','#00602d','#00602d','#27d545'] : ['#ebedf0','#9be9a8','#40c463','#40c463','#216e39']);
+        }
         public static function getShipSizeIconPath(string $class):string {
             return "_icons/ship-class/" . (self::isDarkTheme() ? "ffffff" : "000000") ."/".$class."_64.png";
         }
@@ -60,6 +63,7 @@
             }
             return '#fff';
         }
+
 
         public function setTheme(bool $isDark) {
             if ($isDark) {
