@@ -16,6 +16,7 @@
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Mail;
     use Illuminate\Support\Facades\Validator;
     use Illuminate\Support\Str;
@@ -542,7 +543,7 @@ from (`abyss`.`lost_items` `dl`
 
                 $multiply = 1;
                 if ($all_data->SHIP_ID) {
-                    $hull_size = intval(DB::table("ship_lookup")->where("ID", $all_data->SHIP_ID)->value("HULL_SIZE"));
+                    $hull_size = DB::table("ship_lookup")->where("ID", $all_data->SHIP_ID)->value("HULL_SIZE");
                     switch ($hull_size) {
                         case ShipHullSize::CRUISER:
                             $multiply = 1;
