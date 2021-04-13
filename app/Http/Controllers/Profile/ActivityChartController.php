@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Charts\ActivityChart;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Misc\Enums\CharacterType;
 use App\Http\Controllers\ThemeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -98,8 +100,17 @@ class ActivityChartController extends Controller {
      * @throws \App\Exceptions\SecurityViolationException
      */
     public function loadChart(int $year) {
-        $charIds = AltRelationController::getAllMyAvailableCharacters(false);
-        $q = collect(DB::select('select d.day, count(r.id) as count from date_helper d left join runs r on d.day=r.RUN_DATE and r.CHAR_ID in ('.$charIds->pluck('id')->implode(',').') where  year(d.day)=? group by d.day, r.char_id order by d.day asc;', [$year]));
+
+        if (AltRelationController::getCharacterType() == CharacterType::MAIN) {
+            $charIds = AltRelationController::getAllMyAvailableCharacters(false);
+        }
+        else {
+            $charIds = collect([['id' => AuthController::getLoginId()]]);
+        }
+
+
+
+        $q = collect(DB::select('select d.day, count(r.id) as count from date_helper d left join runs r on d.day=r.RUN_DATE and r.CHAR_ID in ('.$charIds->pluck('id')->implode(',').') where  year(d.day)=? group by d.day order by d.day asc;', [$year]));
 
         $data = $q->map(function ($raw) {
             return [$raw->day, $raw->count];
