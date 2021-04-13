@@ -98,7 +98,7 @@
         }
 
         function debugLogin($login_id, $secret) {
-            if ($secret != config('tracker.maintenance-token')) {
+            if ($secret != config('tracker.maintenance-token') && config('app.debug')) {
                 abort(403, "Invalid maintenance token.");
             }
             session()->forget(["login_id", "login_name"]);

@@ -81,7 +81,14 @@ class AltRelationController extends Controller
      *
      * @return string
      */
-    public static function getCharacterType(int $charId): string {
+    public static function getCharacterType(int $charId = null): string {
+        if (!$charId) {
+            if (!AuthController::isLoggedIn()) {
+                throw new SecurityViolationException("Without a character id specified, you must be logged in.");
+            }
+            $charId = AuthController::getLoginId();
+
+        }
         $main = self::getMain($charId);
         if ($main != null) {
             return CharacterType::ALT;

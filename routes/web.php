@@ -17,7 +17,8 @@
     use Illuminate\Support\Facades\Route;
 
     Route::get("/", 'AbyssController@home')->name("home");
-    Route::get("/stats_mine/", 'AbyssController@home_mine')->name("home_mine");
+    Route::get("/stats_mine/", 'AbyssController@home_mine')->name("home_mine")->middleware("sso");
+    Route::get("/stats_mine/year/{year}", [ActivityChartController::class, 'redirectToYear'])->name("home.year-redirect")->middleware("sso");
 
 
     Route::post("/new", 'AbyssController@store')->name("store")->middleware("sso");

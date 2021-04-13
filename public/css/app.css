@@ -10834,6 +10834,10 @@ ul.pagination {
   height: 12px;
 }
 
+.h-160px {
+  height: 160px;
+}
+
 .rounded-b-none {
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;

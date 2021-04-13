@@ -12,7 +12,7 @@
     <div class="col-sm-12 col-md-12">
         <div id="banner" class="shadow-sm">
             <img src="https://images.evetech.net/characters/{{\App\Http\Controllers\Auth\AuthController::getLoginId()}}/portrait?size=128" class="rounded-circle shadow-sm">
-            <h4 class="font-weight-bold ">{{\App\Http\Controllers\Auth\AuthController::getCharName()}}<small>'s private stats</small></h4>
+            <h4 class="font-weight-bold justify-content-between w-100">{{\App\Http\Controllers\Auth\AuthController::getCharName()}}<small class="ml-2 font-weight-light">{{$character_type}} character</small></h4>
         </div>
     </div>
 </div>
@@ -66,16 +66,27 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-body border-0 shadow-sm mt-4 rounded-b-none">
-                <h5 class="font-weight-bold mb-2"><img src="https://img.icons8.com/cotton/32/000000/graph-report--v2.png" class="smallicon mr-1"/> Activity  @component('components.info-toggle') Shows activity across all your alts @endcomponent</h5>
-                <div class="graph-container h-200px">
+            <ul class="nav nav-tabs justify-content-end mt-4">
+                @foreach($years as $y)
+                    <li class="nav-item">
+                        <a class="nav-link {{$y == $year ? "active" : ""}}" href="{{route('home.year-redirect', ['year' => $y])}}">{{$y}}</a>
+                    </li>
+                @endforeach
+            </ul>
+            <div class="card card-body border-0 shadow-sm mb-0 rounded-b-none">
+                <h5 class="font-weight-bold mb-2"><img src="https://img.icons8.com/cotton/32/000000/graph-report--v2.png" class="smallicon mr-1"/> Activity</h5>
+                <div class="graph-container h-160px">
                     {!! $activity_chart->container(); !!}
                 </div>
             </div>
-            <div class="card-footer border-0 shadow-sm mb-4 rounded-t-none text-right">
-                <a href="#" class="mx-2 text-muted">2020</a>
-                &middot;
-                <a href="#" class="mx-2">2021</a>
+            <div class="card-footer border-0 shadow-sm mb-4 rounded-t-none">
+                @component('components.info-line')
+                    @if($is_main)
+                        The more runs you or your alts ({{$chars->pluck('name')->implode(', ')}}) made any given day, the greener that day will be in the calendar.
+                    @else
+                        The more runs you made any given day, the greener that day will be in the calendar.
+                    @endif
+                @endcomponent
             </div>
         </div>
     </div>

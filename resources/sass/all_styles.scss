@@ -189,7 +189,7 @@ ul.pagination {
     background: url("/loader.png") no-repeat center center;
 }
 
-$sizes: 400px, 300px, 200px, 150px, 100px, 32px, 24px, 16px, 12px;
+$sizes: 400px, 300px, 200px, 150px, 100px, 32px, 24px, 16px, 12px, 160px;
 
 @each $size in $sizes {
     .h-#{$size} {

@@ -73,19 +73,11 @@
                     @endif
                 </div>
             </div>
-            <div class="card-footer shadow-sm">
-                <a href="{{route("donors.index")}}" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/receive-cash.png">Donate ingame</a>
-            </div>
-
-            <div class="mt-3 card card-body border-0 shadow-sm pb-2">
-                <div class="donor">
-                    <span>Last Patreon donor</span>
-                    <p class="h4 font-weight-bold mb-0">{{$patreon_last->name}} ({{$patreon_last->monthly_donation}} €/m)</p>
-                    <span style="font-size: 0.7rem" class="text-uppercase">joined {{\App\Http\Controllers\TimeHelper::timeElapsedString($patreon_last->joined)}}</span>
-                </div>
-            </div>
-            <div class="card-footer shadow-sm">
-                <a href="https://patreon.com/veetor" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png">Support us on Patreon</a>
+            <div class="card-footer shadow-sm d-flex justify-content-between">
+                <span>
+                    <a href="{{route("donors.index")}}" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/receive-cash.png">Donate ingame</a>
+                </span>
+                <span><a href="https://patreon.com/veetor" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png">Support on Patreon</a></span>
             </div>
 
 

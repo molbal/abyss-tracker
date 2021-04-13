@@ -8,13 +8,16 @@
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Misc\DonorController;
+    use App\Http\Controllers\Misc\Enums\CharacterType;
     use App\Http\Controllers\Misc\Enums\ShipHullSize;
     use App\Http\Controllers\Profile\ActivityChartController;
+    use App\Http\Controllers\Profile\AltRelationController;
     use App\Http\Controllers\Profile\LeaderboardController;
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Requests\NewRunRequest;
     use App\Mail\RunFlagged;
     use App\PatreonDonorDisplay;
+    use Carbon\Carbon;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -135,9 +138,14 @@
 
             [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio] = $this->homeQueriesController->getPersonalStats();
 
-//            $personalDaily = $this->graphContainerController->getPersonalStatsCharts();
-            $activity_chart = ActivityChartController::getChartContainer(2020, [AuthController::getLoginId()]);
 
+            $years = ActivityChartController::getYears();
+            $year = session()->get('home_year', $years->last());
+            $activity_chart = ActivityChartController::getChartContainer($year);
+
+            $chars = AltRelationController::getAllMyAvailableCharacters(false);
+            $characterType = AltRelationController::getCharacterType();
+            $isMain = $characterType == CharacterType::MAIN;
 
             return view("home_mine", [
                 'my_runs'               => $my_runs,
@@ -145,8 +153,12 @@
                 'my_sum_loot'           => $my_sum_loot,
                 'my_survival_ratio'     => $my_survival_ratio,
                 'activity_chart'     => $activity_chart,
-//                'personal_chart_loot'   => $personalDaily,
-//                'activity_daily' => $table
+                'years' => $years,
+                'year' => $year,
+                'chars' => $chars,
+                'is_main' => $isMain,
+                'character_type' => $characterType,
+
             ]);
         }
 

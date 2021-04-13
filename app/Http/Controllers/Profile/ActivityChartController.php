@@ -6,6 +6,8 @@ use App\Charts\ActivityChart;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ThemeController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ActivityChartController extends Controller {
@@ -68,6 +70,33 @@ class ActivityChartController extends Controller {
         return $chart;
     }
 
+    /**
+     * @param int $year
+     */
+    public function redirectToYear(int $year) {
+        if (self::getYears()->contains($year)) {
+            session()->flash('home_year', $year);
+        }
+        return redirect(route('home_mine'));
+    }
+
+    /**
+     * Returns allowed years
+     * @return array
+     */
+    public static function getYears(): Collection {
+        return Cache::remember('activity-graph.years', now()->addHours(4), function () {
+           return collect(DB::select("select year(d.day) year from date_helper d where d.day <= now() and d.day >= '2020-12-31' group by year(d.day) order by 1;"))->pluck('year');
+        });
+    }
+
+    /**
+     * Handles loading the chart
+     * @param int $year
+     *
+     * @return string
+     * @throws \App\Exceptions\SecurityViolationException
+     */
     public function loadChart(int $year) {
         $charIds = AltRelationController::getAllMyAvailableCharacters(false);
         $q = collect(DB::select('select d.day, count(r.id) as count from date_helper d left join runs r on d.day=r.RUN_DATE and r.CHAR_ID in ('.$charIds->pluck('id')->implode(',').') where  year(d.day)=? group by d.day, r.char_id order by d.day asc;', [$year]));
