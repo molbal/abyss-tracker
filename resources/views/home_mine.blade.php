@@ -92,30 +92,28 @@
     </div>
     <div class="row mt-2">
         <div class="col-sm-9">
-            <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold"><img src="https://img.icons8.com/cotton/32/000000/calendar-27--v3.png" class="smallicon mr-1"/> Last 30 days</h5>
-{{--                <table class="table table-responsive-sm table-sm">--}}
-{{--                    <tr>--}}
-{{--                        <th>Day</th>--}}
-{{--                        <th class="text-right font-weight-bold">Runs #</th>--}}
-{{--                        <th class="text-right font-weight-bold">Avg loot</th>--}}
-{{--                        <th class="text-right font-weight-bold">All loot</th>--}}
-{{--                        <th class="text-right font-weight-bold">Efficiency</th>--}}
-{{--                    </tr>--}}
-{{--                    @forelse($activity_daily as $data)--}}
-{{--                        <tr>--}}
-{{--                            <td>{{$data[0]->RUN_DATE}}</td>--}}
-{{--                            <td class="text-right">{{$data[0]->COUNT}}</td>--}}
-{{--                            <td class="text-right">{{round($data[0]->AVG/1000000 ?? 0, 2)}}{{$data[0]->AVG ? 'M' : ''}} ISK</td>--}}
-{{--                            <td class="text-right">{{round($data[0]->SUM/1000000 ?? 0, 2)}}{{$data[0]->AVG ? 'M' : ''}} ISK</td>--}}
-{{--                            <td class="text-right">{{number_format($data[0]->IPH/1000000, 2, ","," ")}}M ISK/H</td>--}}
-{{--                        </tr>--}}
-{{--                    @empty--}}
-{{--                        <tr>--}}
-{{--                            <td colspan="5" class="text-center">No data yet</td>--}}
-{{--                        </tr>--}}
-{{--                    @endforelse--}}
-{{--                </table>--}}
+            <ul class="nav nav-tabs justify-content-start" role="tablist">
+                @if($is_main)
+                    <li class="nav-item"  role="presentation">
+                        <a class="nav-link active" data-toggle="tab" href="#overview" role="tab">Overview</a>
+                    </li>
+                    @foreach($chars as $char)
+                        <li class="nav-item"  role="presentation">
+                            <a class="nav-link"  data-toggle="tab" href="#char_{{$char->id}}" role="tab">{{$char->name}}</a>
+                        </li>
+                    @endforeach
+                @else
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active"  data-toggle="tab" href="#char_{{\App\Http\Controllers\Auth\AuthController::getLoginId()}}" role="tab">{{\App\Http\Controllers\Auth\AuthController::getCharName()}}</a>
+                    </li>
+                @endif
+                <li class="nav-item ml-auto">
+                    <a class="nav-link" data-toggle="tooltip" title="Manage alts" href="{{route('alts.index')}}"><img src="https://img.icons8.com/small/24/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/group-foreground-selected.png" class="tinyicon mr-1"/></a>
+                </li>
+            </ul>
+            <div class="card card-body border-0 shadow-sm rounded-t-none">
+                <h5 class="font-weight-bold"><img src="https://img.icons8.com/cotton/32/000000/calendar-27--v3.png" class="smallicon mr-1"/> Load data</h5>
+
             </div>
         </div>
         <div class="col-sm-3">
@@ -154,9 +152,13 @@
     </div>
 @endsection
 
-@section("scripts")
-    {!! $activity_chart->script(); !!}
+@section("styles")
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+@endsection
 
+@section("scripts")
+    <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+    {!! $activity_chart->script(); !!}
     <script type="text/javascript">
         // When ready.
         // function format_tooltip(p) {var format = echarts.format.formatTime('yyyy-MM-dd', p.data[0]);return format + ': ' + p.data[1] + ' runs';}

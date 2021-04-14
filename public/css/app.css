@@ -10848,6 +10848,14 @@ ul.pagination {
   border-top-right-radius: 0 !important;
 }
 
+.rounded-tl-none {
+  border-top-left-radius: 0 !important;
+}
+
+.rounded-tr-none {
+  border-top-right-radius: 0 !important;
+}
+
 .top-left-no-round {
   border-top-left-radius: 0 !important;
 }

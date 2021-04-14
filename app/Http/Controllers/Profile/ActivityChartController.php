@@ -108,8 +108,6 @@ class ActivityChartController extends Controller {
             $charIds = collect([['id' => AuthController::getLoginId()]]);
         }
 
-
-
         $q = collect(DB::select('select d.day, count(r.id) as count from date_helper d left join runs r on d.day=r.RUN_DATE and r.CHAR_ID in ('.$charIds->pluck('id')->implode(',').') where  year(d.day)=? group by d.day order by d.day asc;', [$year]));
 
         $data = $q->map(function ($raw) {
