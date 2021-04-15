@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * App\Char
@@ -22,4 +23,10 @@ class Char extends Model
 {
 
     protected $primaryKey = 'CHAR_ID';
+
+    public static function loadName(int $id):string {
+        return Cache::remember('char-id.'.$id, now()->addMinutes(10), function () use ($id) {
+            return Char::where('CHAR_ID',$id)->firstOrFail()->NAME;
+        });
+    }
 }

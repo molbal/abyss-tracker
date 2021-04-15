@@ -11052,6 +11052,10 @@ ul.pagination {
   max-height: 96px;
 }
 
+.card-bg-color {
+  background: #fff;
+}
+
 .bright-theme-only-white {
   color: #fafafa;
 }

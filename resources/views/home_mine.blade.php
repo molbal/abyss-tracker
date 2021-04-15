@@ -8,7 +8,7 @@
     {{--                class="rounded-circle shadow-sm"> Stats for {{session()->get("login_name")}}</h4>--}}
     {{--    </div>--}}
 
-    <div class="row my-5">
+    <div class="row mt-5 mb-3">
         <div class="col-sm-12 col-md-12">
             <div id="banner" class="shadow-sm">
                 <img src="https://images.evetech.net/characters/{{\App\Http\Controllers\Auth\AuthController::getLoginId()}}/portrait?size=128" class="rounded-circle shadow-sm">
@@ -18,52 +18,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="card card-body shadow-sm border-0">
-                <div class="row">
-                    <img src="https://img.icons8.com/dusk/64/000000/counter.png" class="pull-left ml-2" style="width:64px;height: 64px">
-                    <div class="col">
-                        <h2 class="font-weight-bold mb-0">{{$my_runs}}</h2>
-                        <small class="text-muted font-weight-bold">Runs so far</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card card-body shadow-sm border-0">
-                <div class="row">
-                    <img src="https://img.icons8.com/dusk/64/000000/average-2.png" class="pull-left ml-2" style="width:64px;height: 64px">
-                    <div class="col">
-                        <h2 class="font-weight-bold mb-0">{{number_format($my_avg_loot/1000000, 2, ".", " ")}}</h2>
-                        <small class="text-muted font-weight-bold">Average loot (Million ISK)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card card-body shadow-sm border-0">
-                <div class="row">
-                    <img src="https://img.icons8.com/dusk/64/000000/treasure-chest.png" class="pull-left ml-2" style="width:64px;height: 64px">
-                    <div class="col">
-                        <h2 class="font-weight-bold mb-0">{{number_format($my_sum_loot/1000000, 0, ",", " ")}}</h2>
-                        <small class="text-muted font-weight-bold">Total loot (Million ISK)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card card-body shadow-sm border-0">
-                <div class="row">
-                    <img src="https://img.icons8.com/dusk/64/000000/web-shield.png" class="pull-left ml-2" style="width:64px;height: 64px">
-                    <div class="col">
-                        <h2 class="font-weight-bold mb-0">{{sprintf("%1.2f", $my_survival_ratio)}} %</h2>
-                        <small class="text-muted font-weight-bold">Survival ratio</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-sm-12">
@@ -100,7 +54,7 @@
                     </li>
                     @foreach($chars as $char)
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#char_{{$char->id}}" role="tab">{{$char->name}}</a>
+                            <a class="nav-link" data-toggle="tab" href="#char_{{$char->id}}" id="char_head_{{$char->id}}" role="tab">{{$char->name}}</a>
                         </li>
                     @endforeach
                 @else
@@ -123,26 +77,74 @@
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="overview" role="tabpanel">
                             <h5 class="font-weight-bold">Overview</h5>
-
-                            <div class="graph-container h-400px">
-                                {!! $timeline_chart->container(); !!}
-                            </div>
                         </div>
 
                         @foreach($chars as $char)
-
                             <div class="tab-pane fade" id="char_{{$char->id}}" role="tabpanel">
-                                {{$char->name}}
+                                <p class="text-center"><span class="font-weight-bold mx-auto">{{$char->name}}</span>'s stats</p>
+
+
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="card card-body border-0">
+                                            <div class="row">
+                                                <img src="https://img.icons8.com/dusk/64/000000/counter.png" class="pull-left ml-2" style="width:64px;height: 64px">
+                                                <div class="col">
+                                                    <h2 class="font-weight-bold mb-0">{{$my_runs}}</h2>
+                                                    <small class="text-muted font-weight-bold">Runs so far</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="card card-body border-0">
+                                            <div class="row">
+                                                <img src="https://img.icons8.com/dusk/64/000000/average-2.png" class="pull-left ml-2" style="width:64px;height: 64px">
+                                                <div class="col">
+                                                    <h2 class="font-weight-bold mb-0">{{number_format($my_avg_loot/1000000, 2, ".", " ")}}</h2>
+                                                    <small class="text-muted font-weight-bold">Average loot (Million ISK)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="card card-body border-0">
+                                            <div class="row">
+                                                <img src="https://img.icons8.com/dusk/64/000000/treasure-chest.png" class="pull-left ml-2" style="width:64px;height: 64px">
+                                                <div class="col">
+                                                    <h2 class="font-weight-bold mb-0">{{number_format($my_sum_loot/1000000, 0, ",", " ")}}</h2>
+                                                    <small class="text-muted font-weight-bold">Total loot (Million ISK)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="card card-body border-0">
+                                            <div class="row">
+                                                <img src="https://img.icons8.com/dusk/64/000000/web-shield.png" class="pull-left ml-2" style="width:64px;height: 64px">
+                                                <div class="col">
+                                                    <h2 class="font-weight-bold mb-0">{{sprintf("%1.2f", $my_survival_ratio)}} %</h2>
+                                                    <small class="text-muted font-weight-bold">Survival ratio</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="graph-container h-400px">
+                                    {!! $timeline_charts[$char->id]->container(); !!}
+                                </div>
                             </div>
                         @endforeach
                     </div>
-
 
                 @else
 
                 @endif
             </div>
         </div>
+    </div>
+    <div class="row mt-3">
         <div class="col-sm-3">
             <div class="card card-body border-0 shadow-sm pb-0">
                 <h5 class="font-weight-bold">Quick links</h5>
@@ -190,15 +192,38 @@
 
 @section("styles")
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+    <style type="text/css">
+
+        div.asslicker {
+            height: 18px;
+        }
+        p.asslicker-new-run {
+            height: 1rem;
+            line-height: 1rem;
+        }
+        img.portrait-new-run {
+            position: relative;
+            top: -20px;
+            /*left: -35px;*/
+            /*margin-right: -24px;*/
+            border: 2px solid #fff;
+            height: 48px;
+            width: 48px;
+        }
+    </style>
 @endsection
 
 @section("scripts")
     <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
     {!! $activity_chart->script(); !!}
-    {!! $timeline_chart->script(); !!}
+    @foreach($timeline_charts as $id => $c)
+        <!-- {{$id}} {{$chars->firstWhere('id', $id)->name}} for {{$c->id}} -->
+        {!! $c->script() !!}
+    @endforeach
     <script type="text/javascript">
-        // When ready.
-        // function format_tooltip(p) {var format = echarts.format.formatTime('yyyy-MM-dd', p.data[0]);return format + ': ' + p.data[1] + ' runs';}
+        @foreach($chars as $char)
+            $('#char_head_{{$char->id}}').on('shown.bs.tab', function (e) {console.log("shown ", {{$char->id}}); window.{{$timeline_charts[$char->id]->id}}.resize();});
+        @endforeach
 
         $(function () {
 

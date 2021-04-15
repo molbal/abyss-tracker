@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Profile;
 
+use App\Char;
 use App\Charts\ActivityChart;
 use App\Charts\TimelineChart;
 use App\Exceptions\SecurityViolationException;
@@ -139,7 +140,7 @@ class ActivityChartController extends Controller {
         $chart->height(400);
         $chart->theme(ThemeController::getChartTheme());
         $chart->labels(collect(DB::table('date_helper')->whereRaw('day <= NOW()')->get(['day']))->pluck('day'));
-        $chart->load(route('chart.timeline', ['char' => $charId]));
+        $chart->load(route('chart.timeline', ['charId' => $charId]));
         return $chart;
     }
 
@@ -156,33 +157,30 @@ class ActivityChartController extends Controller {
             throw new SecurityViolationException("");
         }
 
-        $charIds = collect([['id' => AuthController::getLoginId(), 'name' => AuthController::getCharName()]]);
 
         $chart = new TimelineChart();
-        foreach ($charIds as $charId) {
-            $q  = collect(DB::select('select c.day, c.count, c.sum, c.all_seconds, ROUND(c.sum/greatest(c.all_seconds, 3600))*3600 isk_per_hour from (select d.day,
-       count(r.id) count,
-       sum(r.LOOT_ISK) sum,
-       if(count(r.id)=0,0,sum(coalesce(r.RUNTIME_SECONDS, 20*60))) all_seconds
+        $q  = collect(DB::select('select c.day, c.count, c.sum, c.all_seconds, ROUND(c.sum/greatest(c.all_seconds, 3600))*3600 isk_per_hour from (select d.day,
+   count(r.id) count,
+   sum(r.LOOT_ISK) sum,
+   if(count(r.id)=0,0,sum(coalesce(r.RUNTIME_SECONDS, 20*60))) all_seconds
 
 from date_helper d
-         left join runs r on d.day = r.RUN_DATE and r.CHAR_ID in ('.$charId->id.')
+     left join runs r on d.day = r.RUN_DATE and r.CHAR_ID = ?
 group by d.day, r.char_id
-order by d.day asc) c;'));
+order by d.day asc) c;', [$charId]));
 
 
-            $days = collect(DB::table('date_helper')->whereRaw('day <= NOW()')->get(['day']))->pluck('day');
-            $iph = [];
-            $cnt = [];
-            foreach ($days as $day) {
-                $iph[] = $q->firstWhere('day', $day)->isk_per_hour ?? 0;
-                $cnt[] = $q->firstWhere('day', $day)->count ?? 0;
-            }
-
-            $chart->dataset("ISK/hour: ".$charId->name, 'bar', $iph)->options(['showSymbol'=> false]);
-            $chart->dataset("Runs: ".$charId->name, 'bar', $cnt)->options(['showSymbol'=> false,
-                    'yAxisIndex' => 1]);
+        $days = collect(DB::table('date_helper')->whereRaw('day <= NOW()')->get(['day']))->pluck('day');
+        $iph = [];
+        $cnt = [];
+        foreach ($days as $day) {
+            $iph[] = $q->firstWhere('day', $day)->isk_per_hour ?? 0;
+            $cnt[] = $q->firstWhere('day', $day)->count ?? 0;
         }
+
+        $chart->dataset("ISK/hour: ".Char::loadName($charId), 'bar', $iph)->options(['showSymbol'=> false]);
+        $chart->dataset("Runs: ".Char::loadName($charId), 'bar', $cnt)->options(['showSymbol'=> false,
+                'yAxisIndex' => 1]);
         return $chart->api();
 
 

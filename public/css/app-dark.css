@@ -11186,6 +11186,10 @@ ul.pagination {
   max-height: 96px;
 }
 
+.card-bg-color {
+  background: #212529;
+}
+
 body {
   color: #fafafa !important;
 }
