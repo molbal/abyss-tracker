@@ -111,6 +111,7 @@
         Route::get("/home/tiers/averages", [GraphHelper::class, 'tierAverages'])->name("chart.home.tier_averages");
         Route::get("/personal/loot", [GraphHelper::class, 'personalLoot'])->name("chart.personal.loot");
         Route::get('/personal/activity/{year}', [ActivityChartController::class, 'loadChart'])->name('chart.activity');
+        Route::get('/personal/timeline/{charId}', [ActivityChartController::class, 'loadTimelineChart'])->name('chart.timeline');
         Route::get("/personal/isk_per_hour", [GraphHelper::class, 'personalIsk'])->name("chart.personal.ihp");
         Route::get("/run/distribution/{tier}/{isCruiser}/{thisRun}", [GraphHelper::class, 'getRunBellGraphs'])->name("chart.run.averages");
         Route::get("/run/distribution/cruisers", [GraphHelper::class, 'getHomeRunBellGraphsCruisers'])->name("chart.home.distribution.cruisers");

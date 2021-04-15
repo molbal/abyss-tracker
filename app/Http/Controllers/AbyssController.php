@@ -142,6 +142,7 @@
             $years = ActivityChartController::getYears();
             $year = session()->get('home_year', $years->last());
             $activity_chart = ActivityChartController::getChartContainer($year);
+            $timeline_chart = ActivityChartController::getTimelineContainer();
 
             $chars = AltRelationController::getAllMyAvailableCharacters(false);
             $characterType = AltRelationController::getCharacterType();
@@ -153,12 +154,12 @@
                 'my_sum_loot'           => $my_sum_loot,
                 'my_survival_ratio'     => $my_survival_ratio,
                 'activity_chart'     => $activity_chart,
+                'timeline_chart'     => $timeline_chart,
                 'years' => $years,
                 'year' => $year,
                 'chars' => $chars,
                 'is_main' => $isMain,
-                'character_type' => $characterType,
-
+                'character_type' => $characterType
             ]);
         }
 
