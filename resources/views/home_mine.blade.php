@@ -70,34 +70,57 @@
                 </li>
             </ul>
 
-            <div class="card card-body border-0 shadow-sm top-left-no-round px-1 py-3">
+            <div class="card card-body border-0 shadow-sm top-left-no-round p-3">
                 @if($is_main)
 
 
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="overview" role="tabpanel">
-                            <h5 class="font-weight-bold">Overview</h5>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 p-3">
+                                    <h5>Runs count</h5>
+                                    <div class="graph-container w-100 h-300px">
+                                        {!!  $runs_count_ov->container()!!}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12 p-3">
+                                    <span class="w-100 mb-2 d-flex justify-content-between align-content-center">
+                                        <h5 class="mb-0">Average loot</h5>
+                                        <small>(M ISK)</small>
+                                    </span>
+                                    <div class="graph-container w-100 h-300px">
+                                        {!!  $avg_loot_ov->container()!!}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12 p-3">
+                                    <span class="w-100 mb-2 d-flex justify-content-between align-content-center">
+                                        <h5 class="mb-0">Survival ratio</h5>
+                                        <small>(%)</small>
+                                    </span>
+                                    <div class="graph-container w-100 h-300px">
+                                        {!!  $survival_ov->container()!!}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12 p-3">
+                                    <span class="w-100 mb-2 d-flex justify-content-between align-content-center">
+                                        <h5 class="mb-0">Total loot</h5>
+                                        <small>(M ISK)</small>
+                                    </span>
+                                    <div class="graph-container w-100 h-300px">
+                                        {!!  $sum_loot_ov->container()!!}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         @foreach($chars as $char)
-                            @component('components.personal-home.char-tab', ['char' => $char,
-'my_runs' => $my_runs,
-'my_avg_loot' => $my_avg_loot,
-'my_sum_loot' => $my_sum_loot,
-'my_survival_ratio' => $my_survival_ratio,
-'timeline_charts' => $timeline_charts]) @endcomponent
+                            @component('components.personal-home.char-tab', ['char' => $char,'my_runs' => $my_runs,'my_avg_loot' => $my_avg_loot,'my_sum_loot' => $my_sum_loot,'my_survival_ratio' => $my_survival_ratio,'timeline_charts' => $timeline_charts]) @endcomponent
                         @endforeach
                     </div>
 
                 @else
-
                     <div class="tab-content">
-                    @component('components.personal-home.char-tab', ['char' => $chars->firstWhere('id', \App\Http\Controllers\Auth\AuthController::getLoginId()),
-'my_runs' => $my_runs,
-'my_avg_loot' => $my_avg_loot,
-'my_sum_loot' => $my_sum_loot,
-'my_survival_ratio' => $my_survival_ratio,
-'timeline_charts' => $timeline_charts, 'show' => true]) @endcomponent
+                        @component('components.personal-home.char-tab', ['char' => $chars->firstWhere('id', \App\Http\Controllers\Auth\AuthController::getLoginId()),'my_runs' => $my_runs,'my_avg_loot' => $my_avg_loot,'my_sum_loot' => $my_sum_loot,'my_survival_ratio' => $my_survival_ratio,'timeline_charts' => $timeline_charts, 'show' => true]) @endcomponent
                     </div>
                 @endif
             </div>
@@ -179,6 +202,12 @@
         <!-- {{$id}} {{$chars->firstWhere('id', $id)->name}} for {{$c->id}} -->
         {!! $c->script() !!}
     @endforeach
+    @if($is_main)
+        {!!  $runs_count_ov->script()!!}
+        {!!  $avg_loot_ov->script()!!}
+        {!!  $survival_ov->script()!!}
+        {!!  $sum_loot_ov->script()!!}
+    @endif
     <script type="text/javascript">
         @foreach($chars as $char)
             @if (isset($timeline_charts[$char->id]->id))

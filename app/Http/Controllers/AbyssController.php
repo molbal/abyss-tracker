@@ -132,12 +132,6 @@
          */
         public function home_mine() {
 
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please log in to access this page"]);
-            }
-
-
-
             $years = ActivityChartController::getYears();
             $year = session()->get('home_year', $years->last());
             $activity_chart = ActivityChartController::getChartContainer($year);
@@ -161,7 +155,11 @@
                     $timeline_charts[$char->id] = ActivityChartController::getTimelineContainer($char->id);
                     [$my_runs[$char->id], $my_avg_loot[$char->id], $my_sum_loot[$char->id], $my_survival_ratio[$char->id]] = HomeQueriesController::getPersonalStats($char->id);
                 }
+
+                list($runsCountOV, $avgLootOV,$survivalChartOV, $sumLootChartOV)= HomeQueriesController::getOverviewCharts($my_runs,$my_avg_loot,$my_sum_loot,$my_survival_ratio);
             }
+
+
 
             return view("home_mine", [
                 'my_runs'               => $my_runs,
@@ -174,7 +172,12 @@
                 'year' => $year,
                 'chars' => $chars,
                 'is_main' => $isMain,
-                'character_type' => $characterType
+                'character_type' => $characterType,
+
+                'runs_count_ov'=> $runsCountOV ?? null,
+                'avg_loot_ov'=> $avgLootOV ?? null,
+                'survival_ov'=> $survivalChartOV ?? null,
+                'sum_loot_ov'=> $sumLootChartOV ?? null,
             ]);
         }
 
