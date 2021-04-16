@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use App\Http\Controllers\Auth\AuthController;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
@@ -52,8 +53,12 @@ LIMIT 10;
         /**
          * @return array
          */
-        public function getPersonalStats(): array {
-            $loginId = session()->get("login_id");
+        public static function getPersonalStats(?int $loginId = null): array {
+
+            if(!$loginId) {
+                $loginId = AuthController::getLoginId();
+            }
+
             $my_runs = DB::table("runs")->where("CHAR_ID", $loginId)->count();
             $my_avg_loot = DB::table("runs")->where("CHAR_ID", $loginId)->avg('LOOT_ISK');
             $my_sum_loot = DB::table("runs")->where("CHAR_ID", $loginId)->sum('LOOT_ISK');

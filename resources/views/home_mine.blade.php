@@ -80,66 +80,25 @@
                         </div>
 
                         @foreach($chars as $char)
-                            <div class="tab-pane fade" id="char_{{$char->id}}" role="tabpanel">
-                                <p class="text-center"><span class="font-weight-bold mx-auto">{{$char->name}}</span>'s stats</p>
-
-
-                                <div class="row">
-                                    <div class="col-md-3 col-sm-6">
-                                        <div class="card card-body border-0">
-                                            <div class="row">
-                                                <img src="https://img.icons8.com/dusk/64/000000/counter.png" class="pull-left ml-2" style="width:64px;height: 64px">
-                                                <div class="col">
-                                                    <h2 class="font-weight-bold mb-0">{{$my_runs}}</h2>
-                                                    <small class="text-muted font-weight-bold">Runs so far</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6">
-                                        <div class="card card-body border-0">
-                                            <div class="row">
-                                                <img src="https://img.icons8.com/dusk/64/000000/average-2.png" class="pull-left ml-2" style="width:64px;height: 64px">
-                                                <div class="col">
-                                                    <h2 class="font-weight-bold mb-0">{{number_format($my_avg_loot/1000000, 2, ".", " ")}}</h2>
-                                                    <small class="text-muted font-weight-bold">Average loot (Million ISK)</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6">
-                                        <div class="card card-body border-0">
-                                            <div class="row">
-                                                <img src="https://img.icons8.com/dusk/64/000000/treasure-chest.png" class="pull-left ml-2" style="width:64px;height: 64px">
-                                                <div class="col">
-                                                    <h2 class="font-weight-bold mb-0">{{number_format($my_sum_loot/1000000, 0, ",", " ")}}</h2>
-                                                    <small class="text-muted font-weight-bold">Total loot (Million ISK)</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6">
-                                        <div class="card card-body border-0">
-                                            <div class="row">
-                                                <img src="https://img.icons8.com/dusk/64/000000/web-shield.png" class="pull-left ml-2" style="width:64px;height: 64px">
-                                                <div class="col">
-                                                    <h2 class="font-weight-bold mb-0">{{sprintf("%1.2f", $my_survival_ratio)}} %</h2>
-                                                    <small class="text-muted font-weight-bold">Survival ratio</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="graph-container h-400px">
-                                    {!! $timeline_charts[$char->id]->container(); !!}
-                                </div>
-                            </div>
+                            @component('components.personal-home.char-tab', ['char' => $char,
+'my_runs' => $my_runs,
+'my_avg_loot' => $my_avg_loot,
+'my_sum_loot' => $my_sum_loot,
+'my_survival_ratio' => $my_survival_ratio,
+'timeline_charts' => $timeline_charts]) @endcomponent
                         @endforeach
                     </div>
 
                 @else
 
+                    <div class="tab-content">
+                    @component('components.personal-home.char-tab', ['char' => $chars->firstWhere('id', \App\Http\Controllers\Auth\AuthController::getLoginId()),
+'my_runs' => $my_runs,
+'my_avg_loot' => $my_avg_loot,
+'my_sum_loot' => $my_sum_loot,
+'my_survival_ratio' => $my_survival_ratio,
+'timeline_charts' => $timeline_charts, 'show' => true]) @endcomponent
+                    </div>
                 @endif
             </div>
         </div>
@@ -222,7 +181,9 @@
     @endforeach
     <script type="text/javascript">
         @foreach($chars as $char)
-            $('#char_head_{{$char->id}}').on('shown.bs.tab', function (e) {console.log("shown ", {{$char->id}}); window.{{$timeline_charts[$char->id]->id}}.resize();});
+            @if (isset($timeline_charts[$char->id]->id))
+                $('#char_head_{{$char->id}}').on('shown.bs.tab', function (e) {console.log("shown ", {{$char->id}}); window.{{$timeline_charts[$char->id]->id}}.resize();});
+            @endif
         @endforeach
 
         $(function () {

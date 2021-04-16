@@ -136,7 +136,6 @@
                 return view("error", ["error" => "Please log in to access this page"]);
             }
 
-            [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio] = $this->homeQueriesController->getPersonalStats();
 
 
             $years = ActivityChartController::getYears();
@@ -148,12 +147,19 @@
             $isMain = $characterType == CharacterType::MAIN;
 
             $timeline_charts = [];
+            $my_runs = [];
+            $my_avg_loot = [];
+            $my_sum_loot = [];
+            $my_survival_ratio = [];
             if (!$isMain) {
-                $timeline_charts[AuthController::getLoginId()] = ActivityChartController::getTimelineContainer(AuthController::getLoginId());
+                $loginId = AuthController::getLoginId();
+                $timeline_charts[$loginId] = ActivityChartController::getTimelineContainer($loginId);
+                [$my_runs[$loginId], $my_avg_loot[$loginId], $my_sum_loot[$loginId], $my_survival_ratio[$loginId]] = HomeQueriesController::getPersonalStats();
             }
             else {
                 foreach ($chars as $char) {
                     $timeline_charts[$char->id] = ActivityChartController::getTimelineContainer($char->id);
+                    [$my_runs[$char->id], $my_avg_loot[$char->id], $my_sum_loot[$char->id], $my_survival_ratio[$char->id]] = HomeQueriesController::getPersonalStats($char->id);
                 }
             }
 
