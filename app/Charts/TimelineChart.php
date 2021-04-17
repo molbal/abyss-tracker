@@ -38,16 +38,16 @@ class TimelineChart extends Chart
   yAxis: [
         {
             type: 'value',
-            name: 'ISK/Hour',
+            name: 'Approx. ISK/Hour',
             axisLabel: {
                 formatter: '{value} ISK'
             }
         },
         {
             type: 'value',
-            name: 'Daily runs',
+            name: 'Daily loot value',
             axisLabel: {
-                formatter: '{value} runs.'
+                formatter: '{value} ISK.'
             },
               splitLine: {
                  show: false

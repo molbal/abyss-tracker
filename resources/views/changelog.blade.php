@@ -19,32 +19,41 @@
 {{--                </p>--}}
 {{--            </div>--}}
             <div class="card card-body border-danger shadow-sm mb-3 p-0 overflow-hidden">
-{{--                <img src="{{asset("home/1.9.jpg")}}" alt="1.9 release" class="w-100 shadow">--}}
+                <img src="{{asset("home/1.10.jpg")}}" alt="1.9 release" class="w-100 shadow">
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
-                    <h4 class="mb-0 pb-0"><strong>1.10</strong> 'xxx' release</h4>
+                    <h4 class="mb-0 pb-0"><strong>1.10</strong> 'Negotiation' release</h4>
                     <small class="mt-0">2021 </small>
-                    <p class="text-justify">
-                        Feature expansion and quality of life changes
+                    <p class="text-justify font-weight-bold">
+                        Feature expansion and major quality of life changes
                     </p>
                     <ul>
-                        <li>Support for main/alt characters <a href="https://github.com/molbal/abyss-tracker/issues/57" target="_blank">#57</a></li>
-                        <li>Adds character count indicators for fit comments and answers <em>(Sorry, Caldari Joans!)</em></li>
+                        <li>Added support for main/alt character relations <a href="https://github.com/molbal/abyss-tracker/issues/57" target="_blank">#57</a></li>
+                        <li>Added character count indicators for fit comments and answers <em>(Sorry, Caldari Joans!)</em></li>
                         <li>Reworks the screen after logging in</li>
                     </ul>
-                    <p class="text-justify">
+
+                    <p class="text-justify font-weight-bold">
+                        Minor quality of life changes
+                    </p>
+                    <ul>
+                        <li>Added size tooltip to homescreen's last runs list</li>
+                        <li>According to analytics<sup>tm</sup> most people click 'new run' after logging in. So I added a giant new run button right to the page top.</li>
+                    </ul>
+                    <p class="text-justify font-weight-bold">
                         Under the hood and bugfixes
                     </p>
                     <ul>
                         <li><span class="badge badge-success">FIXED</span> <em>Fit stats: tier 0 durations ignored <a href="https://github.com/molbal/abyss-tracker/issues/71" target="_blank">#71</a></em></li>
-                        <li><span class="badge badge-success">FIXED</span> <em>Error: cannot delete fits<a href="https://github.com/molbal/abyss-tracker/issues/75" target="_blank">#75</a></em></li>
+                        <li><span class="badge badge-success">FIXED</span> <em>Error: cannot delete fits <a href="https://github.com/molbal/abyss-tracker/issues/75" target="_blank">#75</a></em></li>
+                        <li><span class="badge badge-success">FIXED</span> <em>Error: Rodiva fits may now be added <a href="https://github.com/molbal/abyss-tracker/issues/84" target="_blank">#84</a></em></li>
                         <li><span class="badge badge-success">FIXED</span> <em>Error: Fixes abyss run detail showing 1 used filament for frigate size ships if no before loot was provided.</em></li>
                         <li>Added <a href="https://janice.e-351.com/" rel="nofollow" target="_blank">E-351 Janice</a> as a loot appraisal tool. The buy and sell prices will show 5 day median values to better reflect loot prices. The appraisal tool of EVE Workbench remains in place, as an automatic failover service.</li>
                         <li>Under the hood performance optimization: Added filename based cache busting (no more Ctrl+F5s after patches) <a href="https://www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/" rel="nofollow" target="_blank">stevesouders.com</a> <small>(This was a long time due)</small></li>
                         <li>The Abyss Tracker will automatically update 'Event xx Proving Filament' item names as their details are announced.</li>
-                        <li>Fixes the Fit performance calculation incorrectly calculating with 20 minute runtimes instead of the fit's max type/tier median value</li>
-                        <li>Updates the Abyss Tracker to Laravel 8 and PHP 8</li>
-                        <li>Adds Redis to the uptime monitoring page: <a href="https://uptime.abyss.eve-nt.uk/" target="_blank">https://uptime.abyss.eve-nt.uk/</a></li>
+                        <li>Fixed the Fit performance calculation incorrectly calculating with 20 minute runtimes instead of the fit's max type/tier median value</li>
+                        <li>Updated the Abyss Tracker to Laravel 8 and PHP 8</li>
+                        <li>Added Redis to the uptime monitoring page: <a href="https://uptime.abyss.eve-nt.uk/" target="_blank">https://uptime.abyss.eve-nt.uk/</a></li>
                     </ul>
 
                 </div>

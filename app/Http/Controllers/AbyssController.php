@@ -159,6 +159,7 @@
                 list($runsCountOV, $avgLootOV,$survivalChartOV, $sumLootChartOV)= HomeQueriesController::getOverviewCharts($my_runs,$my_avg_loot,$my_sum_loot,$my_survival_ratio);
             }
 
+            $lastRuns = DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->whereIn('CHAR_ID', array_keys($my_runs))->paginate();
 
 
             return view("home_mine", [
@@ -178,6 +179,8 @@
                 'avg_loot_ov'=> $avgLootOV ?? null,
                 'survival_ov'=> $survivalChartOV ?? null,
                 'sum_loot_ov'=> $sumLootChartOV ?? null,
+
+                'last_runs' => $lastRuns
             ]);
         }
 

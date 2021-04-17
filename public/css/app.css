@@ -10927,6 +10927,23 @@ ul.pagination {
   font-size: 26px;
 }
 
+#quicklinks {
+  background: url("/newrun.jpg");
+  background-size: cover;
+  display: flex;
+  height: 86px;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+#quicklinks > a.h4 {
+  color: #fff;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+  position: relative;
+  text-transform: uppercase;
+}
+
 .animate {
   animation-duration: 0.1s;
   -webkit-animation-duration: 0.1s;

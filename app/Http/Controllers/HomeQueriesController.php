@@ -93,7 +93,8 @@ LIMIT 10;
             $runsCount->height("300");
             $runsCount->labels($names);
             $runsCount->theme(ThemeController::getChartTheme());
-            $runsCount->dataset('Run counts', 'pie', array_values($my_runs));
+            $runsCount->dataset('Run counts', 'pie', array_values($my_runs))
+                      ->options(["radius" => [40, 95]]);
             $runsCount->options([
                 'grid'=>[
                 'left' => 50,
@@ -111,14 +112,27 @@ LIMIT 10;
             $avgLoot->dataset('Average loot', 'bar', array_values($my_avg_loot));
             $avgLoot->options([
                 'grid'=>[
-                    'left' => 50,
-                    'top' =>20,
-                    'right' => 10]
+                    'left' => 65,
+                    'top' =>40,
+                    'right' => 10
+                ],
+                'yAxis' => [
+                    'min'=> 0,
+                    'name' => 'M ISK',
+                    'nameLocation' => 'center',
+                    'nameGap' => 25
+                ],
+                'xAxis' => [
+                    'axisLabel' => [
+                        'show' => true,
+                        'interval' => 0
+                    ]
+                ]
             ]);
 
 
             $survival = new SurvivalRatio();
-            $survival->displayAxes(true);
+//            $survival->displayAxes(true);
             $survival->displayLegend(false);
             $survival->export(true, "Download");
             $survival->height("300");
@@ -127,11 +141,21 @@ LIMIT 10;
             $survival->dataset('Survival ratio', 'bar', array_values($my_survival_ratio));
             $survival->options([
                 'grid'=>[
-                    'left' => 50,
-                    'top' =>20,
+                    'left' => 65,
+                    'top' =>40,
                     'right' => 10],
                 'yAxis' => [
-                    'min '=> 90
+                    'min'=> min($my_survival_ratio)*0.9,
+                    'max'=> 100,
+                    'name' => '%',
+                    'nameLocation' => 'center',
+                    'nameGap' => 25
+                ],
+                'xAxis' => [
+                    'axisLabel' => [
+                        'show' => true,
+                        'interval' => 0
+                    ]
                 ]
             ]);
 
@@ -142,7 +166,8 @@ LIMIT 10;
             $sumLoot->height("300");
             $sumLoot->labels($names);
             $sumLoot->theme(ThemeController::getChartTheme());
-            $sumLoot->dataset('All loot', 'pie', array_values($my_sum_loot));
+            $sumLoot->dataset('All loot', 'pie', array_values($my_sum_loot))
+                    ->options(["radius" => [40, 95]]);
             $sumLoot->options([
                 'grid'=>[
                     'left' => 50,

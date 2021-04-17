@@ -1,8 +1,9 @@
 <tr class="action-hover-only">
     <td>
-        {!!$item->SHIP_NAME ? "<img src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->HULL_SIZE)."' style='width:20px;height:20px;'  alt='".ucfirst($item->HULL_SIZE)." hull size' title='".ucfirst($item->HULL_SIZE)." hull size' data-toggle='tooltip'>" : '' !!}
+        {!!$item->SHIP_NAME ? "<img src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->HULL_SIZE)."' style='width:20px;height:20px;' alt='".ucfirst($item->HULL_SIZE)." hull size' title='".ucfirst($item->HULL_SIZE)." hull size' data-toggle='tooltip'>" : '' !!}
         {!! $item->SURVIVED ? '' : '<img src="/dead.png" data-toggle="tooltip" title="Run failed, ship and capsule lost"/>' !!}
     </td>
+    <td data-toggle="tooltip" title="{{$item->NAME}}"><img src="https://images.evetech.net/characters/{{$item->CHAR_ID}}/portrait?size=64" class="rounded-circle shadow-sm mr-2" style="border: 1px solid #fff" height="24px" width="24px">{{\Illuminate\Support\Str::limit($item->NAME, 6)}}</td>
     <td>
         @if($item->SHIP_ID === null)
             <em class="font-italic text-black-50 ">Unknown</em>
@@ -14,6 +15,7 @@
     <td><img src="types/{{$item->TYPE}}.png" style="width:16px;height:16px;" alt=""> <a class="text-dark" href="{{route("search.do", ["type" => $item->TYPE])}}">{{$item->TYPE}}</a></td>
     <td><img src="tiers/{{$item->TIER}}.png" style="width:16px;height:16px;" alt=""> <a class="text-dark" href="{{route("search.do", ["tier" => $item->TIER])}}">{{$item->TIER}}</a></td>
     <td class="text-right">{{number_format($item->LOOT_ISK, 0, " ",",")}} ISK</td>
+    <td class="text-right">{{$item->CREATED_AT}}</td>
     <td class="text-right">
 
         @if($item->RUNTIME_SECONDS == 0)

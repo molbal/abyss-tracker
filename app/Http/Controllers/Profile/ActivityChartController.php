@@ -172,14 +172,14 @@ order by d.day asc) c;', [$charId]));
 
         $days = collect(DB::table('date_helper')->whereRaw('day <= NOW()')->get(['day']))->pluck('day');
         $iph = [];
-        $cnt = [];
+        $sum = [];
         foreach ($days as $day) {
             $iph[] = $q->firstWhere('day', $day)->isk_per_hour ?? 0;
-            $cnt[] = $q->firstWhere('day', $day)->count ?? 0;
+            $sum[] = $q->firstWhere('day', $day)->sum ?? 0;
         }
 
-        $chart->dataset("ISK/hour: ".Char::loadName($charId), 'bar', $iph)->options(['showSymbol'=> false]);
-        $chart->dataset("Runs: ".Char::loadName($charId), 'bar', $cnt)->options(['showSymbol'=> false,
+        $chart->dataset("ISK/hour: ".Char::loadName($charId), 'line', $iph)->options(['showSymbol'=> false]);
+        $chart->dataset("Daily total: ".Char::loadName($charId), 'bar', $sum)->options(['showSymbol'=> false,
                 'yAxisIndex' => 1]);
         return $chart->api();
 
