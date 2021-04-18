@@ -55,6 +55,7 @@
                         <li>Fixed the Fit performance calculation incorrectly calculating with 20 minute runtimes instead of the fit's max type/tier median value</li>
                         <li>Updated the Abyss Tracker to Laravel 8 and PHP 8</li>
                         <li>Added Redis to the uptime monitoring page: <a href="https://uptime.abyss.eve-nt.uk/" target="_blank">https://uptime.abyss.eve-nt.uk/</a></li>
+                        <li>Fixed a bug that prevented the current EFT, video link, and description from showing up in the fields when editing a fit</li>
                     </ul>
 
                 </div>

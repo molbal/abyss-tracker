@@ -85,8 +85,11 @@ class NewFitWizard extends Component
             $fit = DB::table("fits")->where("ID", $this->oldFitId)->first();
             $this->fitName = $this->oldFitName;
             $this->description = $fit->DESCRIPTION;
+
             $this->youtubeLink = $fit->VIDEO_LINK;
             $this->privacy = $fit->PRIVACY;
+            $this->eft = $fit->RAW_EFT;
+            $this->updatingEft($fit->RAW_EFT);
             $fitreco = DB::table("fit_recommendations")->where('FIT_ID', $fit->ID)->first();
             $this->Electrical = $fitreco->ELECTRICAL;
             $this->Dark = $fitreco->DARK;

@@ -17,7 +17,7 @@
 {{--                            <p class="mb-3">To upgrade a fit's version</p>--}}
 {{--<div class="btn-group mb-2 d-block">--}}
 <ul>
-    <li><a href="{{route("fit_new", ['id' => $fit->ROOT_ID ?? $fit->ID])}}" data-toggle="tooltip" title="Allows you to change all fields. Switches to a new revision.">Edit fit</a></li>
+    <li><a href="{{route("fit_new", ['id' => $fit->ID])}}" data-toggle="tooltip" title="Allows you to change all fields. Switches to a new revision.">Edit fit</a></li>
     <li><a href="javascript:void(0)" id="editDescription" data-toggle="tooltip" title="Only changes the description field. Stays on the current revision.">Change description</a></li>
     <li><a href="javascript:void(0)" id="editVideo" data-toggle="tooltip" title="Only changes the video. Stays on the current revision.">Change tutorial video</a></li>
 </ul>
