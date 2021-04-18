@@ -13,7 +13,7 @@
     </a><a href="{{route("fit.update.last-patch", ['id' => $fit->ID, 'status' => 'deprecated'])}}" class="btn text-dark  {{$fit->LAST_PATCH == 'deprecated' ? 'active btn-outline-primary' : 'btn-outline-secondary'}}" data-toggle="tooltip" title="@lang('tags.deprecated-tooltip')">Deprecated
     </a>
 </div>
-<h5 class="font-weight-bold mt-5">Upgrade fit</h5>
+<h5 class="font-weight-bold mt-5">Update fit settings</h5>
 {{--                            <p class="mb-3">To upgrade a fit's version</p>--}}
 {{--<div class="btn-group mb-2 d-block">--}}
 <ul>

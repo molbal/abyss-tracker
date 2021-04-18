@@ -30,6 +30,7 @@
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Validator;
+    use Illuminate\Support\Str;
     use Illuminate\Validation\ValidationException;
     use Illuminate\View\View;
     use Parsedown;
@@ -317,7 +318,7 @@
             $id = $request->get('id');
             $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
 
-            if ($fit->CHAR_ID != AuthController::getLoginId()) {
+            if (!AuthController::isItMe($fit->CHAR_ID)) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
             }
 
@@ -360,20 +361,25 @@
          * @throws ValidationException
          */
         public function updateVideo(Request $request) {
-
             Validator::make($request->all(), [
-                'id'  => 'required|numeric|exists:fits,ID',
-                'description' => 'required'
+                'id'  => 'required|numeric|exists:fits,ID'
             ], [
-                'required' => "Please fill :attribute",
+                'required' => "Please fill :attribute"
             ])->validate();
 
 
             $id = $request->get('id');
             $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
 
-            if ($fit->CHAR_ID != AuthController::getLoginId()) {
+            if (!AuthController::isItMe($fit->CHAR_ID)) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            }
+
+
+            $regex_pattern = config('tracker.verification.youtube');
+            // If YT regex test fails
+            if (!Str::of($request->get('video'))->match($regex_pattern)->isNotEmpty()) {
+                throw ValidationException::withMessages(['video' => "Please provide a proper Youtube link"]);
             }
 
             // Actually edit
@@ -381,24 +387,24 @@
             try {
                 DB::table('fits')
                   ->where('id', $id)
-                  ->update(['DESCRIPTION' => $request->get('description')]);
+                  ->update(['VIDEO_LINK' => $request->filled('video') ? $request->get('video') : null]);
 
                 // Write history
-                FitHistoryController::addEntry($id, "Updated description");
+                FitHistoryController::addEntry($id, "Updated video link");
                 DB::commit();
 
                 self::uncache($id);
             }
             catch (Exception $e) {
                 Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
-                return view("error", ["error" => "Something went wrong while updating description, sorry. ".$e->getMessage()]);
+                return view("error", ["error" => "Something went wrong while updating the tutorial video, sorry. ".$e->getMessage()]);
             }
 
 
             // Redirect with message
             return view('autoredirect', [
                 'title' => "Success",
-                'message' => "The description of ".$fit->NAME." fit was updated",
+                'message' => "The tutorial video of ".$fit->NAME." fit was updated",
                 'redirect' => route('fit_single', ['id' => $id])
             ]);
         }

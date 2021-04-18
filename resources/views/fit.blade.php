@@ -29,7 +29,7 @@
                     <div>
                         <h4>Message</h4>
                         {{ session('message') }}
-                        <ul style="list-style: none">
+                        <ul style="list-style: none" class="p-0">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -104,7 +104,7 @@
             </div>
             @if($fit->VIDEO_LINK)
                 <div class="card-footer">
-                    <a class="btn btn-outline-info" href="{{$fit->VIDEO_LINK}}" target="_blank">Video guide</a>
+                    <a class="text-dark" href="{{$fit->VIDEO_LINK}}" target="_blank"><img src="https://img.icons8.com/small/24/eeeeee/signpost.png" class="tinyicon mr-2">Video guide</a>
                 </div>
             @endif
         </div>

@@ -37,6 +37,7 @@
                         Minor quality of life changes
                     </p>
                     <ul>
+                        <li><span class="badge badge-success">FIXED</span> <em>Adding a video requires new fit <a href="https://github.com/molbal/abyss-tracker/issues/88" target="_blank">#88</a></em></li>
                         <li>Added size tooltip to homescreen's last runs list</li>
                         <li>According to analytics<sup>tm</sup> most people click 'new run' after logging in. So I added a giant new run button right to the page top.</li>
                     </ul>
