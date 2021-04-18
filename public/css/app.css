@@ -10938,10 +10938,21 @@ ul.pagination {
 }
 
 #quicklinks > a.h4 {
+  display: inline-block;
   color: #fff;
   text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
   position: relative;
   text-transform: uppercase;
+  transition: all 100ms ease-in-out;
+  top: 0;
+  padding-bottom: 0px;
+}
+
+#quicklinks > a.h4:hover {
+  text-shadow: 0 6px 3px black;
+  top: -3px;
+  padding-bottom: 6px;
+  text-decoration: none;
 }
 
 .animate {
