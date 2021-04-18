@@ -11,6 +11,7 @@
     |
     */
 
+    use App\Http\Controllers\FitsController;
     use App\Http\Controllers\GraphHelper;
     use App\Http\Controllers\ItemController;
     use App\Http\Controllers\Profile\ActivityChartController;
@@ -70,17 +71,18 @@
      */
     Route::get("/ships/", 'ShipsController@get_all')->name("ships_all");
     Route::get("/ship/{id}", 'ShipsController@get_single')->name("ship_single");
-    Route::get("/fits/new-or-update/{id?}", 'FitsController@new')->name("fit_new")->middleware("sso");
-    Route::any("/fits/new-do/submit", 'FitsController@new_store')->name("fit_new_store")->middleware("sso");
-    Route::get("/fit/{id}/delete", 'FitsController@delete')->name('fit.delete')->middleware("sso");
+    Route::get("/fits/new-or-update/{id?}", [FitsController::class, 'new'])->name("fit_new")->middleware("sso");
+    Route::any("/fits/new-do/submit", [FitsController::class, 'new_store'])->name("fit_new_store")->middleware("sso");
+    Route::get("/fit/{id}/delete", [FitsController::class, 'delete'])->name('fit.delete')->middleware("sso");
     Route::get("/fit/{id}/change-privacy/{privacySetting}", 'FitsController@changePrivacy')->name('fit.change_privacy')->middleware("sso");
-    Route::get("/fit/{id}", 'FitsController@get')->name('fit_single');
+    Route::get("/fit/{id}", [FitsController::class, 'get'])->name('fit_single');
     Route::get("/fits", 'FitSearchController@index')->name("fit.index");
     Route::get("/fits/mine", 'FitSearchController@mine')->name("fit.mine")->middleware("sso");
     Route::any("/fits/search", 'FitSearchController@search')->name("fit.search");
     Route::post("/fits/search/ajax", 'FitSearchController@searchAjax')->name("fit.search.ajax");
-    Route::post("/fits/update/description", 'FitsController@updateDescription')->name("fit.update.description")->middleware("sso");
-    Route::get("/fits/update/last_patch/{id}/{status}", 'FitsController@updateLastPatch')->name("fit.update.last-patch")->middleware("sso");
+    Route::post("/fits/update/description", [FitsController::class, 'updateDescription'])->name("fit.update.description")->middleware("sso");
+    Route::post("/fits/update/video", [FitsController::class, 'updateVideo'])->name("fit.update.video")->middleware("sso");
+    Route::get("/fits/update/last_patch/{id}/{status}", [FitsController::class, 'updateLastPatch'])->name("fit.update.last-patch")->middleware("sso");
     Route::get("/fits/search/select/{shipId}/{nameOrId?}", 'FitSearchController@getFitsForNewRunDropdown')->name("fit.search.select");
     Route::get("/fits/newrun/select", 'FitSearchController@getIntegratedTypeList')->name("fit.newrun.select")->middleware("sso");
 

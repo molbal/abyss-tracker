@@ -15,12 +15,15 @@
 </div>
 <h5 class="font-weight-bold mt-5">Upgrade fit</h5>
 {{--                            <p class="mb-3">To upgrade a fit's version</p>--}}
-<div class="btn-group mb-2 d-block">
-    <a href="{{route("fit_new", ['id' => $fit->ROOT_ID ?? $fit->ID])}}" data-toggle="tooltip" title="Allows you to change all fields. Switches to a new revision." class="btn text-dark btn-outline-secondary">Edit fit
-    </a><button id="editDescription" data-toggle="tooltip" title="Only changes the description field. Stays on the current revision." class="btn text-dark btn-outline-secondary">Change description
-    </button>
-</div>
+{{--<div class="btn-group mb-2 d-block">--}}
+<ul>
+    <li><a href="{{route("fit_new", ['id' => $fit->ROOT_ID ?? $fit->ID])}}" data-toggle="tooltip" title="Allows you to change all fields. Switches to a new revision.">Edit fit</a></li>
+    <li><a href="javascript:void(0)" id="editDescription" data-toggle="tooltip" title="Only changes the description field. Stays on the current revision.">Change description</a></li>
+    <li><a href="javascript:void(0)" id="editVideo" data-toggle="tooltip" title="Only changes the video. Stays on the current revision.">Change tutorial video</a></li>
+</ul>
+{{--</div>--}}
 <h5 class="font-weight-bold text-danger mt-5">Danger zone</h5>
 <p>If you want to delete this fit, you may click the red link: <a href="{{route("fit.delete", ['id' => $fit->ID])}}" class="text-danger">Delete fit</a></p>
 
 @component('components.fits.fit_new_description_modal', ['id' => $fit->ID, 'description' => $fit->DESCRIPTION]) @endcomponent
+@component('components.fits.fit_new_video_modal', ['id' => $fit->ID, 'video' => $fit->VIDEO_LINK]) @endcomponent

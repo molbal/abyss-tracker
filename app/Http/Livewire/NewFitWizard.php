@@ -8,6 +8,8 @@ use App\Http\Controllers\Partners\EveWorkbench;
 use App\Http\Controllers\Partners\ZKillboard;
 use DOMDocument;
 use DOMXPath;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -128,7 +130,7 @@ class NewFitWizard extends Component
             }
             $this->wizardTitle = "Invalid fit";
         }
-        catch (\Exception $exc) {
+        catch (Exception $exc) {
             session()->flash('message', $exc->getMessage());
             session()->flash('messageType','danger');
             $this->wizardTitle = "Invalid fit";
@@ -170,7 +172,7 @@ class NewFitWizard extends Component
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      * @throws ValidationException
      */
     public function process() {
@@ -217,7 +219,7 @@ class NewFitWizard extends Component
             $this->eft = $eft;
             $this->updatingEft($eft);
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             throw ValidationException::withMessages([
                 "zKillboard" => $e->getMessage()
             ]);
@@ -238,7 +240,7 @@ class NewFitWizard extends Component
             $this->eft = $eft;
             $this->updatingEft($eft);
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             throw ValidationException::withMessages([
                 "eveWorkbench" => $e->getMessage()
             ]);

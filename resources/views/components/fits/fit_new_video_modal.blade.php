@@ -1,11 +1,11 @@
-<div class="modal fade " tabindex="-1" role="dialog" id="fit_new_description_modal">
-    <form action="{{route("fit.update.description")}}" method="post">
+<div class="modal fade " tabindex="-1" role="dialog" id="fit_new_video_modal">
+    <form action="{{route("fit.update.video")}}" method="post">
         {{csrf_field()}}
         <input type="hidden" name="id" value="{{$id}}">
         <div class="modal-dialog border-0" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Update description</h5>
+                    <h5 class="modal-title">Update video link</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -13,11 +13,12 @@
                 @if (\App\Http\Controllers\Auth\AuthController::isLoggedIn())
                     <div class="modal-body">
                         <div class="text-justify text-black-50 text-small mb-3">
-                            Please edit your description below.
+                            Please use a well formed Youtube link like <a
+                                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>
                         </div>
                         <div class="form-group">
-                            <label for="message">Description</label>
-                            <textarea name="description" id="description" class="form-control w-100 mt-2" rows="10">{{$description}}</textarea>
+                            <label for="message">Video link</label>
+                            <input name="video" id="video" class="form-control w-100 mt-2" type="text" value="{{$video}}">
                         </div>
                     </div>
                     <div class="card-footer">

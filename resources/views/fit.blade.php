@@ -53,7 +53,7 @@
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#eft">Export</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history" id="history_a">History</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#questions">Questions {{$questions->count() > 0 ? '('.$questions->count().')' : ''}}</a></li>
-                @if (session()->get("login_id", -1) == $fit->CHAR_ID)
+                @if (\App\Http\Controllers\Auth\AuthController::isItMe($fit->CHAR_ID))
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings"><span class="text-danger">Settings</span></a></li>
                 @endif
             </ul>
@@ -79,7 +79,7 @@
                         <h5 class="font-weight-bold">Questions &amp; Answers</h5>
                         @component("components.fits.comments", ['fit' => $fit, 'questions' => $questions]) @endcomponent
                     </div>
-                    @if (session()->get("login_id", -1) == $fit->CHAR_ID)
+                    @if (\App\Http\Controllers\Auth\AuthController::isItMe($fit->CHAR_ID))
                         <div id="settings" class="tab-pane fade">
                             <h5 class="font-weight-bold">Fit privacy</h5>
                             @component("components.fits.settings", ['fit' => $fit]) @endcomponent
@@ -118,7 +118,7 @@
             @elseif(strtoupper($fit->STATUS) == "QUEUED")
                 <div class="card card-body border-warning shadow-sm text-center mt-3">
                     <div class="mb-0">
-                        <img src="https://img.icons8.com/cotton/64/000000/clock-settings.png" style="width: 64px; height: 64px"/>
+                        <img src="{{asset('loader.png')}}" style="width: 64px; height: 64px"/>
                         <h5 class="font-weight-bold">Calculating stats</h5>
                         <p class="mb-0">Please reload this page in a few minutes once we have calculated its stats.</p>
                     </div>
