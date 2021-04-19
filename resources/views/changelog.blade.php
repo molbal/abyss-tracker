@@ -19,11 +19,16 @@
 {{--                </p>--}}
 {{--            </div>--}}
             <div class="card card-body border-danger shadow-sm mb-3 p-0 overflow-hidden">
-                <img src="{{asset("home/1.10.jpg")}}" alt="1.9 release" class="w-100 shadow">
+{{--                <img src="{{asset("home/1.10.jpg")}}" alt="1.9 release" class="w-100 shadow">--}}
+                <video autoplay loop muted poster="{{asset("home/1.10.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none">
+                    <source src="{{asset("home/1.10/mp4.mp4")}}" type="video/mp4">
+                    <source src="{{asset("home/1.10/webm.webm")}}" type="video/webm">
+                    <source src="{{asset("home/1.10/ogv.ogv")}}" type="video/ogg">
+                </video>
                 <div class="p-3">
                     <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                     <h4 class="mb-0 pb-0"><strong>1.10</strong> 'Negotiation' release</h4>
-                    <small class="mt-0">2021 </small>
+                    <small class="mt-0">2021 April 19</small>
                     <p class="text-justify font-weight-bold">
                         Feature expansion and major quality of life changes
                     </p>
