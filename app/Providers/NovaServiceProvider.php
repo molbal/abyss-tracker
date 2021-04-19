@@ -79,7 +79,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         return [
             // ...
-            new \KABBOUCHI\LogsTool\LogsTool(),
+//            new \KABBOUCHI\LogsTool\LogsTool(),
         ];
     }
 

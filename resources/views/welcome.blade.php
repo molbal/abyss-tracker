@@ -13,22 +13,18 @@
             {{--        NEWS START --}}
             <div class="col-xs-12 col-md-12">
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
-                    <img src="{{asset("home/1.10.jpg")}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
+{{--                    <img src="{{asset("home/1.10.jpg)}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">--}}
+                    <a href="{{route('changelog')}}" class="w-100 m-0 b-0 p-0"><video autoplay loop muted poster="{{asset("home/1.10.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none">
+                        <source src="{{asset("home/1.10/mp4.mp4")}}" type="video/mp4">
+                        <source src="{{asset("home/1.10/webm.webm")}}" type="video/webm">
+                        <source src="{{asset("home/1.10/ogv.ogv")}}" type="video/ogg">
+                    </video></a>
                     <div class="p-3 text-center">
                         <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to {{config('tracker.version')}}</a>
                         <p class="mb-0">See changes and new features</p>
                     </div>
                 </div>
             </div>
-{{--            <div class="col-xs-12 col-md-6">--}}
-{{--                <div class="card card-body border-0 shadow-sm p-0 mb-3">--}}
-{{--                    <img src="{{asset('home/alliance-open.jpg')}}" alt="Alliance Open" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">--}}
-{{--                    <div class="p-3 text-center">--}}
-{{--                        <a href="https://open.eve-nt.uk" target="_blank" class="font-weight-bold h5 text-dark">EVE-NT Alliance Open</a>--}}
-{{--                        <p class="mb-0">We made our own Alliance Tournament with 200000+ PLEX in the prizes</p>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
             {{--        NEWS END--}}
 
 

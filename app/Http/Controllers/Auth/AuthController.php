@@ -150,7 +150,7 @@
                     session()->forget(self::ALT_SESSION_VAR);
                     AltRelationController::addRelation(AuthController::getLoginId(), $id);
                     NotificationController::flashInfoLine($name." was added as your alt.", 'success');
-                    redirect(route('alts.index'));
+                    return redirect(route('alts.index'));
                 }
                 else {
                     session()->put([
