@@ -145,7 +145,12 @@
             }
 
             // Try Janice
-            $this->items = Janice::appraise($this->rawData);
+            try {
+                $this->items = Janice::appraise($this->rawData);
+            }
+            catch (\Exception $e) {
+                Log::warning("Janice appraisal failed - using EWB: ".$e->getMessage());
+            }
 
             if (count($this->items) == 0) {
                 Log::channel("lootvalue")->warning("Janice failed, trying Eve Workbench");

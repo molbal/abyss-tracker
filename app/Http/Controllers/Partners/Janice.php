@@ -6,7 +6,9 @@
 
 	use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\Loot\EveItem;
+    use Exception;
     use GuzzleHttp\Client;
+    use GuzzleHttp\Exception\GuzzleException;
     use http\Client\Response;
     use http\Exception\RuntimeException;
     use Illuminate\Support\Facades\Log;
@@ -21,7 +23,7 @@
          * @param string $body
          *
          * @return EveItem[]|null
-         * @throws \GuzzleHttp\Exception\GuzzleException
+         * @throws GuzzleException
          */
         public static function appraise(string $body): ?array {
             $http = new Client([
@@ -44,16 +46,16 @@
                  ]);
 
                 if ($resp->getStatusCode() != 200) {
-                    throw new RuntimeException("Invalid response code: ".$resp->getStatusCode());
+                    throw new Exception("Invalid response code: ".$resp->getStatusCode());
                 }
 
                 $contents = $resp->getBody()
                                  ->getContents();
                 if (Str::of($contents)->isEmpty()) {
-                    throw new RuntimeException("Empty response body");
+                    throw new Exception("Empty response body");
                 }
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 Log::channel('lootvalue')->warning(sprintf("%s %s: Could not appraise [%s] at [%s]", get_class($e), $e->getMessage(), $body, $uri));
                 return null;
             }
@@ -61,18 +63,35 @@
             $appraised = json_decode($contents);
 
             if ($appraised->failures != "") {
-                throw new RuntimeException("Could not appraise the following item(s): ". $appraised->failures);
+                throw new Exception("Could not appraise the following item(s): ". $appraised->failures);
             }
 
 
-            $ret = [];
+            $ret = collect();
             foreach ($appraised->items as $item) {
-                $eveItem = (new EveItem())
-                ->setCount($item->amount)
-                ->setBuyValue($item->buyPriceMedian5)
-                ->setSellValue($item->sellPriceMedian5)
-                ->setItemId($item->itemType->eid)
-                ->setItemName($item->itemType->name);
+
+
+                /** @var EveItem $retItem */
+                $eveItem = null;
+                foreach ($ret as $retItem) {
+                    if ($retItem->getItemId() == $item->itemType->eid) {
+                        $eveItem = $retItem;
+                        $ret = $ret->reject(function ($check) use ($item) {
+                            return $check->getItemId() == $item->itemType->eid;
+                        });
+
+                        $eveItem->setCount($eveItem->getCount()+$item->amount);
+                    }
+                }
+
+                if (!$eveItem) {
+                    $eveItem = (new EveItem())
+                    ->setCount($item->amount)
+                    ->setBuyValue($item->buyPriceMedian5)
+                    ->setSellValue($item->sellPriceMedian5)
+                    ->setItemId($item->itemType->eid)
+                    ->setItemName($item->itemType->name);
+                }
 
 
                 // Burnt in value for red loot
@@ -85,11 +104,11 @@
                             ->setBuyValue(0);
                 }
 
-                $ret[] = $eveItem;
+                $ret->add($eveItem);
             }
 
             Log::channel("lootvalue")->debug('Estimated '.count($ret)." lines with Janice");
-            return $ret;
+            return $ret->toArray();
 
 	    }
 
