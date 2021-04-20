@@ -121,7 +121,7 @@
                 DB::beginTransaction();
                 $ids = DB::table('fit_questions')->where('fit_id', $id)->select('id')->get()->pluck('fit_id');
                 DB::table("fit_answers")->whereIn("question_id", $ids)->delete();
-                DB::table("fit_logs")->where("fit_it", $fit->ROOT_ID ?? $id)->delete();
+                DB::table("fit_logs")->where("fit_root_id", $id)->delete();
                 DB::table("fit_logs")->where("fit_it", $id)->delete();
                 DB::table("fit_questions")->where("fit_id", $id)->delete();
                 DB::table("fit_tags")->where("FIT_ID", $id)->delete();
@@ -182,7 +182,7 @@
             catch (Exception $e) {
                 DB::rollBack();
                 Log::error("Transaction rolled back - Could not change fit privacy $id - ".$e->getMessage(). " ".$e->getFile()."@".$e->getLine());
-                return view("error", ["error" => "Something went wrong and could not delete this fit. Modifications reverted."]);
+                return view("error", ["error" => "Something went wrong and could not change privacy. Modifications reverted."]);
             }
         }
 
