@@ -9,6 +9,7 @@
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
+    use App\Http\Controllers\Partners\Janice;
     use Carbon\Carbon;
     use GuzzleHttp\Client;
     use Illuminate\Support\Facades\DB;
@@ -124,10 +125,9 @@
                 $total_price += $gainedItem->getStackAverageValue();
             }
 
-//            Log::info("newItems: " . print_r($newItems, 1));
-//            Log::info("oldItems: " . print_r($oldItems, 1));
-//            Log::info("gainedItems: " . print_r($gainedItems, 1));
-//            Log::info("lostItems: " . print_r($lostItems, 1));
+            foreach ($lostItems as $lostItem) {
+                $total_price -= $lostItem->getStackAverageValue();
+            }
 
 
             return ["gainedItems" => $gainedItems, "lostItems" => $lostItems, "totalPrice" => round($total_price)];
@@ -144,77 +144,81 @@
                 return;
             }
 
+            // Try Janice
+            $this->items = Janice::appraise($this->rawData);
 
-            try {
-                $data = $this->sendToEveWorkbench();
+            if (count($this->items) == 0) {
+                Log::channel("lootvalue")->warning("Janice failed, trying Eve Workbench");
+                // Try EWB
+                try {
+                    $data = $this->sendToEveWorkbench();
 
-                $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
-                $this->totalPrice = 0;
-                foreach ($data->items as $item) {
-                    $ex = false;
-                    foreach ($this->items as $eitem) {
-                        if ($eitem->getItemId() == $item->typeID) {
-                            $ex = true;
-                            $eitem->setCount($eitem->getCount() + $item->amount);
-                            break;
+                    $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+                    $this->totalPrice = 0;
+                    foreach ($data->items as $item) {
+                        $ex = false;
+                        foreach ($this->items as $eitem) {
+                            if ($eitem->getItemId() == $item->typeID) {
+                                $ex = true;
+                                $eitem->setCount($eitem->getCount() + $item->amount);
+                                break;
+                            }
                         }
-                    }
-                    if (!$ex) {
-                        if ($item->typeID == 0 && $item->name != "") {
-                            /** @var ResourceLookupService $res */
-                            $res = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
-                            Log::warning("EvePraisal returned faulty reply for " . $item->name . ", attempting to fix it with ESI");
-                            $item->typeID = $res->itemNameToId($item->name);
-                            Log::warning("Fix: " . $item->typeID);
-                        }
+                        if (!$ex) {
+                            if ($item->typeID == 0 && $item->name != "") {
+                                /** @var ResourceLookupService $res */
+                                $res = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+                                $item->typeID = $res->itemNameToId($item->name);
+                            }
 
-                        if (!$item->typeID) {
-                            throw new FitFatalException("Unable to recognize module '$item->name'.");
-                        }
+                            if (!$item->typeID) {
+                                throw new FitFatalException("Unable to recognize module '$item->name'.");
+                            }
 
 
-                        $eveItem = new EveItem();
-                        $eveItem->setItemName($item->name)
-                                ->setItemId($item->typeID)
-                                ->setCount($item->amount);
+                            $eveItem = new EveItem();
+                            $eveItem->setItemName($item->name)
+                                    ->setItemId($item->typeID)
+                                    ->setCount($item->amount);
 
-                        // Burnt in value for red loot
-                        if ($eveItem->getItemId() == 48121) {
-                            $eveItem->setBuyValue(100000);
-                            $eveItem->setSellValue(100000);
-                        }
-                        else {
-                            if (stripos($eveItem->getItemName(), "blueprint") !== false) {
-                                $eveItem->setSellValue(0)
-                                        ->setBuyValue(0);
+                            // Burnt in value for red loot
+                            if ($eveItem->getItemId() == 48121) {
+                                $eveItem->setBuyValue(100000);
+                                $eveItem->setSellValue(100000);
                             }
                             else {
+                                if (stripos($eveItem->getItemName(), "blueprint") !== false) {
+                                    $eveItem->setSellValue(0)
+                                            ->setBuyValue(0);
+                                }
+                                else {
 
-                                /** @var ItemObject $itemObj */
-                                $itemObj = $this->priceEstimator->getFromTypeId($item->typeID);
-                                if ($itemObj) {
-                                    $eveItem->setBuyValue($itemObj->getBuyPrice())
-                                            ->setSellValue($itemObj->getSellPrice());
-                                } else {
-                                    Log::channel("itempricecalculator could not find for typeID ".$item->typeID);
-                                    $eveItem->setBuyValue($item->buyPrice)
-                                            ->setSellValue($item->sellPrice);
+                                    /** @var ItemObject $itemObj */
+                                    $itemObj = $this->priceEstimator->getFromTypeId($item->typeID);
+                                    if ($itemObj) {
+                                        $eveItem->setBuyValue($itemObj->getBuyPrice())
+                                                ->setSellValue($itemObj->getSellPrice());
+                                    } else {
+                                        Log::channel("itempricecalculator could not find for typeID ".$item->typeID);
+                                        $eveItem->setBuyValue($item->buyPrice)
+                                                ->setSellValue($item->sellPrice);
+
+                                    }
 
                                 }
-
                             }
+                            $this->items[] = $eveItem;
                         }
-                        $this->items[] = $eveItem;
                     }
                 }
-            }
-            catch (FitFatalException $e) {
-                Log::error($e);
-                throw $e;
-            } catch (\Exception $e) {
-                Log::warning($e);
-                $this->totalPrice = 0;
-                $this->items = [];
+                catch (FitFatalException $e) {
+                    Log::error($e);
+                    throw $e;
+                } catch (\Exception $e) {
+                    Log::warning($e);
+                    $this->totalPrice = 0;
+                    $this->items = [];
+                }
             }
 
             foreach ($this->items as $item) {

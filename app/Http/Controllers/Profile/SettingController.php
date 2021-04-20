@@ -158,6 +158,7 @@
                 case 'LAST_RUNS':
                 case 'TOTAL_LOOT':
                 case 'TOTAL_RUNS':
+                case 'ALTS':
                     return true;
                 case 'LOOT':
                 case 'SHIPS':
@@ -168,7 +169,7 @@
         }
 
         public function getAllRights(int $userId) : array {
-            $rights = ["LAST_RUNS", "TOTAL_LOOT", "TOTAL_RUNS", "LOOT", "SHIPS", "SURVIVAL"];
+            $rights = ["LAST_RUNS", "TOTAL_LOOT", "TOTAL_RUNS", "LOOT", "SHIPS", "SURVIVAL", "ALTS"];
             $ar = [];
             foreach ($rights as $right) {
                 $ar[$right] = $this->getRight($userId, $right);

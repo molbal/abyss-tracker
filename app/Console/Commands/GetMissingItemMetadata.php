@@ -49,26 +49,35 @@ class GetMissingItemMetadata extends Command
         /** @var ResourceLookupService $esi */
         $esi = resolve("App\Connector\EveAPI\Universe\ResourceLookupService");
 
+        foreach ($items as $i => $item) {
+            $this->updateItem($esi, $item);
+        }
 
+
+        $items = DB::table('item_prices')
+                   ->where('NAME', 'like', 'Event % Proving Filament')->get();
 
         foreach ($items as $i => $item) {
-            $this->line("[".Str::padLeft($i+1, 5)." / " . Str::padLeft($items->count(),5)."] - ".$item->NAME);
-            try {
-                $a = $esi->getItemInformation($item->ITEM_ID);
-                $groupName = $esi->getGroupInfo($a['group_id'])['name'] ?? "TBD";
-                DB::table('item_prices')->where('ITEM_ID', $item->ITEM_ID)->update([
-                   'DESCRIPTION' => $a['description'],
-                   'NAME' => $a['name'],
-                   'GROUP_ID' => $a['group_id'],
-                   'GROUP_NAME' => $groupName,
-                ]);
-                Log::info('Actualized data for '.$item->NAME. " ".$item->ITEM_ID. " ".($item->NAME != $a['name'] ? " new name: ".$a['name'] : ''));
-            }
-            catch (\Exception $e) {
-                Log::error('Could not actualize '.$item->NAME." - ".$e->getMessage());
-            }
+            $this->updateItem($esi, $item);
         }
 
         return 0;
+    }
+
+    /**
+     * @param ResourceLookupService $esi
+     * @param                       $item
+     */
+    private function updateItem(ResourceLookupService $esi, $item) : void {
+        try {
+            $a = $esi->getItemInformation($item->ITEM_ID);
+            $groupName = $esi->getGroupInfo($a['group_id'])['name'] ?? "TBD";
+            DB::table('item_prices')
+              ->where('ITEM_ID', $item->ITEM_ID)
+              ->update(['DESCRIPTION' => $a['description'], 'NAME' => $a['name'], 'GROUP_ID' => $a['group_id'], 'GROUP_NAME' => $groupName,]);
+            Log::info('Actualized data for ' . $item->NAME . " " . $item->ITEM_ID . " " . ($item->NAME != $a['name'] ? " new name: " . $a['name'] : ''));
+        } catch (\Exception $e) {
+            Log::error('Could not actualize ' . $item->NAME . " - " . $e->getMessage());
+        }
     }
 }

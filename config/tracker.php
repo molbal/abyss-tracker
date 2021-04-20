@@ -1,7 +1,8 @@
 <?php
     return [
         'maintenance-token' => env('MAINTENANCE_TOKEN'),
-        'version' => '1.9',
+        'version' => '1.10',
+        'fileversion' => '110',
         'discord' => 'https://discord.gg/FyNsM5k',
         'submit-tutorial' => 'https://forms.gle/ct4Yc75W4zjbR6Xi7',
         'flag-address' => env('FLAG_ADDRESS'),
@@ -53,6 +54,7 @@
         'veetor' => [
             'id' => env("ID_VEETOR"),
             'refresh-token' => env("RT_VEETOR"),
+            'invite-link' => 'https://www.eveonline.com/signup?invc=3fbe9153-83c9-4130-b47c-358d364a9be0'
         ],
 
         'market' => [
@@ -62,6 +64,11 @@
                 'service-root' => env('EVEWORKBENCH_API_ROOT'),
                 'app-key' =>env('EVEWORKBENCH_API_APP_KEY'),
                 'client-id' =>env('EVEWORKBENCH_API_CLIENT_ID'),
+            ],
+
+            'janice' => [
+                'service-root'=> env('JANICE_API_ROOT', "https://janice.e-351.com/api/rest/v1/"),
+                'app-key' => env('JANICE_APP_KEY')
             ],
 
             'estimators' => [
@@ -88,7 +95,8 @@
 
         'verification' => [
             'zkillboard' => '/https?:\/\/zkillboard\.com\/kill\/\d+\/?$/m',
-            'eveworkbench' => '/https?:\/\/(www.)?eveworkbench.com\/fitting\/[a-z \-]+\/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\/?$/m'
+            'eveworkbench' => '/https?:\/\/(www.)?eveworkbench.com\/fitting\/[a-z \-]+\/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\/?$/m',
+            'youtube' => '/https?:\/\/(www\.)?(youtube.com|youtu.be)\/(watch)?(\?v=)?(\S+)/',
         ],
 
         'fit' => [

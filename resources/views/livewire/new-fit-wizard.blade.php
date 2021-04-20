@@ -111,7 +111,7 @@
                                         @component("components.info-line", ['class' => "mb-2"])
                                         Good tips on what to write here: In which order should you destroy enemies (Eg. neuters, webbers first), how to deal with the rooms like the Karen room or the Leshaks room.
                                         @endcomponent
-                                        <textarea wire:model.lazy="description" name="description" id="description" class="form-control w-100 mt-2" rows="10"></textarea>
+                                        <textarea wire:model.lazy="description" name="description" id="description" class="form-control w-100 mt-2" rows="10">{{$description ?? ""}}</textarea>
 
                                         <h5 class="font-weight-bold mt-4">Video guide</h5>
                                         <div class="form-group">
@@ -119,7 +119,7 @@
                                                 If you have a video guide, we will embed it. Use a well formed Youtube link like <a
                                                     href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>
                                             @endcomponent
-                                            <input type="text" name="video_link" id="video_link" class="form-control mt-2">
+                                            <input type="text" name="video_link" id="video_link" class="form-control mt-2" value="{{$youtubeLink ?? ""}}">
                                         </div>
 
                                         <h5 class="font-weight-bold mt-4 mb-0">Recommended weather</h5>

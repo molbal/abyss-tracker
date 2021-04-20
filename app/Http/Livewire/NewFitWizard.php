@@ -8,6 +8,8 @@ use App\Http\Controllers\Partners\EveWorkbench;
 use App\Http\Controllers\Partners\ZKillboard;
 use DOMDocument;
 use DOMXPath;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -83,8 +85,11 @@ class NewFitWizard extends Component
             $fit = DB::table("fits")->where("ID", $this->oldFitId)->first();
             $this->fitName = $this->oldFitName;
             $this->description = $fit->DESCRIPTION;
+
             $this->youtubeLink = $fit->VIDEO_LINK;
             $this->privacy = $fit->PRIVACY;
+            $this->eft = $fit->RAW_EFT;
+            $this->updatingEft($fit->RAW_EFT);
             $fitreco = DB::table("fit_recommendations")->where('FIT_ID', $fit->ID)->first();
             $this->Electrical = $fitreco->ELECTRICAL;
             $this->Dark = $fitreco->DARK;
@@ -128,7 +133,7 @@ class NewFitWizard extends Component
             }
             $this->wizardTitle = "Invalid fit";
         }
-        catch (\Exception $exc) {
+        catch (Exception $exc) {
             session()->flash('message', $exc->getMessage());
             session()->flash('messageType','danger');
             $this->wizardTitle = "Invalid fit";
@@ -170,7 +175,7 @@ class NewFitWizard extends Component
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      * @throws ValidationException
      */
     public function process() {
@@ -217,7 +222,7 @@ class NewFitWizard extends Component
             $this->eft = $eft;
             $this->updatingEft($eft);
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             throw ValidationException::withMessages([
                 "zKillboard" => $e->getMessage()
             ]);
@@ -238,7 +243,7 @@ class NewFitWizard extends Component
             $this->eft = $eft;
             $this->updatingEft($eft);
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             throw ValidationException::withMessages([
                 "eveWorkbench" => $e->getMessage()
             ]);

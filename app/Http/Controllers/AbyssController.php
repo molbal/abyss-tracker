@@ -4,15 +4,20 @@
     namespace App\Http\Controllers;
 
 
+    use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
     use App\Http\Controllers\Misc\DonorController;
+    use App\Http\Controllers\Misc\Enums\CharacterType;
     use App\Http\Controllers\Misc\Enums\ShipHullSize;
+    use App\Http\Controllers\Profile\ActivityChartController;
+    use App\Http\Controllers\Profile\AltRelationController;
     use App\Http\Controllers\Profile\LeaderboardController;
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Requests\NewRunRequest;
     use App\Mail\RunFlagged;
     use App\PatreonDonorDisplay;
+    use Carbon\Carbon;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -79,7 +84,6 @@
         public function home() {
 
             $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
-//            $lootDistributionfrigate = $this->graphContainerController->getHomeLootAveragesFrigates();
             $last_runs = $this->homeQueriesController->getLastRuns();
             $drops = $this->homeQueriesController->getCommonDrops();
             $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
@@ -128,46 +132,34 @@
          */
         public function home_mine() {
 
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please log in to access this page"]);
+            $years = ActivityChartController::getYears();
+            $year = session()->get('home_year', $years->last());
+            $activity_chart = ActivityChartController::getChartContainer($year);
+
+            $chars = AltRelationController::getAllMyAvailableCharacters(false);
+            $characterType = AltRelationController::getCharacterType();
+            $isMain = $characterType == CharacterType::MAIN;
+
+            $timeline_charts = [];
+            $my_runs = [];
+            $my_avg_loot = [];
+            $my_sum_loot = [];
+            $my_survival_ratio = [];
+            if (!$isMain) {
+                $loginId = AuthController::getLoginId();
+                $timeline_charts[$loginId] = ActivityChartController::getTimelineContainer($loginId);
+                [$my_runs[$loginId], $my_avg_loot[$loginId], $my_sum_loot[$loginId], $my_survival_ratio[$loginId]] = HomeQueriesController::getPersonalStats();
             }
-
-            [$my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio] = $this->homeQueriesController->getPersonalStats();
-
-            $loginId = session()->get("login_id");
-            $personalDaily = $this->graphContainerController->getPersonalStatsCharts();
-
-            $table = [];
-            for($i=0; $i>-31; $i--) {
-                $date = date("Y-m-d", strtotime("now $i days"));
-                $val = DB::select("select
-                        COUNT(*) as COUNT,
-                        AVG(LOOT_ISK) as AVG,
-                        SUM(LOOT_ISK) as SUM,
-                        '$date' as RUN_DATE
-                           from runs
-                    where CHAR_ID=? and RUN_DATE=?" ,[$loginId, $date
-                ]);
-
-                $seconds = DB::table("runs")
-                    ->select("RUNTIME_SECONDS")
-                    ->where("CHAR_ID", $loginId)
-                    ->where("RUN_DATE", $date)->get();
-
-                $totalSeconds = 0;
-                foreach ($seconds as $second) {
-                    $totalSeconds += $second->RUNTIME_SECONDS ?? 1200;
+            else {
+                foreach ($chars as $char) {
+                    $timeline_charts[$char->id] = ActivityChartController::getTimelineContainer($char->id);
+                    [$my_runs[$char->id], $my_avg_loot[$char->id], $my_sum_loot[$char->id], $my_survival_ratio[$char->id]] = HomeQueriesController::getPersonalStats($char->id);
                 }
-                $totalSeconds = max($totalSeconds, 3600);
 
-                $val[0]->IPH = $val[0]->SUM/($totalSeconds/3600);
-                $val[0]->TOTAL_SECONDS = $totalSeconds;
-                $val[0]->TOTAL_HOURS = $totalSeconds/3600;
-//                if ($date == "2020-06-01")
-//                    dd($val);
-                $table[]= $val;
-
+                list($runsCountOV, $avgLootOV,$survivalChartOV, $sumLootChartOV)= HomeQueriesController::getOverviewCharts($my_runs,$my_avg_loot,$my_sum_loot,$my_survival_ratio);
             }
+
+            $lastRuns = DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->whereIn('CHAR_ID', array_keys($my_runs))->paginate();
 
 
             return view("home_mine", [
@@ -175,8 +167,20 @@
                 'my_avg_loot'           => $my_avg_loot,
                 'my_sum_loot'           => $my_sum_loot,
                 'my_survival_ratio'     => $my_survival_ratio,
-                'personal_chart_loot'   => $personalDaily,
-                'activity_daily' => $table
+                'activity_chart'     => $activity_chart,
+                'timeline_charts'     => $timeline_charts,
+                'years' => $years,
+                'year' => $year,
+                'chars' => $chars,
+                'is_main' => $isMain,
+                'character_type' => $characterType,
+
+                'runs_count_ov'=> $runsCountOV ?? null,
+                'avg_loot_ov'=> $avgLootOV ?? null,
+                'survival_ov'=> $survivalChartOV ?? null,
+                'sum_loot_ov'=> $sumLootChartOV ?? null,
+
+                'last_runs' => $lastRuns
             ]);
         }
 

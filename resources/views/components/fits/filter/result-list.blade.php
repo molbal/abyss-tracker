@@ -7,7 +7,7 @@
         <td class="text-muted text-right">Total ehp</td>
         <td class="text-muted text-right">Max speed</td>
         <td class="text-muted text-right">Total cost</td>
-        <td class="text-muted text-right">Runs count</td>
+        <td class="text-muted text-right">Runs @component('components.info-toggle') Runs count in the last 30 days - public and private runs are both counted @endcomponent</td>
     </tr>
     @forelse($results as $row)
         @component("components.fits.filter.result-row", ["row" => $row, "admin" => (isset($admin) && $admin==true)])@endcomponent

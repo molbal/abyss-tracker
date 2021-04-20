@@ -33,7 +33,7 @@ class PatreonDonorDisplay extends Model
     ];
 
     public static function getLatestDonorForHomepage() {
-        return Cache::remember("aft.patreon.last", now()->addMinutes(15), function () {
+        return Cache::remember("aft.patreon.last-hp", now()->addMinutes(15), function () {
             return PatreonDonorDisplay::orderBy("joined", 'DESC')->limit(1)->first();
         });
     }

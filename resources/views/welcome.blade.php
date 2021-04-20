@@ -13,22 +13,18 @@
             {{--        NEWS START --}}
             <div class="col-xs-12 col-md-12">
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
-                    <img src="{{asset("home/1.9.jpg")}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">
+{{--                    <img src="{{asset("home/1.10.jpg)}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">--}}
+                    <a href="{{route('changelog')}}" class="w-100 m-0 b-0 p-0"><video autoplay loop muted poster="{{asset("home/1.10.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none">
+                        <source src="{{asset("home/1.10/mp4.mp4")}}" type="video/mp4">
+                        <source src="{{asset("home/1.10/webm.webm")}}" type="video/webm">
+                        <source src="{{asset("home/1.10/ogv.ogv")}}" type="video/ogg">
+                    </video></a>
                     <div class="p-3 text-center">
                         <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to {{config('tracker.version')}}</a>
                         <p class="mb-0">See changes and new features</p>
                     </div>
                 </div>
             </div>
-{{--            <div class="col-xs-12 col-md-6">--}}
-{{--                <div class="card card-body border-0 shadow-sm p-0 mb-3">--}}
-{{--                    <img src="{{asset('home/alliance-open.jpg')}}" alt="Alliance Open" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">--}}
-{{--                    <div class="p-3 text-center">--}}
-{{--                        <a href="https://open.eve-nt.uk" target="_blank" class="font-weight-bold h5 text-dark">EVE-NT Alliance Open</a>--}}
-{{--                        <p class="mb-0">We made our own Alliance Tournament with 200000+ PLEX in the prizes</p>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
             {{--        NEWS END--}}
 
 
@@ -63,7 +59,7 @@
         </div>
 
         <div class="col-xs-12 col-sm-12 col-md-4">
-            <div class="card card-body border-0 shadow-sm pb-2">
+            <div class="card card-body border-0 shadow-sm pb-2 mt-md-0 mt-3">
                 <div class="donor">
                     <img src="https://images.evetech.net/characters/{{$ingame_last->CHAR_ID}}/portrait?size=128"  class="portrait rounded-circle shadow-sm" alt="">
                     <p class="h5 font-weight-bold mb-0 mt-2">{{$ingame_last->NAME}}</p>
@@ -73,19 +69,11 @@
                     @endif
                 </div>
             </div>
-            <div class="card-footer shadow-sm">
-                <a href="{{route("donors.index")}}" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/receive-cash.png">Donate ingame</a>
-            </div>
-
-            <div class="mt-3 card card-body border-0 shadow-sm pb-2">
-                <div class="donor">
-                    <span>Last Patreon donor</span>
-                    <p class="h4 font-weight-bold mb-0">{{$patreon_last->name}} ({{$patreon_last->monthly_donation}} €/m)</p>
-                    <span style="font-size: 0.7rem" class="text-uppercase">joined {{\App\Http\Controllers\TimeHelper::timeElapsedString($patreon_last->joined)}}</span>
-                </div>
-            </div>
-            <div class="card-footer shadow-sm">
-                <a href="https://patreon.com/veetor" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png">Support us on Patreon</a>
+            <div class="card-footer shadow-sm d-flex justify-content-between">
+                <span>
+                    <a href="{{route("donors.index")}}" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/receive-cash.png">Donate ingame</a>
+                </span>
+                <span><a href="https://patreon.com/veetor" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png">Support on Patreon</a></span>
             </div>
 
 
@@ -111,7 +99,7 @@
             <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == Route::currentRouteName())}}/trophy.png" class="tinyicon bringupper mr-1">Leaderboard</a>
     </div>
     <div class="row mt-4">
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12  mt-md-0 mt-3">
             <div class="d-flex justify-content-between">
                 <h5 class="font-weight-bold mb-2">Top 10</h5>
                 <small>(last 90 days)</small>
@@ -134,7 +122,7 @@
                 </table>
             </div>
         </div>
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12  mt-md-0 mt-3">
             <div class="d-flex justify-content-between">
                 <h5 class="font-weight-bold mb-2">Top 10</h5>
                 <small>(last 30 days)</small>
@@ -157,7 +145,7 @@
                 </table>
             </div>
         </div>
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12  mt-md-0 mt-3">
             <div class="d-flex justify-content-between">
                 <h5 class="font-weight-bold mb-2">Top 10</h5>
                 <small>(last 7 days)</small>
@@ -183,11 +171,6 @@
     </div>
 
 
-
-
-
-
-
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">Ship fits for the Abyss</h4>
         <a class="text-dark"
@@ -210,7 +193,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-9 col-sm-12 col-xs-12">
+    <div class="col-md-9 col-sm-12 col-xs-12 mt-md-0 mt-3">
         <ul class="nav nav-tabs" id="fits-tabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="tab-head-fits-popular" data-toggle="tab" href="#tab-fits-popular" role="tab" aria-controls="home" aria-selected="true">Most popular fits</a>

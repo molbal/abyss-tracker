@@ -66,7 +66,7 @@
         /**
          * @return string
          */
-        public function getItemName() : string
+        public function getItemName() : ?string
         {
             return $this->itemName;
         }
@@ -76,7 +76,7 @@
          *
          * @return EveItem
          */
-        public function setItemName(string $itemName) : EveItem
+        public function setItemName(?string $itemName) : EveItem
         {
             $this->itemName = $itemName;
 
@@ -86,7 +86,7 @@
         /**
          * @return int
          */
-        public function getSellValue() : int
+        public function getSellValue() : ?int
         {
             return $this->sellValue;
         }
@@ -96,7 +96,7 @@
          *
          * @return EveItem
          */
-        public function setSellValue(int $sellValue) : EveItem
+        public function setSellValue(?int $sellValue) : EveItem
         {
             $this->sellValue = $sellValue;
 
@@ -110,7 +110,7 @@
         /**
          * @return int
          */
-        public function getBuyValue() : int
+        public function getBuyValue() : ?int
         {
             return $this->buyValue;
         }
@@ -120,7 +120,7 @@
          *
          * @return EveItem
          */
-        public function setBuyValue(int $buyValue) : EveItem
+        public function setBuyValue(?int $buyValue) : EveItem
         {
             $this->buyValue = $buyValue;
 

@@ -255,6 +255,8 @@ $(function () {
         let pw = $(this).width();
         $(this).text('Working...');
         $(this).width(pw);
-        $(".disable-all-on-click").addClass('disabled').prop('disabled', true);
+        setTimeout(function() {
+            $(".disable-all-on-click").attr('type', 'button').addClass('disabled');
+        }, 150);
     })
 });

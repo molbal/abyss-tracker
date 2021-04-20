@@ -10,7 +10,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                @if (session()->exists("login_id"))
+                @if (\App\Http\Controllers\Auth\AuthController::isLoggedIn())
                     <div class="modal-body">
                         <div class="text-justify text-black-50 text-small mb-3">
                             Please edit your description below.

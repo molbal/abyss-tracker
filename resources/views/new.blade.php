@@ -326,7 +326,7 @@
             <div class="col-sm-12">
                 <div class="card card-body border-0 shadow-sm mt-3">
                     <div class="d-flex justify-content-start asslicker">
-                        <img src="https://images.evetech.net/characters/{{session()->get("login_id")}}/portrait?size=64" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm portrait-new-run">
+                        <img src="https://images.evetech.net/characters/{{\App\Http\Controllers\Auth\AuthController::getLoginId()}}/portrait?size=64" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm portrait-new-run">
                         <p class="mb-0 asslicker-new-run"><span class="lead d-inline-block mr-1">o7</span>Thank you for your contribution, great <strong>{{session()->get("login_name")}}</strong></p>
                     </div>
                 </div>
@@ -351,7 +351,7 @@
         window.start_stopwatch_ = {{$stopwatch ? "true" : "false"}};
         window.advanced_open_ = {{$advanced_open ? "true" : "false"}};
     </script>
-    <script type="text/javascript" src="{{asset("js/new-run.js")}}?version={{config("tracker.version")}}"></script>
+    <script type="text/javascript" src="{{asset("js/new-run.js")}}"></script>
 @endsection
 
 @section("styles")

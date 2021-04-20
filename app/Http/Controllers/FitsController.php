@@ -6,6 +6,7 @@
 
 	use App\Charts\LootAveragesChart;
     use App\Charts\PersonalDaily;
+    use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
@@ -15,13 +16,25 @@
     use App\Http\Controllers\EFT\Tags\TagsController;
     use App\Http\Controllers\Partners\EveWorkbench;
     use App\Http\Controllers\Youtube\YoutubeController;
+    use Arr;
     use ChrisKonnertz\OpenGraph\OpenGraph;
     use Cohensive\Embed\Embed;
+    use Exception;
+    use Illuminate\Contracts\Foundation\Application;
+    use Illuminate\Contracts\View\Factory;
+    use Illuminate\Database\Query\Builder;
+    use Illuminate\Http\RedirectResponse;
     use Illuminate\Http\Request;
+    use Illuminate\Routing\Redirector;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Validator;
+    use Illuminate\Support\Str;
+    use Illuminate\Validation\ValidationException;
+    use Illuminate\View\View;
+    use Parsedown;
+    use RuntimeException;
 
     class FitsController extends Controller {
 
@@ -58,7 +71,8 @@
 
         /**
          * Renders the new fit screen
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         *
+         * @return Factory|View
          */
         public function new(int $id = null) {
 
@@ -68,7 +82,7 @@
             }
             else {
                 $fit = DB::table("fits")->where("ID", $id)->first();
-                if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+                if ($fit->CHAR_ID != AuthController::getLoginId()) {
                     return view('403', ['error' => "You cannot update someone else's fit."]);
                 }
                 if (!$fit) {
@@ -88,9 +102,10 @@
 
         /**
          * Handles fit deletion
+         *
          * @param int $id
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         * @return Factory|View
          */
         public function delete(int $id) {
             if (!session()->has("login_id")) {
@@ -98,7 +113,7 @@
             }
             $fit = DB::table("fits")->where("ID", $id)->first();
 
-            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+            if ($fit->CHAR_ID != AuthController::getLoginId()) {
                 return view('403', ['error' => sprintf("You cannot delete someone else's fit.")]);
             }
 
@@ -106,15 +121,16 @@
                 DB::beginTransaction();
                 $ids = DB::table('fit_questions')->where('fit_id', $id)->select('id')->get()->pluck('fit_id');
                 DB::table("fit_answers")->whereIn("question_id", $ids)->delete();
+                DB::table("fit_logs")->where("fit_it", $fit->ROOT_ID ?? $id)->delete();
                 DB::table("fit_logs")->where("fit_it", $id)->delete();
                 DB::table("fit_questions")->where("fit_id", $id)->delete();
                 DB::table("fit_tags")->where("FIT_ID", $id)->delete();
                 DB::table("fit_recommendations")->where("FIT_ID", $id)->delete();
-                DB::table("fits")->where("ID", $id)->where("CHAR_ID", session()->get("login_id"))->delete();
+                DB::table("fits")->where("ID", $id)->where("CHAR_ID",  AuthController::getLoginId())->delete();
                 DB::commit();
                 return view("autoredirect", ['title' => "Fit deleted", 'message' =>"The fit and all its data was removed from the Abyss Tracker.", "redirect" => route("fit.mine")]);
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 DB::rollBack();
                 Log::error("Transaction rolled back - Could not delete fit $id - ".$e->getMessage(). " ".$e->getFile()."@".$e->getLine());
                 return view("error", ["error" => "Something went wrong and could not delete this fit. Modifications reverted."]);
@@ -128,7 +144,7 @@
          *
          * @param string $privacySetting
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @return Factory|RedirectResponse|Redirector|View
          */
         public function changePrivacy(int $id, string $privacySetting) {
 
@@ -144,8 +160,8 @@
             }
             $fit = DB::table("fits")->where("ID", $id)->first();
 
-            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
-                return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            if (!AuthController::isItMe($fit->CHAR_ID)) {
+                return view('error', ['title' => "Not allowed", 'error' => sprintf("You cannot modify someone else's fit.")]);
             }
 
             try {
@@ -163,7 +179,7 @@
                     'redirect' => route('fit_single', ['id' => $id])
                 ]);
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 DB::rollBack();
                 Log::error("Transaction rolled back - Could not change fit privacy $id - ".$e->getMessage(). " ".$e->getFile()."@".$e->getLine());
                 return view("error", ["error" => "Something went wrong and could not delete this fit. Modifications reverted."]);
@@ -173,8 +189,8 @@
         /**
          * @param Request $request
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
-         * @throws \Exception
+         * @return Factory|RedirectResponse|Redirector|View
+         * @throws Exception
          */
         public function new_store(Request $request) {
 
@@ -200,15 +216,15 @@
                     $request->get("EXOTIC") == 0 &&
                     $request->get("FIRESTORM") == 0 &&
                     $request->get("GAMMA") == 0) {
-                    throw \Illuminate\Validation\ValidationException::withMessages([
+                    throw ValidationException::withMessages([
                         'ELECTRICAL' => ['Please mark at least one type/tier possible in this fit.']
                     ]);
                 }
 
-                $charId = session()->get("login_id", 0);
+                $charId = AuthController::getLoginId();
                 if ($request->has('rootId')) {
                     if (!DB::table('fits')->where('ID', $request->get('rootId'))->where('CHAR_ID', $charId)->exists()) {
-                        throw \Illuminate\Validation\ValidationException::withMessages([
+                        throw ValidationException::withMessages([
                             'rootId' => ["You must not update someone else\'s fit"]
                         ]);
                     }
@@ -218,7 +234,7 @@
                 $shipId = self::getShipIDFromEft($eft);
 
                 if (!DB::table("ship_lookup")->where("ID", $shipId)->exists()) {
-                    throw new \Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
+                    throw new Exception("Please select a ship that is allowed to enter the Abyssal Deadspace");
                 }
 
                 $fitObj = $this->fitParser->getFitTypes($eft);
@@ -248,7 +264,7 @@
                 ]);
 
                 if (!$this->submitSvcFitService($this->fitHelper->pyfaBugWorkaround($eft, $shipId), $id)) {
-                    throw new \RuntimeException("Unable to submit this fit to processing.");
+                    throw new RuntimeException("The Abyss Tracker fit calculation tool refused to parse this EFT. This is often caused by a mistake in copy pasting, or a typo.");
                 }
 
                 DB::table("fit_recommendations")->insert([
@@ -271,7 +287,7 @@
 
                 DB::commit();
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 DB::rollBack();
                 Log::error("Error while saving new fit: ".$e->getMessage()." ".$e->getFile()."@".$e->getLine());
                 return view('error', ['error' => "Could not save fit: ".$e->getMessage()]);
@@ -283,10 +299,11 @@
 
         /**
          * Handles updating the description for a fit
+         *
          * @param Request $request
          *
-         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         * @throws \Illuminate\Validation\ValidationException
+         * @return Application|Factory|View
+         * @throws ValidationException
          */
         public function updateDescription(Request $request) {
 
@@ -301,7 +318,7 @@
             $id = $request->get('id');
             $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
 
-            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+            if (!AuthController::isItMe($fit->CHAR_ID)) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
             }
 
@@ -318,7 +335,7 @@
 
                 self::uncache($id);
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
                 return view("error", ["error" => "Something went wrong while updating description, sorry. ".$e->getMessage()]);
             }
@@ -332,13 +349,76 @@
             ]);
 	    }
 
+
+
+
+        /**
+         * Handles updating the description for a fit
+         *
+         * @param Request $request
+         *
+         * @return Application|Factory|View
+         * @throws ValidationException
+         */
+        public function updateVideo(Request $request) {
+            Validator::make($request->all(), [
+                'id'  => 'required|numeric|exists:fits,ID'
+            ], [
+                'required' => "Please fill :attribute"
+            ])->validate();
+
+
+            $id = $request->get('id');
+            $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
+
+            if (!AuthController::isItMe($fit->CHAR_ID)) {
+                return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
+            }
+
+
+            $regex_pattern = config('tracker.verification.youtube');
+            // If YT regex test fails
+            if (!Str::of($request->get('video'))->match($regex_pattern)->isNotEmpty()) {
+                throw ValidationException::withMessages(['video' => "Please provide a proper Youtube link"]);
+            }
+
+            // Actually edit
+            DB::beginTransaction();
+            try {
+                DB::table('fits')
+                  ->where('id', $id)
+                  ->update(['VIDEO_LINK' => $request->filled('video') ? $request->get('video') : null]);
+
+                // Write history
+                FitHistoryController::addEntry($id, "Updated video link");
+                DB::commit();
+
+                self::uncache($id);
+            }
+            catch (Exception $e) {
+                Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
+                return view("error", ["error" => "Something went wrong while updating the tutorial video, sorry. ".$e->getMessage()]);
+            }
+
+
+            // Redirect with message
+            return view('autoredirect', [
+                'title' => "Success",
+                'message' => "The tutorial video of ".$fit->NAME." fit was updated",
+                'redirect' => route('fit_single', ['id' => $id])
+            ]);
+        }
+
+
+
+
         /**
          * @param Request $request
          *
          * @param int     $id
          * @param string  $status
          *
-         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         * @return Application|Factory|View
          */
         public function updateLastPatch(Request $request, int $id, string $status) {
 
@@ -351,7 +431,7 @@
 
             $fit = DB::table("fits")->where("ID", $id)->select(['CHAR_ID', 'NAME'])->first();
 
-            if ($fit->CHAR_ID != session()->get("login_id", -1)) {
+            if ($fit->CHAR_ID != AuthController::getLoginId()) {
                 return view('403', ['error' => sprintf("You cannot modify someone else's fit.")]);
             }
 
@@ -367,7 +447,7 @@
                 DB::commit();
                 self::uncache($id);
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 Log::error("Could not update description for $id ". $e->getMessage()." ".$e->getTraceAsString());
                 return view("error", ["error" => "Something went wrong while updating last patch status, sorry. ".$e->getMessage()]);
             }
@@ -394,85 +474,85 @@
          *
          * @param int $id
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         * @throws \Exception
+         * @return Factory|View
+         * @throws Exception
          */
         public function get(int $id) {
-            clock()->startEvent("Checking if exists", "");
+            clock()->event("Checking if exists", "")->begin();
                 if (!$this->getFitsQB($id)
                           ->exists()) {
-                    clock()->endEvent("Checking if exists");
+                    clock()->event("Checking if exists")->end();
                     return view('error', ['error' => sprintf("Can not find a fit with ID %d", $id)]);
                 }
-            clock()->endEvent("Checking if exists");
+            clock()->event("Checking if exists")->end();
 
             try {
 
                 // Get the fit - with some caching
-                clock()->startEvent("Getting the fit from DB", "");
+                clock()->event("Getting the fit from DB", "")->begin();
                 $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
                     return $this->getFitsQB($id)->first();
                 });
-                clock()->endEvent("Getting the fit from DB");
+                clock()->event("Getting the fit from DB")->end();
 
 
                 // Check credentials
-                clock()->startEvent("Checking privacy", "");
-                if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != session()->get("login_id", -1)) {
+                clock()->event("Checking privacy", "")->begin();
+                if ($fit->PRIVACY == 'private' && $fit->CHAR_ID != AuthController::getLoginId()) {
                     return view('403', ['error' => sprintf("<p class='mb-0'>This is a private fit. <br> <a class='btn btn-link mt-3' href='" . route('fit.search') . "'>View public fits</a></p>")]);
                 }
-                clock()->endEvent("Checking privacy");
+                clock()->event("Checking privacy")->end();
 
                 // Get ship name and character name
-                clock()->startEvent("Lookup ship name and character name", "");
+                clock()->event("Lookup ship name and character name", "")->begin();
                 $ship_name = DB::table('ship_lookup')
                                ->where('ID', $fit->SHIP_ID)
                                ->value('NAME');
                 $char_name = DB::table('chars')
                                ->where('CHAR_ID', $fit->CHAR_ID)
                                ->value('NAME');
-                clock()->endEvent("Lookup ship name and character name");
+                clock()->event("Lookup ship name and character name")->end();
 
                 // Parse description, get ship type ID and ship name
-                clock()->startEvent("Parse description", "");
-                $description = (new \Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
-                clock()->endEvent("Parse description");
+                clock()->event("Parse description", "")->begin();
+                $description = (new Parsedown())->setSafeMode(true)->parse($fit->DESCRIPTION);
+                clock()->event("Parse description")->end();
 
-                clock()->startEvent("Get ship type ID", "");
+                clock()->event("Get ship type ID", "")->begin();
                 $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
-                clock()->endEvent("Get ship type ID");
+                clock()->event("Get ship type ID")->end();
 
-                clock()->startEvent("Get shipitemObject", "");
+                clock()->event("Get shipitemObject", "")->begin();
                 $shipitemObject = $this->sipc->getFromTypeId($fit->SHIP_ID);
                 if (!$shipitemObject) {
-                    throw new \Exception("Could not find the ship name from the ship ID (".$fit->SHIP_ID.") - This happens frequently during EVE downtime and will solve itself when EVE comes back online");
+                    throw new Exception("Could not find the ship name from the ship ID (".$fit->SHIP_ID.") - This happens frequently during EVE downtime and will solve itself when EVE comes back online");
                 }
-                clock()->endEvent("Get shipitemObject");
+                clock()->event("Get shipitemObject")->end();
 
                 // Get ship price
-                clock()->startEvent("Get ship price", "");
+                clock()->event("Get ship price", "")->begin();
                 $shipPrice = $shipitemObject->getAveragePrice() ?? 0.0;
-                clock()->endEvent("Get ship price");
+                clock()->event("Get ship price")->end();
 
                 // Get video link
-                clock()->startEvent("Parse fit video link", "");
+                clock()->event("Parse fit video link", "")->begin();
                 if (trim($fit->VIDEO_LINK)) {
                     try {
                         $embed = YoutubeController::getEmbed($fit->VIDEO_LINK);
-                    } catch (\Exception $exception) {
+                    } catch (Exception $exception) {
                         Log::warning(sprintf("Could not generate embed for %s", $fit->VIDEO_LINK));
                         $embed = "<div class='alert alert-warning'>Could not generate embed for link: " . htmlentities($fit->VIDEO_LINK) . '</div>';
                     }
                 } else { $embed = "";}
-                clock()->endEvent("Parse fit video link");
+                clock()->event("Parse fit video link")->end();
 
                 // Get recommendations
-                clock()->startEvent("Load fit recommendations", "");
+                clock()->event("Load fit recommendations", "")->begin();
                 $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
-                clock()->endEvent("Load fit recommendations");
+                clock()->event("Load fit recommendations")->end();
 
                 // Make open graph tags
-                clock()->startEvent("Generate Open Graph tags", "");
+                clock()->event("Generate Open Graph tags", "")->begin();
                 $og = new OpenGraph();
                 $tags = TagsController::getFitTags($id);
                 $og->title(sprintf("%s fit - %s", $ship_name, config('app.name')))
@@ -485,79 +565,79 @@
                    ->determiner('an')
                    ->image("https://images.evetech.net/types/$fit->SHIP_ID/render?size=256", ['width' => 256, 'height' => 256]);
                 $og->profile(["first_name" => trim($fit->NAME)]);
-                clock()->endEvent("Generate Open Graph tags");
+                clock()->event("Generate Open Graph tags")->end();
 
                 // Get last runs with this fit
-                clock()->startEvent("Load fit's saved runs", "");
+                clock()->event("Load fit's saved runs", "")->begin();
                 $runs = DB::table("runs")
                   ->where("FIT_ID", $id)
                   ->orderBy("CREATED_AT", 'DESC')
                   ->paginate(25);
-                clock()->endEvent("Load fit's saved runs");
+                clock()->event("Load fit's saved runs")->end();
 
                 // Get max tiers and "break even" stats
-                clock()->startEvent("'Break even calculation' - determine max tiers", "");
+                clock()->event("'Break even calculation' - determine max tiers", "")->begin();
                 $maxTiers = FitBreakEvenCalculator::getMaxTiers($id);
-                clock()->endEvent("'Break even calculation' - determine max tiers");
-                clock()->startEvent("'Break even calculation' - calculate break even time", "");
+                clock()->event("'Break even calculation' - determine max tiers")->end();
+                clock()->event("'Break even calculation' - calculate break even time", "")->begin();
                 $breaksEven = FitBreakEvenCalculator::breaksEvenCalculation($id, $maxTiers, $fit);
-                clock()->endEvent("'Break even calculation' - calculate break even time");
+                clock()->event("'Break even calculation' - calculate break even time")->end();
 
 
                 // Get parsed items and price
-                clock()->startEvent("Load EFT from ID", "");
+                clock()->event("Load EFT from ID", "")->begin();
                 $eftObj = Eft::loadFromId($id);
-                clock()->endEvent("Load EFT from ID");
-                clock()->startEvent("Load structured, pre-parsed display", "");
+                clock()->event("Load EFT from ID")->end();
+                clock()->event("Load structured, pre-parsed display", "")->begin();
                 $eftParsed = $eftObj->getStructuredDisplay();
-                clock()->endEvent("Load structured, pre-parsed display");
-                clock()->startEvent("Calculate fit value", "");
+                clock()->event("Load structured, pre-parsed display")->end();
+                clock()->event("Calculate fit value", "")->begin();
                 $fit->PRICE = $eftObj->getFitValue();
                 $this->getFitsQB($id)->update(["PRICE" => $fit->PRICE]);
-                clock()->endEvent("Calculate fit value");
+                clock()->event("Calculate fit value")->end();
 
                 // Get similar fits
-                clock()->startEvent("Get similar fits", "");
+                clock()->event("Get similar fits", "")->begin();
                 $fitIdsAll = $this->getSimilarFitsAsIdList($fit->FFH, true);
                 $fitIdsNonPrivate = $this->getSimilarFitsAsIdList($fit->FFH, false);
                 $similars = $this->getFitsFromIds($fitIdsNonPrivate);
-                clock()->endEvent("Get similar fits");
+                clock()->event("Get similar fits")->end();
 
-                clock()->startEvent("Make charts", "");
+                clock()->event("Make charts", "")->begin();
                 $popularity = $this->getFitPopularityChart($fitIdsAll, "Fit");
                 $loots = $this->getFitLootStrategyChart($fitIdsAll);
-                clock()->endEvent("Make charts");
+                clock()->event("Make charts")->end();
 
                 // Get all runs count with this fit
-                clock()->startEvent("Count all runs", "");
+                clock()->event("Count all runs", "")->begin();
                 $runsCountAll = DB::table("runs")
                       ->where("FIT_ID", $id)
                       ->orderBy("CREATED_AT", 'DESC')->count();
-                clock()->endEvent("Count all runs");
+                clock()->event("Count all runs")->end();
 
                 // Get history
-                clock()->startEvent("Load history", "");
+                clock()->event("Load history", "")->begin();
                 $history = FitHistoryController::getFitHistory($id)->reverse();
-                clock()->endEvent("Load history");
+                clock()->event("Load history")->end();
 
                 // Check revisions history
-                clock()->startEvent("Load revision", "");
+                clock()->event("Load revision", "")->begin();
                 $newestRevision = FitHistoryController::getLastRevision($id);
-                clock()->endEvent("Load revision");
+                clock()->event("Load revision")->end();
 
                 // Check revisions history
-                clock()->startEvent("Load questions and answers", "");
+                clock()->event("Load questions and answers", "")->begin();
                 $questions = FitQuestionsController::getFitQuestions($id);
-                clock()->endEvent("Load questions and answers");
+                clock()->event("Load questions and answers")->end();
                 // Check revisions history
-                clock()->startEvent("Generate Eve Workbench export URL", "");
+                clock()->event("Generate Eve Workbench export URL", "")->begin();
                 $eveworkbenchLink = 'https://www.eveworkbench.com/import/fit/'.base64_encode(json_encode([
                         "name" => $fit->NAME,
                         "eft" => $fit->RAW_EFT,
                         "tags" => $tags->join(","),
                         "youtube_url" => $fit->VIDEO_LINK ?? ''
                     ]));
-                clock()->endEvent("Generate Eve Workbench export URL");
+                clock()->event("Generate Eve Workbench export URL")->end();
 
                 return view('fit', [
                     'fit' => $fit,
@@ -588,7 +668,7 @@
                 ]);
 
             }
-            catch (\Exception $e)  {
+            catch (Exception $e)  {
                 if (config("app.debug")) {
                     throw $e;
                 }
@@ -602,7 +682,7 @@
          * @param int    $fitId
          *
          * @return bool
-         * @throws \Exception
+         * @throws Exception
          */
         public function submitSvcFitService(string $eft, int $fitId) {
             $ch = curl_init();
@@ -619,7 +699,7 @@
             curl_close($ch);
 
             if (!$response) {
-                throw new \Exception("The fit stat service did not respond");
+                throw new Exception("The fit stat service did not respond");
             }
 
             $responseData = json_decode($response, true);
@@ -627,12 +707,12 @@
                 Log::error("Invalid response from fit stat service: ".$responseData." for input ".$query);
 
                 FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
-                throw new \Exception("The fit stat service returned malformed response");
+                throw new Exception("The fit stat service returned malformed response");
             }
 
             if(!isset($responseData["success"])) {
                 FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
-                throw new \RuntimeException("No 'status' key in SVCFITSTAT response: ".print_r($responseData, 1));
+                throw new RuntimeException("No 'status' key in SVCFITSTAT response: ".print_r($responseData, 1));
             }
 
             if ($responseData["success"]) {
@@ -651,7 +731,7 @@
          * @param string $fit
          *
          * @return mixed
-         * @throws \Exception
+         * @throws Exception
          */
         private function getFitName(string $fit): string {
 
@@ -663,9 +743,9 @@
                 $shipName = explode(",", explode("[", $lines[0],2)[1], 2)[1];
                 $shipName = str_replace("]", "", $shipName);
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 Log::warning("Could not extract the ship name from the EFT fit. ".$e->getMessage()." ".$e->getFile()." ".$e->getLine());
-                throw new \Exception("Could not extract the ship name from the EFT fit. ", 0, $e);
+                throw new Exception("Could not extract the ship name from the EFT fit. ", 0, $e);
             }
 
             return $shipName;
@@ -675,7 +755,7 @@
          * @param string $fit
          *
          * @return mixed
-         * @throws \Exception
+         * @throws Exception
          */
         public static function getShipIDFromEft(string $fit) {
 
@@ -686,9 +766,9 @@
             try {
                 $shipName = explode(",", explode("[", $lines[0],2)[1], 2)[0];
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 Log::warning("Could not extract the ship name from the EFT fit. ".$e->getMessage()." ".$e->getFile()." ".$e->getLine());
-                throw new \Exception("Could not extract the ship name from the EFT fit. ", 0, $e);
+                throw new Exception("Could not extract the ship name from the EFT fit. ", 0, $e);
             }
 
             Log::debug("Found ship: ".$shipName);
@@ -696,7 +776,7 @@
             $shipId = DB::table("ship_lookup")->where('NAME', ucfirst(strtolower($shipName)))->value('ID');
 
             if (!$shipId) {
-                throw new \Exception("Broken ship fit, unsupported fit, or the selected ship cannot go into the Abyss.");
+                throw new Exception("Broken ship fit, unsupported fit, or the selected ship cannot go into the Abyss.");
             }
 
             return $shipId;
@@ -707,9 +787,9 @@
         /**
          * @param int $id
          *
-         * @return \Illuminate\Database\Query\Builder
+         * @return Builder
          */
-        private function getFitsQB(int $id) : \Illuminate\Database\Query\Builder {
+        private function getFitsQB(int $id) : Builder {
             return DB::table("fits")
                      ->where("ID", $id);
         }
@@ -756,7 +836,7 @@
                 $query->where("PRIVACY", "!=", 'private');
             }
             $ids = $query->select("ID")->get();
-            return \Arr::pluck($ids, "ID");
+            return Arr::pluck($ids, "ID");
         }
 
 

@@ -65,7 +65,7 @@
             return redirect(route("tutorials.get", ["id" => $id, "slug" => "-"]));
         }
 
-        public function get(int $id, string $slug) {
+        public function get(int $id, string $slug = null) {
             try {
                 if (!VideoTutorial::with("content_creator")->where("id", $id)->exists()) {
                     return view("error", ["message" => "No such tutorial"]);

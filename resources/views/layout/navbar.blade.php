@@ -89,17 +89,26 @@
             </li>
         </ul>
             <form class="ml-auto">
-            @if(session()->has("login_id"))
+            @if(\App\Http\Controllers\Auth\AuthController::isLoggedIn())
                 <li class="nav-item dropdown" style="list-style: none">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="https://images.evetech.net/characters/{{session()->get("login_id")}}/portrait?size=32" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm" style="border:1px solid #fff;"> {{session()->get('login_name')}}</a>
-                    <div class="dropdown-menu fade-down shadow" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item pl-2 {{"new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("new")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == $currentRoute)}}/new-by-copy.png" class="tinyicon mr-1"/>Add run</a>
+                        <img src="https://images.evetech.net/characters/{{\App\Http\Controllers\Auth\AuthController::getLoginId()}}/portrait?size=32" alt="{{session()->get('login_name')}}" class="rounded-circle shadow-sm mr-1" style="border:1px solid #fff;">{{\App\Http\Controllers\Auth\AuthController::getCharName()}}</a>
+                    <div class="dropdown-menu fade-down shadow" aria-labelledby="navbarDropdown" style="right: 0 !important; left: unset !important;">
+                       <a class="dropdown-item pl-2 {{"new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("new")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("new" == $currentRoute)}}/new-by-copy.png" class="tinyicon mr-1"/>Add run</a>
                         <a class="dropdown-item pl-2 {{"fit_new" == $currentRoute ? "active text-dark" : ""}}" href="{{route("fit_new")}}" ><img src="_icons/fit-new-{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit_new" == $currentRoute)}}.png" class="tinyicon mr-1">New fit</a>
                         <a class="dropdown-item pl-2 {{"runs_mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("runs_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("runs_mine" == $currentRoute)}}/bulleted-list.png" class="tinyicon mr-1"/>My runs</a>
                         <a class="dropdown-item pl-2 {{"home_mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("home_mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("home_mine" == $currentRoute)}}/positive-dynamic.png" class="tinyicon mr-1"/>My home</a>
                         <a class="dropdown-item pl-2 {{"fit.mine" == $currentRoute ? "active text-dark" : ""}}" href="{{route("fit.mine")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.mine" == $currentRoute)}}/scan-stock.png" class="tinyicon mr-1"/>My fits</a>
                         <a class="dropdown-item pl-2 {{"profile.index" == $currentRoute ? "active text-dark" : ""}}" href="{{route("profile.index", ["id" => session()->get('login_id')])}}" ><img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("profile.index" == $currentRoute)}}/head-profile.png" class="tinyicon mr-1"/>Public profile</a>
+                        @component('layout.navbar-components.logged-in-dropdown-item', ['itemRoute' => "alts.index",'currentRoute' => $currentRoute,'icon' => 'group-foreground-selected']) Alts manager @endcomponent
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item pl-2 text-muted"><small>Quick char switch</small></span>
+                        @forelse(\App\Http\Controllers\Profile\AltRelationController::getAllMyAvailableCharacters() as $char)
+                            <a class="dropdown-item pl-2" href="{{route('alts.switch', ['altId' => $char->id])}}"><img src="https://images.evetech.net/characters/{{$char->id}}/portrait?size=32" alt="{{$char->name}}" class="switcher-image" >{{\Illuminate\Support\Str::of($char->name)->limit(12, '...')}}<a>
+                            @empty
+                            @component('layout.navbar-components.logged-in-dropdown-item', ['itemRoute' => "alts.index",'currentRoute' => $currentRoute,'icon' => 'add-user-female']) Add an alt @endcomponent
+
+                       @endforelse
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item pl-2 {{"settings.index" == $currentRoute ? "active text-dark" : ""}}" href="{{route("settings.index")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("settings.index" == $currentRoute)}}/settings.png" class="tinyicon mr-1"/> Settings</a>
                         <a class="dropdown-item pl-2" href="{{route("logout")}}#"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/logout-rounded.png" class="tinyicon mr-1"/> Log out</a>

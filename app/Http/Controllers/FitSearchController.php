@@ -274,7 +274,7 @@
                                "fits.PRICE",
                                "fits.VIDEO_LINK",
                                "ship_lookup.NAME as SHIP_NAME",
-                               DB::raw('(select count(runs.`ID`) from `runs` where runs.`FIT_ID`=fits.`ID`) as `RUNS_COUNT`'),
+                               DB::raw('(select count(runs.`ID`) from `runs` where runs.`FIT_ID`=fits.`ID` and runs.RUN_DATE >= DATE_SUB(NOW(), INTERVAL 30 DAY)) as `RUNS_COUNT`'),
                                "ship_lookup.GROUP",
                                "fit_recommendations.DARK as Dark",
                                "fit_recommendations.ELECTRICAL as Electrical",

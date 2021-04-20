@@ -105,6 +105,7 @@
 <body>
 @component("layout.navbar")@endcomponent
 <div class="container">
+    {!! \App\Http\Controllers\Misc\NotificationController::renderInfoline() !!}
     @if(\Illuminate\Support\Facades\Cache::has("recalc-notice"))
         <div class="alert alert-warning border-0 shadow-sm mt-3">
             {{\Illuminate\Support\Facades\Cache::get("recalc-notice")}} <br>
@@ -141,11 +142,12 @@
 
                     <h5 class="font-weight-bold text-white mt-3">Supporters &amp; Contributors</h5>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/charity.png"/><a class="text-white" href="{{route("donors.index")}}">Patreon and ISK donors</a></p>
-                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/icons8-new-logo.png"/><a class="text-white" href="https://icons8.com" target="_blank" rel="nofollow">Icons8</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/user.png"/><a class="text-white" href="https://www.fiverr.com/manicv" target="_blank" rel="nofollow">Manic Velocity</a></p>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/settings-3.png"/><a class="text-white" href="https://eveworkbench.com" target="_blank" rel="nofollow">EVE Workbench</a></p>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/settings-3.png"/><a class="text-white" href="https://market.fuzzwork.co.uk/" target="_blank" rel="nofollow">Fuzzwork Market Data</a></p>
-                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/user.png"/><a class="text-white" href="https://twitter.com/manicvelocity" target="_blank" rel="nofollow">Manic Velocity</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/settings-3.png"/><a class="text-white" href="https://janice.e-351.com/" target="_blank" rel="nofollow">E-351 Janice</a></p>
                     <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/idea.png"/><a class="text-white" href="https://www.jetbrains.com/community/opensource/" target="_blank" rel="nofollow">JetBrains (IDE license)</a></p>
+                    <p class="mb-1"><img class="tinyicon bringupper mr-1" src="https://img.icons8.com/small/24/ffffff/icons8-new-logo.png"/><a class="text-white" href="https://icons8.com" target="_blank" rel="nofollow">Icons8</a></p>
                 </div>
                 <div class="col-md-4 footer-links">
                     <div class="row">
@@ -226,15 +228,18 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @yield('scripts')
 <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+<script>
+
+    // Prevent closing from click inside dropdown
+    $(document).on('click', '.dropdown-menu', function (e) {
+        e.stopPropagation();
+    });
+    {!! \App\Http\Controllers\Misc\NotificationController::renderToast() !!}
+</script>
 @if(!config("app.debug"))
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86961430-8"></script>
     <script>
-        // jQuery code
-        // Prevent closing from click inside dropdown
-        $(document).on('click', '.dropdown-menu', function (e) {
-            e.stopPropagation();
-        });
         window.dataLayer = window.dataLayer || [];
         function gtag() {
             dataLayer.push(arguments);

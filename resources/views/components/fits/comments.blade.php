@@ -1,3 +1,6 @@
+<script>
+    const text_max = 1000;
+</script>
 @forelse($questions as $question)
     <div class="d-flex w-100 justify-content-start align-items-top question-container" id="question_{{$question->id}}">
         <span class="comment-image">
@@ -68,9 +71,29 @@
                             <input type="hidden" name="question_id" value="{{$question->id}}">
                             <input type="hidden" name="fit_id" value="{{$fit->ID}}">
                             <label for="text">Answer this question as {{session('login_name')}}</label>
-                            <textarea name="text" id="text" class="form-control w-100" rows="1" title="No formatting allowed"></textarea>
+                            <textarea name="text" id="text-{{$question->id}}" class="form-control w-100" rows="1" title="No formatting allowed"></textarea>
+                            <span class="pull-right label label-default count_message" ></span>
                             <input type="submit" value="Submit answer" class="btn btn-sm btn-outline-primary mt-3">
                         </form>
+                        @section('scripts')
+                            @parent
+                        <script>
+                            $(function () {
+                                $('#text-{{$question->id}}').parent().find('span.count_message').html('0 / ' + text_max );
+                                $('#text-{{$question->id}}').keyup(function() {
+                                    var text_length = $('#text-{{$question->id}}').val().length;
+                                    $('#text-{{$question->id}}').parent().find('span.count_message').html(text_length + ' / ' + text_max);
+                                    if (text_length > text_max) {
+                                        $('#text-{{$question->id}}').addClass('border-danger');
+                                    }
+                                    else {
+                                        $('#text-{{$question->id}}').removeClass('border-danger');
+                                    }
+                                });
+
+                            });
+                        </script>
+                        @endsection
                     </span>
                 </div>
             @endif
@@ -89,10 +112,29 @@
             <label for="question" class="w-100 d-flex justify-content-between align-items-center"><span>Type your question below</span><small>The fit uploader will be notified
                     ingame.</small></label>
             <textarea name="question" id="question" class="form-control w-100" rows="3" title="No formatting allowed"></textarea>
+            <span class="pull-right label label-default count_message"></span>
         </div>
         <input type="submit" value="Submit question" class="btn btn-outline-primary">
     </form>
-
+    @section('scripts')
+        @parent
+        <script>
+            $(function () {
+                $('#question').parent().find('span.count_message').html('0 / ' + text_max);
+                $('#question').keyup(function () {
+                    var text_length = $('#question').val().length;
+                    // var text_remaining = text_max - text_length;
+                    $('#question').parent().find('span.count_message').html(text_length + ' / ' + text_max);
+                    if (text_length > text_max) {
+                        $('#question').addClass('border-danger');
+                    }
+                    else {
+                        $('#question').removeClass('border-danger');
+                    }
+                });
+            });
+        </script>
+    @endsection
     @if (session()->get('login_id') == $fit->CHAR_ID)
         @component('components.info-line')Since this fit's privacy selection is '{{ucwords($fit->PRIVACY)}}' your avatar and name will be
         <strong>{{$fit->PRIVACY == 'public' ? 'displayed' : 'hidden'}}</strong>. @endcomponent

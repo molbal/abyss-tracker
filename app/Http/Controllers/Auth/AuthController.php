@@ -3,9 +3,16 @@
 
     namespace App\Http\Controllers\Auth;
 
-    use App\Helpers\ConversationCache;
+//    use App\Exceptions\BusinessLogicException;
+//    use App\Exceptions\SecurityViolationException;
+//    use App\Helpers\ConversationCache;
+    use App\Exceptions\SecurityViolationException;
     use App\Http\Controllers\Controller;
-    use http\Client\Request;
+//    use App\Http\Controllers\Profile\AltRelationController;
+//    use http\Client\Request;
+    use App\Http\Controllers\Misc\NotificationController;
+    use App\Http\Controllers\Profile\AltRelationController;
+    use Illuminate\Routing\Redirector;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -14,13 +21,84 @@
 
     class AuthController extends Controller {
 
+        public const ALT_SESSION_VAR = 'flag_add_alt_character';
+
+
+        /**
+         * Gets whether a user is logged in
+         * @return bool
+         */
+        public static function isLoggedIn() {
+            return session()->has('login_id') && session()->has('login_name');
+        }
+
+        /**
+         * Gets the logged in user's EVE ID, null, if not logged in
+         * @return int|null
+         */
+        public static function getLoginId(): ?int {
+            return session('login_id', null);
+        }
+
+        /**
+         * Gets if the current user is the logged in
+         * @param int $id
+         *
+         * @return bool
+         */
+        public static function isItMe(int $id) {
+            return self::getLoginId() == $id;
+        }
+
+        /**
+         * Gets the logged in user's EVE Name, null, if not logged in
+         * @return string
+         */
+		 public static function getCharName():string {
+            return session('login_name', null);
+		 }
+
+        public function switch(int $charId) {
+
+            try {
+                $all = AltRelationController::getAllMyAvailableCharacters(false);
+            } catch (SecurityViolationException $e) {
+                return view('error', [
+                    'title' => "Not allowed ",
+                    'message' => $e->getMessage()
+                ]);
+            }
+            $alt = $all->where('id', strval($charId))->first();
+            if ($alt) {
+                session()->regenerate(true);
+
+                session()->put([
+                    'login_id' => intval($alt->id),
+                    'login_name' => $alt->name,
+                ]);
+            }
+            else {
+
+                return view('error', [
+                    'title' => "Not allowed ",
+                    'message' => "You cannot switch to that character, because it is not your alt."
+                ]);
+            }
+
+//            NotificationController::flashInfoLine("Switched active character to ".htmlentities($alt->name), 'info');
+            NotificationController::flashToast("Switched active character to ".htmlentities($alt->name));
+            return redirect(url()->previous(route('home')));
+		 }
 
         /**
          * Redirect the user to the Eve Online authentication page.
          *
          * @return mixed
          */
-        public function redirectToProvider() {
+        public function redirectToProvider($addAltCharacter = false) {
+            if ($addAltCharacter) {
+                session()->put(self::ALT_SESSION_VAR, true);
+            }
             return Socialite::driver('eveonline')
                 ->redirect();
         }
@@ -53,7 +131,7 @@
         /**
          * Obtain the user information from Eve Online.
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|Redirector|\Illuminate\View\View
          */
         public function handleProviderCallback() {
             try {
@@ -67,9 +145,20 @@
                     "CHAR_ID" => $id,
                     "NAME"    => $name
                 ]);
-                \session()->put("login_id", $id);
-                \session()->put("login_name", $name);
-                return redirect(route("home_mine"));
+
+                if(session()->has(self::ALT_SESSION_VAR)) {
+                    session()->forget(self::ALT_SESSION_VAR);
+                    AltRelationController::addRelation(AuthController::getLoginId(), $id);
+                    NotificationController::flashInfoLine($name." was added as your alt.", 'success');
+                    return redirect(route('alts.index'));
+                }
+                else {
+                    session()->put([
+                        'login_id' => intval($id),
+                        'login_name' => $name,
+                    ]);
+                    return redirect(route("home_mine"));
+                }
             }
             catch (\Exception $e) {
                 return view('error', ["error" => "The EVE API had an error: " . ($e->getMessage() ?? 'No error message provided by ESI') . " - if you try logging in again it will probably work."]);
@@ -80,7 +169,7 @@
         /**
          * Obtain the user information from Eve Online.
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|Redirector|\Illuminate\View\View
          */
         public function handleScopedProviderCallback() {
             try {
@@ -91,7 +180,6 @@
                     'redirect'      => config("tracker.scoped.redirect"),
                 ]]);
 
-//                dd(config("services.eveonline"));
 
                 /** @var User $user */
                 $user = Socialite::driver('eveonline')->user();
@@ -120,8 +208,10 @@
                     Log::error("Database issue on the Abyss Tracker's end: " . $e->getMessage());
                     throw $e;
                 }
-                \session()->put("login_id", $id);
-                \session()->put("login_name", $name);
+                session()->put([
+                    'login_id' => intval($id),
+                    'login_name' => $name,
+                ]);
                 return redirect(route("new"));
             }
             catch (\Exception $e) {
@@ -133,7 +223,7 @@
         /**
          * Obtain the user information from Eve Online.
          *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|Redirector|\Illuminate\View\View
          */
         public function handleMailProviderCallback() {
             try {
@@ -147,7 +237,7 @@
                 /** @var User $user */
                 $user = Socialite::driver('eveonline')->user();
 
-                dd($user);
+//                dd($user);
 
             }
             catch (\Exception $e) {

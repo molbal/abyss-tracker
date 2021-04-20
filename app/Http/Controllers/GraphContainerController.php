@@ -135,12 +135,11 @@
             $daily_add_chart->dataset("Cruiser runs", "bar", $count_cruiser)->options(["stack" => "1"]);
             $daily_add_chart->dataset("Destroyer runs", "bar", $count_destroyer)->options(["stack" => "1"]);
             $daily_add_chart->dataset("Frigate runs", "bar", $count_frigate)->options(["stack" => "1"]);
-            $daily_add_chart->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => true]);
-            $daily_add_chart->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => true]);
+            $daily_add_chart->dataset("7 day avg", "line", $rolling_avg_week)->options(['smooth' => 0.001, 'symbolSize' => 0]);
+            $daily_add_chart->dataset("30 day avg", "line", $rolling_avg_month)->options(['smooth' => 0.001, 'symbolSize' => 0]);
             $daily_add_chart->theme(ThemeController::getChartTheme());
             $daily_add_chart->displayLegend(true);
             $daily_add_chart->options([
-                'smooth'         => true,
                 'symbolSize'     => 0,
                 'smoothMonotone' => 'x',
                 'tooltip'        => [
@@ -152,29 +151,29 @@
         }
 
 
-        /**
-         * Returns charts for the Personal Stats screen
-         * @param array $labels
-         * @return PersonalDaily
-         */
-        public function getPersonalStatsCharts(): PersonalDaily {
-            $personalDaily = new PersonalDaily();
-            $personalDaily->load(route("chart.personal.loot"));
-            $personalDaily->displayAxes(true);
-            $personalDaily->displayLegend(true);
-            $personalDaily->export(true, "Download");
-            $personalDaily->height("400");
-            $personalDaily->theme(ThemeController::getChartTheme());
-
-
-            $labels = [];
-            for($i=-30; $i<=0; $i++) {
-                $labels[] = date("m.d", strtotime("now $i days"));
-            }
-            $personalDaily->labels($labels);
-
-            return $personalDaily;
-        }
+//        /**
+//         * Returns charts for the Personal Stats screen
+//         * @param array $labels
+//         * @return PersonalDaily
+//         */
+//        public function getPersonalStatsCharts(): PersonalDaily {
+//            $personalDaily = new PersonalDaily();
+//            $personalDaily->load(route("chart.personal.loot"));
+//            $personalDaily->displayAxes(true);
+//            $personalDaily->displayLegend(true);
+//            $personalDaily->export(true, "Download");
+//            $personalDaily->height("400");
+//            $personalDaily->theme(ThemeController::getChartTheme());
+//
+//
+//            $labels = [];
+//            for($i=-30; $i<=0; $i++) {
+//                $labels[] = date("m.d", strtotime("now $i days"));
+//            }
+//            $personalDaily->labels($labels);
+//
+//            return $personalDaily;
+//        }
 
 
         /**
