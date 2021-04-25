@@ -156,6 +156,12 @@
       <path value="$PROJECT_DIR$/vendor/molbal/eveonline-socialite" />
       <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-invoker" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-token-stream" />
+      <path value="$PROJECT_DIR$/vendor/sayorus/eveonline-socialite" />
+      <path value="$PROJECT_DIR$/vendor/kabbouchi/laravel-ward" />
+      <path value="$PROJECT_DIR$/vendor/kabbouchi/nova-logs-tool" />
+      <path value="$PROJECT_DIR$/vendor/pusher/pusher-php-server" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/sodium_compat" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0" />

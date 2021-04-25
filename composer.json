@@ -25,15 +25,16 @@
         "doctrine/dbal": "^2.10",
         "erusev/parsedown": "^1.7",
         "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^7.0.1",
         "itsgoingd/clockwork": "^5.6",
         "laravel/framework": "^8.0",
         "laravel/nova": "@dev",
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
         "livewire/livewire": "^2.2",
-        "phpoffice/phpspreadsheet": "^1.11",
         "molbal/eveonline-socialite": "1.0.1",
-        "guzzlehttp/guzzle": "^7.0.1"
+        "phpoffice/phpspreadsheet": "^1.11",
+        "pusher/pusher-php-server": "^6.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.8",
