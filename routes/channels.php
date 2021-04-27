@@ -17,6 +17,6 @@
         return (int) $user->id === (int) $id;
     });
 
-    Broadcast::channel('Runs.Saves.{CharID}', function ($CharID) {
-
+    Broadcast::channel('runs.save.{CharID}', function ($user,$CharID) {
+        return true;
     });

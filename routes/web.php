@@ -201,3 +201,8 @@
     Route::get('/character-relationships/remove/{mainId}/{altId}', 'Profile\AltRelationController@delete')->name('alts.delete')->middleware('sso');
     Route::post('/character-relationships/add/main', 'Profile\AltRelationController@setMain')->name('alts.add.alt')->middleware('sso');
 
+    /**
+     * Stream tools
+     */
+    Route::view('/stream', 'stream.daily');
+

@@ -10,20 +10,23 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 
 class RunSaved implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public int $charId;
+
     /**
-     * Create a new event instance.
+     * RunSaved constructor.
      *
-     * @return void
+     * @param int $charId
      */
-    public function __construct()
-    {
-        //
+    public function __construct(int $charId) {
+        Log::debug("Creating RunSaved for ".$charId);
+        $this->charId = $charId;
     }
 
     /**
@@ -31,8 +34,24 @@ class RunSaved implements ShouldBroadcast
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('Runs.Saves.'.AuthController::getLoginId());
+    public function broadcastOn() {
+//    {
+//        $channelName = sprintf("runs.save.%d", $this->charId);
+//        Log::debug("Broadcasting on ".$channelName);
+//
+//        return new PrivateChannel($channelName);
+        return  ['runs.save'];
+
     }
+
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs()
+    {
+        return 'run.saved';
+    }
+
 }

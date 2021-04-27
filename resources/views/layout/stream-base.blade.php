@@ -95,7 +95,7 @@
         type="text/javascript" ></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
 ></script>
-<script src="{{asset("js/app.js")}}"></script>
+{{--<script src="{{asset("js/app.js")}}"></script>--}}
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @yield('scripts')
 <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
