@@ -8,14 +8,17 @@
         </div>
         @if(isset($errors))
             @if ($errors->any())
-                <div class="alert alert-danger border-0 shadow-sm d-flex justify-content-between">
-                    <img src="https://img.icons8.com/cotton/64/000000/cancel-2--v1.png">
-                    <div style="width: 100%">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                <div class="card card-body border-danger shadow-sm my-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <img src="https://img.icons8.com/cotton/64/000000/cancel-2--v1.png" class="icon48p mr-3">
+                        <div style="width: 100%">
+                            <small class="text-capitalize font-weight-bold text-danger pt-0">ERRORS</small>
+                            <ul class="pl-0" style="list-style: none">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                 </div>
             @endif

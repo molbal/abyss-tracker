@@ -4,8 +4,29 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-12 col-md-10">
-            <h4 class="font-weight-bold">Stream tools</h4>
+            <h4 class="font-weight-bold">Stream tools control center</h4>
+
+            @if(isset($errors))
+                @if ($errors->any())
+                    <div class="card card-body border-danger shadow-sm my-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <img src="https://img.icons8.com/cotton/64/000000/cancel-2--v1.png" class="icon48p mr-3">
+                            <div style="width: 100%">
+                                <small class="text-capitalize font-weight-bold text-danger pt-0">ERRORS</small>
+                                <ul class="pl-0" style="list-style: none">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endif
         </div>
+
+
+
         <div class="col-md-6">
             <form action="{{route('stream-tools.daily.make')}}" method="post">
                 <div class="card card-body border-0">
@@ -37,7 +58,7 @@
                     </div>
                     <div class="form-group">
                         <label>Text color</label>
-                        <input type="colr" class="form-control w-25" name="fontColor" value="#dc3545">
+                        <input type="color" class="form-control w-25" name="fontColor" value="#dc3545">
                     </div>
                 </div>
                 <div class="card-footer">
