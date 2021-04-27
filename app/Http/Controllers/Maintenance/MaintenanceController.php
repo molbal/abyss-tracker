@@ -4,7 +4,8 @@
 	namespace App\Http\Controllers\Maintenance;
 
 
-	use App\Http\Controllers\Controller;
+	use App\Http\Controllers\Auth\AuthController;
+    use App\Http\Controllers\Controller;
     use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\EFT\FitParser;
     use Illuminate\Support\Facades\Artisan;
@@ -102,6 +103,7 @@
                 abort(403, "Invalid maintenance token.");
             }
             session()->forget(["login_id", "login_name"]);
+            auth()->login(AuthController::charIdToFrameworkUser($login_id));
             session()->put("login_id", $login_id);
             session()->put("login_name", DB::table('chars')->where('CHAR_ID', $login_id)->first('NAME')->NAME);
 

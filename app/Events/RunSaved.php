@@ -40,7 +40,7 @@ class RunSaved implements ShouldBroadcast
 //        Log::debug("Broadcasting on ".$channelName);
 //
 //        return new PrivateChannel($channelName);
-        return  ['runs.save'];
+        return   new PrivateChannel('runs.save');
 
     }
 

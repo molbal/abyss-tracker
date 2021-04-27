@@ -9,7 +9,8 @@
         $(function () {
             console.log("Creating Echo");
 
-            Echo.channel('runs.save')
+            // Echo.channel('runs.save')
+            Echo.private('runs.save')
                 .listen('.run.saved', (e) => {
                     console.warn('run.saved: ', e);
                 });

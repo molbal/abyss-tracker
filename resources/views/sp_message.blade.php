@@ -7,6 +7,11 @@
             @if(isset($message))
                 <div class="card card-body border-info shadow-sm">
                     {{ $message }}
+                    @if(isset($selectable))
+                        <div class="form-group mt-3 w-100">
+                            <input type="text" class="form-control" value="{{$selectable}}">
+                        </div>
+                    @endif
                 </div>
             @endif
         </div>
@@ -16,48 +21,8 @@
 @section("scripts")
 
     <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            startDate: '-0d'
-        });
-
-        // When ready.
-        $(function () {
-
-            var $form = $("form");
-            var $input = $form.find("input#loot");
-
-            $input.on("keyup", function (event) {
-
-                // When user select text in the document, also abort.
-                var selection = window.getSelection().toString();
-                if (selection !== '') {
-                    return;
-                }
-
-                // When the arrow keys are pressed, abort.
-                if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
-                    return;
-                }
-
-
-                var $this = $(this);
-
-                // Get the value.
-                var input = $this.val();
-
-                var input = input.replace(/[\D\s\._\-]+/g, "");
-                input = input ? parseInt(input, 10) : 0;
-
-                $this.val(function () {
-                    return (input === 0) ? "" : input.toLocaleString("en-US");
-                });
-            });
-
-            $form.submit(function (e) {
-                $input.val($input.val().split(',').join(''));
-
-            });
+        $(document).ready(function() {
+            $("input:text").focus(function() { $(this).select(); } );
         });
     </script>
 @endsection

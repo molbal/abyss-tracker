@@ -110,6 +110,7 @@
 
                        @endforelse
                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item pl-2 {{"stream-tools.control" == $currentRoute ? "active text-dark" : ""}}" href="{{route("stream-tools.control")}}" ><img src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("stream-tools.control" == $currentRoute)}}/twitch.png" class="tinyicon mr-1"/> Stream tools</a>
                         <a class="dropdown-item pl-2 {{"settings.index" == $currentRoute ? "active text-dark" : ""}}" href="{{route("settings.index")}}" ><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("settings.index" == $currentRoute)}}/settings.png" class="tinyicon mr-1"/> Settings</a>
                         <a class="dropdown-item pl-2" href="{{route("logout")}}#"><img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/logout-rounded.png" class="tinyicon mr-1"/> Log out</a>
                     </div>

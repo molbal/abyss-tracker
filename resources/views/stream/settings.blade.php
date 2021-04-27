@@ -1,0 +1,62 @@
+@extends("layout.app")
+@section("browser-title", "My stream settings")
+
+@section("content")
+    <div class="row mt-5">
+        <div class="col-sm-12 col-md-10">
+            <h4 class="font-weight-bold">Stream tools</h4>
+        </div>
+        <div class="col-md-6">
+            <form action="{{route('stream-tools.daily.make')}}" method="post">
+                <div class="card card-body border-0">
+                    <h5 class="font-weight-bold">Daily views</h5>
+                    <p class="">You can pick your settings for a daily counter below. The counter will show your daily looted ISK sum, average daily run loot isk, and the run count.</p>
+
+                    {{csrf_field()}}
+
+                    <div class="form-group">
+                        <label>Browsersource width - use px, min: 100px, max: 9999px</label>
+                        <input type="text" class="form-control w-25" name="width">
+                    </div>
+                    <div class="form-group">
+                        <label>Browsersource height - use px, min: 100px, max: 9999px</label>
+                        <input type="text" class="form-control w-25" name="height">
+                    </div>
+                    <div class="form-group">
+                        <label>Text align</label>
+                        <select class="form-control select2-nosearch-narrow w-25" name="align">
+                            <option>left</option>
+                            <option>center</option>
+                            <option>right</option>
+                            <option>justify</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Text size - use px, min: 1px, max: 999px</label>
+                        <input type="text" class="form-control w-25" name="fontSize">
+                    </div>
+                    <div class="form-group">
+                        <label>Text color</label>
+                        <input type="colr" class="form-control w-25" name="fontColor" value="#dc3545">
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-outline-primary" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(function () {
+
+            $(".select2-nosearch-narrow").select2({
+                theme: 'bootstrap',
+                minimumResultsForSearch: -1,
+                width: '25%'
+            });
+        });
+    </script>
+@endsection

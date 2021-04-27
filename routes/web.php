@@ -15,6 +15,7 @@
     use App\Http\Controllers\GraphHelper;
     use App\Http\Controllers\ItemController;
     use App\Http\Controllers\Profile\ActivityChartController;
+    use App\Http\Controllers\StreamToolsController;
     use Illuminate\Support\Facades\Route;
 
     Route::get("/", 'AbyssController@home')->name("home");
@@ -204,5 +205,12 @@
     /**
      * Stream tools
      */
-    Route::view('/stream', 'stream.daily');
+    Route::prefix('/stream-tools')->group(function () {
+        Route::view('/controls', 'stream.settings')->middleware('sso')->name('stream-tools.control');
+
+        Route::post('/get-link/daily', [StreamToolsController::class, 'createDailyLink'])->name('stream-tools.daily.make')->middleware('sso');
+        Route::get('/view/daily/{token}', [StreamToolsController::class, 'viewDaily'])->name('stream-tools.daily.view');
+    });
+
+
 
