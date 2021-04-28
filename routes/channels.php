@@ -18,5 +18,6 @@
     });
 
     Broadcast::channel('runs.save.{charID}', function ($user, $charID) {
+        dd("e");
         return  (int) $user->id === (int) $charID;
     });

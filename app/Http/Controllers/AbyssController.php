@@ -206,7 +206,7 @@
 
             DB::table("stopwatch")->where("CHAR_ID", $loginId)->delete();
 
-            broadcast(new RunSaved($loginId));
+            broadcast(RunSaved::createEventForUser($loginId));
             if ($request->get("submit") == "view-details") {
                 return redirect(route("view_single", ["id" => $id]));
             }

@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Misc\ErrorHelper;
 use App\Http\Requests\NewStreamToolDailyLinkRequest;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class StreamToolsController extends Controller
 {
@@ -25,12 +28,30 @@ class StreamToolsController extends Controller
         return view('sp_message', [
            'title' => "Your stream link is ready",
            'message' => "You may use the link below as a browsersource in OBS, or other stream applications. You can save this link as it contains your authentication and settings.",
-           'selectable' => route('stream-tools.daily.view', ['token' => $token])
+           'selectable' => route('stream-tools.daily.redirect', ['token' => $token])
         ]);
     }
 
-    public function viewDaily(string $token) {
+    public function redirectToDailyView(string $token) {
 
-        dd(Crypt::decrypt($token));
+        try {
+            $settings = Crypt::decrypt($token);
+
+
+            session()->forget(["login_id", "login_name"]);
+            session()->put("login_id", $settings['charId']);
+            session()->put("login_name", DB::table('chars')->where('CHAR_ID', $settings['charId'])->first('NAME')->NAME);
+            \auth()->login(AuthController::charIdToFrameworkUser($settings['charId']));
+
+            session()->flash('daily', $settings);
+            return redirect(route('stream-tools.daily.view'));
+        } catch (DecryptException $e) {
+            return ErrorHelper::errorPage("Please generate a new link - this is impossible to decode. You probably made a copy/paste mistake somewhere?", "Invalid token");
+        }
+    }
+
+    public function viewDaily() {
+        return view('stream.daily', session()->get('daily'));
+
     }
 }

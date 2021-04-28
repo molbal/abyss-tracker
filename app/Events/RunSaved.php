@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Run;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,6 +11,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 
@@ -18,6 +20,13 @@ class RunSaved implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public int $charId;
+
+    public float $avgIsk;
+
+    public float $sumIsk;
+
+    public int $runsCount;
+
 
     /**
      * RunSaved constructor.
@@ -35,12 +44,10 @@ class RunSaved implements ShouldBroadcast
      * @return \Illuminate\Broadcasting\Channel|array
      */
     public function broadcastOn() {
-//    {
-//        $channelName = sprintf("runs.save.%d", $this->charId);
-//        Log::debug("Broadcasting on ".$channelName);
-//
-//        return new PrivateChannel($channelName);
-        return   new PrivateChannel('runs.save');
+        $channelName = sprintf("runs.save.%d", $this->charId);
+        Log::debug("Broadcasting on ".$channelName);
+
+        return new PrivateChannel($channelName);
 
     }
 
@@ -52,6 +59,17 @@ class RunSaved implements ShouldBroadcast
     public function broadcastAs()
     {
         return 'run.saved';
+    }
+
+    public static function createEventForUser(int $charId) : RunSaved {
+        $event = new RunSaved($charId);
+
+        $today = today();
+        $event->runsCount = DB::table('runs')->whereDate('RUN_DATE', '=', $today)->count();
+        $event->sumIsk = round(DB::table('runs')->whereDate('RUN_DATE', '=', $today)->sum('LOOT_ISK')/1_000_000, 2);
+        $event->avgIsk = round($event->sumIsk/min(1, $event->runsCount), 2);
+
+        return $event;
     }
 
 }

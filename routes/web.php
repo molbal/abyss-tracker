@@ -209,7 +209,8 @@
         Route::view('/controls', 'stream.settings')->middleware('sso')->name('stream-tools.control');
 
         Route::post('/get-link/daily', [StreamToolsController::class, 'createDailyLink'])->name('stream-tools.daily.make')->middleware('sso');
-        Route::get ('/view/daily/{token}', [StreamToolsController::class, 'viewDaily'])->name('stream-tools.daily.view');
+        Route::get ('/view/daily/redirect/{token}', [StreamToolsController::class, 'redirectToDailyView'])->name('stream-tools.daily.redirect');
+        Route::get ('/view/daily', [StreamToolsController::class, 'viewDaily'])->name('stream-tools.daily.view');
     });
 
 

@@ -102,8 +102,8 @@
             if ($secret != config('tracker.maintenance-token') && config('app.debug')) {
                 abort(403, "Invalid maintenance token.");
             }
-            session()->forget(["login_id", "login_name"]);
             auth()->login(AuthController::charIdToFrameworkUser($login_id));
+            session()->forget(["login_id", "login_name"]);
             session()->put("login_id", $login_id);
             session()->put("login_name", DB::table('chars')->where('CHAR_ID', $login_id)->first('NAME')->NAME);
 

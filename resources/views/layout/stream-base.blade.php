@@ -5,14 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <base href="{{config("app.url")}}">
-
-
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://img.icons8.com" crossorigin />
     <link rel="preconnect" href="https://imageserver.eveonline.com" crossorigin />
     <link rel="preconnect" href="https://images.evetech.net" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-
         <link rel="stylesheet" href="css/app-dark.css" />
     <title>@yield('browser-title', config('app.name')) | {{ config('app.name') }}</title>
     <style>
@@ -68,11 +65,17 @@
                 opacity: 0;
             }
         }
+        html, body {
+            background: transparent;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
     </style>
     @yield('styles')
 </head>
 <body>
-    @yield('content')
+@yield('content')
 <!-- Footer -->
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
