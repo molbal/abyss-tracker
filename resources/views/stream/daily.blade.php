@@ -13,11 +13,11 @@
             </tr>
             <tr>
                 <td>Sum ISK</td>
-                <td><span id="sumIsk">{{$sumIsk}}</span> ISK</td>
+                <td><span id="sumIsk">{{$sumIsk}}</span>M ISK</td>
             </tr>
             <tr>
                 <td>Average ISK/run</td>
-                <td><span id="avgIsk">{{$avgIsk}}</span> ISK</td>
+                <td><span id="avgIsk">{{$avgIsk}}</span>M ISK</td>
             </tr>
         </table>
     @elseauth

@@ -65,9 +65,9 @@ class RunSaved implements ShouldBroadcast
         $event = new RunSaved($charId);
 
         $today = today();
-        $event->runsCount = DB::table('runs')->whereDate('RUN_DATE', '=', $today)->count();
-        $event->sumIsk = round(DB::table('runs')->whereDate('RUN_DATE', '=', $today)->sum('LOOT_ISK')/1_000_000, 2);
-        $event->avgIsk = round(DB::table('runs')->whereDate('RUN_DATE', '=', $today)->avg('LOOT_ISK')/1_000_000, 2);
+        $event->runsCount = DB::table('runs')->where('CHAR_ID', $charId)->whereDate('RUN_DATE', '=', $today)->count();
+        $event->sumIsk = round(DB::table('runs')->where('CHAR_ID', $charId)->whereDate('RUN_DATE', '=', $today)->sum('LOOT_ISK')/1_000_000, 2);
+        $event->avgIsk = round(DB::table('runs')->where('CHAR_ID', $charId)->whereDate('RUN_DATE', '=', $today)->avg('LOOT_ISK')/1_000_000, 2);
 
         return $event;
     }
