@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Char;
+use App\Events\RunSaved;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Misc\ErrorHelper;
 use App\Http\Requests\NewStreamToolDailyLinkRequest;
@@ -20,7 +22,7 @@ class StreamToolsController extends Controller
             'charId' => $id,
             'width' => $request->get('width', '320px'),
             'height' => $request->get('width', '320px'),
-            'align' => $request->get('width', "left"),
+            'align' => $request->get('align', "left"),
             'fontSize' => $request->get('fontSize', '36px'),
             'fontColor' => $request->get('fontColor', '#e3342f'),
         ]);
@@ -51,7 +53,17 @@ class StreamToolsController extends Controller
     }
 
     public function viewDaily() {
-        return view('stream.daily', session()->get('daily'));
+        if (\auth()->guest() || !session()->has('daily')) {
+            return ErrorHelper::errorPage("Please use your generated link, not this URL directly.");
+        }
+
+        $data = session()->get('daily');
+        $event = RunSaved::createEventForUser($data['charId']);
+        $data["runsCount"] = $event->runsCount;
+        $data["sumIsk"] = $event->sumIsk;
+        $data["avgIsk"] = $event->avgIsk;
+        $data["charName"] = Char::where("CHAR_ID", $event->charId)->first()->NAME;
+        return view('stream.daily', $data);
 
     }
 }

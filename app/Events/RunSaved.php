@@ -58,7 +58,7 @@ class RunSaved implements ShouldBroadcast
      */
     public function broadcastAs()
     {
-        return 'run.saved';
+        return 'run-saved';
     }
 
     public static function createEventForUser(int $charId) : RunSaved {
@@ -67,7 +67,7 @@ class RunSaved implements ShouldBroadcast
         $today = today();
         $event->runsCount = DB::table('runs')->whereDate('RUN_DATE', '=', $today)->count();
         $event->sumIsk = round(DB::table('runs')->whereDate('RUN_DATE', '=', $today)->sum('LOOT_ISK')/1_000_000, 2);
-        $event->avgIsk = round($event->sumIsk/min(1, $event->runsCount), 2);
+        $event->avgIsk = round(DB::table('runs')->whereDate('RUN_DATE', '=', $today)->avg('LOOT_ISK')/1_000_000, 2);
 
         return $event;
     }

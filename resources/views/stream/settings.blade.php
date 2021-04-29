@@ -37,11 +37,11 @@
 
                     <div class="form-group">
                         <label>Browsersource width - use px, min: 100px, max: 9999px</label>
-                        <input type="text" class="form-control w-25" name="width" value="320px">
+                        <input type="text" class="form-control w-25" name="width" value="480px">
                     </div>
                     <div class="form-group">
                         <label>Browsersource height - use px, min: 100px, max: 9999px</label>
-                        <input type="text" class="form-control w-25" name="height" value="320px">
+                        <input type="text" class="form-control w-25" name="height" value="480px">
                     </div>
                     <div class="form-group">
                         <label>Text align</label>
@@ -54,7 +54,7 @@
                     </div>
                     <div class="form-group">
                         <label>Text size - use px, min: 1px, max: 999px</label>
-                        <input type="text" class="form-control w-25" name="fontSize" value="36px">
+                        <input type="text" class="form-control w-25" name="fontSize" value="18px">
                     </div>
                     <div class="form-group">
                         <label>Text color</label>
