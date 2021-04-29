@@ -3,9 +3,14 @@
 
 @section("content")
     <div class="row mt-5">
-        <div class="col-sm-12 col-md-10">
-            <h4 class="font-weight-bold">Stream tools control center</h4>
 
+        <div class="col-sm-12 col-md-12">
+            <div id="banner" class="shadow-sm mb-3" style="background: url('{{asset('stream.jpg')}}')">
+                <h4 class="font-weight-bold">Stream tools control center</h4>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-10">
             @if(isset($errors))
                 @if ($errors->any())
                     <div class="card card-body border-danger shadow-sm my-4">
@@ -29,7 +34,7 @@
 
         <div class="col-md-6">
             <form action="{{route('stream-tools.daily.make')}}" method="post">
-                <div class="card card-body border-0">
+                <div class="card card-body border-0 shadow-sm">
                     <h5 class="font-weight-bold">Daily views</h5>
                     <p class="">You can pick your settings for a daily counter below. The counter will show your daily looted ISK sum, average daily run loot isk, and the run count.</p>
 
@@ -61,8 +66,8 @@
                         <input type="color" class="form-control w-25" name="fontColor" value="#dc3545">
                     </div>
                 </div>
-                <div class="card-footer">
-                    <button class="btn btn-outline-primary" type="submit">Save</button>
+                <div class="card-footer shadow-sm text-right">
+                    <button class="btn btn-outline-primary" type="submit">Get link</button>
                 </div>
             </form>
         </div>
