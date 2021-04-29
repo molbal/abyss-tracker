@@ -141,7 +141,7 @@ return [
             'days' => 7,
         ],
 
-        'esierrors' => [
+        'esi-errors' => [
             'path' => storage_path('logs/esierrors.log'),
             'level' => 'debug',
             'days' => 7,
