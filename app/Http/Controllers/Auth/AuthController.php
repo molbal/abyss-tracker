@@ -1,15 +1,9 @@
 <?php
 
-
     namespace App\Http\Controllers\Auth;
 
-//    use App\Exceptions\BusinessLogicException;
-//    use App\Exceptions\SecurityViolationException;
-//    use App\Helpers\ConversationCache;
     use App\Exceptions\SecurityViolationException;
     use App\Http\Controllers\Controller;
-//    use App\Http\Controllers\Profile\AltRelationController;
-//    use http\Client\Request;
     use App\Http\Controllers\Misc\NotificationController;
     use App\Http\Controllers\Profile\AltRelationController;
     use Illuminate\Routing\Redirector;
@@ -23,12 +17,11 @@
 
         public const ALT_SESSION_VAR = 'flag_add_alt_character';
 
-
         /**
          * Gets whether a user is logged in
          * @return bool
          */
-        public static function isLoggedIn() {
+        public static function isLoggedIn() : bool {
             return session()->has('login_id') && session()->has('login_name');
         }
 
@@ -46,7 +39,7 @@
          *
          * @return bool
          */
-        public static function isItMe(int $id) {
+        public static function isItMe(int $id) : bool {
             return self::getLoginId() == $id;
         }
 
@@ -72,6 +65,8 @@
             if ($alt) {
                 session()->regenerate(true);
 
+
+                \auth()->login(self::charIdToFrameworkUser(intval($alt->id)));
                 session()->put([
                     'login_id' => intval($alt->id),
                     'login_name' => $alt->name,
@@ -157,6 +152,8 @@
                         'login_id' => intval($id),
                         'login_name' => $name,
                     ]);
+
+                    \auth()->login(self::charIdToFrameworkUser(intval($id)));
                     return redirect(route("home_mine"));
                 }
             }
@@ -212,6 +209,10 @@
                     'login_id' => intval($id),
                     'login_name' => $name,
                 ]);
+
+                // Hack. Dirty
+                \auth()->login(self::charIdToFrameworkUser(intval($id)));
+
                 return redirect(route("new"));
             }
             catch (\Exception $e) {
@@ -237,7 +238,6 @@
                 /** @var User $user */
                 $user = Socialite::driver('eveonline')->user();
 
-//                dd($user);
 
             }
             catch (\Exception $e) {
@@ -245,7 +245,29 @@
             }
         }
 
+        /**
+         * @param int $charId
+         *
+         * @return \App\User
+         */
+        public static function charIdToFrameworkUser(int $charId): \App\User {
+            if (\App\User::whereId($charId)->exists()) {
+                return \App\User::whereId($charId)->firstOrFail();
+            }
+
+            $user = \App\User::create([
+                'id' => $charId,
+                'name' => $charId,
+                'email' => $charId.'@abyss.eve-nt.uk',
+                'password' => 'a',
+            ]);
+            $user->save();
+
+            return  $user;
+        }
+
         public function logout() {
+            auth()->logout();
             \session()->forget("login_id");
             \session()->forget("login_name");
             return redirect(route("home"));

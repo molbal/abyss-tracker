@@ -15,6 +15,7 @@
     use App\Http\Controllers\GraphHelper;
     use App\Http\Controllers\ItemController;
     use App\Http\Controllers\Profile\ActivityChartController;
+    use App\Http\Controllers\StreamToolsController;
     use Illuminate\Support\Facades\Route;
 
     Route::get("/", 'AbyssController@home')->name("home");
@@ -200,4 +201,17 @@
     Route::get('/character-relationships/switch/{altId}', 'Auth\AuthController@switch')->name('alts.switch')->middleware('sso');
     Route::get('/character-relationships/remove/{mainId}/{altId}', 'Profile\AltRelationController@delete')->name('alts.delete')->middleware('sso');
     Route::post('/character-relationships/add/main', 'Profile\AltRelationController@setMain')->name('alts.add.alt')->middleware('sso');
+
+    /**
+     * Stream tools
+     */
+    Route::prefix('/stream-tools')->group(function () {
+        Route::view('/controls', 'stream.settings')->middleware('sso')->name('stream-tools.control');
+
+        Route::post('/get-link/daily', [StreamToolsController::class, 'createDailyLink'])->name('stream-tools.daily.make')->middleware('sso');
+        Route::get ('/view/daily/redirect/{token}', [StreamToolsController::class, 'redirectToDailyView'])->name('stream-tools.daily.redirect');
+        Route::get ('/view/daily', [StreamToolsController::class, 'viewDaily'])->name('stream-tools.daily.view');
+    });
+
+
 

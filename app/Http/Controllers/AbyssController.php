@@ -4,6 +4,7 @@
     namespace App\Http\Controllers;
 
 
+    use App\Events\RunSaved;
     use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\Loot\LootCacheController;
     use App\Http\Controllers\Loot\LootValueEstimator;
@@ -156,7 +157,7 @@
                     [$my_runs[$char->id], $my_avg_loot[$char->id], $my_sum_loot[$char->id], $my_survival_ratio[$char->id]] = HomeQueriesController::getPersonalStats($char->id);
                 }
 
-                list($runsCountOV, $avgLootOV,$survivalChartOV, $sumLootChartOV)= HomeQueriesController::getOverviewCharts($my_runs,$my_avg_loot,$my_sum_loot,$my_survival_ratio);
+                [$runsCountOV, $avgLootOV,$survivalChartOV, $sumLootChartOV]= HomeQueriesController::getOverviewCharts($my_runs,$my_avg_loot,$my_sum_loot,$my_survival_ratio);
             }
 
             $lastRuns = DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->whereIn('CHAR_ID', array_keys($my_runs))->paginate();
@@ -195,7 +196,7 @@
             $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
             $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
 
-            $loginId = session()->get("login_id");
+            $loginId = AuthController::getLoginId();
             if (SettingController::getBooleanSetting((int) $loginId, "remember_cargo", true)) {
                 Cache::put(sprintf("at.last_dropped.%s", $loginId), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
             }
@@ -205,6 +206,7 @@
 
             DB::table("stopwatch")->where("CHAR_ID", $loginId)->delete();
 
+            broadcast(RunSaved::createEventForUser($loginId));
             if ($request->get("submit") == "view-details") {
                 return redirect(route("view_single", ["id" => $id]));
             }
