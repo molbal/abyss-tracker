@@ -19,6 +19,10 @@
                 <td>Average ISK/run</td>
                 <td><span id="avgIsk">{{$avgIsk}}</span>M ISK</td>
             </tr>
+            <tr>
+                <td>Efficiency</td>
+                <td><span id="iskHour">{{$iskHour}}</span>M ISK/H</td>
+            </tr>
         </table>
     @elseauth
         <h1>ERROR: Expired session.</h1>
@@ -66,6 +70,7 @@
                     $("#runsCount").numScroll({number: e.runsCount, fromZero: false});
                     $("#sumIsk").numScroll({number: e.sumIsk, fromZero: false});
                     $("#avgIsk").numScroll({number: e.avgIsk, fromZero: false});
+                    $("#iskHour").numScroll({number: e.iskHour, fromZero: false});
                 });
         });
     </script>

@@ -72,17 +72,25 @@ class StreamToolsController extends Controller
      * @return Factory|View|Application
      */
     public function viewDaily() : Factory|View|Application {
+
         if (auth()->guest() || !session()->has('daily')) {
             return ErrorHelper::errorPage("Please use your generated link, not this URL directly.");
         }
 
-        $data = session()->get('daily');
-        $event = RunSaved::createEventForUser($data['charId']);
-        $data["runsCount"] = $event->runsCount;
-        $data["sumIsk"] = $event->sumIsk;
-        $data["avgIsk"] = $event->avgIsk;
-        $data["charName"] = Char::where("CHAR_ID", $event->charId)->first()->NAME;
-        return view('stream.daily', $data);
+        try {
+            $data = session()->get('daily');
+            $event = RunSaved::createEventForUser($data['charId']);
+            $data["runsCount"] = $event->runsCount;
+            $data["sumIsk"] = $event->sumIsk;
+            $data["avgIsk"] = $event->avgIsk;
+            $data["iskHour"] = $event->iskHour;
+            $data["charName"] = Char::where("CHAR_ID", $event->charId)->first()->NAME;
+            return view('stream.daily', $data);
+
+        }
+        catch (\Exception $e) {
+            return ErrorHelper::errorPage("Something went wrong while loading this widget.", "Abyss Tracker error");
+        }
 
     }
 }

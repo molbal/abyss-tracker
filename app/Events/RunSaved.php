@@ -25,6 +25,8 @@ class RunSaved implements ShouldBroadcast
 
     public float $sumIsk;
 
+    public float $iskHour;
+
     public int $runsCount;
 
 
@@ -68,6 +70,16 @@ class RunSaved implements ShouldBroadcast
         $event->runsCount = DB::table('runs')->where('CHAR_ID', $charId)->whereDate('RUN_DATE', '=', $today)->count();
         $event->sumIsk = round(DB::table('runs')->where('CHAR_ID', $charId)->whereDate('RUN_DATE', '=', $today)->sum('LOOT_ISK')/1_000_000, 2);
         $event->avgIsk = round(DB::table('runs')->where('CHAR_ID', $charId)->whereDate('RUN_DATE', '=', $today)->avg('LOOT_ISK')/1_000_000, 2);
+        $event->iskHour = round((DB::select('select ROUND(c.sum/greatest(c.all_seconds, 3600))*3600 isk_per_hour from (select
+   sum(r.LOOT_ISK) sum,
+   if(count(r.id)=0,0,sum(coalesce(r.RUNTIME_SECONDS, 20*60))) all_seconds
+
+from date_helper d
+     left join runs r on d.day = r.RUN_DATE where r.CHAR_ID = ? and r.RUN_DATE=?
+group by d.day, r.char_id
+order by d.day asc) c;', [$charId, $today])[0]->isk_per_hour ?? 0)/1_000_000,2);
+
+
 
         return $event;
     }
