@@ -31,41 +31,44 @@
         </div>
 
 
-
         <div class="col-md-6">
             <form action="{{route('stream-tools.daily.make')}}" method="post">
-                <div class="card card-body border-0 shadow-sm">
-                    <h5 class="font-weight-bold">Daily views</h5>
-                    <a href="{{asset('stream-control/daily.jpg')}}" data-toggle="tootlip" title="Click to open image in a new tab"><img src="{{asset('stream-control/daily.jpg')}}" alt="" class="w-100 rounded shadow-sm"></a>
-                    <p class="">You can pick your settings for a daily counter below. The counter will show your daily looted ISK sum, average daily run loot isk, daily ISK/hour and the run count. The widget automatically updates as you save a run.</p>
+                <div class="card card-body border-0 shadow-sm p-0">
+                    <a href="{{asset('stream-control/daily.jpg')}}" data-toggle="tooltip" target="_blank" title="Click to open image in a new tab - screenshot from Pyrophobic's stream"><img
+                            src="{{asset('stream-control/daily.jpg')}}" alt="" class="w-100 rounded shadow-sm"></a>
+                    <div class="p-3">
+                        <h5 class="font-weight-bold">Daily views</h5>
+                        <p class="">You can pick your settings for a daily counter below. The counter will show your daily looted ISK sum, average daily run loot isk, daily
+                            ISK/hour and the run count. The widget automatically updates as you save a run.</p>
 
-                    {{csrf_field()}}
+                        {{csrf_field()}}
 
-                    <h6 class="font-weight-bold">Settings</h6>
-                    <div class="form-group">
-                        <label>Browsersource width - use px, min: 100px, max: 9999px</label>
-                        <input type="text" class="form-control w-25" name="width" value="480px">
-                    </div>
-                    <div class="form-group">
-                        <label>Browsersource height - use px, min: 100px, max: 9999px</label>
-                        <input type="text" class="form-control w-25" name="height" value="480px">
-                    </div>
-                    <div class="form-group">
-                        <label>Text align</label>
-                        <select class="form-control select2-nosearch-narrow w-25" name="align">
-                            <option>left</option>
-                            <option>center</option>
-                            <option>right</option>
-                            <option>justify</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Text size - use px, min: 1px, max: 999px</label>
-                        <input type="text" class="form-control w-25" name="fontSize" value="18px">
-                    </div>
-                    <div class="form-group">
-                        <label>Text color</label>
-                        <input type="color" class="form-control w-25" name="fontColor" value="#dc3545">
+                        <h6 class="font-weight-bold">Settings</h6>
+                        <div class="form-group">
+                            <label>Browsersource width - use px, min: 100px, max: 9999px</label>
+                            <input type="text" class="form-control w-25" name="width" value="480px">
+                        </div>
+                        <div class="form-group">
+                            <label>Browsersource height - use px, min: 100px, max: 9999px</label>
+                            <input type="text" class="form-control w-25" name="height" value="480px">
+                        </div>
+                        <div class="form-group">
+                            <label>Text align</label>
+                            <select class="form-control select2-nosearch-narrow w-25" name="align">
+                                <option>left</option>
+                                <option>center</option>
+                                <option>right</option>
+                                <option>justify</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Text size - use px, min: 1px, max: 999px</label>
+                            <input type="text" class="form-control w-25" name="fontSize" value="18px">
+                        </div>
+                        <div class="form-group">
+                            <label>Text color</label>
+                            <input type="color" class="form-control w-25" name="fontColor" value="#dc3545">
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer shadow-sm text-right">

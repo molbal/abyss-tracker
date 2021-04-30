@@ -81,6 +81,13 @@ order by d.day asc) c;', [$charId, $today])[0]->isk_per_hour ?? 0)/1_000_000,2);
 
 
 
+
+        $data = DB::table("v_runall")->where("CHAR_ID", $charId)->orderByDesc('CREATED_AT')->first();
+
+
+
+
+
         return $event;
     }
 

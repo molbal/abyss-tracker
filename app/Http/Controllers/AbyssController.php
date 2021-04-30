@@ -294,13 +294,13 @@
             }
 
             // Get run view
-            $data = DB::table("v_runall")->where("ID", $id)->get()->get(0);
+            $data = DB::table("v_runall")->where("ID", $id)->first();
 
             // Get graphs
             [$otherCharts, $medianLootForTier] = $this->graphContainerController->getRunGraphs($data);
 
             // Get all data and all loot
-            $all_data = DB::table("runs")->where("ID", $id)->get()->get(0);
+            $all_data = DB::table("runs")->where("ID", $id)->first();
             $loot = DB::table("v_loot_details")->where("RUN_ID", $id)->get();
             $lost = DB::select("select `dl`.`ITEM_ID`                   AS `ITEM_ID`,
        `dl`.`RUN_ID`                    AS `RUN_ID`,
@@ -502,7 +502,7 @@ from (`abyss`.`lost_items` `dl`
                 DB::beginTransaction();
                 try {
 
-                    $run = DB::table("runs")->where("ID", $id)->get()->get(0);
+                    $run = DB::table("runs")->where("ID", $id)->first();
                     $lootItems = DB::table("detailed_loot")->where("RUN_ID", $id)->get();
                     foreach ($lootItems as $lootItem) {
                         DB::table("delete_cleanup")->insert([
