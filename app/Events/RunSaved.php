@@ -29,6 +29,8 @@ class RunSaved implements ShouldBroadcast
 
     public int $runsCount;
 
+    public array $runData;
+
 
     /**
      * RunSaved constructor.
@@ -79,14 +81,11 @@ from date_helper d
 group by d.day, r.char_id
 order by d.day asc) c;', [$charId, $today])[0]->isk_per_hour ?? 0)/1_000_000,2);
 
-
-
-
         $data = DB::table("v_runall")->where("CHAR_ID", $charId)->orderByDesc('CREATED_AT')->first();
 
+        $gained_loot = DB::table('v_loot_details')->where('RUN_ID', $data['ID'])->get();
 
-
-
+        $event->runData = ['data' => $data, 'loot' => $gained_loot];
 
         return $event;
     }

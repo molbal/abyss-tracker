@@ -69,13 +69,27 @@
                     @endif
                 </div>
             </div>
-            <div class="card-footer shadow-sm d-flex justify-content-between">
+            <div class="card-footer shadow-sm d-flex justify-content-between mb-4">
                 <span>
                     <a href="{{route("donors.index")}}" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/receive-cash.png">Donate ingame</a>
                 </span>
                 <span><a href="https://patreon.com/veetor" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/patreon.png">Support on Patreon</a></span>
             </div>
 
+
+            <div class="card card-body border-0 shadow-sm pb-2 mt-md-0 mt-3">
+                <div class="donor">
+                    <img src="{{asset('me_irl.jpg')}}" class="portrait rounded-circle shadow-sm" alt="">
+                    <p class="h5 font-weight-bold mb-0 mt-2">Please hire my team</p>
+                    <span style="">The creator of the Abyss Tracker and his team is looking for contracted IT work.</span>
+                </div>
+            </div>
+            <div class="card-footer shadow-sm d-flex justify-content-between mb-4">
+                <span>
+                    <a href="https://sundayit.hu" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-outlined/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/commercial-development-management.png"/>Visit company website</a>
+                </span>
+
+            </div>
 
             <div class="mt-3 card card-body border-0 shadow-sm text-center">
                 <h4 class="font-weight-bold"><img class="smallicon bringupper mr-1" src="https://img.icons8.com/small/32/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/info.png"/> Overview pages</h4>

@@ -64,6 +64,13 @@
                         <li>Fixed a bug that prevented the current EFT, video link, and description from showing up in the fields when editing a fit</li>
                     </ul>
 
+
+                    <h5 class="mb-0 pb-0"><strong>1.10.1</strong> 'Negotiation' release Enhanchement Pack 1</h5>
+                    <ul>
+                        <li>Fixed a bug that prevented updating a description if its first revision was deleted.</li>
+                        <li>Added streamer tools</li>
+                        <li>Added "please hire my team" to the homepage</li>
+                    </ul>
                 </div>
             </div>
 

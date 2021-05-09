@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\EFT;
 
+use App\Fit;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Models\FitHistoryItem;
 use Carbon\Carbon;
@@ -47,6 +48,7 @@ class FitHistoryController extends Controller
 
         $fitRootId = self::getFitRootId($fitId);
 
+
         $fhi = new FitHistoryItem();
         $fhi->fit_it = $fitId;
         $fhi->fit_root_id = $fitRootId;
@@ -63,9 +65,10 @@ class FitHistoryController extends Controller
                        ->where("ID", $fitId)
                        ->value("ROOT_ID");
 
-        if (!$fitRootId) {
+        if (!$fitRootId || !DB::table("fits")->where('ID', $fitRootId)->exists()) {
             $fitRootId = $fitId;
         }
+
 
         return $fitRootId;
 }
