@@ -4,7 +4,7 @@
 <tr class="text-down">
     <td rowspan="2" class="text-center">
         <a href="{{route("fit_single", ["id" => $row->ID])}}" data-toggle="tooltip" title="Click to open fit" style="vertical-align: middle; height: 48px;" class="d-inline-block">
-            <img src="https://images.evetech.net/types/{{$row->SHIP_ID}}/render?size=64" class="rounded-circle shadow" style="width: 48px; height: 48px; border: 2px solid #fff">
+            <img loading="lazy" src="https://images.evetech.net/types/{{$row->SHIP_ID}}/render?size=64" class="rounded-circle shadow" style="width: 48px; height: 48px; border: 2px solid #fff">
         </a>
     </td>
     <td><span class="h6 font-weight-bold mb-0 moveabitdown" style="vertical-align: bottom">

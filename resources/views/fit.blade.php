@@ -98,9 +98,9 @@
                 <div class="text-justify">
                     {!! $description ?? "<p class='py-2 text-center text-italic'>No description provided</p>" !!}
                 </div>
-                <p class="text-right text-small">
-                    - {{$fit->SUBMITTED}}
-                </p>
+{{--                <p class="text-right text-small">--}}
+{{--                    - {{$fit->SUBMITTED}}--}}
+{{--                </p>--}}
             </div>
             @if($fit->VIDEO_LINK)
                 <div class="card-footer">
@@ -143,9 +143,13 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">
-            <div class="card card-body border-0 shadow-sm p-0">
-                <h5 class="font-weight-bold mb-2 p-3">Popularity over the last 3 months <small class="float-right">This graph shows the percentage of Abyss runs using/day using a this fit</small></h5>
+            <div class="card card-body border-0 shadow-sm p-0 rounded-b-none">
                 <div class="h-300px graph-container">{!! $popularity->container() !!}</div>
+            </div>
+            <div class="card-footer">
+                @component('components.info-line')
+                    Data source: Abyss Tracker, public and private abyss runs by all characters. The graph refreshes once in 15 minutes.
+                @endcomponent
             </div>
         </div>
     </div>
@@ -168,9 +172,14 @@
                 </div>
             @endforelse
 
-            <div class="card card-body border-0 shadow-sm p-0 mt-3">
+            <div class="card card-body border-0 shadow-sm p-0 mt-3 rounded-b-none">
                 <h5 class="font-weight-bold mb-2 p-3">Loot strategy with this fit</h5>
                 <div class="h-400px graph-container">{!! $loots->container() !!}</div>
+            </div>
+            <div class="card-footer">
+                @component('components.info-line')
+                    Data source: Abyss Tracker, user submissions.
+                @endcomponent
             </div>
 
         </div>

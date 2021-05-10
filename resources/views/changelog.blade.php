@@ -70,6 +70,8 @@
                         <li>Fixed a bug that prevented updating a description if its first revision was deleted.</li>
                         <li>Added streamer tools</li>
                         <li>Added "please hire my team" to the homepage</li>
+                        <li>Changed fit search from "tier and up" to lock in tiers.</li>
+                        <li>Confines tooltips to chart bounds in the profile activity graph.</li>
                     </ul>
                 </div>
             </div>

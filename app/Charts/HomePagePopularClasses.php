@@ -15,4 +15,6 @@ class HomePagePopularClasses extends Chart
     {
         parent::__construct();
     }
+
+
 }

@@ -227,7 +227,7 @@
                 <div class="tab-pane fade" id="tab-fits-new" role="tabpanel" aria-labelledby="tab-head-activity">
                     @component("components.fits.filter.result-list", ["results" => $newFits]) @endcomponent
                     <div class="">
-                        <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'Submitted', 'ORDER_BY_ORDER' => 'ASC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more new fits</a>
+                        <a class="text-dark" href="{{route("fit.search", ['ORDER_BY' => 'Submitted', 'ORDER_BY_ORDER' => 'DESC'])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">View more new fits</a>
                     </div>
                 </div>
             </div>
@@ -275,7 +275,7 @@
                 @foreach($drops as $drop)
                     <div class="d-flex justify-content-start">
                         <img src="https://imageserver.eveonline.com/Type/{{$drop->ITEM_ID}}_32.png"
-                             style="width: 32px;height: 32px;" class="mr-2" alt="">
+                             style="width: 32px;height: 32px;" class="mr-2" loading='lazy'  alt="">
                         <div class="text-left">
                             <span class="font-weight-bold"><a class="text-dark"
                                     href="{{route("item_single", ["item_id" => $drop->ITEM_ID])}}">{{$drop->NAME}}</a></span><br>
@@ -328,8 +328,7 @@
                     If you also add your Abyssal deadspace runs we will have a better idea on how much loot spawns in
                     Abyssal sites (which is really hectic).</p>
                 <p>Cheers, <br>
-                    <img src="https://images.evetech.net/characters/93940047/portrait?size=32" alt=""
-                         class="rounded-circle shadow-sm"> Veetor Nara
+                    <img src="https://images.evetech.net/characters/93940047/portrait?size=64" alt="" class="rounded-circle shadow-sm h-32px mr-2" style="border: 1px solid #fff;">Veetor Nara
                 </p>
             </div>
         </div>

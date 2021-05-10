@@ -1,13 +1,13 @@
 <tr class="action-hover-only">
     <td>
-        {!!$item->SHIP_NAME ? "<img src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->HULL_SIZE)."' style='width:20px;height:20px;'  alt='".ucfirst($item->HULL_SIZE)." hull size' title='".ucfirst($item->HULL_SIZE)." hull size' data-toggle='tooltip'>" : '' !!}
-        {!! $item->SURVIVED ? '' : '<img src="/dead.png" data-toggle="tooltip" title="Run failed, ship and capsule lost"/>' !!}
+        {!!$item->SHIP_NAME ? "<img loading='lazy' src='".\App\Http\Controllers\ThemeController::getShipSizeIconPath($item->HULL_SIZE)."' style='width:20px;height:20px;'  alt='".ucfirst($item->HULL_SIZE)." hull size' title='".ucfirst($item->HULL_SIZE)." hull size' data-toggle='tooltip'>" : '' !!}
+        {!! $item->SURVIVED ? '' : '<img loading="lazy" src="/dead.png" data-toggle="tooltip" title="Run failed, ship and capsule lost"/>' !!}
     </td>
     <td>
         @if($item->SHIP_ID === null)
             <em class="font-italic text-black-50 ">Unknown</em>
         @else
-            <img src="https://imageserver.eveonline.com/Type/{{$item->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" style="border: 1px solid #fff" height="24px" width="24px" alt="">&nbsp;
+            <img loading='lazy' src="https://imageserver.eveonline.com/Type/{{$item->SHIP_ID}}_32.png" class="rounded-circle shadow-sm" style="border: 1px solid #fff" height="24px" width="24px" alt="">&nbsp;
             <a class="text-dark" href="{{route("search.do", ["ship_id" => $item->SHIP_ID])}}">{{$item->SHIP_NAME}}</a>
         @endif
     </td>

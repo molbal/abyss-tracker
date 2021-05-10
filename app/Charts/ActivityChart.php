@@ -22,6 +22,7 @@ class ActivityChart extends Chart {
     tooltip: {
         show: true,
         position: 'top',
+        confine: true,
         formatter: function (p) {
             var format = echarts.format.formatTime('yyyy-MM-dd', p.data[0]);
             return 'Daily runs<br/>' +format + ': ' + p.data[1];

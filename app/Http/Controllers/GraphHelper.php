@@ -74,41 +74,21 @@
         }
 
         public function getFitPopularityChart(string $ids, string $name) {
-            $ids_int = json_decode($ids, 1);
+            $ids_int = array_values(json_decode($ids, 1));
             $this->checkValidIds($ids_int);
-            [ $values, $dead] = Cache::remember("ship.popularity-ffh.".md5($ids), now()->addHour(), function() use ($ids_int, $name) {
-                $values = [];
-                $dead = [];
-                for ($i = -90; $i <= 0; $i++) {
-                    $query = "select
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=?) as 'ALL',
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids_int) . ")) as 'SHIP',
-                            (select count(ID) from runs where RUN_DATE>=? and RUN_DATE<=? and FIT_ID in (" . implode(",", $ids_int) . ") and SURVIVED=0) as 'DEAD';";
-                    $val = DB::select($query,
-                        [
-                            (new Carbon("now $i days"))->addDays(-3),
-                            (new Carbon("now $i days"))->addDays(+3),
-                            (new Carbon("now $i days"))->addDays(-3),
-                            (new Carbon("now $i days"))->addDays(+3),
-                            (new Carbon("now $i days"))->addDays(-3),
-                            (new Carbon("now $i days"))->addDays(+3),
-                        ]);
-                    if ($val[0]->ALL == 0) {
-                        $values[] = 0.0;
-                        $dead[] = 0.0;
-                    }
-                    else {
-                        $values[] = round(($val[0]->SHIP / $val[0]->ALL) * 100, 2);
-                        $dead[] = round(($val[0]->DEAD / ($val[0]->SHIP > 0 ? $val[0]->SHIP : 1)) * 100, 2);
-                    }
-                }
-                return [$values, $dead];
-            });
+            $dataset = collect(Cache::remember("ship.popularity-multiple.".md5($ids), now()->addMinutes(15), function() use ($ids_int) {;
+                return DB::select("select d.day, SUM(r.FIT_ID in (".implode(",",$ids_int).")) as `runs`, SUM(r.FIT_ID in (".implode(",",$ids_int).") and r.SURVIVED=0) as `dead`
+from date_helper d left outer join runs r on r.RUN_DATE=d.day
+where d.day between (select min(ir.RUN_DATE) from runs ir where ir.FIT_ID in (".implode(",",$ids_int).")) and NOW()
+
+group by d.day
+order by d.day asc;");
+            }));
 
 
             $pop = new PersonalDaily();
 
-            $pop->dataset("Fit popularity (Percentage of all runs)", "line", $values)->options([
+            $pop->dataset("Daily runs", "line", $dataset->pluck('runs'))->options([
                 'smooth'         => true,
                 'symbolSize'     => 0,
                 'smoothMonotone' => 'x',
@@ -116,7 +96,7 @@
                     'trigger' => "axis"
                 ]
             ]);
-            $pop->dataset("Failure ratio (Percentage of failed runs)", "line", $dead)->options([
+            $pop->dataset("Daily failed runs", "line", $dataset->pluck('dead'))->options([
                 'smooth'         => true,
                 'symbolSize'     => 0,
                 'smoothMonotone' => 'x',

@@ -313,13 +313,13 @@
                     $filters_display->add("For at least Tier " . $request->get("TIER") . " " . $request->get("TYPE") . " runs");
                 } else {
                     $query->whereRaw("(
-                    fit_recommendations.DARK>=" . intval($tier) . " OR
-                    fit_recommendations.ELECTRICAL>=" . intval($tier) . " OR
-                    fit_recommendations.EXOTIC>=" . intval($tier) . " OR
-                    fit_recommendations.FIRESTORM>=" . intval($tier) . " OR
-                    fit_recommendations.GAMMA>=" . intval($tier) . "
+                    fit_recommendations.DARK=" . intval($tier) . " OR
+                    fit_recommendations.ELECTRICAL=" . intval($tier) . " OR
+                    fit_recommendations.EXOTIC=" . intval($tier) . " OR
+                    fit_recommendations.FIRESTORM=" . intval($tier) . " OR
+                    fit_recommendations.GAMMA=" . intval($tier) . "
                     )");
-                    $filters_display->add("Can do a tier " . $request->get("TIER") . " run or more difficult");
+                    $filters_display->add("Rated for tier " . $request->get("TIER"));
                 }
             }
             if ($request->filled("CHAR_ID")) {

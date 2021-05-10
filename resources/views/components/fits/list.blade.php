@@ -25,13 +25,9 @@
                     <label for="TIER">Abyss tier</label>
                     <select name="TIER" id="select_TIER" class="form-control select2-nosearch">
                         <option value="">Any</option>
-                        <option value="0">0 or harder</option>
-                        <option value="1">1 or harder</option>
-                        <option value="2">2 or harder</option>
-                        <option value="3">3 or harder</option>
-                        <option value="4">4 or harder</option>
-                        <option value="5">5 or harder</option>
-                        <option value="6">6</option>
+                        @for($i=0; $i<=6; $i++)
+                            <option value="{{$i}}">{{$i}} (@lang('tiers.'.$i))</option>
+                        @endfor
                     </select>
                 </div>
             @endcomponent

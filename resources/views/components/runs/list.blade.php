@@ -1,4 +1,4 @@
-<div class="card card-body border-0 shadow-sm">
+<div class="card card-body border-0 shadow-sm rounded-b-none">
     <h5 class="font-weight-bold mb-2">{{$title}}</h5>
     <table class="table table-striped table-sm m-0 table-hover table-responsive-sm">
         <tr>

@@ -802,17 +802,18 @@
          */
         public function getFitPopularityChart(array $ids, $name): PersonalDaily {
 
-            $dates = [];
-            for($i=-90; $i<=0; $i++) {
-                $dates[] = date("M.d.", strtotime("now $i days"));
-            }
+            $dates = collect(DB::select("select d.day
+from date_helper d
+where d.day between (select min(ir.RUN_DATE) from runs ir where ir.FIT_ID in (".implode(",",$ids).")) and NOW()
+order by d.day asc;
+"));
             $pop = new PersonalDaily();
             $pop->displayAxes(true);
             $pop->export(true, "Download");
             $pop->height(300);
             $pop->theme(ThemeController::getChartTheme());
             $pop->displayLegend(true);
-            $pop->labels($dates);
+            $pop->labels($dates->pluck('day'));
             $pop->load(route("chart.fit.popularity", ['ids' => json_encode($ids), 'name' => $name]));
             $pop->options([
                 'tooltip' => [

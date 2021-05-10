@@ -34,7 +34,7 @@
             </ul>
             <div class="card card-body border-0 shadow-sm mb-0 rounded-b-none">
                 <h5 class="font-weight-bold mb-2">Activity</h5>
-                <div class="graph-container h-160px">
+                <div class="graph-container h-160px activity">
                     {!! $activity_chart->container(); !!}
                 </div>
             </div>
