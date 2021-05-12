@@ -8,6 +8,7 @@ use App\Events\RunSaved;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Misc\ErrorHelper;
 use App\Http\Requests\NewStreamToolDailyLinkRequest;
+use App\Http\Requests\NewStreamToolFullScreenModalRequest;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -38,11 +39,34 @@ class StreamToolsController extends Controller
         ]);
 
         return view('sp_message', [
-           'title' => "Your stream link is ready",
-           'message' => "You may use the link below as a browser source in OBS, or other stream applications. You can save this link as it contains your authentication and settings. Never give this link to anyone else.",
-           'selectable' => route('stream-tools.daily.redirect', ['token' => $token])
+            'title' => "Your stream link is ready",
+            'message' => "You may use the link below as a browser source in OBS, or other stream applications. You can save this link as it contains your authentication and settings. Never give this link to anyone else.",
+            'selectable' => route('stream-tools.daily.redirect', ['token' => $token])
         ]);
     }
+
+    /**
+     * Creates
+     * @param NewStreamToolDailyLinkRequest $request
+     *
+     * @return Factory|View|Application
+     */
+    public function createNewFullScreenModalLink(NewStreamToolFullScreenModalRequest $request) : Factory|View|Application {
+        $id = AuthController::getLoginId();
+        $token = Crypt::encrypt([
+            'charId' => $id,
+            'fontColor' => $request->get('fontColor', '#e3342f'),
+            'qr' => $request->has('qr')
+        ]);
+
+        return view('sp_message', [
+            'title' => "Your stream link is ready",
+            'message' => "You may use the link below as a browser source in OBS, or other stream applications. You can save this link as it contains your authentication and settings. Never give this link to anyone else.",
+            'selectable' => route('stream-tools.daily.redirect', ['token' => $token])
+        ]);
+    }
+
+
 
     /**
      * Redirects to daily view after authentication
