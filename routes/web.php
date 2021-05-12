@@ -17,6 +17,7 @@
     use App\Http\Controllers\Profile\ActivityChartController;
     use App\Http\Controllers\StreamToolsController;
     use Illuminate\Support\Facades\Route;
+    use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
     Route::get("/", 'AbyssController@home')->name("home");
     Route::get("/stats_mine/", 'AbyssController@home_mine')->name("home_mine")->middleware("sso");
@@ -126,6 +127,11 @@
     });
 
 
+    Route::get('qr-code', function ()
+    {
+        return QrCode::format('svg')->size(300)->style('round')->gradient(26,3,3,247,52,42,'inverse_diagonal')->generate(\route('view_single', ['id' => 1]));
+
+    });
     /**
      * Search routes
      */
