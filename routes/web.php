@@ -14,10 +14,10 @@
     use App\Http\Controllers\FitsController;
     use App\Http\Controllers\GraphHelper;
     use App\Http\Controllers\ItemController;
+    use App\Http\Controllers\Misc\QrController;
     use App\Http\Controllers\Profile\ActivityChartController;
     use App\Http\Controllers\StreamToolsController;
     use Illuminate\Support\Facades\Route;
-    use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
     Route::get("/", 'AbyssController@home')->name("home");
     Route::get("/stats_mine/", 'AbyssController@home_mine')->name("home_mine")->middleware("sso");
@@ -38,6 +38,7 @@
      * Runs
      */
     Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
+    Route::get("/run/{id}/qr.svg", [QrController::class, 'runQr'])->name("run.qr");
     Route::get("/run/{id}/privacy/{privacy}", 'AbyssController@change_privacy')->name("run.change_privacy")->middleware("sso");
     Route::get("/run/delete/{id}", 'AbyssController@delete')->name("run_delete")->middleware("sso");
     Route::post("/run/flag", 'AbyssController@flag')->name("run_flag")->middleware("sso");
@@ -126,12 +127,6 @@
         Route::get("/item/history/drops/{id}", [ItemController::class, 'itemDroppedVolume'])->name("chart.item.volume-history");
     });
 
-
-    Route::get('qr-code', function ()
-    {
-        return QrCode::format('svg')->size(300)->style('round')->gradient(26,3,3,247,52,42,'inverse_diagonal')->generate(\route('view_single', ['id' => 1]));
-
-    });
     /**
      * Search routes
      */
@@ -217,6 +212,8 @@
         Route::post('/get-link/daily', [StreamToolsController::class, 'createDailyLink'])->name('stream-tools.daily.make')->middleware('sso');
         Route::get ('/view/daily/redirect/{token}', [StreamToolsController::class, 'redirectToDailyView'])->name('stream-tools.daily.redirect');
         Route::get ('/view/daily', [StreamToolsController::class, 'viewDaily'])->name('stream-tools.daily.view');
+
+        Route::get('/view/run/{token}/{run?}', [StreamToolsController::class, 'viewRun'])->name('stream-tools.run.view');
     });
 
 

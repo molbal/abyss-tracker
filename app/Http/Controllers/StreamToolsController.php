@@ -56,7 +56,9 @@ class StreamToolsController extends Controller
         $token = Crypt::encrypt([
             'charId' => $id,
             'fontColor' => $request->get('fontColor', '#e3342f'),
-            'qr' => $request->has('qr')
+            'qr' => $request->has('qr'),
+            'charVisible' => $request->has('charVisible'),
+            'duration' => $request->get('duration', 10_000),
         ]);
 
         return view('sp_message', [
@@ -65,6 +67,38 @@ class StreamToolsController extends Controller
             'selectable' => route('stream-tools.daily.redirect', ['token' => $token])
         ]);
     }
+
+    /**
+     * @param string   $token
+     * @param int|null $id
+     *
+     * @return Factory|View|Redirector|Application|RedirectResponse
+     */
+    public function viewRun(string $token, ?int $id) : Factory|View|Redirector|Application|RedirectResponse {
+        try {
+            $settings = Crypt::decrypt($token);
+
+
+            session()->forget(["login_id", "login_name"]);
+            session()->put("login_id", $settings['charId']);
+            session()->put("login_name", DB::table('chars')->where('CHAR_ID', $settings['charId'])->first('NAME')->NAME);
+
+            auth()->login(AuthController::charIdToFrameworkUser($settings['charId']));
+
+
+
+            return view('stream.run', [
+                'token' => $token,
+                'charId' => $settings['charId'],
+                'fontColor' => $settings['fontColor'],
+                'id' => $id,
+                'charVisible' =>  $settings['charVisible'],
+            ]);
+        } catch (DecryptException) {
+            return ErrorHelper::errorPage("Please generate a new link - this is impossible to decode. You probably made a copy/paste mistake somewhere?", "Invalid token");
+        }
+    }
+
 
 
 
