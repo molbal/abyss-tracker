@@ -64,7 +64,7 @@ class StreamToolsController extends Controller
         return view('sp_message', [
             'title' => "Your stream link is ready",
             'message' => "You may use the link below as a browser source in OBS, or other stream applications. You can save this link as it contains your authentication and settings. Never give this link to anyone else.",
-            'selectable' => route('stream-tools.daily.redirect', ['token' => $token])
+            'selectable' => route('stream-tools.run.view', ['token' => $token])
         ]);
     }
 
@@ -74,7 +74,7 @@ class StreamToolsController extends Controller
      *
      * @return Factory|View|Redirector|Application|RedirectResponse
      */
-    public function viewRun(string $token, ?int $id) : Factory|View|Redirector|Application|RedirectResponse {
+    public function viewRun(string $token, ?int $id = null) : Factory|View|Redirector|Application|RedirectResponse {
         try {
             $settings = Crypt::decrypt($token);
 
@@ -86,11 +86,15 @@ class StreamToolsController extends Controller
             auth()->login(AuthController::charIdToFrameworkUser($settings['charId']));
 
 
+            if (auth()->guest()) {
+                abort(403);
+            }
 
             return view('stream.run', [
                 'token' => $token,
                 'charId' => $settings['charId'],
                 'fontColor' => $settings['fontColor'],
+                'qr' => $settings['qr'],
                 'id' => $id,
                 'charVisible' =>  $settings['charVisible'],
             ]);

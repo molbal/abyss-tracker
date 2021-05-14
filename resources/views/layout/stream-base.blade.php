@@ -10,7 +10,9 @@
     <link rel="preconnect" href="https://imageserver.eveonline.com" crossorigin />
     <link rel="preconnect" href="https://images.evetech.net" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-        <link rel="stylesheet" href="css/app-dark.css" />
+
+    <link rel="stylesheet" href="css/app-dark.css" />
+    <link rel="stylesheet" href="css/stream/animations.css" />
     <title>@yield('browser-title', config('app.name')) | {{ config('app.name') }}</title>
     <style>
         @-webkit-keyframes rotating /* Safari and Chrome */
@@ -85,19 +87,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+{{--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"--}}
+{{--        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"--}}
+{{--        crossorigin="anonymous"></script>--}}
 {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/Ladda/1.0.6/spin.min.js"--}}
 {{--        integrity="sha256-oNtUmAZAsXy3Pg53xwfYE1YYgfdktOImDPd57g6Ldek=" crossorigin="anonymous"></script>--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.8.0/echarts-en.min.js"
-        charset="utf-8"></script>
-<script src="https://abyss.eve-nt.uk/js/echart.theme.dark.js"
-        charset="utf-8"></script>
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.8.0/echarts-en.min.js"--}}
+{{--        charset="utf-8"></script>--}}
+{{--<script src="https://abyss.eve-nt.uk/js/echart.theme.dark.js"--}}
+{{--        charset="utf-8"></script>--}}
 <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"
         type="text/javascript" ></script>
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
-></script>
+{{--<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"--}}
+{{--></script>--}}
 {{--<script src="{{asset("js/app.js")}}"></script>--}}
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @yield('scripts')

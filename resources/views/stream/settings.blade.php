@@ -90,7 +90,7 @@
             </form>
         </div>
         <div class="col-md-6">
-            <form action="{{route('stream-tools.daily.make')}}" method="post">
+            <form action="{{route('stream-tools.run.make')}}" method="post">
                 <div class="card card-body border-0 shadow-sm p-0 rounded-b-none">
                     <a href="{{asset('stream-control/run.jpg')}}" data-toggle="tooltip" target="_blank" title="Click to open image in a new tab - screenshot from Pyrophobic's stream"><img
                             src="{{asset('stream-control/run.jpg')}}" alt="" class="w-100 rounded shadow-sm"></a>
@@ -148,8 +148,13 @@
                             <input type="text" class="form-control w-25" name="duration" value="8000">
                         </div>
                         <div class="form-group">
-                            <label>Color accent</label>
-                            <input type="color" class="form-control w-25" name="fontColor" value="#dc3545">
+                            <label>Color accent
+                                <br>
+                                @component('components.info-line')
+                                    The color accent affects: the gradient on the QR code, and border colors. <strong>Pick a darker, not so saturated color!</strong>
+                                @endcomponent
+                            </label>
+                            <input type="color" class="form-control w-25" name="fontColor" value="#370000">
                         </div>
                     </div>
                 </div>

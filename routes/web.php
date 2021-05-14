@@ -38,7 +38,7 @@
      * Runs
      */
     Route::get("/run/{id}", 'AbyssController@get_single')->name("view_single");
-    Route::get("/run/{id}/qr.svg", [QrController::class, 'runQr'])->name("run.qr");
+    Route::any("/run/qr/{id}/{color?}", [QrController::class, 'runQr'])->name("run.qr");
     Route::get("/run/{id}/privacy/{privacy}", 'AbyssController@change_privacy')->name("run.change_privacy")->middleware("sso");
     Route::get("/run/delete/{id}", 'AbyssController@delete')->name("run_delete")->middleware("sso");
     Route::post("/run/flag", 'AbyssController@flag')->name("run_flag")->middleware("sso");
@@ -209,11 +209,12 @@
     Route::prefix('/stream-tools')->group(function () {
         Route::view('/controls', 'stream.settings')->middleware('sso')->name('stream-tools.control');
 
-        Route::post('/get-link/daily', [StreamToolsController::class, 'createDailyLink'])->name('stream-tools.daily.make')->middleware('sso');
+        Route::post('/view/daily/make', [StreamToolsController::class, 'createDailyLink'])->name('stream-tools.daily.make')->middleware('sso');
         Route::get ('/view/daily/redirect/{token}', [StreamToolsController::class, 'redirectToDailyView'])->name('stream-tools.daily.redirect');
         Route::get ('/view/daily', [StreamToolsController::class, 'viewDaily'])->name('stream-tools.daily.view');
 
-        Route::get('/view/run/{token}/{run?}', [StreamToolsController::class, 'viewRun'])->name('stream-tools.run.view');
+        Route::post('/view/run/make', [StreamToolsController::class, 'createNewFullScreenModalLink'])->name('stream-tools.run.make')->middleware('sso');
+        Route::get ('/view/run/{token}/{run?}', [StreamToolsController::class, 'viewRun'])->name('stream-tools.run.view');
     });
 
 

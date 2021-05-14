@@ -1,11 +1,14 @@
 @extends('layout.stream-base')
-@section("browser-title", "Daily browser source")
+@section("browser-title", "Run popover")
 @section("content")
-    @auth
+    <div class="topbar shadow d-flex justify-content-start align-items-center flicker-in-1">
 
-    @elseauth
-        <h1>ERROR: Expired session.</h1>
-    @endauth
+        @if($qr)
+            <img src="{{route('run.qr', ['id' => $id, 'color' => ltrim($fontColor, '#')])}}" id="qr" class="shadow" alt="">
+        @endif
+    </div>
+
+
 @endsection
 
 @section('styles')
@@ -18,19 +21,43 @@
             width: 1920px;
             height: 1080px;
 
+            outline: 1px dashed red;
+
         }
 
-        body, tr, td, span, p, small {
-            color: {{$fontColor}};
-            font-size: {{$fontSize}};
-            text-align: {{$align}};
-            text-shadow: 0 2px 3px rgba(255,255,255, .15);
+        img#qr {
+            margin-left: 32px;
+            height: 148px;
+            width: 148px;
+            background: #fff;
+            padding: 6px;
+            border-radius: 12px;
         }
 
+        div.topbar  {
+            position: absolute;
+            width: 1920px;
+            height: 85px;
+            top: 100px;
+            background-image: linear-gradient(180deg, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.5) 100%);
+
+            border: 2px solid {{$fontColor}};
+            border-width: 0 0 2px 0;
+        }
+
+
+        .gradient {
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+        }
         small.text-muted {
             font-size: 0.5rem;
         }
-    </style>
+
+
+</style>
 @endsection
 
 @section('scripts')

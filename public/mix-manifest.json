@@ -3,6 +3,7 @@
     "/css/app.css": "/css/app.css",
     "/css/app-dark.css": "/css/app-dark.css",
     "/css/fit-only.css": "/css/fit-only.css",
+    "/css/stream/animations.css": "/css/stream/animations.css",
     "/js/fits.js": "/js/fits.js",
     "/js/new-run.js": "/js/new-run.js",
     "/js/stream/stream-base.js": "/js/stream/stream-base.js",
