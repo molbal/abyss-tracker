@@ -56,8 +56,8 @@ class StreamToolsController extends Controller
         $token = Crypt::encrypt([
             'charId' => $id,
             'fontColor' => $request->get('fontColor', '#e3342f'),
-            'qr' => $request->has('qr'),
-            'charVisible' => $request->has('charVisible'),
+            'qr' => $request->get('qr', true),
+            'charVisible' => $request->get('charVisible', true),
             'duration' => $request->get('duration', 10_000),
         ]);
 
@@ -90,12 +90,14 @@ class StreamToolsController extends Controller
                 abort(403);
             }
 
+            $run = DB::table('v_runall')->where('ID', $id)->first();
             return view('stream.run', [
                 'token' => $token,
                 'charId' => $settings['charId'],
                 'fontColor' => $settings['fontColor'],
                 'qr' => $settings['qr'],
                 'id' => $id,
+                'run' => $run,
                 'charVisible' =>  $settings['charVisible'],
             ]);
         } catch (DecryptException) {

@@ -129,7 +129,7 @@
                                   'value' => "1",
                                   'checked' => true,
                                   'title' => "Show character",
-                                  'description' => "The submitter's character name and avatar will be displayed on stream.",
+                                  'description' => "The submitter's character name and avatar (if the QR option is disabled) will be displayed on stream.",
                                ]) @endcomponent
                             </div>
                             <div class="col-sm-12 py-0 px-3">
@@ -154,7 +154,7 @@
                                     The color accent affects: the gradient on the QR code, and border colors. <strong>Pick a darker, not so saturated color!</strong>
                                 @endcomponent
                             </label>
-                            <input type="color" class="form-control w-25" name="fontColor" value="#370000">
+                            <input type="color" class="form-control w-25" name="fontColor" value="#5E0000">
                         </div>
                     </div>
                 </div>
