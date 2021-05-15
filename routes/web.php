@@ -214,7 +214,7 @@
         Route::get ('/view/daily', [StreamToolsController::class, 'viewDaily'])->name('stream-tools.daily.view');
 
         Route::post('/view/run/make', [StreamToolsController::class, 'createNewFullScreenModalLink'])->name('stream-tools.run.make')->middleware('sso');
-        Route::get ('/view/run/{token}/{run?}', [StreamToolsController::class, 'viewRun'])->name('stream-tools.run.view');
+        Route::get ('/view/run/{token}/{id?}', [StreamToolsController::class, 'viewRun'])->name('stream-tools.run.view');
     });
 
 

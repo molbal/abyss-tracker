@@ -539,7 +539,7 @@ from (`abyss`.`lost_items` `dl`
          *
          * @return array
          */
-        private function normalizeLootAndLost($id, $all_data, array $lost, \Illuminate\Support\Collection $loot) : array
+        public function normalizeLootAndLost($id, $all_data, array $lost, \Illuminate\Support\Collection $loot) : array
         {
 // Get which filament shall be used now
             $filament_id = DB::table("filament_types")->where("TIER", $all_data->TIER)->where("TYPE", $all_data->TYPE)->value("ITEM_ID");

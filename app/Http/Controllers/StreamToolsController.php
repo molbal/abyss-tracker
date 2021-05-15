@@ -91,14 +91,39 @@ class StreamToolsController extends Controller
             }
 
             $run = DB::table('v_runall')->where('ID', $id)->first();
+
+            if ($id) {
+            $all_data = DB::table("runs")->where("ID", $id)->first();
+            $loot = DB::table("v_loot_details")->where("RUN_ID", $id)->get();
+            $lost = DB::select("select `dl`.`ITEM_ID`                   AS `ITEM_ID`,
+       `dl`.`RUN_ID`                    AS `RUN_ID`,
+       `dl`.`COUNT`                     AS `COUNT`,
+       `ip`.`NAME`                      AS `NAME`,
+       `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
+       `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
+       `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
+       `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
+       `ip`.`PRICE_BUY` * `dl`.`COUNT`  AS `BUY_PRICE_ALL`,
+       `ip`.`PRICE_SELL` * `dl`.`COUNT` AS `SELL_PRICE_ALL`
+from (`abyss`.`lost_items` `dl`
+         join `abyss`.`item_prices` `ip` on (`dl`.`ITEM_ID` = `ip`.`ITEM_ID`)) where dl.`RUN_ID`=?;", [$id]);
+            $abyssCo = resolve('App\Http\Controllers\AbyssController');
+            $lost = $abyssCo->normalizeLootAndLost($id, $all_data, $lost, $loot);
+            }
+
+
+
             return view('stream.run', [
                 'token' => $token,
                 'charId' => $settings['charId'],
                 'fontColor' => $settings['fontColor'],
+                'duration' => $settings['duration'],
                 'qr' => $settings['qr'],
                 'id' => $id,
                 'run' => $run,
                 'charVisible' =>  $settings['charVisible'],
+                'loot' => $loot ?? null,
+                'lost' => $lost ?? null,
             ]);
         } catch (DecryptException) {
             return ErrorHelper::errorPage("Please generate a new link - this is impossible to decode. You probably made a copy/paste mistake somewhere?", "Invalid token");
