@@ -73,6 +73,10 @@
                         <li>Changed fit search from "tier and up" to lock in tiers.</li>
                         <li>Confines tooltips to chart bounds in the profile activity graph.</li>
                     </ul>
+                    <h5 class="mb-0 pb-0"><strong>1.10.2</strong> 'Negotiation' release Enhanchement Pack 21</h5>
+                    <ul>
+                        <li>Added a "Run overlay" streamer tool</li>
+                    </ul>
                 </div>
             </div>
 

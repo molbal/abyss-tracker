@@ -92,11 +92,12 @@
         <div class="col-md-6">
             <form action="{{route('stream-tools.run.make')}}" method="post">
                 <div class="card card-body border-0 shadow-sm p-0 rounded-b-none">
-                    <a href="{{asset('stream-control/run.jpg')}}" data-toggle="tooltip" target="_blank" title="Click to open image in a new tab - screenshot from Pyrophobic's stream"><img
-                            src="{{asset('stream-control/run.jpg')}}" alt="" class="w-100 rounded shadow-sm"></a>
+                    <div class="rounded graph-container h-300px shadow-sm mb-3">
+                        {!! \App\Http\Controllers\Youtube\YoutubeController::getEmbed('https://youtu.be/1mwSiJxCUdw', 300) !!}
+                    </div>
                     <div class="p-3">
                         <h5 class="font-weight-bold">Run finished screen</h5>
-                        <p class="">You can pick your settings for a run finished screen counter below. Its size is fix 1920x1080. TODO The widget automatically updates as you save a run.</p>
+                        <p class="">You can pick your settings for a run finished screen counter below. Its size is fix 1920x1080. The widget updates activates and shows the last run's information as you save a run, then it becomes fully transparent again.</p>
 
                         {{csrf_field()}}
 

@@ -23,7 +23,7 @@
             <div class="col-sm-6">
                 <h3 class="text-uppercase font-weight-bold opacity-0" data-add-class="puff-in-center" data-remove-class="opacity-0" data-delay="1600">Looted</h3>
                 @foreach($loot as $item)
-                    <div class="d-flex loot-item justify-content-start align-items-center opacity-0" data-add-class="puff-in-center" data-remove-class="opacity-0" data-delay="{{($loop->index*100) + 1600}}">
+                    <div class="d-flex loot-item justify-content-start align-items-center opacity-0 mb-2" data-add-class="puff-in-center" data-remove-class="opacity-0" data-delay="{{($loop->index*100) + 1600}}">
                         <img src="https://imageserver.eveonline.com/Type/{{$item->ITEM_ID}}_32.png"
                              alt="" class="mr-2" />
                         <span>{{$item->NAME}} (x{{$item->COUNT}})</span>
@@ -34,9 +34,9 @@
                 @endforeach
             </div>
             <div class="col-sm-6">
-                <h3 class="text-uppercase font-weight-bold opacity-0" data-add-class="puff-in-center" data-remove-class="opacity-0" data-delay="{{$last + 100}}">Lost</h3>
+                <h3 class="text-uppercase font-weight-bold opacity-0" data-add-class="puff-in-center" data-remove-class="opacity-0" data-delay="{{$last + 100}}">Lost &amp; Consumed</h3>
                 @foreach($lost as $item)
-                    <div class="d-flex loot-item justify-content-start align-items-center opacity-0" data-add-class="puff-in-center" data-remove-class="opacity-0" data-delay="{{($loop->index*100) + 100 + $last}}">
+                    <div class="d-flex loot-item justify-content-start align-items-center opacity-0 mb-2" data-add-class="puff-in-center" data-remove-class="opacity-0" data-delay="{{($loop->index*100) + 100 + $last}}">
                         <img src="https://imageserver.eveonline.com/Type/{{$item->ITEM_ID}}_32.png"
                              alt="" class="mr-2" />
                         <span>{{$item->NAME}} (x{{$item->COUNT}})</span>
@@ -44,6 +44,9 @@
                 @endforeach
             </div>
         </div>
+    </div>
+    <div class="overlay_container" id="credit">
+        <span class="text-muted">Screen provided by abyss.eve-nt.uk</span>
     </div>
 
 
@@ -64,7 +67,12 @@
             background: transparent;
 
             overflow: hidden;
+        }
 
+        #credit {
+            position: absolute;
+            right: 32px;
+            bottom: 32px;
         }
 
         div#backdrop {
@@ -75,7 +83,8 @@
             height: 1080px !important;
             top:0;
             left:0;
-            background: rgba(0,0,0,0.34);
+            background-image: linear-gradient(45deg, rgba(159, 159, 159, 0.4) 0%, rgba(62, 62, 62, 0.8) 100%);
+            background-image: -webkit-linear-gradient(45deg, rgba(159, 159, 159, 0.4) 0%, rgba(62, 62, 62, 0.8) 100%);
 
         }
 
@@ -94,6 +103,7 @@
             height: 85px;
             top: 100px;
             background-image: linear-gradient(180deg, rgba(0,0,0,0.4) 10%, rgba(0,0,0,0.8) 100%);
+            background-image: -webkit-linear-gradient(180deg, rgba(0,0,0,0.4) 10%, rgba(0,0,0,0.8) 100%);
 
             border: 2px solid {{$fontColor}};
             border-width: 0 0 2px 0;
@@ -145,7 +155,7 @@
     <script>
         $(function () {
 
-            setTimeout(function() {$(".overlay_container").removeClass("opacity-0").removeClass("puff-in-center").addClass("puff-out-center")}, 2000+{{$duration}});
+            setTimeout(function() {$(".overlay_container").removeClass("opacity-0").removeClass("puff-in-center").addClass("fade-out-bck")}, 2000+{{$duration}});
             setTimeout(function() {$(".overlay_container").remove()}, 2000+{{$duration}}+5000);
             console.log("Creating Echo");
 
