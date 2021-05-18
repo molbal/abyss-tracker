@@ -16,6 +16,7 @@
     use App\Http\Controllers\ItemController;
     use App\Http\Controllers\Misc\QrController;
     use App\Http\Controllers\Profile\ActivityChartController;
+    use App\Http\Controllers\PVP\PVPController;
     use App\Http\Controllers\StreamToolsController;
     use Illuminate\Support\Facades\Route;
 
@@ -216,6 +217,10 @@
         Route::post('/view/run/make', [StreamToolsController::class, 'createNewFullScreenModalLink'])->name('stream-tools.run.make')->middleware('sso');
         Route::get ('/view/run/{token}/{id?}', [StreamToolsController::class, 'viewRun'])->name('stream-tools.run.view');
     });
+
+    /** Proving grounds tools */
+    Route::get('/pvp', [PVPController::class, 'index'])->name('pvp.index');
+//    Route::get('/pvp', [PVPController::class, 'index'])->name('pvp.index');
 
 
 

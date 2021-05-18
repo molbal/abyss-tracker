@@ -83,8 +83,8 @@
             height: 1080px !important;
             top:0;
             left:0;
-            background-image: linear-gradient(45deg, rgba(159, 159, 159, 0.4) 0%, rgba(62, 62, 62, 0.8) 100%);
-            background-image: -webkit-linear-gradient(45deg, rgba(159, 159, 159, 0.4) 0%, rgba(62, 62, 62, 0.8) 100%);
+            background-image: linear-gradient(45deg, rgba(128, 128, 128, 0.6) 0%, rgba(38, 38, 38, 0.8) 80%);
+            background-image: -webkit-linear-gradient(45deg, rgba(128, 128, 128, 0.6) 0%, rgba(38, 38, 38, 0.8) 80%);
 
         }
 
