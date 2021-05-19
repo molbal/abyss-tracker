@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|FitQuestion whereQuestion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FitQuestion whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Char|null $char
  */
 class FitQuestion extends Model
 {
