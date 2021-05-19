@@ -61,6 +61,13 @@ return [
             'days' => 7,
         ],
 
+        'pvp' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/pvp.log'),
+            'level' => 'debug',
+            'days' => 7,
+        ],
+
         'lootvalue' => [
             'driver' => 'daily',
             'path' => storage_path('logs/lootvalue.log'),

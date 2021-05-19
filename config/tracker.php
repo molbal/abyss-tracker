@@ -117,5 +117,9 @@
 
         'accountant' => [
             'char-id' => env('ACCOUNTANT_CHAR_ID', 2117658503)
+        ],
+
+        'pvp' => [
+            'bridge-passcode' => env('BRIDGE_PASSCODE')
         ]
     ];

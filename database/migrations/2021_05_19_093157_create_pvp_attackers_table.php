@@ -52,10 +52,16 @@ class CreatePvpAttackersTable extends Migration
             $table->unsignedBigInteger('damage_taken');
             $table->unsignedBigInteger('ship_type_id');
 
+            $table->unsignedBigInteger('pvp_event_id');
+
+            $table->json('littlekill');
+            $table->json('fullkill');
+
             $table->timestamps();
 
             $table->foreign('character_id')->references('id')->on('pvp_characters');
             $table->foreign('corporation_id')->references('id')->on('pvp_corporations');
+            $table->foreign('pvp_event_id')->references('id')->on('pvp_events');
         });
 
         Schema::create('pvp_attackers', function (Blueprint $table) {
@@ -84,13 +90,15 @@ class CreatePvpAttackersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pvp_attackers');
-        Schema::dropIfExists('pvp_victims');
-        Schema::dropIfExists('pvp_group_id_lookup');
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('pvp_type_id_lookup');
+        Schema::dropIfExists('pvp_group_id_lookup');
         Schema::dropIfExists('pvp_alliances');
+        Schema::dropIfExists('pvp_victims');
+        Schema::dropIfExists('pvp_attackers');
         Schema::dropIfExists('pvp_corporations');
         Schema::dropIfExists('pvp_characters');
+        Schema::enableForeignKeyConstraints();
 
     }
 }
