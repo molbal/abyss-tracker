@@ -2,11 +2,13 @@
 
     namespace App\Pvp;
 
+use App\Exceptions\BusinessLogicException;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -48,6 +50,11 @@ class PvpEvent extends Model
      * @return PvpEvent
      */
     public static function getCurrentEvent(): PvpEvent {
+        try {
+
         return Cache::remember('pvp.events.current', now()->addHour(), function () {return PvpEvent::whereIsCurrent(true)->firstOrFail();});
+        } catch (ModelNotFoundException $e) {
+            throw new BusinessLogicException("No current event.");
+        }
     }
 }

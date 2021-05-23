@@ -27,9 +27,13 @@ class PvpTypeIdLookup extends Model
 {
     protected $fillable = ['id', 'group_id', 'name'];
     protected $table = 'pvp_type_id_lookup';
+    public $timestamps = false;
     use HasFactory;
 
-    public static function populate(int $typeId) {
+    public static function populate(?int $typeId) {
+        if (!$typeId) {
+            return;
+        }
         if (self::whereId($typeId)->exists()) {
             return;
         }

@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
  */
 class PvpGroupIdLookup extends Model
 {
+    public $timestamps = false;
     protected $fillable = ['id', 'name'];
     protected $table = 'pvp_group_id_lookup';
 

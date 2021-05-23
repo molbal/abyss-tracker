@@ -43,11 +43,14 @@ use Illuminate\Support\Carbon;
  * @property-read PvpCharacter|null   $character
  * @property-read PvpCorporation|null $corporation
  * @property-read PvpVictim           $victim
+ * @property int $weapon_type_id
+ * @method static Builder|PvpAttacker whereWeaponTypeId($value)
  */
 class PvpAttacker extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['killmail_id', 'character_id', 'corporation_id', 'alliance_id', 'damage_done', 'final_blow', 'security_status', 'ship_type_id', 'weapon_type_id'];
 
     public function character(): HasOne {
         return $this->hasOne('App\Pvp\PvpCharacter', 'id', 'character_id');

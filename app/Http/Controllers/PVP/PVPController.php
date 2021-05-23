@@ -5,6 +5,10 @@ namespace App\Http\Controllers\PVP;
 use App\Connector\EveAPI\Kills\KillmailService;
 use App\Connector\EveAPI\Universe\ResourceLookupService;
 use App\Http\Controllers\Controller;
+use App\Pvp\PvpAlliance;
+use App\Pvp\PvpAttacker;
+use App\Pvp\PvpCharacter;
+use App\Pvp\PvpCorporation;
 use App\Pvp\PvpEvent;
 use App\Pvp\PvpTypeIdLookup;
 use App\Pvp\PvpVictim;
@@ -40,29 +44,31 @@ class PVPController extends Controller
                 'required',
                 Rule::in([config('tracker.pvp.bridge-passcode')]),
             ],
-            'killmail' => ['required', 'json']
+            'killmail.utf8Data' => ['required', 'json']
         ]);
 
-        $littlekill = json_decode($request->get('killmail'));
-        if (!$littlekill) {
-            abort(400);
-        }
-
+        $littlekill = json_decode($request->get('killmail')["utf8Data"]);
         $kill = $this->killService->getKillmail($littlekill->killID, $littlekill->hash);
+
         if (!$kill) {
             Log::channel('pvp')->warning(sprintf("Invalid kill info: id:%s hash%s", $littlekill->killID, $littlekill->hash));
             abort(400);
         }
 
-        // Check, if
+        // Load and save ship
         PvpTypeIdLookup::populate($kill->victim->ship_type_id);
+
+        // Load and save char, corp, and alliance
+        PvpCharacter::populate($kill->victim->character_id);
+        PvpCorporation::populate($kill->victim->corporation_id);
+        PvpAlliance::populate($kill->victim->alliance_id ?? null);
 
         $victim = new PvpVictim();
         $victim->fill([
             'killmail_id' => $kill->killmail_id,
             'character_id' => $kill->victim->character_id,
             'corporation_id' => $kill->victim->corporation_id,
-            'alliance_id' => $kill->victim->corporation_id ?? null,
+            'alliance_id' => $kill->victim->alliance_id ?? null,
             'damage_taken' => $kill->victim->damage_taken,
             'ship_type_id' => $kill->victim->ship_type_id,
             'littlekill' => $littlekill,
@@ -74,5 +80,33 @@ class PVPController extends Controller
 
 
 
+        foreach ($kill->attackers as $attacker) {
+
+            // Load and save ship and weapon
+            PvpTypeIdLookup::populate($attacker->ship_type_id ?? null);
+            PvpTypeIdLookup::populate($attacker->weapon_type_id ?? null);
+
+            // Load and save char, corp, and alliance
+            PvpCharacter::populate($attacker->character_id ?? null);
+            PvpCorporation::populate($attacker->corporation_id ?? null);
+            PvpAlliance::populate($attacker->alliance_id ?? null);
+
+            $model = new PvpAttacker();
+            $model->fill([
+                'killmail_id' => $kill->killmail_id,
+                'character_id' => $attacker->character_id ?? null,
+                'corporation_id' => $attacker->corporation_id ?? null,
+                'alliance_id' => $attacker->alliance_id ?? null,
+                'damage_done' => $attacker->damage_done,
+                'final_blow' => $attacker->final_blow,
+                'security_status' => $attacker->security_status,
+                'ship_type_id' => $attacker->ship_type_id ?? null,
+                'weapon_type_id' => $attacker->weapon_type_id ?? null,
+            ]);
+            $model->save();
+        }
+
+        Log::info('Killmail '.$kill->killmail_id.' saved');
+        return ['success' => true, 'message' => 'Killmail '.$kill->killmail_id.' processed and saved'];
     }
 }

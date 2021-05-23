@@ -66,13 +66,14 @@ class CreatePvpAttackersTable extends Migration
 
         Schema::create('pvp_attackers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('character_id');
-            $table->unsignedBigInteger('corporation_id');
+            $table->unsignedBigInteger('character_id')->nullable(true);
+            $table->unsignedBigInteger('corporation_id')->nullable(true);
             $table->unsignedBigInteger('alliance_id')->nullable(true);
             $table->unsignedBigInteger('damage_done');
             $table->boolean('final_blow');
             $table->float('security_status');
-            $table->unsignedBigInteger('ship_type_id');
+            $table->unsignedBigInteger('ship_type_id')->nullable(true);
+            $table->unsignedBigInteger('weapon_type_id')->nullable(true);
             $table->unsignedBigInteger('killmail_id');
 
             $table->timestamps();
