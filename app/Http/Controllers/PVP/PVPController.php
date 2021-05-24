@@ -4,7 +4,9 @@ namespace App\Http\Controllers\PVP;
 
 use App\Connector\EveAPI\Kills\KillmailService;
 use App\Connector\EveAPI\Universe\ResourceLookupService;
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Misc\ErrorHelper;
 use App\Pvp\PvpAlliance;
 use App\Pvp\PvpAttacker;
 use App\Pvp\PvpCharacter;
@@ -35,10 +37,24 @@ class PVPController extends Controller
 
 
     public function index() {
-        return ['hey.'];
+        try {
+            $currentEvent = PvpEvent::getCurrentEvent();
+            return redirect(route('pvp.get', ['slug' => $currentEvent->slug]));
+        } catch (BusinessLogicException $e) {
+            return ErrorHelper::errorPage("No ongoing EVE_NT event", "Nothing here right now");
+        }
+    }
+
+    public function getEvent(string $slug) {
+        $event = PvpEvent::whereSlug($slug)->firstOrFail();
+
+        $kills = PvpVictim::wherePvpEvent($event)->paginate();
+
+        dd($event, $kills);
     }
 
     public function addKillmail(Request $request) {
+
         $request->validate([
             'passcode' => [
                 'required',
@@ -47,7 +63,18 @@ class PVPController extends Controller
             'killmail.utf8Data' => ['required', 'json']
         ]);
 
+        try {
+            $currentEvent = PvpEvent::getCurrentEvent();
+        } catch (BusinessLogicException $e) {
+            return ['success' => true, 'message' => 'Kill ignored - no current Abyss Tracker PVP event'];
+        }
+
         $littlekill = json_decode($request->get('killmail')["utf8Data"]);
+        $typeIds = config('tracker.pvp.accept-ids.' . $currentEvent->slug);
+        if (!in_array($littlekill->ship_type_id, $typeIds)) {
+            return ['success' => true, 'message' => 'Kill ignored - type ID not acccepted', 'acceptedTypeIDs' => $typeIds];
+        }
+
         $kill = $this->killService->getKillmail($littlekill->killID, $littlekill->hash);
 
         if (!$kill) {
@@ -74,7 +101,7 @@ class PVPController extends Controller
             'littlekill' => $littlekill,
             'fullkill' => $kill,
             'created_at' => Carbon::parse($kill->killmail_time),
-            'pvp_event_id' => PvpEvent::getCurrentEvent()->id
+            'pvp_event_id' => $currentEvent->id
         ]);
         $victim->save();
 

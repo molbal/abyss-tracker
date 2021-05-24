@@ -50,6 +50,11 @@ class PvpAttacker extends Model
 {
     use HasFactory;
 
+    protected $with = [
+        'character',
+        'corporation',
+        'alliance'
+    ];
     protected $fillable = ['killmail_id', 'character_id', 'corporation_id', 'alliance_id', 'damage_done', 'final_blow', 'security_status', 'ship_type_id', 'weapon_type_id'];
 
     public function character(): HasOne {

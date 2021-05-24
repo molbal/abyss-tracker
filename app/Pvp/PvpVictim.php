@@ -49,6 +49,12 @@ use Illuminate\Support\Carbon;
 class PvpVictim extends Model
 {
 
+    protected $with = [
+        'attackers',
+        'character',
+        'corporation',
+        'alliance'
+    ];
     protected $fillable = ['killmail_id', 'character_id', 'corporation_id', 'alliance_id', 'damage_taken', 'ship_type_id', 'littlekill', 'fullkill', 'created_at', 'pvp_event_id'];
     use HasFactory;
 
@@ -56,6 +62,15 @@ class PvpVictim extends Model
         'littlekill' => 'json',
         'fullkill' => 'json',
     ];
+
+    /**
+     * @param PvpEvent $event
+     *
+     * @return PvpVictim|Builder
+     */
+    public static function wherePvpEvent(PvpEvent $event) : PvpVictim|Builder {
+        return self::wherePvpEventId($event->id);
+    }
 
     public function attackers() : HasMany {
         return $this->hasMany('App\Pvp\PvpAttacker', 'killmail_id', 'killmail_id');

@@ -220,6 +220,7 @@
 
     /** Proving grounds tools */
     Route::get('/pvp', [PVPController::class, 'index'])->name('pvp.index');
+    Route::get('/event/{slug}', [PVPController::class, 'getEvent'])->name('pvp.get');
 //    Route::get('/pvp', [PVPController::class, 'index'])->name('pvp.index');
 
 
