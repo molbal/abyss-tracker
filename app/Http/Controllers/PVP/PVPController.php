@@ -50,7 +50,9 @@ class PVPController extends Controller
 
         $kills = PvpVictim::wherePvpEvent($event)->paginate();
 
-        dd($event, $kills);
+        return view('pvp.event', [
+            'event' => $event
+        ]);
     }
 
     public function addKillmail(Request $request) {

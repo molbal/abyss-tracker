@@ -122,6 +122,7 @@
             letter-spacing: 1px;
             color: #fff;
             text-shadow: 0 2px 2px rgba(0,0,0,0.6);
+            font-size: 1.5rem;
         }
 
         #lost_and_found {
@@ -140,6 +141,7 @@
             text-shadow: 0 2px 2px rgba(0,0,0,0.6);
             text-transform: uppercase;
             font-weight: bold;
+            font-size: 1.5rem;
         }
 
         small.text-muted {
