@@ -1,0 +1,7 @@
+<tr>
+    <td>
+        <a href="{{route("profile.index", ["id" => $item->id])}}" class="{{\App\Http\Controllers\Auth\AuthController::isItMe($item->id) ? "text-danger" : "text-dark"}}" data-toggle="tooltip" title="{{$item->name}}">
+            <img loading="lazy" src="https://images.evetech.net/characters/{{$item->id}}/portrait?size=32" alt="" style="width: 24px; height: 24px; border: 1px solid white" class="rounded-circle shadow-sm mr-2">{{Str::limit($item->name, 20)}}
+        </a></td>
+    <td class="text-right" @if($item->kills_count==420||$item->kills_count==69) data-toggle="tooltip" title="Nice"  @endif>{{$item->kills_count}} kills</td>
+</tr>

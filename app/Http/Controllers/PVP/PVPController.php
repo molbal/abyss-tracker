@@ -42,13 +42,23 @@ class PVPController extends Controller
             return redirect(route('pvp.get', ['slug' => $currentEvent->slug]));
         } catch (BusinessLogicException $e) {
             return ErrorHelper::errorPage("No ongoing EVE_NT event", "Nothing here right now");
+        }catch (\Exception $e) {
+            return ErrorHelper::errorPage("Error: ".$e->getMessage(), "Something went wrong");
         }
+    }
+
+    public function renderToplist(int $eventId) {
+        $event = PvpEvent::whereId($eventId)->firstOrFail();
+        $topKills = PvpStats::getEventTopKillsPaginator($event, 10);
+        return view('pvp.widgets.top-kills', [
+            'topKills' => $topKills,
+            'eventId' => $eventId
+        ]);
+
     }
 
     public function getEvent(string $slug) {
         $event = PvpEvent::whereSlug($slug)->firstOrFail();
-
-        $kills = PvpVictim::wherePvpEvent($event)->paginate();
 
         return view('pvp.event', [
             'event' => $event

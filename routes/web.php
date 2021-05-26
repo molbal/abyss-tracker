@@ -219,9 +219,15 @@
     });
 
     /** Proving grounds tools */
-    Route::get('/pvp', [PVPController::class, 'index'])->name('pvp.index');
+    Route::get('/pvp-events', [PVPController::class, 'index'])->name('pvp.index');
     Route::get('/event/{slug}', [PVPController::class, 'getEvent'])->name('pvp.get');
-//    Route::get('/pvp', [PVPController::class, 'index'])->name('pvp.index');
+
+    Route::prefix('/event')->group(function () {
+        Route::get('/current', [PVPController::class, 'index'])->name('pvp.index');
+        Route::get('/{slug}', [PVPController::class, 'getEvent'])->name('pvp.get');
+
+        Route::get('/widget/top-kills/{id}', [PVPController::class, 'renderToplist'])->name('pvp.widget.top-kills');
+    });
 
 
 
