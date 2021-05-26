@@ -5,3 +5,6 @@
         </a></td>
     <td class="text-right" @if($item->kills_count==420||$item->kills_count==69) data-toggle="tooltip" title="Nice"  @endif>{{$item->kills_count}} kills</td>
 </tr>
+<script>
+    $('[data-toggle="tooltip"]').tooltip();
+</script>

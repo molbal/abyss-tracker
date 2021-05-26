@@ -41,7 +41,7 @@
             <li class="nav-item">
                 <a class="nav-link {{"pvp.index" == $currentRoute ? "active" : ""}}"
                    href="{{route("pvp.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("pvp.index" == $currentRoute)}}/sword.png">PVP</a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("pvp.index" == $currentRoute)}}/sword.png">Abyssal Grounds</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"tutorials.index" == $currentRoute ? "active" : ""}}"

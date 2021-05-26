@@ -52,7 +52,7 @@ class PVPController extends Controller
         $topKills = PvpStats::getEventTopKillsPaginator($event, 10);
         return view('pvp.widgets.top-kills', [
             'topKills' => $topKills,
-            'eventId' => $eventId
+            'event' => $event
         ]);
 
     }
@@ -63,6 +63,18 @@ class PVPController extends Controller
         return view('pvp.event', [
             'event' => $event
         ]);
+    }
+
+    public function listTopKills($slug) {
+        $event = PvpEvent::whereSlug($slug)->firstOrFail();
+
+        $topKills = PvpStats::getEventTopKillsPaginator($event, 50);
+
+        return view('pvp.top-kills', [
+            'event' => $event,
+            "topKills" => $topKills
+        ]);
+
     }
 
     public function addKillmail(Request $request) {

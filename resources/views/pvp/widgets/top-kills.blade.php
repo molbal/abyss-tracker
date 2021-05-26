@@ -7,7 +7,7 @@
     </table>
 </div>
 <div class="card-footer rounded-b mb-3 ">
-                <span>
-                    <a href="" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/windows/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/winners-medal.png"/>Full leaderboard</a>
-                </span>
+    <span>
+        <a href="{{route('pvp.top-kills', ['slug' => $event->slug])}}" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/windows/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/winners-medal.png"/>Full leaderboard</a>
+    </span>
 </div>
