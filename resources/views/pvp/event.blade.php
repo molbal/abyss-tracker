@@ -12,6 +12,7 @@
         <div class="col-md-12 col-lg-8">
             <div class="card card-body border-0 shadow-sm mb-3">
                 <h5 class="font-weight-bold">Most ship wins</h5>
+                <div class="graph-container h-400px">{!! $topShipsChart->container() !!}</div>
             </div>
         </div>
     </div>
@@ -27,6 +28,7 @@
             });
         });
     </script>
+    {!! $topShipsChart->script() !!}
 @endsection
 
 @section("styles")
