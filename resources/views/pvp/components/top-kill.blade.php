@@ -1,4 +1,5 @@
 <tr>
+    <td class="font-weight-bold text-right">{{$i}}.</td>
     <td>
         <a href="{{route("profile.index", ["id" => $item->id])}}" class="{{\App\Http\Controllers\Auth\AuthController::isItMe($item->id) ? "text-danger" : "text-dark"}}" data-toggle="tooltip" title="{{$item->name}}">
             <img loading="lazy" src="https://images.evetech.net/characters/{{$item->id}}/portrait?size=32" alt="" style="width: 24px; height: 24px; border: 1px solid white" class="rounded-circle shadow-sm mr-2">{{Str::limit($item->name, 20)}}

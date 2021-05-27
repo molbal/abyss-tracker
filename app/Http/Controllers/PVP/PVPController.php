@@ -61,10 +61,15 @@ class PVPController extends Controller
         $event = PvpEvent::whereSlug($slug)->firstOrFail();
 
         $topShipsChart = PvpStats::getChartContainerTopShips($event);
+        $topWeaponsChart = PvpStats::getChartContainerTopWeapons($event);
+        $feed =  PvpStats::getEventFeedPaginator($event);
 
         return view('pvp.event', [
             'event' => $event,
-            'topShipsChart' => $topShipsChart
+            'topShipsChart' => $topShipsChart,
+            'topWeaponsChart' => $topWeaponsChart,
+
+            'feed' => $feed,
         ]);
     }
 

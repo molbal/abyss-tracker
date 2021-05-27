@@ -18,6 +18,7 @@ class CreatePVPEventsTable extends Migration
             $table->string('name', 64);
             $table->string('slug', 64)->unique();
             $table->boolean('is_current');
+            $table->string('display_component', 64);
             $table->timestamp('published_at');
             $table->timestamps();
         });
