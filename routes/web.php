@@ -223,9 +223,18 @@
         Route::get('/current', [PVPController::class, 'index'])->name('pvp.index');
         Route::get('/{slug}', [PVPController::class, 'getEvent'])->name('pvp.get');
 
+        Route::get('/kill/{id}', [PVPController::class, 'getKill'])->name('pvp.kill');
+
+        Route::get('/{slug}/kills', [PVPController::class, 'listKills'])->name('pvp.kills');
         Route::get("/{slug}/top-kills", [PVPController::class, 'listTopKills'])->name('pvp.top-kills');
+        Route::get('/{slug}/item/{id}', [PVPController::class, 'viewItem'])->name('pvp.item');
+        Route::get('/{slug}/ship/{id}', [PVPController::class, 'viewItem'])->name('pvp.ship');
+        Route::get('/{slug}/character/{id}', [PVPController::class, 'viewCharacter'])->name('pvp.character');
+        Route::get('/{slug}/corporation/{id}', [PVPController::class, 'viewCorporation'])->name('pvp.corporation');
+        Route::get('/{slug}/alliance/{id}', [PVPController::class, 'viewAlliance'])->name('pvp.alliance');
 
         Route::get('/widget/top-kills/{id}', [PVPController::class, 'renderToplist'])->name('pvp.widget.top-kills');
+
     });
 
 

@@ -419,3 +419,21 @@ $sizes: 400px, 300px, 200px, 150px, 100px, 32px, 24px, 16px, 12px, 160px;
 .card-bg-color {
     background: $card-bg;
 }
+
+.pvp-icon-lg {
+    border: 2px solid #fff;
+    width: 80px;
+    height:80px;
+    transition: all 200ms ease-in-out;
+}
+
+.pvp-icon-lg:hover, .pvp-icon-md:hover {
+    box-shadow: 0 .5rem 1rem rgba(33,33,33,.33) !important;
+}
+
+.pvp-icon-md {
+    border: 1px solid #fff;
+    width: 36px;
+    height:36px;
+    transition: all 200ms ease-in-out;
+}

@@ -1,5 +1,5 @@
 @extends("layout.app")
-@section("browser-title", $event->name)
+@section("browser-title", "Leaderboard - " .  $event->name)
 @section("content")
 
     <div class="row">

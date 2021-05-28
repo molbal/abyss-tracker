@@ -53,7 +53,9 @@ class PvpAttacker extends Model
     protected $with = [
         'character',
         'corporation',
-        'alliance'
+        'alliance',
+        'ship_type',
+        'weapon_type',
     ];
     protected $fillable = ['killmail_id', 'character_id', 'corporation_id', 'alliance_id', 'damage_done', 'final_blow', 'security_status', 'ship_type_id', 'weapon_type_id'];
 
@@ -71,5 +73,25 @@ class PvpAttacker extends Model
 
     public function victim(): BelongsTo {
         return $this->belongsTo('App\Pvp\PvpVictim', 'killmail_id', 'killmail_id');
+    }
+
+    public function ship_type(): HasOne {
+        return $this->hasOne('App\Pvp\PvpTypeIdLookup', 'id','ship_type_id');
+    }
+
+    public function weapon_type(): HasOne {
+        return $this->hasOne('App\Pvp\PvpTypeIdLookup', 'id','weapon_type_id');
+    }
+
+    public function isCapsuleer(): bool {
+        return !$this->isNpc();
+    }
+
+    public function isNpc() : bool {
+        return !$this->character_id || !$this->character->exists();
+    }
+
+    public function hasWeaponInfo() : bool {
+        return $this->weapon_type_id && $this->weapon_type_id != $this->ship_type_id;
     }
 }

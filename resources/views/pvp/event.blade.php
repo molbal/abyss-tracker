@@ -27,11 +27,11 @@
 
         <div class="col-md-12 col-lg-8">
             @forelse($feed as $kill)
-                @component($event->display_component, ['victim' => $kill]) @endcomponent
+                @component($event->display_component, ['event' => $event, 'victim' => $kill]) @endcomponent
             @empty
                 <em>Nothing here yet</em>
             @endforelse
-            {{$feed->links()}}
+            <a class="text-dark" href="{{route('pvp.kills', ['slug' => $event->slug])}}"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/database.png">View all kills</a>
         </div>
     </div>
 

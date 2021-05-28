@@ -82,7 +82,29 @@ class PVPController extends Controller
             'event' => $event,
             "topKills" => $topKills
         ]);
+    }
+    public function listKills($slug) {
+        $event = PvpEvent::whereSlug($slug)->firstOrFail();
 
+        $feed = PvpStats::getEventFeedPaginator($event, 30);
+
+        return view('pvp.feed', [
+            'event' => $event,
+            "feed" => $feed
+        ]);
+    }
+
+    public function viewItem(string $slug, int $id) {
+        return ErrorHelper::errorPage('Not implemented yet', $slug);
+    }
+    public function viewCharacter(string $slug, int $id) {
+        return ErrorHelper::errorPage('Not implemented yet', $slug);
+    }
+    public function viewCorporation(string $slug, int $id) {
+        return ErrorHelper::errorPage('Not implemented yet', $slug);
+    }
+    public function viewAlliance(string $slug, int $id) {
+        return ErrorHelper::errorPage('Not implemented yet', $slug);
     }
 
     public function addKillmail(Request $request) {
