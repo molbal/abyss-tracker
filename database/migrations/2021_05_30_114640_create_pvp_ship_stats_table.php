@@ -15,6 +15,10 @@ class CreatePvpShipStatsTable extends Migration
     {
         Schema::create('pvp_ship_stats', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('killmail_id');
+            $table->json('stats')->nullable(true);
+            $table->foreign('killmail_id')->references('killmail_id')->on('pvp_victims');
+            $table->string('error_text', 128)->nullable(true);
             $table->timestamps();
         });
     }

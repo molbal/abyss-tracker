@@ -2,6 +2,8 @@
 
     namespace App\Pvp;
 
+use App\Events\PvpVictimSaved;
+use App\Exceptions\BusinessLogicException;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,13 +43,17 @@ use Illuminate\Support\Carbon;
  * @property-read int|null                 $attackers_count
  * @property-read PvpCharacter|null        $character
  * @property-read PvpCorporation|null      $corporation
- * @property string $littlekill
+ * @property string|array $littlekill
  * @property string $fullkill
  * @method static Builder|PvpVictim whereFullkill($value)
  * @method static Builder|PvpVictim whereLittlekill($value)
  */
 class PvpVictim extends Model
 {
+
+    protected $dispatchesEvents = [
+        'saved' => PvpVictimSaved::class
+    ];
 
     protected $with = [
         'attackers',
@@ -102,5 +108,14 @@ class PvpVictim extends Model
 
     public function hasAlliance():bool {
         return $this->alliance_id && !is_null($this->alliance);
+    }
+
+
+    /**
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function getKillboardLink(): string {
+        return $this->littlekill['url'] ?? throw new BusinessLogicException('Malformed littlekill - no url value found in it ' - print_r($this->littlekill, true));
     }
 }

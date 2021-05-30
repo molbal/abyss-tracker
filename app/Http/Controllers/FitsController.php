@@ -692,7 +692,7 @@
             $query = http_build_query(['fit' => $eft, 'appId' =>config('fits.auth.id'), 'appSecret' => config('fits.auth.secret'), 'fitId' => $fitId]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
             curl_setopt($ch, CURLOPT_VERBOSE, true);
-            curl_setopt($ch,CURLOPT_STDERR ,fopen('./svcfitstat.log', 'w+'));
+//            curl_setopt($ch,CURLOPT_STDERR ,fopen('./svcfitstat.log', 'w+'));
             // Receive server response ...
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);

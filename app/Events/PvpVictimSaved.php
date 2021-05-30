@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Pvp\PvpVictim;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,19 +11,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PvpKillmailReceived implements ShouldBroadcast
+class PvpVictimSaved implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+
+    public PvpVictim $victim;
+
     /**
-     * Create a new event instance.
+     * PvpVictimSaved constructor.
      *
-     * @return void
+     * @param PvpVictim $victim
      */
-    public function __construct()
-    {
-        //
+    public function __construct(PvpVictim $victim) {
+        $this->victim = $victim;
     }
+
 
     /**
      * Get the channels the event should broadcast on.
