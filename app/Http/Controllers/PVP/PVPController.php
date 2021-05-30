@@ -94,6 +94,12 @@ class PVPController extends Controller
         ]);
     }
 
+    public function getKill(int $killId) {
+        $victim = PvpVictim::whereKillmailId($killId)->firstOrFail();
+//        dd($victim);
+        return view('pvp.kill', ['victim' => $victim]);
+    }
+
     public function viewItem(string $slug, int $id) {
         return ErrorHelper::errorPage('Not implemented yet', $slug);
     }

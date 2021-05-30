@@ -7,6 +7,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -29,6 +30,10 @@ class PvpTypeIdLookup extends Model
     protected $table = 'pvp_type_id_lookup';
     public $timestamps = false;
     use HasFactory;
+
+    public function group_type():HasOne {
+        return  $this->hasOne('App\Pvp\PvpGroupIdLookup', 'id', 'group_id');
+    }
 
     public static function populate(?int $typeId) {
         if (!$typeId) {

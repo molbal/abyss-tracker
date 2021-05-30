@@ -51,8 +51,6 @@ class RunSaved implements ShouldBroadcast
      */
     public function broadcastOn() {
         $channelName = sprintf("runs.save.%d", $this->charId);
-        Log::debug("Broadcasting on ".$channelName);
-
         return new PrivateChannel($channelName);
 
     }
@@ -82,12 +80,6 @@ from date_helper d
      left join runs r on d.day = r.RUN_DATE where r.CHAR_ID = ? and r.RUN_DATE=?
 group by d.day, r.char_id
 order by d.day asc) c;', [$charId, $today])[0]->isk_per_hour ?? 0)/1_000_000,2);
-
-//        $data = DB::table("v_runall")->where("CHAR_ID", $charId)->orderByDesc('CREATED_AT')->first();
-//
-//        $gained_loot = DB::table('v_loot_details')->where('RUN_ID', $data['ID'])->get();
-//
-//        $event->runData = ['data' => $data, 'loot' => $gained_loot];
 
         $event->lastRunId = DB::table('runs')->where('CHAR_ID', $charId)->max('ID');
 

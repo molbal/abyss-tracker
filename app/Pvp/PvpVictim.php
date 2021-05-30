@@ -92,7 +92,15 @@ class PvpVictim extends Model
         return $this->hasOne('App\Pvp\PvpTypeIdLookup', 'id','ship_type_id');
     }
 
+    public function pvp_event(): HasOne {
+        return $this->hasOne('App\Pvp\PvpEvent', 'id','pvp_event_id');
+    }
+
     public function firstAttacker(): PvpAttacker {
         return  $this->attackers->first();
+    }
+
+    public function hasAlliance():bool {
+        return $this->alliance_id && !is_null($this->alliance);
     }
 }
