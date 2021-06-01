@@ -4,6 +4,9 @@
 	namespace App\Http\Controllers\EFT;
 
     use App\Http\Controllers\Controller;
+    use App\Http\Controllers\PVP\PvpStats;
+    use App\Pvp\PvpShipStat;
+    use Illuminate\Database\Eloquent\ModelNotFoundException;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -24,24 +27,63 @@
             }
 
             // Get the ID and the data
-            $id = $request->get("id");
+            $idRaw = $request->get("id");
             $data = $request->get("result");
 
-            if (DB::table("fits")->where('ID', $id)->doesntExist()) {
-                return response(['error' => sprintf("No such fit with ID %d", $id)], 404);
+            // Separate the prefix from the ID
+            [$prefix, $id] = explode(':', $idRaw, 2);
+            $id = intval($id);
+
+            switch ($prefix) {
+                case config('fits.prefix.default'):
+
+                    try {
+                        $this->handleDefaultCallback($id, $data);
+                    }
+                    catch (\Exception $e) {
+                        return response(['error' => $e->getMessage(), 'error_type' => get_class($e)], 404);
+                    }
+                    break;
             }
-
-            Log::info("Fit stats received for $id!");
-            DB::table('fits')->where('ID', $id)->update([
-                'STATS' => $data,
-                'STATUS' => 'done'
-            ]);
-
-            /** @var \App\Http\Controllers\EFT\Tags\TagsController $tags */
-            $tags = resolve("\App\Http\Controllers\EFT\Tags\TagsController");
-            $tags->applyTags($id, DB::table("fits")->where("ID", $id)->value("RAW_EFT"), $data);
-
             FitHistoryController::addEntry($id, "Fit stats calculation finished.");
             return [true];
         }
-	}
+
+        /**
+         * @param string $id
+         * @param mixed  $data
+         */
+        private function handleDefaultCallback(int $id, mixed $data) : void {
+            if (DB::table("fits")
+                  ->where('ID', $id)
+                  ->doesntExist()) {
+                throw new ModelNotFoundException("No such fit with ID $id");
+            }
+
+            Log::info("Fit stats received for $id!");
+            DB::table('fits')
+              ->where('ID', $id)
+              ->update(['STATS' => $data, 'STATUS' => 'done']);
+
+            /** @var \App\Http\Controllers\EFT\Tags\TagsController $tags */
+            $tags = resolve("\App\Http\Controllers\EFT\Tags\TagsController");
+            $tags->applyTags($id, DB::table("fits")
+                                    ->where("ID", $id)
+                                    ->value("RAW_EFT"), $data);
+        }
+
+
+        private function handlePvpCallback(int $id, mixed $data) {
+            $shipStats = new PvpShipStat();
+
+            $shipStats->fill([
+                'error_text' => null,
+                'stats' => $data,
+                'killmail_id' => $id
+            ]);
+
+            $shipStats->save();
+            Log::channel('pvp')->debug('Stats info received for killmail #'.$id);
+        }
+
+    }

@@ -108,7 +108,7 @@
                 'works' => "success",
                 'untested' => "warning",
                 'deprecated' => "danger"
-            ]
+            ],
         ],
 
         'historic-loot' => [

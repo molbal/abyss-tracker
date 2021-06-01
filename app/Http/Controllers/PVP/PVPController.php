@@ -126,13 +126,15 @@ class PVPController extends Controller
         try {
             $currentEvent = PvpEvent::getCurrentEvent();
         } catch (BusinessLogicException $e) {
+
             return ['success' => true, 'message' => 'Kill ignored - no current Abyss Tracker PVP event'];
         }
 
         $littlekill = json_decode($request->get('killmail')["utf8Data"]);
         $typeIds = config('tracker.pvp.accept-ids.' . $currentEvent->slug);
         if (!in_array($littlekill->ship_type_id, $typeIds)) {
-            return ['success' => true, 'message' => 'Kill ignored - type ID not acccepted', 'acceptedTypeIDs' => $typeIds];
+
+//            return ['success' => true, 'message' => 'Kill ignored - type ID not acccepted', 'acceptedTypeIDs' => $typeIds];
         }
 
         $kill = $this->killService->getKillmail($littlekill->killID, $littlekill->hash);

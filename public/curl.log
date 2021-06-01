@@ -38491,3 +38491,567 @@ content-type: application/x-www-form-urlencoded
 < x-esi-request-id: 02454308-316b-4a87-9078-d38708ed8769
 < 
 * Connection #0 to host esi.evetech.net left intact
+*   Trying 54.170.171.83:443...
+* Connected to esi.evetech.net (54.170.171.83) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a75a04a0)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 10
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:33:15 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 69
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 45
+< x-esi-request-id: 045cf671-89ad-4e5f-a507-6806fafb1132
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.170.171.83:443...
+* Connected to esi.evetech.net (54.170.171.83) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a75a04a0)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 12
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:33:28 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 68
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 32
+< x-esi-request-id: 84625fb8-c5c8-4daa-9121-ba9a810b594b
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 52.30.122.21:443...
+* Connected to esi.evetech.net (52.30.122.21) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a7662230)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 12
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:38:22 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 59
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 38
+< x-esi-request-id: ab15e0cc-109c-4eb8-a85c-af888271af09
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 52.30.122.21:443...
+* Connected to esi.evetech.net (52.30.122.21) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a75a04a0)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 12
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:39:20 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 62
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 40
+< x-esi-request-id: 8199b2be-9e2c-471b-a72a-e808374e35e1
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.170.171.83:443...
+* Connected to esi.evetech.net (54.170.171.83) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a75a04a0)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 10
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:39:34 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 60
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 26
+< x-esi-request-id: 5b755bc0-44ff-4dd1-bf90-5d6dd22329e3
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.228.48.165:443...
+* Connected to esi.evetech.net (54.228.48.165) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a75a04a0)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 12
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:42:14 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 64
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 46
+< x-esi-request-id: 04769071-c702-4658-956d-90e29151509a
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.228.48.165:443...
+* Connected to esi.evetech.net (54.228.48.165) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a767d760)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 12
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:42:25 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 66
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 35
+< x-esi-request-id: cac6556e-fc99-491c-bf3f-b299fdee13c1
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.228.48.165:443...
+* Connected to esi.evetech.net (54.228.48.165) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a767d760)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 10
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:43:46 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 67
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 14
+< x-esi-request-id: e5fe8579-2558-4908-8191-fbbe06a0948b
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.228.48.165:443...
+* Connected to esi.evetech.net (54.228.48.165) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a767d760)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 10
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:43:49 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 61
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 11
+< x-esi-request-id: 76ed2ac7-5d64-4134-af7b-5f8ed53c772a
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.228.48.165:443...
+* Connected to esi.evetech.net (54.228.48.165) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a767d760)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 12
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:44:30 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 60
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 30
+< x-esi-request-id: d8059bf1-aae2-4de8-be1c-ebf730eef534
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.170.171.83:443...
+* Connected to esi.evetech.net (54.170.171.83) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a75a04a0)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 10
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:47:00 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 63
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 60
+< x-esi-request-id: 22770940-873f-436d-9129-9000a21449bb
+< 
+* Connection #0 to host esi.evetech.net left intact
+*   Trying 54.170.171.83:443...
+* Connected to esi.evetech.net (54.170.171.83) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a767d760)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 12
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:47:45 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 66
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 15
+< x-esi-request-id: 235b395c-8541-4d3e-9367-911b000a01ff
+< 
+* Connection #0 to host esi.evetech.net left intact

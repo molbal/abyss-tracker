@@ -31,6 +31,12 @@ class PvpShipStat extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'error_text',
+        'stats',
+        'killmail_id',
+    ];
+
     protected $casts = [
         'stats' => 'json'
     ];
