@@ -53,9 +53,9 @@ class PvpVictim extends Model
 
     protected $primaryKey = 'killmail_id';
 
-    protected $dispatchesEvents = [
-        'saved' => PvpVictimSaved::class
-    ];
+//    protected $dispatchesEvents = [
+//        'saved' => PvpVictimSaved::class
+//    ];
 
     protected $with = [
         'attackers',

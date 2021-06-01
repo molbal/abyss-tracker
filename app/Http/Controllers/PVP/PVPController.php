@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PVP;
 
 use App\Connector\EveAPI\Kills\KillmailService;
 use App\Connector\EveAPI\Universe\ResourceLookupService;
+use App\Events\PvpVictimSaved;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Misc\ErrorHelper;
@@ -165,8 +166,14 @@ class PVPController extends Controller
             'created_at' => Carbon::parse($kill->killmail_time),
             'pvp_event_id' => $currentEvent->id
         ]);
-        $victim->save();
+        try {
 
+            $victim->save();
+
+        }
+        catch (\Exception $e) {
+            return ['success' => false, 'message' => 'Killmail save failed: '.$e->getMessage().' '.$e->getTraceAsString()];
+        }
 
 
         foreach ($kill->attackers as $attacker) {
@@ -196,6 +203,14 @@ class PVPController extends Controller
         }
 
         Log::info('Killmail '.$kill->killmail_id.' saved');
+
+        try {
+
+            $this->dispatch(new PvpVictimSaved($victim));
+        }
+        catch (\Exception $e) {
+            return ['success' => false, 'message' => 'Could not dispatch event: '.$e->getMessage().' '.$e->getTraceAsString()];
+        }
         return ['success' => true, 'message' => 'Killmail '.$kill->killmail_id.' processed and saved'];
     }
 }
