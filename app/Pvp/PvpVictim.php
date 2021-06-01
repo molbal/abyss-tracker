@@ -51,7 +51,7 @@ use Illuminate\Support\Carbon;
 class PvpVictim extends Model
 {
 
-    public $primaryKey = 'killmail_id';
+    protected $primaryKey = 'killmail_id';
 
     protected $dispatchesEvents = [
         'saved' => PvpVictimSaved::class

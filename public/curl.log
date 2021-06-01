@@ -39055,3 +39055,50 @@ content-type: application/x-www-form-urlencoded
 < x-esi-request-id: 235b395c-8541-4d3e-9367-911b000a01ff
 < 
 * Connection #0 to host esi.evetech.net left intact
+*   Trying 54.228.48.165:443...
+* Connected to esi.evetech.net (54.228.48.165) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*  CAfile: C:\xampp8\apache\bin\curl-ca-bundle.crt
+*  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=esi.evetech.net
+*  start date: Dec  2 00:00:00 2020 GMT
+*  expire date: Dec 31 23:59:59 2021 GMT
+*  subjectAltName: host "esi.evetech.net" matched cert's "esi.evetech.net"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x2a5a754e020)
+> POST /latest/universe/names/ HTTP/2
+Host: esi.evetech.net
+user-agent: Abyss Tracker (https://abyss.eve-nt.uk; molbal@outlook.com)
+x-a: b
+accept: application/json
+content-length: 11
+content-type: application/x-www-form-urlencoded
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+* We are completely uploaded and fine
+< HTTP/2 200 
+< date: Tue, 01 Jun 2021 18:50:04 GMT
+< content-type: application/json; charset=UTF-8
+< content-length: 60
+< access-control-allow-credentials: true
+< access-control-allow-headers: Content-Type,Authorization,If-None-Match,X-User-Agent
+< access-control-allow-methods: POST,OPTIONS
+< access-control-allow-origin: *
+< access-control-expose-headers: Content-Type,Warning,ETag,X-Pages,X-ESI-Error-Limit-Remain,X-ESI-Error-Limit-Reset
+< access-control-max-age: 600
+< allow: OPTIONS,POST
+< strict-transport-security: max-age=31536000
+< x-esi-error-limit-remain: 100
+< x-esi-error-limit-reset: 56
+< x-esi-request-id: 9ada8bc2-14a6-4f86-a177-b4d0677ec7bb
+< 
+* Connection #0 to host esi.evetech.net left intact
