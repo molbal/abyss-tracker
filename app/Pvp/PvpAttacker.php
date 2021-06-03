@@ -91,6 +91,10 @@ class PvpAttacker extends Model
         return !$this->character_id || !$this->character->exists();
     }
 
+    public static function whereEvent(PvpEvent $event) : \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder {
+        return self::whereRaw(sprintf("killmail_id in (select killmail_id from pvp_victims where pvp_event_id=%d)", $event->id));
+    }
+
     public function hasWeaponInfo() : bool {
         return $this->weapon_type_id && $this->weapon_type_id != $this->ship_type_id;
     }

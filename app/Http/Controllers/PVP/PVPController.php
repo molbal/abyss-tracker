@@ -20,6 +20,7 @@ use App\Pvp\PvpEvent;
 use App\Pvp\PvpTypeIdLookup;
 use App\Pvp\PvpVictim;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -101,9 +102,19 @@ class PVPController extends Controller
     }
 
     public function getKill(int $killId) {
-        $victim = PvpVictim::whereKillmailId($killId)->firstOrFail();
+        try {
+            $victim = PvpVictim::whereKillmailId($killId)->firstOrFail();
+        }
+        catch (\Exception $e) {
+            return ErrorHelper::errorPage('This killmail is not yet synchronized to the Abyss Tracker', get_class($e));
+        }
 
-        $eft = Eft::loadPvpFit($killId);
+        try {
+            $eft = Eft::loadPvpFit($killId);
+        }
+        catch (\Exception $e) {
+            return ErrorHelper::errorPage('This killmail is not yet synchronized to the Abyss Tracker - you may see the original one in zKillboard: '.$victim->getKillboardLink(),"Abyss Tracker temporarily over capacity");
+        }
 
         $attackers = PvpStats::getTopAttackersChart($victim);
 
@@ -123,10 +134,35 @@ class PVPController extends Controller
         return ErrorHelper::errorPage('Not implemented yet', $slug);
     }
     public function viewCharacter(string $slug, int $id) {
-        return ErrorHelper::errorPage('Not implemented yet', $slug);
+        $event = PvpEvent::whereSlug($slug)->firstOrFail();
+
+        $character = PvpCharacter::whereId($id)->firstOrFail();
+        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where character_id=%d)", $id))->paginate(20, ['*'], 'kills-page');
+        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.character_id', '=', $id)->paginate(20, ['*'], 'losses-page');
+
+        $topShips = PvpStats::getChartContainerCharacter($event, $id);
+
+        return view('pvp.character', [
+            'event' => $event,
+            'character' => $character,
+            'kills' => $kills,
+            'losses' => $losses,
+            'topShipsChart' => $topShips
+        ]);
     }
     public function viewCorporation(string $slug, int $id) {
-        return ErrorHelper::errorPage('Not implemented yet', $slug);
+        $event = PvpEvent::whereSlug($slug)->firstOrFail();
+
+        $character = PvpCharacter::whereId($id)->firstOrFail();
+        $kills = PvpAttacker::whereEvent($event)->where('pvp_attackers.character_id', '=', $id)->paginate(20, ['*'], 'kills-page');
+        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.character_id', '=', $id)->paginate(20, ['*'], 'losses-page');
+
+        return view('pvp.character', [
+            'event' => $event,
+            'character' => $character,
+            'kills' => $kills,
+            'losses' => $losses
+        ]);
     }
     public function viewAlliance(string $slug, int $id) {
         return ErrorHelper::errorPage('Not implemented yet', $slug);
@@ -221,8 +257,8 @@ class PVPController extends Controller
 
         try {
             $event = new PvpVictimSaved($victim);
-//            Log::debug('Broadcasting event for '.$victim->getKillboardLink());
-//            broadcast($event);
+            Log::debug('Broadcasting event for '.$victim->getKillboardLink());
+            broadcast($event);
             Log::debug('Requesting stats calculation for '.$victim->getKillboardLink());
             PvpVictim::requestStatsCalculation($victim);
         }

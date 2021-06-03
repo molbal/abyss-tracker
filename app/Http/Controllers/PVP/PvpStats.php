@@ -11,6 +11,8 @@
     use App\Pvp\PvpEvent;
     use App\Pvp\PvpVictim;
     use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+    use Illuminate\Database\Eloquent\Builder;
+    use Illuminate\Database\Eloquent\Model;
     use Illuminate\Support\Facades\DB;
 
     class PvpStats {
@@ -45,7 +47,7 @@
 
         }
 
-        public static function getTopAttackersChart(\Illuminate\Database\Eloquent\Model|PvpVictim|\Illuminate\Database\Eloquent\Builder $victim) : PvpTopAttackersChart {
+        public static function getTopAttackersChart(Model|PvpVictim|Builder $victim) : PvpTopAttackersChart {
             $attackers = new PvpTopAttackersChart();
             $labels = collect();
             foreach ($victim->attackers as $attacker) {
@@ -151,4 +153,54 @@ limit ?;", [$event->id, $maxItems]));
 
             return $chart;
         }
-	}
+
+        public static function getChartContainerCharacter(PvpEvent $event, int $id, int $maxItems = 8) {
+            $dataset = collect(DB::select("
+            select ship_type_id, name, sum(kills_count) as kills_count
+from (
+         select pvp_attackers.ship_type_id,
+                pvp_type_id_lookup.name,
+                count(distinct pvp_attackers.killmail_id) as kills_count
+         from pvp_attackers
+                  join pvp_type_id_lookup
+                       on pvp_attackers.ship_type_id = pvp_type_id_lookup.id
+                  join pvp_victims pv on pvp_attackers.killmail_id = pv.killmail_id
+         where pv.pvp_event_id = ?
+           and pvp_attackers.character_id = ?
+         group by pvp_attackers.ship_type_id
+         union
+         select v.ship_type_id, l.name, count(distinct v.killmail_id) as kills_count
+         from pvp_victims v
+                  join pvp_type_id_lookup l
+                       on v.ship_type_id = l.id
+         where v.pvp_event_id = ?
+           and v.character_id = ?
+     ) a
+group by ship_type_id, name
+order by 3 desc
+limit ?
+            ;", [$event->id, $id,$event->id, $id, $maxItems]));
+
+            $chart = new PvpTopShipsChart();
+            $chart->height("300");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->labels($dataset->pluck('name'));
+            $chart->dataset($event->name." kills", 'pie', $dataset->pluck('kills_count'))->options([
+                "radius" => GraphHelper::HOME_PIE_RADIUS_SM
+            ]);
+            $chart->title($event->name." ship meta");
+            $chart->options([
+                'label' => [
+                    'position' => 'inside',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 250
+                ],
+                'tooltip'=> [
+                    'confine' => true
+                ]
+            ]);
+            return $chart;
+        }
+    }

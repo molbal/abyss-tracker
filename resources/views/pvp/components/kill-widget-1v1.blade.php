@@ -1,4 +1,4 @@
-<div class="card card-body shadow-sm border-0 rounded mb-3">
+<div class="card card-body shadow-sm {{isset($loss) ? 'border-danger' : 'border-0'}} rounded mb-3">
     <table class="w-100">
         <tr>
             <td style="width:96px;text-align: center">
@@ -24,6 +24,9 @@
                     <small class="text-muted">with</small>
                         <a href="{{route('pvp.item',['slug' => $event->slug, 'id' => $victim->firstAttacker()->weapon_type->id])}}"><span class="h6">{{$victim->firstAttacker()->weapon_type->name ?? ""}}</span></a>
                     @endif
+                @endif
+                @if($victim->attackers->count() > 1)
+                        <br><span class="text-muted">+{{$victim->attackers->count()-1}} more</span>
                 @endif
             </td>
             <td>
