@@ -2,9 +2,12 @@
 
 namespace App\Pvp;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -14,18 +17,21 @@ use Illuminate\Support\Str;
  * @property int $killmail_id
  * @property mixed|null $stats
  * @property string|null $error_text
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat query()
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat whereErrorText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat whereKillmailId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat whereStats($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvpShipStat whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property string|null $eft
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @method static Builder|PvpShipStat newModelQuery()
+ * @method static Builder|PvpShipStat newQuery()
+ * @method static Builder|PvpShipStat query()
+ * @method static Builder|PvpShipStat whereCreatedAt($value)
+ * @method static Builder|PvpShipStat whereErrorText($value)
+ * @method static Builder|PvpShipStat whereId($value)
+ * @method static Builder|PvpShipStat whereKillmailId($value)
+ * @method static Builder|PvpShipStat whereStats($value)
+ * @method static Builder|PvpShipStat whereUpdatedAt($value)
+ * @mixin Eloquent
+ * @property-read PvpVictim $victim
+ * @method static Builder|PvpShipStat whereEft($value)
  */
 class PvpShipStat extends Model
 {
@@ -34,11 +40,12 @@ class PvpShipStat extends Model
     protected $fillable = [
         'error_text',
         'stats',
+        'eft',
         'killmail_id',
     ];
 
     protected $casts = [
-        'stats' => 'json'
+//        'stats' => 'json'
     ];
 
     public function victim(): BelongsTo {
@@ -46,7 +53,7 @@ class PvpShipStat extends Model
     }
 
     public function isFailed() : bool {
-        return Str::of($this->error_text)->isNotEmpty();
+        return Str::of($this->error_text)->isNotEmpty() || Str::of($this->stats)->isEmpty();
     }
 
 }

@@ -19,6 +19,7 @@ class CreatePvpShipStatsTable extends Migration
             $table->json('stats')->nullable(true);
             $table->foreign('killmail_id')->references('killmail_id')->on('pvp_victims');
             $table->string('error_text', 128)->nullable(true);
+            $table->string('eft', 2048);
             $table->timestamps();
         });
     }

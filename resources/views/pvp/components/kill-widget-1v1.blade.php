@@ -10,7 +10,7 @@
                         <a href="{{route('pvp.item',['slug' => $event->slug, 'id' => $victim->firstAttacker()->weapon_type->id])}}"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($victim->firstAttacker()->weapon_type->id ?? $victim->firstAttacker()->ship_type->id)}}" class="mr-1 rounded-circle shadow-sm pvp-icon-md"></a>
                     @endif
                 @else
-                    <a href="{{route('pvp.item',['slug' => $event->slug, 'id' => $victim->firstAttacker()->ship_type->id])}}"><img src="{{\App\Http\Controllers\HelperController::getRenderImgLink($victim->firstAttacker()->ship_type->id ?? 0)}}" class="mr-1 rounded-circle shadow-sm pvp-icon-lg"></a>
+                    <a href="{{route('pvp.item',['slug' => $event->slug, 'id' => $victim->firstAttacker()->ship_type->id])}}"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($victim->firstAttacker()->ship_type->id ?? 0)}}" class="mr-1 rounded-circle shadow-sm pvp-icon-lg"></a>
                 @endif
             </td>
             <td style="text-align: center; width: 33%"  >
@@ -27,7 +27,7 @@
                 @endif
             </td>
             <td>
-                <a data-toggle="tooltip" title="Open killmail" href="{{route('pvp.kill', ['id' => $victim->killmail_id])}}">killed</a>
+                <a data-toggle="tooltip" title="Open killmail" href="{{route('pvp.kill', ['id' => $victim->killmail_id])}}" style="text-decoration: underline">killed</a>
             </td>
             <td style="text-align: center;; width: 33%">
                 <a href="{{route('pvp.character',['slug' => $event->slug, 'id' => $victim->character->id])}}"><span class="h5 font-weight-bold text-capitalize">{{$victim->character->name ?? ""}}</span></a><br>

@@ -1,12 +1,18 @@
 <table class="table table-responsive-sm table-sm w-100 mb-4">
-    @component("components.fit_group", ["items" => $fit_quicklook["high"], "section" => "High slot modules"])@endcomponent
-    @component("components.fit_group", ["items" => $fit_quicklook["mid"], "section" => "Mid slot modules"])@endcomponent
-    @component("components.fit_group", ["items" => $fit_quicklook["low"], "section" => "Low slot modules"])@endcomponent
-    @component("components.fit_group", ["items" => $fit_quicklook["rig"], "section" => "Rigs"])@endcomponent
-    @component("components.fit_group", ["items" => $fit_quicklook["drone"], "section" => "Drones"])@endcomponent
-    @component("components.fit_group", ["items" => $fit_quicklook["ammo"], "section" => "Ammunition"])@endcomponent
-    @component("components.fit_group", ["items" => $fit_quicklook["booster"], "section" => "Boosters"])@endcomponent
-    @component("components.fit_group", ["items" => $fit_quicklook["cargo"], "section" => "Other cargo and implants"])@endcomponent
+    @foreach([
+'high' => "High slot modules",
+'mid' => "Mid slot modules",
+'low' => "Low slot modules",
+'rig' => "Rigs",
+'drone' => "Drones",
+'ammo' => "Ammunition",
+'booster' => "Boosters",
+'cargo' => "Other cargo and implants",
+] as $moduleType => $moduleDescription)
+        @if (!in_array($moduleType, $hiddenModules ?? []))
+            @component("components.fit_group", ["items" => $fit_quicklook[$moduleType], "section" => $moduleDescription]) @endcomponent
+        @endif
+    @endforeach
     <tr>
         <td colspan="3" class="font-weight-bold text-right">Total without ship: {{number_format($items_price, 0, ","," ")}} ISK</td>
     </tr>
@@ -15,7 +21,7 @@
     </tr>
     <tr>
         <td style="width: 36px;">
-            <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID}}_64.png" alt="{{$ship_name}} icon" class="fit-item-icon">
+            <img src="https://imageserver.eveonline.com/Type/{{$fit->SHIP_ID ?? 0}}_64.png" alt="{{$ship_name}} icon" class="fit-item-icon">
         </td>
         <td>
             {{$ship_name}}

@@ -6,6 +6,7 @@
 
 	use App\Charts\LootAveragesChart;
     use App\Charts\PersonalDaily;
+    use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
@@ -773,7 +774,7 @@
          * @return mixed
          * @throws Exception
          */
-        public static function getShipIDFromEft(string $fit) {
+        public static function getShipIDFromEft(string $fit, bool $ignoreAbyssLimits = false) {
 
             // Get lines
             $lines = explode("\n", trim($fit));
@@ -788,11 +789,17 @@
             }
 
 //            Log::debug("Found ship: ".$shipName);
+            if (!$ignoreAbyssLimits) {
+                $shipId = DB::table("ship_lookup")->where('NAME', ucfirst(strtolower($shipName)))->value('ID');
 
-            $shipId = DB::table("ship_lookup")->where('NAME', ucfirst(strtolower($shipName)))->value('ID');
-
-            if (!$shipId) {
-                throw new Exception("Broken ship fit, unsupported fit, or the selected ship cannot go into the Abyss.");
+                if (!$shipId) {
+                    throw new Exception("Broken ship fit, unsupported fit, or the selected ship cannot go into the Abyss.");
+                }
+            }
+            else {
+                /** @var ResourceLookupService $rls */
+                $rls = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+                $shipId = $rls->itemNameToId($shipName);
             }
 
             return $shipId;

@@ -6,6 +6,7 @@
     use App\Http\Controllers\Controller;
     use App\Http\Controllers\PVP\PvpStats;
     use App\Pvp\PvpShipStat;
+    use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\ModelNotFoundException;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\DB;
@@ -14,6 +15,7 @@
     class FitCallbackController extends Controller {
 
         function handleFitCallback(Request $request) {
+//            Log::debug('Fit callback with '.print_r($request->all(), 1));
 
             // This is your app secret
             $app_secret = config('fits.auth.secret');
@@ -32,6 +34,7 @@
 
             // Separate the prefix from the ID
             [$prefix, $id] = explode(':', $idRaw, 2);
+
             $id = intval($id);
 
             switch ($prefix) {
@@ -44,8 +47,16 @@
                         return response(['error' => $e->getMessage(), 'error_type' => get_class($e)], 404);
                     }
                     break;
+                case config('fits.prefix.pvp'):
+
+                    try {
+                        $this->handlePvpCallback($id, $data);
+                    }
+                    catch (\Exception $e) {
+                        return response(['error' => $e->getMessage(), 'error_type' => get_class($e)], 404);
+                    }
+                    break;
             }
-            FitHistoryController::addEntry($id, "Fit stats calculation finished.");
             return [true];
         }
 
@@ -70,16 +81,26 @@
             $tags->applyTags($id, DB::table("fits")
                                     ->where("ID", $id)
                                     ->value("RAW_EFT"), $data);
+            FitHistoryController::addEntry($id, "Fit stats calculation finished.");
         }
 
 
         private function handlePvpCallback(int $id, mixed $data) {
-            $shipStats = new PvpShipStat();
+
+            if (PvpShipStat::whereKillmailId($id)->exists()) {
+                $shipStats = PvpShipStat::whereKillmailId($id)->firstOrFail();
+            }
+            else {
+                $shipStats = new PvpShipStat();
+                $shipStats->fill([
+                    'eft' => null,
+                    'killmail_id' => $id
+                ]);
+            }
 
             $shipStats->fill([
                 'error_text' => null,
                 'stats' => $data,
-                'killmail_id' => $id
             ]);
 
             $shipStats->save();

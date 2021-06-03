@@ -4,7 +4,11 @@
 
 use App\Events\PvpVictimSaved;
 use App\Exceptions\BusinessLogicException;
+use App\Http\Controllers\EFT\FitHelper;
+use App\Http\Controllers\FitsController;
+use App\Http\Controllers\Partners\ZKillboard;
 use Eloquent;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * App\PvpVictim
@@ -47,11 +52,15 @@ use Illuminate\Support\Carbon;
  * @property string $fullkill
  * @method static Builder|PvpVictim whereFullkill($value)
  * @method static Builder|PvpVictim whereLittlekill($value)
+ * @property-read null|PvpShipStat $stats
+ * @property-read \App\Pvp\PvpEvent|null $pvp_event
+ * @property-read \App\Pvp\PvpTypeIdLookup|null $ship_type
  */
 class PvpVictim extends Model
 {
 
     protected $primaryKey = 'killmail_id';
+    public $incrementing = false;
 
 //    protected $dispatchesEvents = [
 //        'saved' => PvpVictimSaved::class
@@ -104,6 +113,14 @@ class PvpVictim extends Model
         return $this->hasOne('App\Pvp\PvpEvent', 'id','pvp_event_id');
     }
 
+    public function stats(): HasOne {
+        return $this->hasOne('App\Pvp\PvpShipStat', 'killmail_id', 'killmail_id');
+    }
+
+    public function hasWorkingStats(): bool {
+        return !is_null($this->stats) && !$this->stats->isFailed();
+    }
+
     public function firstAttacker(): PvpAttacker {
         return  $this->attackers->first();
     }
@@ -120,4 +137,48 @@ class PvpVictim extends Model
     public function getKillboardLink(): string {
         return $this->littlekill['url'] ?? throw new BusinessLogicException('Malformed littlekill - no url value found in it ' - print_r($this->littlekill, true));
     }
+
+    public static function requestStatsCalculation(PvpVictim $victim) : void {
+//        Log::info(print_r($victim, 1));
+        try {
+            $eft = ZKillboard::getZKillboardFit($victim->getKillboardLink());
+
+            /** @var FitHelper $fitHelper */
+            $fitHelper = resolve('App\Http\Controllers\EFT\FitHelper');
+
+            $shipId = FitsController::getShipIDFromEft($eft, true);
+
+            if (PvpShipStat::whereKillmailId($victim->killmail_id)->exists()) {
+                $stat = PvpShipStat::whereKillmailId($victim->killmail_id)->firstOrFail();
+            }
+            else {
+                $stat = new PvpShipStat();
+                $stat->fill([
+                   'error_text' => 'In progress',
+                   'killmail_id' => $victim->killmail_id,
+                   'stats' => null
+                ]);
+            }
+            $stat->eft = $eft;
+            $stat->save();
+
+            $fixedEft = $fitHelper->pyfaBugWorkaround($eft, $shipId);
+
+            /** @var FitsController $fitsController */
+            $fitsController = resolve('App\Http\Controllers\FitsController');
+
+            if (!$fitsController->submitSvcFitService($fixedEft, $victim->killmail_id, config('fits.prefix.pvp'))) {
+                throw new Exception('Could not submit fit to svcfitstat ('.$victim->killmail_id.')');
+            }
+            Log::debug('Killmail stats sent requested for ' . $victim->getKillboardLink());
+
+            return;
+
+        } catch (\Exception $e) {
+            Log::channel("pvp")
+               ->warning("requestStatsCalculation failed: [" . $e->getMessage() . '] ' . $e->getTraceAsString());
+            throw $e;
+        }
+    }
+
 }

@@ -43,7 +43,9 @@ class GetMissingItemMetadata extends Command
     {
         $items = DB::table('item_prices')
             ->where('GROUP_ID', 0)
-            ->where('GROUP_NAME', "TBD")->get();
+            ->whereIn('GROUP_NAME',["","TBD"])->get();
+
+
 
 
         /** @var ResourceLookupService $esi */

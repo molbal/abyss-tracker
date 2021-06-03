@@ -3,6 +3,7 @@
 
 	namespace App\Http\Controllers\PVP;
 
+    use App\Charts\PvpTopAttackersChart;
     use App\Charts\PvpTopShipsChart;
     use App\Charts\PvpTopWeaponsChart;
     use App\Http\Controllers\GraphHelper;
@@ -42,6 +43,25 @@
 //              ->get();
 
 
+        }
+
+        public static function getTopAttackersChart(\Illuminate\Database\Eloquent\Model|PvpVictim|\Illuminate\Database\Eloquent\Builder $victim) : PvpTopAttackersChart {
+            $attackers = new PvpTopAttackersChart();
+            $labels = collect();
+            foreach ($victim->attackers as $attacker) {
+                $labels->add($attacker->isCapsuleer() ? $attacker->character->name : 'NPC ' . $attacker->ship_type->name);
+            }
+            $attackers->labels($labels);
+            $attackers->dataset('Damage dealt', 'pie', $victim->attackers()->pluck('damage_done'))->options([
+                "radius" => GraphHelper::HOME_PIE_RADIUS_SM
+            ]);
+
+            $attackers->displayAxes(false);
+            $attackers->displayLegend(false);
+            $attackers->theme(ThemeController::getChartTheme());
+            $attackers->height('300');
+
+            return $attackers;
         }
 
 

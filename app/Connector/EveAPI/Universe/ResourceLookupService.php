@@ -289,7 +289,7 @@
          * @return array
          * @throws \Exception
          */
-        public function getItemInformation(int $id): array {
+        public function getItemInformation(int $id): ?array {
             return Cache::remember("ast.getItemInformation.$id", now()->addMinute(), function() use ($id) {
                 $resp = $this->simpleGet(null, sprintf("universe/types/%d", $id), true);
                 if (!$resp) {

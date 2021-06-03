@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\PVP;
 
+use App\Charts\PvpTopAttackersChart;
 use App\Connector\EveAPI\Kills\KillmailService;
 use App\Connector\EveAPI\Universe\ResourceLookupService;
 use App\Events\PvpVictimSaved;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\EFT\DTO\Eft;
+use App\Http\Controllers\EFT\ItemPriceCalculator;
 use App\Http\Controllers\Misc\ErrorHelper;
+use App\Http\Controllers\ThemeController;
 use App\Pvp\PvpAlliance;
 use App\Pvp\PvpAttacker;
 use App\Pvp\PvpCharacter;
@@ -23,18 +27,19 @@ use Illuminate\Validation\Rule;
 class PVPController extends Controller
 {
     private KillmailService $killService;
-    private ResourceLookupService $resourceService;
+    private ItemPriceCalculator $sipc;
 
     /**
      * PVPController constructor.
      *
-     * @param KillmailService       $killService
-     * @param ResourceLookupService $resourceService
+     * @param KillmailService     $killService
+     * @param ItemPriceCalculator $sipc
      */
-    public function __construct(KillmailService $killService, ResourceLookupService $resourceService) {
+    public function __construct(KillmailService $killService, ItemPriceCalculator $sipc) {
         $this->killService = $killService;
-        $this->resourceService = $resourceService;
+        $this->sipc = $sipc;
     }
+
 
 
     public function index() {
@@ -97,8 +102,21 @@ class PVPController extends Controller
 
     public function getKill(int $killId) {
         $victim = PvpVictim::whereKillmailId($killId)->firstOrFail();
-//        dd($victim);
-        return view('pvp.kill', ['victim' => $victim]);
+
+        $eft = Eft::loadPvpFit($killId);
+
+        $attackers = PvpStats::getTopAttackersChart($victim);
+
+
+        return view('pvp.kill', [
+            'victim' => $victim,
+            'ship_price' => $this->sipc->getFromTypeId($victim->ship_type_id)->getAveragePrice(),
+            'items_price' => $eft->getItemsValue(),
+            'fit_quicklook' => $eft->getStructuredDisplay(),
+            'fit' => json_decode(json_encode(['SHIP_ID' => $victim->ship_type_id])),
+            'ship_name' => $victim->ship_type->name,
+            'top_damage_chart' => $attackers
+        ]);
     }
 
     public function viewItem(string $slug, int $id) {
@@ -134,7 +152,6 @@ class PVPController extends Controller
         $littlekill = json_decode($request->get('killmail')["utf8Data"]);
         $typeIds = config('tracker.pvp.accept-ids.' . $currentEvent->slug);
         if (!in_array($littlekill->ship_type_id, $typeIds)) {
-
 //            return ['success' => true, 'message' => 'Kill ignored - type ID not acccepted', 'acceptedTypeIDs' => $typeIds];
         }
 
@@ -167,14 +184,11 @@ class PVPController extends Controller
             'pvp_event_id' => $currentEvent->id
         ]);
         try {
-
             $victim->save();
-
         }
         catch (\Exception $e) {
             return ['success' => false, 'message' => 'Killmail save failed: '.$e->getMessage().' '.$e->getTraceAsString()];
         }
-
 
         foreach ($kill->attackers as $attacker) {
 
@@ -204,13 +218,28 @@ class PVPController extends Controller
 
         Log::info('Killmail '.$kill->killmail_id.' saved');
 
-        try {
 
-            $this->dispatch(new PvpVictimSaved($victim));
+        try {
+            $event = new PvpVictimSaved($victim);
+//            Log::debug('Broadcasting event for '.$victim->getKillboardLink());
+//            broadcast($event);
+            Log::debug('Requesting stats calculation for '.$victim->getKillboardLink());
+            PvpVictim::requestStatsCalculation($victim);
         }
         catch (\Exception $e) {
             return ['success' => false, 'message' => 'Could not dispatch event: '.$e->getMessage().' '.$e->getTraceAsString()];
         }
+
+
+        try {
+            $eft = Eft::loadPvpFit($kill->killmail_id);
+            $eft->persistLines($kill->killmail_id);
+        }
+        catch (\Exception $e) {
+
+        }
+
+
         return ['success' => true, 'message' => 'Killmail '.$kill->killmail_id.' processed and saved'];
     }
 }
