@@ -18,6 +18,7 @@
 
             <div class="card card-body border-0 shadow-sm mb-0  rounded-b-none">
                 <h5 class="font-weight-bold">Weapon meta</h5>
+
                 <div class="graph-container h-300px">{!! $topWeaponsChart->container() !!}</div>
             </div>
             <div class="card-footer mb-3 rounded-t-none shadow-sm">

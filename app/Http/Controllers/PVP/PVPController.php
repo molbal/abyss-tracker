@@ -140,14 +140,18 @@ class PVPController extends Controller
         $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where character_id=%d)", $id))->paginate(20, ['*'], 'kills-page');
         $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.character_id', '=', $id)->paginate(20, ['*'], 'losses-page');
 
-        $topShips = PvpStats::getChartContainerCharacter($event, $id);
+        $topShips = PvpStats::getShipsChartContainerCharacter($event, $id);
+        $topWeps = PvpStats::getChartContainerTopWeaponsCharacter($event, $id);
+        $winRate = PvpStats::getChartcontainerWinrateCharacter($event, $id);
 
         return view('pvp.character', [
             'event' => $event,
             'character' => $character,
             'kills' => $kills,
             'losses' => $losses,
-            'topShipsChart' => $topShips
+            'topShipsChart' => $topShips,
+            'topWeaponsChart' => $topWeps,
+            'winRateChart' => $winRate,
         ]);
     }
     public function viewCorporation(string $slug, int $id) {
@@ -168,6 +172,13 @@ class PVPController extends Controller
         return ErrorHelper::errorPage('Not implemented yet', $slug);
     }
 
+    /**
+     * Handles adding a new killmail
+     * @param Request $request
+     *
+     * @return array
+     * @throws \Exception
+     */
     public function addKillmail(Request $request) {
 
         $request->validate([
@@ -180,15 +191,14 @@ class PVPController extends Controller
 
         try {
             $currentEvent = PvpEvent::getCurrentEvent();
-        } catch (BusinessLogicException $e) {
-
+        } catch (BusinessLogicException) {
             return ['success' => true, 'message' => 'Kill ignored - no current Abyss Tracker PVP event'];
         }
 
         $littlekill = json_decode($request->get('killmail')["utf8Data"]);
         $typeIds = config('tracker.pvp.accept-ids.' . $currentEvent->slug);
         if (!in_array($littlekill->ship_type_id, $typeIds)) {
-//            return ['success' => true, 'message' => 'Kill ignored - type ID not acccepted', 'acceptedTypeIDs' => $typeIds];
+            return ['success' => true, 'message' => 'Kill ignored - type ID not accepted', 'acceptedTypeIDs' => $typeIds];
         }
 
         $kill = $this->killService->getKillmail($littlekill->killID, $littlekill->hash);
