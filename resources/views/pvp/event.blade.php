@@ -8,6 +8,10 @@
     <div class="row">
         <div class="col-md-12 col-lg-4">
             <div class="graph-container" style="min-height: 491px" data-load="{{route('pvp.widget.top-kills', ['id' => $event->id])}}">&nbsp;</div>
+
+            @component('pvp.widgets.top-kills-corporation', ['event' => $event, 'topKills' => $topCorps]) @endcomponent
+            @component('pvp.widgets.top-kills-alliance', ['event' => $event, 'topKills' => $topAlliances]) @endcomponent
+
             <div class="card card-body border-0 shadow-sm mb-0 rounded-b-none">
                 <h5 class="font-weight-bold">Ship meta</h5>
                 <div class="graph-container h-300px">{!! $topShipsChart->container() !!}</div>

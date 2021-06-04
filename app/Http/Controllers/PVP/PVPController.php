@@ -71,11 +71,16 @@ class PVPController extends Controller
         $topShipsChart = PvpStats::getChartContainerTopShips($event);
         $topWeaponsChart = PvpStats::getChartContainerTopWeapons($event);
         $feed =  PvpStats::getEventFeedPaginator($event);
+        $topCorps = PvpStats::getEventTopCorps($event);
+        $topAlliances = PvpStats::getEventTopAlliances($event);
 
         return view('pvp.event', [
             'event' => $event,
             'topShipsChart' => $topShipsChart,
             'topWeaponsChart' => $topWeaponsChart,
+
+            "topCorps" => $topCorps,
+            "topAlliances" => $topAlliances,
 
             'feed' => $feed,
         ]);
@@ -88,7 +93,7 @@ class PVPController extends Controller
 
         return view('pvp.top-kills', [
             'event' => $event,
-            "topKills" => $topKills
+            "topKills" => $topKills,
         ]);
     }
     public function listKills($slug) {

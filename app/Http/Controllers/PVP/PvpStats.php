@@ -66,6 +66,26 @@
             return $attackers;
         }
 
+        public static function getEventTopCorps(PvpEvent $event, int $limit = 20) {
+            return collect(DB::select('select a.corporation_id as id, pc.name, count(distinct a.killmail_id) kills_count
+from pvp_attackers a
+join pvp_corporations pc on pc.id = a.corporation_id
+where a.killmail_id in (select killmail_id from pvp_victims where pvp_event_id = ?)
+and a.corporation_id is not null
+group by a.corporation_id
+order by 3  desc limit ?;
+', [$event->id, $limit]));
+        }
+        public static function getEventTopAlliances(PvpEvent $event, int $limit = 20) {
+            return collect(DB::select('select a.alliance_id as id, pc.name, count(distinct a.killmail_id) kills_count
+from pvp_attackers a
+join pvp_alliances pc on pc.id = a.alliance_id
+where a.killmail_id in (select killmail_id from pvp_victims where pvp_event_id = ?)
+and a.alliance_id is not null
+group by a.alliance_id
+order by 3  desc limit ?;
+', [$event->id, $limit]));
+        }
 
         public static function getEventTopKillsPaginator(PvpEvent $event, int $itemsPerPage = 15) : LengthAwarePaginator {
             return
