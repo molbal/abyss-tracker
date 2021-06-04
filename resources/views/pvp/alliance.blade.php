@@ -19,8 +19,6 @@
             <div class="card-footer mb-3 rounded-t-none shadow-sm">
                 @component('components.info-line') Data collected from zKillboard, using character lossmails and killmails  @endcomponent
             </div>
-        </div>
-        <div class="col-md-12 col-lg-4">
             <div class="card card-body border-0 shadow-sm mb-0 rounded-b-none">
                 <h5 class="font-weight-bold">Weapons usage</h5>
                 <div class="graph-container h-300px">{!! $topWeaponsChart->container() !!}</div>
@@ -28,8 +26,6 @@
             <div class="card-footer mb-3 rounded-t-none shadow-sm">
                 @component('components.info-line') Data collected from zKillboard, using character killmails  @endcomponent
             </div>
-        </div>
-        <div class="col-md-12 col-lg-4">
             <div class="card card-body border-0 shadow-sm mb-0 rounded-b-none">
                 <h5 class="font-weight-bold">Win rate</h5>
                 <div class="graph-container h-300px">{!! $winRateChart->container() !!}</div>
@@ -38,20 +34,19 @@
                 @component('components.info-line') Data collected from zKillboard, using character lossmails and killmails  @endcomponent
             </div>
         </div>
-    </div>
+        <div class="col-md-12 col-lg-8">
 
-    <div class="row mt-3">
-        <div class="col-md-12 col-lg-10 offset-lg-1">
             <h5 class="font-weight-bold">Feed </h5>
             @forelse($feed as $kill)
-{{--                {{$kill->character->id}} vs {{$character->id}}--}}
+                {{--                {{$kill->character->id}} vs {{$character->id}}--}}
                 @component($event->display_component, ['event' => $event, 'victim' => $kill, 'loss' => $kill->alliance_id == $alliance->id]) @endcomponent
             @empty
                 <em>Nothing
-            here yet</em>
+                    here yet</em>
             @endforelse
         </div>
     </div>
+
 
 @endsection
 

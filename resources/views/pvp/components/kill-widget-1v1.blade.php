@@ -6,7 +6,7 @@
                     @if($victim->firstAttacker()->isCapsuleer())
                         <a href="{{route('pvp.character',['slug' => $event->slug, 'id' => $victim->firstAttacker()->character->id])}}" data-toggle="tooltip" title="{{$victim->firstAttacker()->character->name ?? ""}}"><img src="{{\App\Http\Controllers\HelperController::getCharImgLink($victim->firstAttacker()->character->id ?? null)}}" class="mb-1 rounded-circle shadow-sm pvp-icon-lg"></a>
                         <br>
-                        <a href="{{route('pvp.ship',['slug' => $event->slug, 'id' => $victim->firstAttacker()->ship_type->id])}}" data-toggle="tooltip" title="{{$victim->firstAttacker()->ship_type->name ?? ""}}"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($victim->firstAttacker()->ship_type->id ?? 0)}}" class="mr-1 rounded-circle shadow-sm pvp-icon-md"></a>
+                        <a href="{{route('pvp.ship',['slug' => $event->slug, 'id' => $victim->firstAttacker()->ship_type->id ?? 0])}}" data-toggle="tooltip" title="{{$victim->firstAttacker()->ship_type->name ?? ""}}"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($victim->firstAttacker()->ship_type->id ?? 0)}}" class="mr-1 rounded-circle shadow-sm pvp-icon-md"></a>
                         @if($victim->firstAttacker()->hasWeaponInfo())
                             <a href="{{route('pvp.item',['slug' => $event->slug, 'id' => $victim->firstAttacker()->weapon_type->id])}}" data-toggle="tooltip" title="{{$victim->firstAttacker()->weapon_type->name ?? ""}}"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($victim->firstAttacker()->weapon_type->id ?? $victim->firstAttacker()->ship_type->id)}}" class="mr-1 rounded-circle shadow-sm pvp-icon-md"></a>
                         @endif
@@ -24,7 +24,7 @@
                     @else
                         <a href="{{route('pvp.character',['slug' => $event->slug, 'id' => $victim->firstAttacker()->character->id])}}"><span class="h5 font-weight-bold text-capitalize">{{$victim->firstAttacker()->character->name ?? ""}}</span></a><br>
                         <small class="text-muted">flying </small><br>
-                        <a href="{{route('pvp.ship',['slug' => $event->slug, 'id' => $victim->firstAttacker()->ship_type->id])}}"><span class="h6">{{$victim->firstAttacker()->ship_type->name ?? ""}}</span></a>
+                        <a href="{{route('pvp.ship',['slug' => $event->slug, 'id' => $victim->firstAttacker()->ship_type->id ?? 0])}}"><span class="h6">{{$victim->firstAttacker()->ship_type->name ?? ""}}</span></a>
                     @if($victim->firstAttacker()->hasWeaponInfo())
                         <small class="text-muted">with</small>
                             <a href="{{route('pvp.item',['slug' => $event->slug, 'id' => $victim->firstAttacker()->weapon_type->id])}}" data-toggle="tooltip" title="{{$victim->firstAttacker()->weapon_type->name ?? ""}}"><span class="h6">{{Str::limit($victim->firstAttacker()->weapon_type->name ?? "", 12)}}</span></a>

@@ -219,7 +219,7 @@ limit ?;", [$event->id, $maxItems]));
 from pvp_attackers
          join pvp_type_id_lookup on pvp_attackers.weapon_type_id = pvp_type_id_lookup.id
          join pvp_victims pv on pvp_attackers.killmail_id = pv.killmail_id
-where pv.pvp_event_id = ? and pvp_attackers.".$scope."_id=?
+where pv.pvp_event_id = ? and pvp_attackers.".$scope."_id=? /*and pvp_attackers.weapon_type_id not in (select distinct ship_type_id from pvp_attackers)*/
 and pvp_attackers.weapon_type_id not in (select distinct p2.ship_type_id from pvp_victims p2)
 group by pvp_attackers.weapon_type_id
 order by kills_count desc

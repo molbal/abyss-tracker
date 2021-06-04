@@ -11,7 +11,7 @@
                 <h5 class="font-weight-bold">Most kills</h5>
                 <table class="table w-100 table-sm table-responsive-sm mb-0">
                     @foreach($topKills as $kill)
-                        @component('pvp.components.top-kill', ['item' => $kill, 'i' => $loop->iteration+($topKills->perPage()*($topKills->currentPage()-1))]) @endcomponent
+                        @component('pvp.components.top-kill', ['item' => $kill, 'i' => $loop->iteration+($topKills->perPage()*($topKills->currentPage()-1)), 'event' => $event]) @endcomponent
                     @endforeach
                 </table>
             </div>
