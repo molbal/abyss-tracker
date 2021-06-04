@@ -22,6 +22,7 @@ use App\Pvp\PvpVictim;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
@@ -137,8 +138,10 @@ class PVPController extends Controller
         $event = PvpEvent::whereSlug($slug)->firstOrFail();
 
         $character = PvpCharacter::whereId($id)->firstOrFail();
-        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where character_id=%d)", $id))->paginate(20, ['*'], 'kills-page');
-        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.character_id', '=', $id)->paginate(20, ['*'], 'losses-page');
+        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where character_id=%d)", $id))->get();
+        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.character_id', '=', $id)->get();
+
+        $feed = $kills->merge($losses)->sortByDesc('created_at');
 
         $topShips = PvpStats::getShipsChartContainerCharacter($event, $id);
         $topWeps = PvpStats::getChartContainerTopWeaponsCharacter($event, $id);
@@ -147,29 +150,56 @@ class PVPController extends Controller
         return view('pvp.character', [
             'event' => $event,
             'character' => $character,
-            'kills' => $kills,
-            'losses' => $losses,
+            'feed' => $feed,
             'topShipsChart' => $topShips,
             'topWeaponsChart' => $topWeps,
             'winRateChart' => $winRate,
         ]);
     }
     public function viewCorporation(string $slug, int $id) {
+
         $event = PvpEvent::whereSlug($slug)->firstOrFail();
 
-        $character = PvpCharacter::whereId($id)->firstOrFail();
-        $kills = PvpAttacker::whereEvent($event)->where('pvp_attackers.character_id', '=', $id)->paginate(20, ['*'], 'kills-page');
-        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.character_id', '=', $id)->paginate(20, ['*'], 'losses-page');
+        $corporation = PvpCorporation::whereId($id)->firstOrFail();
+        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where corporation_id=%d)", $id))->get();
+        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.corporation_id', '=', $id)->get();
 
-        return view('pvp.character', [
+        $feed = $kills->merge($losses)->sortByDesc('created_at');
+
+        $topShips = PvpStats::getShipsChartContainerCorporation($event, $id);
+        $topWeps = PvpStats::getChartContainerTopWeaponsCorporation($event, $id);
+        $winRate = PvpStats::getChartcontainerWinrateCorporation($event, $id);
+
+        return view('pvp.corporation', [
             'event' => $event,
-            'character' => $character,
-            'kills' => $kills,
-            'losses' => $losses
+            'corporation' => $corporation,
+            'feed' => $feed,
+            'topShipsChart' => $topShips,
+            'topWeaponsChart' => $topWeps,
+            'winRateChart' => $winRate,
         ]);
     }
     public function viewAlliance(string $slug, int $id) {
-        return ErrorHelper::errorPage('Not implemented yet', $slug);
+        $event = PvpEvent::whereSlug($slug)->firstOrFail();
+
+        $alliance = PvpAlliance::whereId($id)->firstOrFail();
+        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where alliance_id=%d)", $id))->get();
+        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.alliance_id', '=', $id)->get();
+
+        $feed = $kills->merge($losses)->sortByDesc('created_at');
+
+        $topShips = PvpStats::getShipsChartContainerAlliance($event, $id);
+        $topWeps = PvpStats::getChartContainerTopWeaponsAlliance($event, $id);
+        $winRate = PvpStats::getChartcontainerWinrateAlliance($event, $id);
+
+        return view('pvp.alliance', [
+            'event' => $event,
+            'alliance' => $alliance,
+            'feed' => $feed,
+            'topShipsChart' => $topShips,
+            'topWeaponsChart' => $topWeps,
+            'winRateChart' => $winRate,
+        ]);
     }
 
     /**

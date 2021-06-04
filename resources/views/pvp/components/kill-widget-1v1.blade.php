@@ -1,4 +1,4 @@
-<div class="card card-body shadow-sm {{isset($loss) ? 'border-danger' : 'border-0'}} rounded mb-3">
+<div class="card card-body shadow-sm {{isset($loss) && $loss ? 'border-danger' : 'border-info'}} rounded mb-3">
     <table class="w-100">
         <tr>
             <td style="width:96px;text-align: center">

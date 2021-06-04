@@ -155,14 +155,23 @@ limit ?;", [$event->id, $maxItems]));
 
 
         public static function getChartcontainerWinrateCharacter(PvpEvent $event, int $id) : PvpTopWeaponsChart {
+            return self::getChartcontainerWinrateMulti($event, $id, 'character');
+        }
+        public static function getChartcontainerWinrateCorporation(PvpEvent $event, int $id) : PvpTopWeaponsChart {
+            return self::getChartcontainerWinrateMulti($event, $id, 'corporation');
+        }
+        public static function getChartcontainerWinrateAlliance(PvpEvent $event, int $id) : PvpTopWeaponsChart {
+            return self::getChartcontainerWinrateMulti($event, $id, 'alliance');
+        }
+        public static function getChartcontainerWinrateMulti(PvpEvent $event, int $id, string $scope = 'character') : PvpTopWeaponsChart {
             $dataset = collect(DB::select("
             select (select count(distinct killmail_id)
         from pvp_victims
-        where pvp_event_id = ? and character_id = ?) as losses,
+        where pvp_event_id = ? and ".$scope."_id = ?) as losses,
        (select count(distinct killmail_id)
         from pvp_attackers
         where killmail_id in (select killmail_id from pvp_victims where pvp_event_id = ?)
-          and character_id = ?)                      as wins;", [$event->id, $id, $event->id, $id]))->first();
+          and ".$scope."_id = ?)                      as wins;", [$event->id, $id, $event->id, $id]))->first();
 
             $chart = new PvpTopWeaponsChart();
             $chart->height("300");
@@ -189,12 +198,22 @@ limit ?;", [$event->id, $maxItems]));
         }
 
         public static function getChartContainerTopWeaponsCharacter(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopWeaponsChart {
+            return self::getChartContainerTopWeaponsMulti($event, $id, $maxItems, 'character');
+        }
+        public static function getChartContainerTopWeaponsCorporation(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopWeaponsChart {
+            return self::getChartContainerTopWeaponsMulti($event, $id, $maxItems, 'corporation');
+        }
+        public static function getChartContainerTopWeaponsAlliance(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopWeaponsChart {
+            return self::getChartContainerTopWeaponsMulti($event, $id, $maxItems, 'alliance');
+        }
+
+        public static function getChartContainerTopWeaponsMulti(PvpEvent $event, int $id, int $maxItems = 8, string $scope = 'character') : PvpTopWeaponsChart {
             $dataset = collect(DB::select("
             select pvp_attackers.weapon_type_id, pvp_type_id_lookup.name, count(distinct pvp_attackers.killmail_id) as kills_count
 from pvp_attackers
          join pvp_type_id_lookup on pvp_attackers.weapon_type_id = pvp_type_id_lookup.id
          join pvp_victims pv on pvp_attackers.killmail_id = pv.killmail_id
-where pv.pvp_event_id = ? and pvp_attackers.character_id=?
+where pv.pvp_event_id = ? and pvp_attackers.".$scope."_id=?
 and pvp_attackers.weapon_type_id not in (select distinct p2.ship_type_id from pvp_victims p2)
 group by pvp_attackers.weapon_type_id
 order by kills_count desc
@@ -224,7 +243,7 @@ limit ?;", [$event->id, $id, $maxItems]));
             return $chart;
         }
 
-        public static function getShipsChartContainerCharacter(PvpEvent $event, int $id, int $maxItems = 8) {
+        public static function getShipsChartContainer(PvpEvent $event, int $id, int $maxItems = 8, string $scope = 'character') {
             $dataset = collect(DB::select("
 select a.ship_type_id, a.name, sum(a.kills_count) as kills_count
 from (
@@ -232,15 +251,15 @@ from (
          from pvp_victims pv
                   join pvp_type_id_lookup pt on pv.ship_type_id = pt.id
          where pv.pvp_event_id = ?
-           and pv.character_id = ?
+           and pv.".$scope."_id = ?
          group by pv.ship_type_id, pt.name
          union
          select v.ship_type_id, l.name, count(distinct v.killmail_id) as kills_count
-         from pvp_victims v
+         from pvp_attackers v
                   join pvp_type_id_lookup l
                        on v.ship_type_id = l.id
-         where v.pvp_event_id = ?
-           and v.character_id = ?
+         where v.killmail_id in (select killmail_id from pvp_victims where pvp_event_id = ?)
+           and v.".$scope."_id = ?
     group by v.ship_type_id, l.name
      ) a
 group by a.ship_type_id, a.name
@@ -269,5 +288,15 @@ limit ?
                 ]
             ]);
             return $chart;
+        }
+
+        public static function getShipsChartContainerCharacter(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopShipsChart {
+            return self::getShipsChartContainer($event, $id, $maxItems, 'character');
+        }
+        public static function getShipsChartContainerCorporation(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopShipsChart {
+            return self::getShipsChartContainer($event, $id, $maxItems, 'corporation');
+        }
+        public static function getShipsChartContainerAlliance(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopShipsChart {
+            return self::getShipsChartContainer($event, $id, $maxItems, 'alliance');
         }
     }

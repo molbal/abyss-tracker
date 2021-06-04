@@ -80,8 +80,8 @@
             </div>
 
 
-            <div class="mb-0 card card-body border-0 shadow-sm">
-                <table class="table table-sm">
+            <div class="mb-0 card card-body border-0 shadow-sm pb-0">
+                <table class="table table-sm text-small">
                     <tr><td>Date destroyed</td><td>{{$victim->created_at}}</td></tr>
                     <tr><td>Synced to the leaderboard</td><td>{{$victim->updated_at}}</td></tr>
                     <tr><td>Stats calculated</td><td>{{$victim->stats->updated_at ?? 'In progress..'}}</td></tr>
@@ -89,27 +89,26 @@
             </div>
         </div>
         <div class="col-md-12 col-lg-8">
-            <div class="card card-body border-0 shadow-sm">
-                <table class="table table-sm w-100">
+            <div class="card card-body border-0 shadow-sm pb-0">
+                <table class="table table w-100">
                     <tr>
                         <th colspan="2">Attacker</th>
                         <th colspan="2">Ship</th>
                         <th colspan="2">Weapon</th>
-{{--                        <th class="text-right">Security status</th>--}}
                         <th class="text-right">Damage done</th>
                     </tr>
                     @forelse($victim->attackers as $attacker)
                         @if($attacker->isCapsuleer())
-                            <tr>
-                                <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getCharImgLink($attacker->character->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-sm"></td>
+                            <tr class="">
+                                <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getCharImgLink($attacker->character->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-md"></td>
                                 <td><a href="{{route('pvp.character', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->character->id])}}">{{$attacker->character->name}}</a></td>
 
                                 <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getRenderImgLink($attacker->ship_type->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-sm"></td>
-                                <td><a href="{{route('pvp.ship', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->ship_type->id])}}">{{$attacker->ship_type->name}}</a></td>
+                                <td><a href="{{route('pvp.ship', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->ship_type->id])}}" data-toggle="tooltip" title="{{$attacker->ship_type->name}}">{{Str::limit($attacker->ship_type->name, 12)}}</a></td>
 
                                 @if($attacker->hasWeaponInfo())
                                     <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($attacker->weapon_type->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-sm"></td>
-                                    <td><a href="{{route('pvp.item', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->weapon_type->id])}}">{{$attacker->weapon_type->name}}</a></td>
+                                    <td><a href="{{route('pvp.item', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->weapon_type->id])}}" data-toggle="tooltip" title="{{$attacker->weapon_type->name}}">{{Str::limit($attacker->weapon_type->name, 12)}}</a></td>
                                 @else
                                     <td style="width: 26px;">&nbsp;</td>
                                     <td class="text-muted">Unknown</td>
@@ -119,8 +118,8 @@
                                 <td class="text-right">{{number_format($attacker->damage_done, 0, ",")}}</td>
                             </tr>
                         @else
-                            <tr>
-                                <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($attacker->ship_type->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-sm"></td>
+                            <tr class="">
+                                <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($attacker->ship_type->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-md"></td>
                                 <td colspan="5"><a href="{{route('pvp.ship', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->ship_type->id])}}">NPC {{$attacker->ship_type->name}}</a></td>
                                 <td class="text-right">{{number_format($attacker->damage_done, 0, ",")}}</td>
                             </tr>

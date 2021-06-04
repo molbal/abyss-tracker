@@ -1,11 +1,11 @@
 @extends("layout.app")
-@section("browser-title",$character->name . " - " . $event->name)
+@section("browser-title",$corporation->name . " - " . $event->name)
 @section("content")
     <div class="my-5">
         <div class="col-sm-12 col-md-12">
             <div id="banner" class="shadow-sm">
-                <img src="https://images.evetech.net/characters/{{$character->id}}/portrait?size=128" class="rounded-circle shadow-sm">
-                <h4 class="font-weight-bold ">{{$character->name}}<small> in {{$event->name}}</small></h4>
+                <img src="https://images.evetech.net/corporations/{{$corporation->id}}/logo?size=128" class="rounded-circle shadow-sm">
+                <h4 class="font-weight-bold ">{{$corporation->name}}<small> in {{$event->name}}</small></h4>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
             <h5 class="font-weight-bold">Feed </h5>
             @forelse($feed as $kill)
 {{--                {{$kill->character->id}} vs {{$character->id}}--}}
-                @component($event->display_component, ['event' => $event, 'victim' => $kill, 'loss' => $kill->character_id == $character->id]) @endcomponent
+                @component($event->display_component, ['event' => $event, 'victim' => $kill, 'loss' => $kill->corporation_id == $corporation->id]) @endcomponent
             @empty
                 <em>Nothing
             here yet</em>
