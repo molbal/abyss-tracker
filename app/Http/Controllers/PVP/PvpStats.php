@@ -163,6 +163,9 @@ limit ?;", [$event->id, $maxItems]));
         public static function getChartcontainerWinrateAlliance(PvpEvent $event, int $id) : PvpTopWeaponsChart {
             return self::getChartcontainerWinrateMulti($event, $id, 'alliance');
         }
+        public static function getChartcontainerWinrateShip(PvpEvent $event, int $id) : PvpTopWeaponsChart {
+            return self::getChartcontainerWinrateMulti($event, $id, 'ship_type');
+        }
         public static function getChartcontainerWinrateMulti(PvpEvent $event, int $id, string $scope = 'character') : PvpTopWeaponsChart {
             $dataset = collect(DB::select("
             select (select count(distinct killmail_id)
@@ -205,6 +208,9 @@ limit ?;", [$event->id, $maxItems]));
         }
         public static function getChartContainerTopWeaponsAlliance(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopWeaponsChart {
             return self::getChartContainerTopWeaponsMulti($event, $id, $maxItems, 'alliance');
+        }
+        public static function getChartContainerTopWeaponsShip(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopWeaponsChart {
+            return self::getChartContainerTopWeaponsMulti($event, $id, $maxItems, 'ship_type');
         }
 
         public static function getChartContainerTopWeaponsMulti(PvpEvent $event, int $id, int $maxItems = 8, string $scope = 'character') : PvpTopWeaponsChart {

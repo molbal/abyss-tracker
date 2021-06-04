@@ -131,8 +131,25 @@ class PVPController extends Controller
         ]);
     }
 
-    public function viewItem(string $slug, int $id) {
-        return ErrorHelper::errorPage('Not implemented yet', $slug);
+    public function viewShip(string $slug, int $id) {
+        $event = PvpEvent::whereSlug($slug)->firstOrFail();
+
+        $ship = PvpTypeIdLookup::whereId($id)->firstOrFail();
+        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where ship_type_id=%d)", $id))->get();
+        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.ship_type_id', '=', $id)->get();
+        $feed = $kills->merge($losses)->sortByDesc('created_at');
+
+
+        $topWeps = PvpStats::getChartContainerTopWeaponsShip($event, $id);
+        $winRate = PvpStats::getChartcontainerWinrateShip($event, $id);
+        return view('pvp.ship', [
+            'event' => $event,
+            'ship' => $ship,
+            'feed' => $feed,
+            'topWeaponsChart' => $topWeps,
+            'winRateChart' => $winRate,
+        ]);
+
     }
     public function viewCharacter(string $slug, int $id) {
         $event = PvpEvent::whereSlug($slug)->firstOrFail();

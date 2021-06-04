@@ -121,7 +121,7 @@ class PvpVictim extends Model
         return !is_null($this->stats) && !$this->stats->isFailed();
     }
 
-    public function firstAttacker(): PvpAttacker {
+    public function firstAttacker(): ?PvpAttacker {
         return  $this->attackers->first();
     }
 
