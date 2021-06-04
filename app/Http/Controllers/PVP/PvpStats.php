@@ -305,4 +305,44 @@ limit ?
         public static function getShipsChartContainerAlliance(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopShipsChart {
             return self::getShipsChartContainer($event, $id, $maxItems, 'alliance');
         }
+        public static function getChartContainerTopShipsWeapon(PvpEvent $event, int $id, int $maxItems = 8) : PvpTopShipsChart {
+            $scope = 'weapon_type';
+            $dataset = collect(DB::select("
+select a.ship_type_id, a.name, sum(a.kills_count) as kills_count
+from (
+         select v.ship_type_id, l.name, count(distinct v.killmail_id) as kills_count
+         from pvp_attackers v
+                  join pvp_type_id_lookup l
+                       on v.ship_type_id = l.id
+         where v.killmail_id in (select killmail_id from pvp_victims where pvp_event_id = ?)
+           and v.".$scope."_id = ?
+    group by v.ship_type_id, l.name
+     ) a
+group by a.ship_type_id, a.name
+order by 3 desc
+limit ?
+            ;", [$event->id, $id, $maxItems]));
+
+            $chart = new PvpTopShipsChart();
+            $chart->height("300");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->labels($dataset->pluck('name'));
+            $chart->dataset("Favourite ships", 'pie', $dataset->pluck('kills_count'))->options([
+                "radius" => GraphHelper::HOME_PIE_RADIUS_SM
+            ]);
+            $chart->title("In ".$event->name);
+            $chart->options([
+                'label' => [
+                    'position' => 'inside',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 250
+                ],
+                'tooltip'=> [
+                    'confine' => true
+                ]
+            ]);
+            return $chart;
+        }
     }

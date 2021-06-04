@@ -151,6 +151,24 @@ class PVPController extends Controller
         ]);
 
     }
+
+    public function viewItem(string $slug, int $id) {
+        $event = PvpEvent::whereSlug($slug)->firstOrFail();
+
+        $item = PvpTypeIdLookup::whereId($id)->firstOrFail();
+        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where weapon_type_id=%d or ship_type_id=%d )", $id, $id))->paginate(15);
+
+
+        $topShipsChart = PvpStats::getChartContainerTopShipsWeapon($event, $id);
+//        $winRate = PvpStats::getChartcontainerWinrateWea($event, $id);
+        return view('pvp.item', [
+            'event' => $event,
+            'item' => $item,
+            'feed' => $kills,
+            'topShipsChart' => $topShipsChart
+        ]);
+
+    }
     public function viewCharacter(string $slug, int $id) {
         $event = PvpEvent::whereSlug($slug)->firstOrFail();
 
