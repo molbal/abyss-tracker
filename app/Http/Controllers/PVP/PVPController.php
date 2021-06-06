@@ -68,6 +68,10 @@ class PVPController extends Controller
     public function getEvent(string $slug) {
         $event = PvpEvent::whereSlug($slug)->firstOrFail();
 
+        if (!PvpVictim::wherePvpEvent($event)->exists()) {
+            return ErrorHelper::errorPage('This event has not started yet', 'Come back a bit later');
+        }
+
         $topShipsChart = PvpStats::getChartContainerTopShips($event);
         $topWeaponsChart = PvpStats::getChartContainerTopWeapons($event);
         $feed =  PvpStats::getEventFeedPaginator($event);
