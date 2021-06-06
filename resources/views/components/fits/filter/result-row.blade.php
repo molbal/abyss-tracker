@@ -14,7 +14,7 @@
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->defense->reps->burst->total ?? 0)}} <small>ehp/s</small></span></td>
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round(($stats->defense->ehp->total ?? 0)/1000)}} <small>k ehp</small></span></td>
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{round($stats->misc->maxSpeed ?? 0)}} <small>m/s</small></span></td>
-    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{number_format($row->PRICE/1000000, 0, ",", " ")}} M <small>ISK</small></span>
+    <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{\App\Http\Controllers\HelperController::formatToMillions($row->PRICE)}} M <small>ISK</small></span>
     <td rowspan="1" class="text-right"><span class="moveabitdown" style="vertical-align: bottom">{{number_format($row->RUNS_COUNT, 0, ",", " ")}} </span>
     </td>
 </tr>
@@ -47,13 +47,16 @@
         <td colspan="2">
             <span>Privacy status: <STRONG>{{$row->PRIVACY}}</STRONG></span>
         </td>
-        <td colspan="5">
+        <td colspan="4">
             <span>Set privacy to: </span>
             <a href="{{route("fit.change_privacy", ['id' => $row->ID, 'privacySetting' => 'public'])}}" class="text-dark font-weight-bold">Public</a>
             <span class="d-inline-block mx-1">&middot;</span>
             <a href="{{route("fit.change_privacy", ['id' => $row->ID, 'privacySetting' => 'incognito'])}}" class="text-dark font-weight-bold">Incognito</a>
             <span class="d-inline-block mx-1">&middot;</span>
             <a href="{{route("fit.change_privacy", ['id' => $row->ID, 'privacySetting' => 'private'])}}" class="text-dark font-weight-bold">Private</a>
+        </td>
+        <td class="text-right">
+            <span class="badge badge-secondary" data-toggle="tooltip" title="Your profit using this fit in the Abyss">{{\App\Http\Controllers\HelperController::formatToMillions($row->PROFIT)}} M <small>ISK</small></span>
         </td>
 {{--        <td colspan="2" class="text-right">--}}
 {{--            <span>Uploaded {{\App\Http\Controllers\TimeHelper::timeElapsedString($row->Submitted)}}</span>--}}

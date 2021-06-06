@@ -17,6 +17,10 @@ class HelperController extends Controller
         ]);
     }
 
+    public static function formatToMillions(int $money):string {
+        return number_format($money/1_000_000, 2, ",", " ");
+    }
+
     /**
      * Clamps a number
      * @param $n
