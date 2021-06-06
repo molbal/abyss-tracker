@@ -49,7 +49,7 @@
                 ]);
             }
             else {
-                $item = $item->get()->get(0);
+                $item = $item->first();
             }
 
             $builder = DB::table("detailed_loot")->where("ITEM_ID", $item_id);

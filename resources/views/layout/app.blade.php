@@ -96,6 +96,16 @@
                 opacity: 0;
             }
         }
+
+        @font-face {
+            font-family: 'Triglavian';
+            src: url({{asset('Triglavian-Regular.ttf')}}) format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        .triglavian {
+            font-family: 'Triglavian', cursive;
+        }
     </style>
     @yield('styles')
     @if (isset($og))

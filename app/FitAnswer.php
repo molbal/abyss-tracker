@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|FitAnswer whereText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FitAnswer whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Char|null $char
  */
 class FitAnswer extends Model
 {

@@ -14,14 +14,14 @@
             <div class="col-xs-12 col-md-12">
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
 {{--                    <img src="{{asset("home/1.10.jpg)}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">--}}
-                    <a href="{{route('changelog')}}" class="w-100 m-0 b-0 p-0"><video autoplay loop muted poster="{{asset("home/1.10.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none">
-                        <source src="{{asset("home/1.10/mp4.mp4")}}" type="video/mp4">
-                        <source src="{{asset("home/1.10/webm.webm")}}" type="video/webm">
-                        <source src="{{asset("home/1.10/ogv.ogv")}}" type="video/ogg">
+                    <a href="{{route('pvp.index')}}" class="w-100 m-0 b-0 p-0"><video autoplay loop muted poster="{{asset("home/1.10.3.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none;  object-fit: cover;">
+                        <source src="{{asset("home/1.10.3/1.10.3.mp4")}}" type="video/mp4">
+{{--                        <source src="{{asset("home/1.10/webm.webm")}}" type="video/webm">--}}
+{{--                        <source src="{{asset("home/1.10/ogv.ogv")}}" type="video/ogg">--}}
                     </video></a>
                     <div class="p-3 text-center">
-                        <a href="{{route('changelog')}}" class="font-weight-bold h5 text-dark">Abyss Tracker updated to {{config('tracker.version')}}</a>
-                        <p class="mb-0">See changes and new features</p>
+                        <a href="{{route('pvp.index')}}" class="font-weight-bold h5 text-dark">Track the 1v1 Battleship proving event live</a>
+                        <p class="mb-0">On the Abyss Tracker, by EVE_NT</p>
                     </div>
                 </div>
             </div>

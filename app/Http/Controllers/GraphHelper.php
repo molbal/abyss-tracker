@@ -28,6 +28,7 @@
 
 
         const HOME_PIE_RADIUS = [50, 90];
+        const HOME_PIE_RADIUS_SM = [30, 70];
 
         /**
          * GraphHelper constructor.

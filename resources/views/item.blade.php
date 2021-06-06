@@ -1,6 +1,18 @@
 @extends("layout.app")
 @section("browser-title", $item->NAME)
 @section("content")
+    @if($item->GROUP_ID == 0 && in_array($item->GROUP_NAME, ['', 'TBD']))
+    <div class="row mt-3">
+        <div class="col-sm-12 col-md-6 offset-md-3">
+
+            <div class="alert mb-3 border-info shadow-sm">
+                @component('components.info-line')
+                    Name and group information for this item will be synced soon™.
+                @endcomponent
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="d-flex justify-content-between align-items-start mt-5">
         <h4 class="font-weight-bold">
             <img src="https://imageserver.eveonline.com/Type/{{$item->ITEM_ID}}_64.png" class="mr-2 rounded-circle shadow" style="border: 2px solid #fff; width: 48px; height: 48px;">{{$item->NAME}}

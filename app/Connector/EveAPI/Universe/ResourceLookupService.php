@@ -13,7 +13,7 @@
 
         /**
          * Gets the character name in the following order:
-         *  1. Checks the registered characters table (Among the users of co-pilot)
+         *  1. Checks the registered characters table (Among the users of abyss tracker)
          *  2. Checks the "Forever cache" table for known entries
          *  3. Calls the ESI for name lookup (And caches the result afterwards)
          *
@@ -22,8 +22,8 @@
          * @throws \Exception
          */
         public function getCharacterName(int $charId) {
-            if (DB::table("characters")->where("ID", "=", $charId)->exists()) {
-                return DB::table("characters")->where("ID", "=", $charId)->get()->get(0)->NAME;
+            if (DB::table("chars")->where("CHAR_ID", "=", $charId)->exists()) {
+                return DB::table("chars")->where("CHAR_ID", "=", $charId)->get()->get(0)->NAME;
             }
 
             if ($this->forevercacheHas($charId)) {
@@ -289,11 +289,45 @@
          * @return array
          * @throws \Exception
          */
-        public function getItemInformation(int $id): array {
+        public function getItemInformation(int $id): ?array {
             return Cache::remember("ast.getItemInformation.$id", now()->addMinute(), function() use ($id) {
                 $resp = $this->simpleGet(null, sprintf("universe/types/%d", $id), true);
                 if (!$resp) {
-                    $this->logError(sprintf("%suniverse/types/%d", $this->apiRoot,$id), "getItemInformation failed for [$id].");
+                    $this->logError(sprintf("%suniverse/types/%d", $this->apiRoot,$id), __FUNCTION__." failed for [$id].");
+                }
+                return $resp;
+            });
+        }
+
+        /**
+         * Gets alliance info
+         *
+         * @param int $id
+         * @return array
+         * @throws \Exception
+         */
+        public function getAlliance(int $id): array {
+            return Cache::remember("ast.alliance.$id", now()->addMinute(), function() use ($id) {
+                $resp = $this->simpleGet(null, sprintf("alliances/%d/", $id), true);
+                if (!$resp) {
+                    $this->logError(sprintf("%salliances/%d/", $this->apiRoot,$id), __FUNCTION__." failed for [$id].");
+                }
+                return $resp;
+            });
+        }
+
+        /**
+         * Gets alliance info
+         *
+         * @param int $id
+         * @return array
+         * @throws \Exception
+         */
+        public function getCorporation(int $id): array {
+            return Cache::remember("ast.corporations.$id", now()->addMinute(), function() use ($id) {
+                $resp = $this->simpleGet(null, sprintf("corporations/%d/", $id), true);
+                if (!$resp) {
+                    $this->logError(sprintf("%scorporations/%d/", $this->apiRoot,$id), __FUNCTION__." failed for [$id].");
                 }
                 return $resp;
             });
@@ -310,7 +344,7 @@
             return Cache::remember("ast.getCategoryGroups.$categoryId", now()->addMinute(), function() use ($categoryId) {
                 $resp = $this->simpleGet(null, sprintf("universe/categories/%d", $categoryId), true);
                 if (!$resp) {
-                    $this->logError(sprintf("%suniverse/categories/%d", $this->apiRoot,$categoryId), "getCategoryGroups failed for [$categoryId].");
+                    $this->logError(sprintf("%suniverse/categories/%d", $this->apiRoot,$categoryId), __FUNCTION__." failed for [$categoryId].");
                 }
                 return $resp["groups"] ?? null;
             });
@@ -329,7 +363,7 @@
             return Cache::remember("ast.getGroupInfo.$groupId", now()->addMinute(), function () use ($groupId) {
                 $resp = $this->simpleGet(null, sprintf("universe/groups/%d", $groupId), true);
                 if (!$resp) {
-                    $this->logError(sprintf("%suniverse/groups/%d", $this->apiRoot,$groupId), "getGroupInfo failed for [$groupId].");
+                    $this->logError(sprintf("%suniverse/groups/%d", $this->apiRoot,$groupId), __FUNCTION__." failed for [$groupId].");
                 }
                 return $resp;
             });

@@ -16,6 +16,7 @@
     use App\Http\Controllers\ItemController;
     use App\Http\Controllers\Misc\QrController;
     use App\Http\Controllers\Profile\ActivityChartController;
+    use App\Http\Controllers\PVP\PVPController;
     use App\Http\Controllers\StreamToolsController;
     use Illuminate\Support\Facades\Route;
 
@@ -215,6 +216,25 @@
 
         Route::post('/view/run/make', [StreamToolsController::class, 'createNewFullScreenModalLink'])->name('stream-tools.run.make')->middleware('sso');
         Route::get ('/view/run/{token}/{id?}', [StreamToolsController::class, 'viewRun'])->name('stream-tools.run.view');
+    });
+
+    /** Proving grounds tools */
+    Route::prefix('/event')->group(function () {
+        Route::get('/current', [PVPController::class, 'index'])->name('pvp.index');
+        Route::get('/{slug}', [PVPController::class, 'getEvent'])->name('pvp.get');
+
+        Route::get('/kill/{id}', [PVPController::class, 'getKill'])->name('pvp.kill');
+
+        Route::get('/{slug}/kills', [PVPController::class, 'listKills'])->name('pvp.kills');
+        Route::get("/{slug}/top-kills", [PVPController::class, 'listTopKills'])->name('pvp.top-kills');
+        Route::get('/{slug}/item/{id}', [PVPController::class, 'viewItem'])->name('pvp.item');
+        Route::get('/{slug}/ship/{id}', [PVPController::class, 'viewShip'])->name('pvp.ship');
+        Route::get('/{slug}/character/{id}', [PVPController::class, 'viewCharacter'])->name('pvp.character');
+        Route::get('/{slug}/corporation/{id}', [PVPController::class, 'viewCorporation'])->name('pvp.corporation');
+        Route::get('/{slug}/alliance/{id}', [PVPController::class, 'viewAlliance'])->name('pvp.alliance');
+
+        Route::get('/widget/top-kills/{id}', [PVPController::class, 'renderToplist'])->name('pvp.widget.top-kills');
+
     });
 
 

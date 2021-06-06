@@ -7,13 +7,17 @@
 	use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\Exceptions\FitNotFoundException;
     use App\Http\Controllers\EFT\FitHelper;
+    use App\Http\Controllers\EFT\FitParser;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
+    use App\Pvp\PvpShipStat;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Str;
 
     class Eft {
+
+        private bool $isPvpFit;
 
 	    /** @var Collection */
 	    private $lines;
@@ -131,6 +135,24 @@
         }
 
         /**
+         * @return bool
+         */
+        public function isPvpFit() : bool {
+            return $this->isPvpFit;
+        }
+
+        /**
+         * @param bool $isPvpFit
+         *
+         * @return Eft
+         */
+        public function setIsPvpFit(bool $isPvpFit) : Eft {
+            $this->isPvpFit = $isPvpFit;
+
+            return $this;
+        }
+
+        /**
          * @param int $fitId
          *
          * @return Eft
@@ -139,6 +161,17 @@
         public static function loadFromId(int $fitId):Eft {
             $eft = new Eft();
             $eft->load($fitId);
+            $eft->setIsPvpFit(false);
+            return $eft;
+        }
+
+        public static function loadPvpFit(int $killmailId) {
+            /** @var FitParser $parser */
+            $parser = resolve('App\Http\Controllers\EFT\FitParser');
+
+            $stats = PvpShipStat::whereKillmailId($killmailId)->firstOrFail();
+
+            $eft = $parser->getFitTypes($stats->eft)->setIsPvpFit(true);
             return $eft;
         }
 

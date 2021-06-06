@@ -28,4 +28,15 @@ class HelperController extends Controller
     public static function clamp($n, $min, $max) {
         return max($min, min($max, $n));
     }
+
+    public static function getCharImgLink(?int $id, int $size = 128) :?string {
+        return $id ? sprintf("https://images.evetech.net/characters/%d/portrait?size=%d", $id, $size) : null;
+    }
+
+    public static function getItemImgLink(?int $id, int $size = 128) : ?string {
+        return $id ? sprintf("https://imageserver.eveonline.com/Type/%d_%d.png", $id, $size) : null;
+    }
+    public static function getRenderImgLink(?int $id, int $size = 128) : ?string {
+        return $id ? sprintf("https://imageserver.eveonline.com/Render/%d_%d.png", $id, $size) : null;
+    }
 }

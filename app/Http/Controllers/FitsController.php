@@ -6,6 +6,7 @@
 
 	use App\Charts\LootAveragesChart;
     use App\Charts\PersonalDaily;
+    use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\DS\FitBreakEvenCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
@@ -684,16 +685,24 @@
          * @return bool
          * @throws Exception
          */
-        public function submitSvcFitService(string $eft, int $fitId) {
+        public function submitSvcFitService(string $eft, int $fitId, string $idPrefix = null) {
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL,config('fits.service-url'));
             curl_setopt($ch, CURLOPT_POST, true);
-            $query = http_build_query(['fit' => $eft, 'appId' =>config('fits.auth.id'), 'appSecret' => config('fits.auth.secret'), 'fitId' => $fitId]);
+
+            $idPrefix = $idPrefix ?? config('fits.prefix.default');
+
+            $query = http_build_query([
+                'fit' => $eft,
+                'appId' =>config('fits.auth.id'),
+                'appSecret' => config('fits.auth.secret'),
+                'fitId' => sprintf("%s:%d", $idPrefix, $fitId)
+            ]);
+
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
             curl_setopt($ch, CURLOPT_VERBOSE, true);
-            curl_setopt($ch,CURLOPT_STDERR ,fopen('./svcfitstat.log', 'w+'));
-            // Receive server response ...
+
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
             curl_close($ch);
@@ -706,22 +715,30 @@
             if (!$responseData) {
                 Log::error("Invalid response from fit stat service: ".$responseData." for input ".$query);
 
-                FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
+                if ($idPrefix == config('fits.prefix.default')) {
+                    FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
+                }
                 throw new Exception("The fit stat service returned malformed response");
             }
 
             if(!isset($responseData["success"])) {
-                FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
+                if ($idPrefix == config('fits.prefix.default')) {
+                    FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
+                }
                 throw new RuntimeException("No 'status' key in SVCFITSTAT response: ".print_r($responseData, 1));
             }
 
             if ($responseData["success"]) {
-                FitHistoryController::addEntry($fitId, "Submitted fit for stats calculation");
+                if ($idPrefix == config('fits.prefix.default')) {
+                    FitHistoryController::addEntry($fitId, "Submitted fit for stats calculation");
+                }
                 Log::info("Submitted fit to svcfitstat.");
                 return true;
             }
             else {
-                FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
+                if ($idPrefix == config('fits.prefix.default')) {
+                    FitHistoryController::addEntry($fitId, "Could not submit fit for stats calculation.");
+                }
                 Log::error("Negative response input ".$query.": ".print_r($responseData, true));
                 return false;
             }
@@ -757,7 +774,7 @@
          * @return mixed
          * @throws Exception
          */
-        public static function getShipIDFromEft(string $fit) {
+        public static function getShipIDFromEft(string $fit, bool $ignoreAbyssLimits = false) {
 
             // Get lines
             $lines = explode("\n", trim($fit));
@@ -771,12 +788,18 @@
                 throw new Exception("Could not extract the ship name from the EFT fit. ", 0, $e);
             }
 
-            Log::debug("Found ship: ".$shipName);
+//            Log::debug("Found ship: ".$shipName);
+            if (!$ignoreAbyssLimits) {
+                $shipId = DB::table("ship_lookup")->where('NAME', ucfirst(strtolower($shipName)))->value('ID');
 
-            $shipId = DB::table("ship_lookup")->where('NAME', ucfirst(strtolower($shipName)))->value('ID');
-
-            if (!$shipId) {
-                throw new Exception("Broken ship fit, unsupported fit, or the selected ship cannot go into the Abyss.");
+                if (!$shipId) {
+                    throw new Exception("Broken ship fit, unsupported fit, or the selected ship cannot go into the Abyss.");
+                }
+            }
+            else {
+                /** @var ResourceLookupService $rls */
+                $rls = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+                $shipId = $rls->itemNameToId($shipName);
             }
 
             return $shipId;

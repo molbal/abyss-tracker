@@ -39,6 +39,11 @@
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.index" == $currentRoute)}}/job.png">Fits</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{"pvp.index" == $currentRoute ? "active" : ""}}"
+                   href="{{route("pvp.index")}}">
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("pvp.index" == $currentRoute)}}/sword.png">Abyssal Grounds</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{"tutorials.index" == $currentRoute ? "active" : ""}}"
                    href="{{route("tutorials.index")}}">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("tutorials.index" == $currentRoute)}}/signpost.png">Tutorials</a>
