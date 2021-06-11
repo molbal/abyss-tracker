@@ -4,7 +4,9 @@
     namespace App\Http\Controllers;
 
 
+    use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\EFT\Tags\TagsController;
+    use App\Run;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
@@ -195,6 +197,7 @@
 
             foreach ($results as $i => $result) {
                 $results[$i]->TAGS = $this->getFitTags($result->ID);
+                $results[$i]->PROFIT = Run::where('CHAR_ID', AuthController::getLoginId())->where('FIT_ID', $result->ID)->sum('LOOT_ISK');
             }
             return view("components.fits.mine-list", [
                 'results' => $results

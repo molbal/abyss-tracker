@@ -84,7 +84,7 @@
                 <table class="table table-sm text-small">
                     <tr><td>Date destroyed</td><td>{{$victim->created_at}}</td></tr>
                     <tr><td>Synced to the leaderboard</td><td>{{$victim->updated_at}}</td></tr>
-                    <tr><td>Stats calculated</td><td>{{$victim->stats->updated_at ?? 'In progress..'}}</td></tr>
+                    <tr><td>Stats calculated</td><td>{{$victim->hasWorkingStats() ? $victim->stats->updated_at : 'In progress..'}}</td></tr>
                 </table>
             </div>
         </div>

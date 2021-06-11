@@ -12,6 +12,7 @@
     */
 
     use App\Http\Controllers\FitsController;
+    use App\Http\Controllers\FitSearchController;
     use App\Http\Controllers\GraphHelper;
     use App\Http\Controllers\ItemController;
     use App\Http\Controllers\Misc\QrController;
@@ -81,7 +82,7 @@
     Route::get("/fit/{id}/change-privacy/{privacySetting}", 'FitsController@changePrivacy')->name('fit.change_privacy')->middleware("sso");
     Route::get("/fit/{id}", [FitsController::class, 'get'])->name('fit_single');
     Route::get("/fits", 'FitSearchController@index')->name("fit.index");
-    Route::get("/fits/mine", 'FitSearchController@mine')->name("fit.mine")->middleware("sso");
+    Route::get("/fits/mine", [FitSearchController::class, 'mine'])->name("fit.mine")->middleware("sso");
     Route::any("/fits/search", 'FitSearchController@search')->name("fit.search");
     Route::post("/fits/search/ajax", 'FitSearchController@searchAjax')->name("fit.search.ajax");
     Route::post("/fits/update/description", [FitsController::class, 'updateDescription'])->name("fit.update.description")->middleware("sso");

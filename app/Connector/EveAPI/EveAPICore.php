@@ -5,8 +5,10 @@
 
 
     use App\Http\Controllers\ESITokenController;
+    use CurlHandle;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Str;
 
     abstract class EveAPICore
 	{
@@ -31,7 +33,7 @@
 		 *
 		 * @param int $charId Character ID
 		 *
-		 * @return false|resource
+		 * @return CurlHandle|false
 		 * @throws \Exception
 		 */
 		protected function createGet(int $charId = null)
@@ -63,24 +65,37 @@
          * @return mixed
          * @throws \Exception
          */
-		protected function simpleGet(?int $charId, string $fullPath, bool $asAssocArray = false)
-		{
+		protected function simpleGet(?int $charId, string $fullPath, bool $asAssocArray = false) {
 
-			$curl = curl_init();
+            $attemptsLeft = 5;
+            $succ = false;
+            while ($attemptsLeft-- > 0) {
+                $curl = curl_init();
 
-			if ($charId) {
-				$tokenController = new ESITokenController($charId);
-				$accessToken = $tokenController->getAccessToken();
-			}
-			curl_setopt_array($curl, [
-				CURLOPT_RETURNTRANSFER => 1,
-				CURLOPT_USERAGENT => $this->userAgent,
-				CURLOPT_URL => $this->apiRoot . $fullPath,
-				CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json']
-			]);
-			$ret = curl_exec($curl);
-//			dd($this->apiRoot . $fullPath, $ret);
-			curl_close($curl);
+                if ($charId) {
+                    $tokenController = new ESITokenController($charId);
+                    $accessToken = $tokenController->getAccessToken();
+                }
+                curl_setopt_array($curl, [
+                    CURLOPT_RETURNTRANSFER => 1,
+                    CURLOPT_USERAGENT => $this->userAgent,
+                    CURLOPT_URL => $this->apiRoot . $fullPath,
+                    CURLOPT_HTTPHEADER => [
+                        isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json'
+                    ]
+                ]);
+                $ret = curl_exec($curl);
+
+                if (Str::of($ret)->contains(['Bad gateway', 'Timeout contacting tranquility', 'The datasource tranquility is temporarily unavailable'])) {
+                    $succ = false;
+                    sleep(1);
+                }
+                else {
+                    $succ = true;
+                }
+
+                curl_close($curl);
+            }
 
 			return json_decode($ret, $asAssocArray);
 		}

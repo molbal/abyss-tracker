@@ -5,6 +5,7 @@
 
     use App\Connector\EveAPI\EveAPICore;
     use App\Connector\EveAPI\Universe\ResourceLookupService;
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\Log;
 
     class LocationService extends EveAPICore {
@@ -18,6 +19,8 @@
          * @throws \Exception
          */
         public function getCurrentLocation(int $charId) : ?\stdClass {
+            return Cache::remember('location.'.$charId, now()->addSeconds(5), function () use ($charId) {
+
             $c = $this->createGet($charId);
             try {
 
@@ -27,7 +30,7 @@
                 $val = json_decode($ret);
                 /** @var ResourceLookupService $res */
                 $res = resolve("App\Connector\EveAPI\Universe\ResourceLookupService");
-                $val->solar_system_name = $res->getSystemName($val->solar_system_id);
+                $val->solar_system_name = $res->getSystemName($val->solar_system_id) ?? "";
                 if (isset($val->station_id)) $val->station_name = $res->getStationName($val->station_id);
                 if (isset($val->structure_id)) $val->structure_name = $res->getStructureName($val->structure_id);
 
@@ -39,6 +42,7 @@
             } finally {
                 curl_close($c);
             }
+            });
         }
 
 
