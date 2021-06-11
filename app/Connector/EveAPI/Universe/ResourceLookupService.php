@@ -98,9 +98,7 @@
             if ($this->forevercacheHas($stationId)) {
                 return $this->forevercacheGet($stationId);
             }
-
             $stationName = $this->simpleGet(null, "universe/stations/{$stationId}/")->name ?? "[unknown station $stationId]";
-
 
             $this->forevercachePut($stationId, $stationName);
             return $stationName;
@@ -119,6 +117,7 @@
             if ($this->forevercacheHas($systemId)) {
                 return $this->forevercacheGet($systemId);
             }
+
 
             $ch = $this->createGet();
             curl_setopt($ch, CURLOPT_URL, $this->apiRoot . "universe/systems/{$systemId}/");
