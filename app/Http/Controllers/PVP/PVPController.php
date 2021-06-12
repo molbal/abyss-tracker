@@ -49,7 +49,8 @@ class PVPController extends Controller
             $currentEvent = PvpEvent::getCurrentEvent();
             return redirect(route('pvp.get', ['slug' => $currentEvent->slug]));
         } catch (BusinessLogicException $e) {
-            return ErrorHelper::errorPage("No ongoing EVE_NT event", "Nothing here right now");
+            $events = PvpEvent::withCount('kills')->orderByDesc('created_at')->paginate(30);
+            return  view('pvp.events', ['feed' => $events]);
         }catch (\Exception $e) {
             return ErrorHelper::errorPage("Error: ".$e->getMessage(), "Something went wrong");
         }
