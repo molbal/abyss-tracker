@@ -311,6 +311,8 @@ class PVPController extends Controller
             return ['success' => false, 'message' => 'Killmail save failed: '.$e->getMessage().' '.$e->getTraceAsString()];
         }
 
+        $hasNotNpc = false;
+
         foreach ($kill->attackers as $attacker) {
 
             // Load and save ship and weapon
@@ -334,10 +336,25 @@ class PVPController extends Controller
                 'ship_type_id' => $attacker->ship_type_id ?? null,
                 'weapon_type_id' => $attacker->weapon_type_id ?? null,
             ]);
+
+            if (!$hasNotNpc && $model->isCapsuleer()) {
+                $hasNotNpc = true;
+            }
+
             $model->save();
         }
 
-        Log::info('Killmail '.$kill->killmail_id.' saved');
+
+        if (!$hasNotNpc) {
+            $victim->attackers()->delete();
+            $victim->delete();
+            Log::info('Killmail '.$kill->killmail_id.' dropped - NPC attackers only');
+            return ['success' => true, 'message' => 'Kill ignored - NPC attackers only'];
+
+        }
+        else {
+            Log::info('Killmail '.$kill->killmail_id.' saved');
+        }
 
 
         try {
@@ -350,6 +367,7 @@ class PVPController extends Controller
         catch (\Exception $e) {
             return ['success' => false, 'message' => 'Could not dispatch event: '.$e->getMessage().' '.$e->getTraceAsString()];
         }
+
 
 
         try {

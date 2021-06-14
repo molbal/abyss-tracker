@@ -41,6 +41,7 @@ class PvpEvent extends Model
     use HasFactory;
 
     protected $table = 'pvp_events';
+    public $timestamps = false;
 
     public function kills() {
         return $this->hasMany('App\Pvp\PvpVictim', 'pvp_event_id', 'id');
