@@ -50,7 +50,7 @@
                 $types = ["Electrical", "Dark", "Exotic", "Firestorm", "Gamma"];
                 Log::channel("droprate")->info("Starting item drop rate calculation.");
 
-                Cache::put("recalc-notice", "We are currently updating drop rates.", now()->addMinutes(20));
+                Cache::put("recalc-notice", "Adjusting drop rates during downtime.. ", now()->addMinutes(20));
                 Cache::put("recalc-current", 0, now()->addMinutes(20));
                 Cache::put("recalc-all", $items->count(), now()->addMinutes(20));
                 $k = 0;

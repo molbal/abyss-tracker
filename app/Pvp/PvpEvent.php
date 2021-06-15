@@ -52,8 +52,7 @@ class PvpEvent extends Model
      */
     public static function getCurrentEvent(): PvpEvent {
         try {
-
-        return Cache::remember('pvp.events.current', now()->addHour(), function () {return PvpEvent::whereIsCurrent(true)->firstOrFail();});
+            return Cache::remember('pvp.events.current', now()->addHour(), function () {return PvpEvent::whereIsCurrent(true)->firstOrFail();});
         } catch (ModelNotFoundException $e) {
             throw new BusinessLogicException("No current event.");
         }

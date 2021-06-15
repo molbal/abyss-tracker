@@ -116,12 +116,8 @@
 @component("layout.navbar")@endcomponent
 <div class="container">
     {!! \App\Http\Controllers\Misc\NotificationController::renderInfoline() !!}
-    @if(\Illuminate\Support\Facades\Cache::has("recalc-notice"))
-        <div class="alert alert-warning border-0 shadow-sm mt-3">
-            {{\Illuminate\Support\Facades\Cache::get("recalc-notice")}} <br>
-            We are currently processing task #{{\Illuminate\Support\Facades\Cache::get("recalc-current")}} out
-            of {{\Illuminate\Support\Facades\Cache::get("recalc-all")}}
-        </div>
+    @if(cache()->has("recalc-notice"))
+        <div class="alert alert-warning border-0 shadow-sm mt-3">{{cache("recalc-notice")}}  ({{round(100*cache('recalc-current')/min(1, cache('recalc-all')), 2)}})%</div>
     @endif
     @yield('content')
 </div>

@@ -145,19 +145,21 @@ class PVPController extends Controller
         $event = PvpEvent::whereSlug($slug)->firstOrFail();
 
         $ship = PvpTypeIdLookup::whereId($id)->firstOrFail();
-        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where ship_type_id=%d)", $id))->get();
-        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.ship_type_id', '=', $id)->get();
-        $feed = $kills->merge($losses)->sortByDesc('created_at');
-
+        $feed = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where ship_type_id=%d)", $id))->orWhere('pvp_victims.ship_type_id', '=', $id)->orderByDesc('created_at')->paginate(10);
 
         $topWeps = PvpStats::getChartContainerTopWeaponsShip($event, $id);
         $winRate = PvpStats::getChartcontainerWinrateShip($event, $id);
+
+        $effectiveAgainst = PvpStats::getShipEffectiveAgainstChart($event, $id);
+        $counters = PvpStats::getShipCountersChart($event, $id);
         return view('pvp.ship', [
             'event' => $event,
             'ship' => $ship,
             'feed' => $feed,
             'topWeaponsChart' => $topWeps,
             'winRateChart' => $winRate,
+            'effectiveAgainst' => $effectiveAgainst,
+            'counters' => $counters,
         ]);
 
     }
