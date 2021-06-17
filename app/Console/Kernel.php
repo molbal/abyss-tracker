@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('abyss:clearsearch')->daily()->withoutOverlapping()->runInBackground();
         $schedule->command('abyss:get-missing-metadata')->hourly()->withoutOverlapping()->runInBackground();
         $schedule->command('abyss:requeue-pvp')->hourly()->withoutOverlapping()->runInBackground();
+        $schedule->command('abyss:events-pvp')->hourly()->withoutOverlapping()->runInBackground();
     }
 
     /**

@@ -49,7 +49,8 @@ class PVPController extends Controller
             $currentEvent = PvpEvent::getCurrentEvent();
             return redirect(route('pvp.get', ['slug' => $currentEvent->slug]));
         } catch (BusinessLogicException $e) {
-            return ErrorHelper::errorPage("No ongoing EVE_NT event", "Nothing here right now");
+            $events = PvpEvent::withCount('kills')->orderByDesc('created_at')->paginate(30);
+            return  view('pvp.events', ['feed' => $events]);
         }catch (\Exception $e) {
             return ErrorHelper::errorPage("Error: ".$e->getMessage(), "Something went wrong");
         }
@@ -144,19 +145,21 @@ class PVPController extends Controller
         $event = PvpEvent::whereSlug($slug)->firstOrFail();
 
         $ship = PvpTypeIdLookup::whereId($id)->firstOrFail();
-        $kills = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where ship_type_id=%d)", $id))->get();
-        $losses = PvpVictim::wherePvpEvent($event)->where('pvp_victims.ship_type_id', '=', $id)->get();
-        $feed = $kills->merge($losses)->sortByDesc('created_at');
-
+        $feed = PvpVictim::wherePvpEvent($event)->whereRaw(sprintf("killmail_id in (select killmail_id from pvp_attackers where ship_type_id=%d)", $id))->orWhere('pvp_victims.ship_type_id', '=', $id)->orderByDesc('created_at')->paginate(10);
 
         $topWeps = PvpStats::getChartContainerTopWeaponsShip($event, $id);
         $winRate = PvpStats::getChartcontainerWinrateShip($event, $id);
+
+        $effectiveAgainst = PvpStats::getShipEffectiveAgainstChart($event, $id);
+        $counters = PvpStats::getShipCountersChart($event, $id);
         return view('pvp.ship', [
             'event' => $event,
             'ship' => $ship,
             'feed' => $feed,
             'topWeaponsChart' => $topWeps,
             'winRateChart' => $winRate,
+            'effectiveAgainst' => $effectiveAgainst,
+            'counters' => $counters,
         ]);
 
     }
@@ -310,6 +313,8 @@ class PVPController extends Controller
             return ['success' => false, 'message' => 'Killmail save failed: '.$e->getMessage().' '.$e->getTraceAsString()];
         }
 
+        $hasNotNpc = false;
+
         foreach ($kill->attackers as $attacker) {
 
             // Load and save ship and weapon
@@ -333,10 +338,25 @@ class PVPController extends Controller
                 'ship_type_id' => $attacker->ship_type_id ?? null,
                 'weapon_type_id' => $attacker->weapon_type_id ?? null,
             ]);
+
+            if (!$hasNotNpc && $model->isCapsuleer()) {
+                $hasNotNpc = true;
+            }
+
             $model->save();
         }
 
-        Log::info('Killmail '.$kill->killmail_id.' saved');
+
+        if (!$hasNotNpc) {
+            $victim->attackers()->delete();
+            $victim->delete();
+            Log::info('Killmail '.$kill->killmail_id.' dropped - NPC attackers only');
+            return ['success' => true, 'message' => 'Kill ignored - NPC attackers only'];
+
+        }
+        else {
+            Log::info('Killmail '.$kill->killmail_id.' saved');
+        }
 
 
         try {
@@ -349,6 +369,7 @@ class PVPController extends Controller
         catch (\Exception $e) {
             return ['success' => false, 'message' => 'Could not dispatch event: '.$e->getMessage().' '.$e->getTraceAsString()];
         }
+
 
 
         try {

@@ -14,13 +14,13 @@
             <div class="col-xs-12 col-md-12">
                 <div class="card card-body border-0 shadow-sm p-0 mb-3">
 {{--                    <img src="{{asset("home/1.10.jpg)}}" alt="{{config('tracker.version')}} released" class="w-100 rounded-top shadow-sm" style="min-height: 170px;">--}}
-                    <a href="{{route('pvp.index')}}" class="w-100 m-0 b-0 p-0"><video autoplay loop muted poster="{{asset("home/1.10.3.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none;  object-fit: cover;">
-                        <source src="{{asset("home/1.10.3/1.10.3.mp4")}}" type="video/mp4">
+                    <a href="{{route('pvp.index')}}" class="w-100 m-0 b-0 p-0"><video autoplay loop muted poster="{{asset("home/1.10.4.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none;  object-fit: cover;">
+                        <source src="{{asset("pvp/2v2v2-gallente-cruisers-and-assault-frigates.mp4")}}" type="video/mp4">
 {{--                        <source src="{{asset("home/1.10/webm.webm")}}" type="video/webm">--}}
 {{--                        <source src="{{asset("home/1.10/ogv.ogv")}}" type="video/ogg">--}}
                     </video></a>
                     <div class="p-3 text-center">
-                        <a href="{{route('pvp.index')}}" class="font-weight-bold h5 text-dark">Track the 1v1 Battleship proving event live</a>
+                        <a href="{{route('pvp.index')}}" class="font-weight-bold h5 text-dark">Track proving conduit events live</a>
                         <p class="mb-0">On the Abyss Tracker, by EVE_NT</p>
                     </div>
                 </div>

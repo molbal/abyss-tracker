@@ -1,7 +1,7 @@
 <?php
     return [
         'maintenance-token' => env('MAINTENANCE_TOKEN'),
-        'version' => '1.10.3',
+        'version' => '1.10.4',
         'fileversion' => '110',
         'discord' => 'https://discord.gg/FyNsM5k',
         'submit-tutorial' => 'https://forms.gle/ct4Yc75W4zjbR6Xi7',
@@ -122,7 +122,8 @@
         'pvp' => [
             'bridge-passcode' => env('BRIDGE_PASSCODE'),
             'accept-ids' => [
-                '1v1-battleship-arena' => [638,639,640,641,642,643,644,645,24688,24690,24692,24694,47466]
+                '1v1-battleship-arena' => [638,639,640,641,642,643,644,645,24688,24690,24692,24694,47466],
+                '2v2v2-gallente-cruisers-and-assault-frigates' => [627, 626, 633, 12044, 12042],
             ]
         ]
     ];

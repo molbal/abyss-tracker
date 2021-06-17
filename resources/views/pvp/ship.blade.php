@@ -10,6 +10,27 @@
         </div>
     </div>
 
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+                <div class="card card-body border-0 shadow-sm mb-0 rounded-b-none">
+                    <h5 class="font-weight-bold">{{$ship->name}} effective against <br><small>(No. kills against other ship hulls using {{$ship->name}})</small></h5>
+                    <div class="graph-container h-300px">{!! $effectiveAgainst->container() !!}</div>
+                </div>
+                <div class="card-footer mb-3 rounded-t-none shadow-sm">
+                    @component('components.info-line') Data collected from zKillboard, using character killmails  @endcomponent
+                </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+                <div class="card card-body border-0 shadow-sm mb-0 rounded-b-none">
+                    <h5 class="font-weight-bold">{{$ship->name}} counters <br><small>(No. losses against other ship hulls using {{$ship->name}})</small></h5>
+                    <div class="graph-container h-300px">{!! $counters->container() !!}</div>
+                </div>
+                <div class="card-footer mb-3 rounded-t-none shadow-sm">
+                    @component('components.info-line') Data collected from zKillboard, using character killmails  @endcomponent
+                </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12 col-lg-4">
             <div class="card card-body border-0 shadow-sm mb-0 rounded-b-none">
@@ -35,6 +56,7 @@
                 <em>Nothing
                     here yet</em>
             @endforelse
+            {!! $feed->links() !!}
         </div>
     </div>
 
@@ -45,4 +67,6 @@
 {{--    {!! $topShipsChart->script() !!}--}}
     {!! $topWeaponsChart->script() !!}
     {!! $winRateChart->script() !!}
+    {!! $effectiveAgainst->script() !!}
+    {!! $counters->script() !!}
 @endsection

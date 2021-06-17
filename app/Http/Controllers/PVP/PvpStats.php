@@ -3,6 +3,8 @@
 
 	namespace App\Http\Controllers\PVP;
 
+    use App\Charts\PvpCounters;
+    use App\Charts\PvpEffective;
     use App\Charts\PvpTopAttackersChart;
     use App\Charts\PvpTopShipsChart;
     use App\Charts\PvpTopWeaponsChart;
@@ -13,9 +15,87 @@
     use Illuminate\Contracts\Pagination\LengthAwarePaginator;
     use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
 
     class PvpStats {
+
+        public static function getShipEffectiveAgainstChart(PvpEvent $event, int $shipTypeId) : PvpEffective {
+            $dataset = collect(Cache::remember('ship-effective'.$event->id.".".$shipTypeId, now()->addMinutes(15), function () use ($event, $shipTypeId) {
+                return DB::select('
+                   select v.ship_type_id, s.name, count(v.killmail_id) as cnt
+                    from pvp_victims v
+                             inner join pvp_attackers a on v.killmail_id = a.killmail_id
+                             left join pvp_type_id_lookup s on s.id = v.ship_type_id
+                    where a.ship_type_id = ? and v.pvp_event_id=?
+                    group by v.ship_type_id
+                    order by 3 desc
+                    limit 10;
+               ', [$shipTypeId, $event->id]);
+            }));
+
+
+            $chart = new PvpEffective();
+            $chart->height("300");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->labels($dataset->pluck('name'));
+            $chart->dataset("Effective against", 'pie', $dataset->pluck('cnt'))->options([
+                "radius" => GraphHelper::HOME_PIE_RADIUS_SM
+            ]);
+            $chart->title("Effective against");
+            $chart->options([
+                'label' => [
+                    'position' => 'inside',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 250
+                ],
+                'tooltip'=> [
+                    'confine' => true
+                ]
+            ]);
+
+            return $chart;
+        }
+        public static function getShipCountersChart(PvpEvent $event, int $shipTypeId) : PvpCounters {
+            $dataset = collect(Cache::remember('ship-counter'.$event->id.".".$shipTypeId, now()->addMinutes(15), function () use ($event, $shipTypeId) {
+                return DB::select('
+                   select a.ship_type_id, s.name, count(v.killmail_id) as cnt
+                    from pvp_victims v
+                             inner join pvp_attackers a on v.killmail_id = a.killmail_id
+                             left join pvp_type_id_lookup s on s.id = a.ship_type_id
+                    where v.ship_type_id = ? and v.pvp_event_id=?
+                    group by a.ship_type_id
+                    order by 3 desc
+                    limit 10;
+               ', [$shipTypeId, $event->id]);
+            }));
+
+
+            $chart = new PvpCounters();
+            $chart->height("300");
+            $chart->theme(ThemeController::getChartTheme());
+            $chart->displayAxes(false);
+            $chart->displayLegend(false);
+            $chart->labels($dataset->pluck('name'));
+            $chart->dataset("Counters", 'pie', $dataset->pluck('cnt'))->options([
+                "radius" => GraphHelper::HOME_PIE_RADIUS_SM
+            ]);
+            $chart->title("Effective against");
+            $chart->options([
+                'label' => [
+                    'position' => 'inside',
+                    'alignTo' => 'none',
+                    'bleedMargin' => 250
+                ],
+                'tooltip'=> [
+                    'confine' => true
+                ]
+            ]);
+
+            return $chart;
+        }
 
         public static function getEventFeedPaginator(PvpEvent $event, int $itemsPerPage = 15) : LengthAwarePaginator {
             return PvpVictim::with([
@@ -25,26 +105,6 @@
                 'corporation',
                 'alliance',
                 'ship_type'])->where('pvp_event_id', $event->id)->orderByDesc('pvp_victims.created_at')->paginate($itemsPerPage);
-
-//            DB::table("pvp_victims v")
-//              ->join("pvp_type_id_lookup t", function($join){
-//                  $join->on("v.ship_type_id", "=", "t.id");
-//              })
-//              ->join("pvp_characters pc", function($join){
-//                  $join->on("pc.id", "=", "v.character_id");
-//              })
-//              ->join("pvp_corporati", function($join){
-//                  $join->on("ons", "p", "v.corporation_id");
-//              })
-//              ->leftJoin("pvp_alliances pa", function($join){
-//                  $join->on("v.alliance_id", "=", "pa.id");
-//              })
-//              ->select("v.killmail_id", "v.character_id", "pc.name as character_name", "v.corporation_id", "p.name as corporation_name", "v.alliance_id", "pa.name as alliance_name", "v.ship_type_id", "t.name as ship_name", "v.created_at")
-//              ->where("pvp_event_id", "=", 1)
-//              ->orderBy("v.created_at","desc")
-//              ->get();
-
-
         }
 
         public static function getTopAttackersChart(Model|PvpVictim|Builder $victim) : PvpTopAttackersChart {
