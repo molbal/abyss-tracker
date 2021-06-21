@@ -117,7 +117,7 @@
 <div class="container">
     {!! \App\Http\Controllers\Misc\NotificationController::renderInfoline() !!}
     @if(cache()->has("recalc-notice"))
-        <div class="alert alert-warning border-0 shadow-sm mt-3">{{cache("recalc-notice")}}  ({{round(100*cache('recalc-current')/min(1, cache('recalc-all')), 2)}})%</div>
+        <div class="alert alert-warning border-0 shadow-sm mt-3">{{cache("recalc-notice")}}  ({{round(cache('recalc-current')/min(1, cache('recalc-all')), 2)}})%</div>
     @endif
     @yield('content')
 </div>

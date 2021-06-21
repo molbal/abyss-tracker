@@ -56,7 +56,12 @@ class PvpCorporation extends Model
             'id' => $id, 'name' => $corporation['name'] ?? '[unknown corporation name]'
         ]);
 
-        $entity->save();
+        try {
+            $entity->save();
+        }
+        catch (\Exception $e) {
+            Log::warning("Could not save pvp corporation: possible race condition. ".$e->getMessage());
+        }
         Log::channel('pvp')->debug('Saved corporation '.$corporation['name'].' to the PVP database. (id='.$id.')');
 
     }

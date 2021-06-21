@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a29cc169b638c0176b4b706877b69e8",
+    "content-hash": "4ca87b00dd28f39e3c3bcc98fd11f7ed",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2724,6 +2724,59 @@
                 "source": "https://github.com/MarkBaker/PHPMatrix/tree/2.1.2"
             },
             "time": "2021-01-23T16:37:31+00:00"
+        },
+        {
+            "name": "mojtabaahn/laravel-web-logs",
+            "version": "1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mojtabaahn/laravel-web-logs.git",
+                "reference": "373e6a48b204212d0d849cd0a28c1ec9ef811741"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mojtabaahn/laravel-web-logs/zipball/373e6a48b204212d0d849cd0a28c1ec9ef811741",
+                "reference": "373e6a48b204212d0d849cd0a28c1ec9ef811741",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "7.*|8.*",
+                "illuminate/routing": "7.*|8.*",
+                "illuminate/support": "7.*|8.*",
+                "php": "^8.0|^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mojtabaahn\\LaravelWebLogs\\Providers\\LaravelWebLogsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mojtabaahn\\LaravelWebLogs\\": "./src"
+                },
+                "files": [
+                    "./src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mojtabaa HN",
+                    "email": "mojtabaa.hn@gmail.com"
+                }
+            ],
+            "description": "Access Laravel/Lumen logs from web made easy.",
+            "support": {
+                "issues": "https://github.com/mojtabaahn/laravel-web-logs/issues",
+                "source": "https://github.com/mojtabaahn/laravel-web-logs/tree/1.3.2"
+            },
+            "time": "2021-06-04T13:41:50+00:00"
         },
         {
             "name": "molbal/eveonline-socialite",

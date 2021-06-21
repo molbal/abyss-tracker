@@ -60,7 +60,12 @@ class PvpAlliance extends Model
             'id' => $id, 'name' => $alliance['name'] ?? '[unknown alliance name]'
         ]);
 
-        $entity->save();
+        try {
+            $entity->save();
+        }
+        catch (\Exception $e) {
+            Log::warning("Could not save PvpAlliance: possible race condition. ".$e->getMessage());
+        }
         Log::channel('pvp')->debug('Saved alliance '.$alliance['name'].' to the PVP database. (id='.$id.')');
 
     }
