@@ -6,6 +6,7 @@
     "/css/stream/animations.css": "/css/stream/animations.css",
     "/js/fits.js": "/js/fits.js",
     "/js/new-run.js": "/js/new-run.js",
+    "/js/search/search.js": "/js/search/search.js",
     "/js/stream/stream-base.js": "/js/stream/stream-base.js",
     "/css/new-fit-deps-dark.css": "/css/new-fit-deps-dark.css",
     "/css/new-fit-deps-light.css": "/css/new-fit-deps-light.css",

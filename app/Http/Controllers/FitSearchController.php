@@ -9,6 +9,7 @@
     use App\Run;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Http\Request;
+    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -247,7 +248,7 @@
         /**
          * @param int $id
          *
-         * @return mixed
+         * @return Collection
          */
         public function getFitTags(int $id) {
             return Cache::remember("aft.fits.tags.$id", now()->addSeconds(120), function () use ($id) {

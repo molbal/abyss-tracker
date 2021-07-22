@@ -124,6 +124,12 @@
             'accept-ids' => [
                 '1v1-battleship-arena' => [638,639,640,641,642,643,644,645,24688,24690,24692,24694,47466],
                 '2v2v2-gallente-cruisers-and-assault-frigates' => [627, 626, 633, 12044, 12042],
+                'liberation-games-rifter-ffa' => [587],
             ]
+        ],
+
+        'meili' => [
+            'endpoint' => env('MEILI_ENDPOINT', 'http://127.0.0.1:7700'),
+            'masterKey' => env('MEILI_MASTER', null),
         ]
     ];

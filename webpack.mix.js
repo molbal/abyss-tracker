@@ -20,6 +20,7 @@ mix.js('resources/js/app.js', 'public/js/app.js')
     })
     .js('resources/js/new-run.js', 'public/js/new-run.js')
     .js('resources/js/fits.js', 'public/js/fits.js')
+    .js('resources/js/search/search.js', 'public/js/search/search.js')
     .js('resources/js/stream/stream-base.js', 'public/js/stream/stream-base.js')
     .styles([
         'resources/sass/dependencies-dark/simplemde-theme-dark.min.css'

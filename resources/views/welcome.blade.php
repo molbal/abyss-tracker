@@ -5,6 +5,9 @@
         <h4 class="font-weight-bold">Welcome to Veetor's Abyss Loot Tracker</h4>
         <p>Home of {{$abyss_num}} saved runs ({{$today_num}} new today)</p>
     </div>
+    <div class="d-flex justify-content-between align-items-start mt-5">
+        <div id="autocomplete"></div>
+    </div>
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-12 col-md-8">
             <div class="row">
@@ -350,6 +353,7 @@
 {{--    {!! $survival_chart->script(); !!}--}}
     {!! $lootDistributionCruiser->script(); !!}
     {!! $daily_add_chart->script(); !!}
+    <script type="text/javascript" src="{{asset('js/search/search.js')}}"></script>
     <script type="text/javascript">
 
         $('#tab-head-distribution').on('shown.bs.tab', function (e) {window.{{$lootDistributionCruiser->id}}.resize();});
