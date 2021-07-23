@@ -9188,8 +9188,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var htm_preact__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! htm/preact */ "./node_modules/htm/preact/index.module.js");
 
 
+function _templateObject5() {
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject4() {
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    <strong>", "</strong><span class=\"mx-2\">\xB7</span>", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["<!--<div className=\"aa-ItemWrapper\"><div className=\"aa-ItemContent\"><div className=\"aa-ItemIcon aa-ItemIcon&#45;&#45;alignTop\"><img src=", " alt=", " width=\"40\" height=\"40\" /></div><div className=\"aa-ItemContentBody\"><div className=\"aa-ItemContentTitle\">", "</div></div></div><div className=\"aa-ItemActions\"><buttonclassName=\"aa-ItemActionButton aa-DesktopOnly aa-ActiveOnly\"type=\"button\"title=\"Select\"style={{ pointerEvents: 'none' }}><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"currentColor\"><path d=\"M18.984 6.984h2.016v6h-15.188l3.609 3.609-1.406 1.406-6-6 6-6 1.406 1.406-3.609 3.609h13.172v-4.031z\" /></svg></button></div></div>-->"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Fits</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -9199,7 +9219,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<div className=\"aa-ItemWrapper\">", "</div>"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Items</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -9209,7 +9229,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Movies</span><div className=\"aa-SourceHeaderLine\" />"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Characters</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -9231,20 +9251,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var client = new meilisearch__WEBPACK_IMPORTED_MODULE_3__["MeiliSearch"]({
   host: 'http://127.0.0.1:7700'
 });
-var searchIndex = client.index('movies');
 Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
   container: '#autocomplete',
-  placeholder: 'Search for products',
+  placeholder: 'Search the Abyss Tracker',
   getSources: function getSources(_ref) {
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
       var query;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               query = _ref.query;
-              return _context2.abrupt("return", [{
-                sourceId: 'links',
+              return _context4.abrupt("return", [{
+                sourceId: 'chars',
                 getItems: function getItems(_ref2) {
                   return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
                     var query, a;
@@ -9254,14 +9273,13 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                           case 0:
                             query = _ref2.query;
                             _context.next = 3;
-                            return searchIndex.search(query);
+                            return client.index('chars').search(query);
 
                           case 3:
                             a = _context.sent;
-                            console.log(a);
                             return _context.abrupt("return", a.hits);
 
-                          case 6:
+                          case 5:
                           case "end":
                             return _context.stop();
                         }
@@ -9279,31 +9297,121 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                   },
                   item: function item(_ref4) {
                     var item = _ref4.item;
-                    return AutocompleteProductItem({
+                    return SimpleItem({
                       hit: item
-                    }); //item.title;
+                    });
                   },
                   noResults: function noResults() {
-                    return 'No products for this query.';
+                    return 'No characters found';
+                  }
+                }
+              }, {
+                sourceId: 'items',
+                getItems: function getItems(_ref5) {
+                  return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+                    var query, a;
+                    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            query = _ref5.query;
+                            _context2.next = 3;
+                            return client.index('items').search(query);
+
+                          case 3:
+                            a = _context2.sent;
+                            return _context2.abrupt("return", a.hits);
+
+                          case 5:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2);
+                  }))();
+                },
+                getItemUrl: function getItemUrl(_ref6) {
+                  var item = _ref6.item;
+                  return item.poster;
+                },
+                templates: {
+                  header: function header() {
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject2());
+                  },
+                  item: function item(_ref7) {
+                    var item = _ref7.item;
+                    return SimpleItem({
+                      hit: item
+                    });
+                  },
+                  noResults: function noResults() {
+                    return 'No characters found';
+                  }
+                }
+              }, {
+                sourceId: 'fits',
+                getItems: function getItems(_ref8) {
+                  return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+                    var query, a;
+                    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+                      while (1) {
+                        switch (_context3.prev = _context3.next) {
+                          case 0:
+                            query = _ref8.query;
+                            _context3.next = 3;
+                            return client.index('fits').search(query);
+
+                          case 3:
+                            a = _context3.sent;
+                            return _context3.abrupt("return", a.hits);
+
+                          case 5:
+                          case "end":
+                            return _context3.stop();
+                        }
+                      }
+                    }, _callee3);
+                  }))();
+                },
+                getItemUrl: function getItemUrl(_ref9) {
+                  var item = _ref9.item;
+                  return item.poster;
+                },
+                templates: {
+                  header: function header() {
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject3());
+                  },
+                  item: function item(_ref10) {
+                    var item = _ref10.item;
+                    return FitItem({
+                      hit: item
+                    });
+                  },
+                  noResults: function noResults() {
+                    return 'No fits found';
                   }
                 }
               }]);
 
             case 2:
             case "end":
-              return _context2.stop();
+              return _context4.stop();
           }
         }
-      }, _callee2);
+      }, _callee4);
     }))();
-  }
+  },
+  debug: true
 });
 
-function AutocompleteProductItem(_ref5) {
-  var hit = _ref5.hit;
-  console.log(hit);
-  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject2(), hit.title);
-  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject3(), hit.poster, hit.title, hit.title);
+function FitItem(_ref11) {
+  var hit = _ref11.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject4(), hit.url, hit.img, hit.name, hit.name, hit.hull, hit.tags);
+}
+
+function SimpleItem(_ref12) {
+  var hit = _ref12.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject5(), hit.url, hit.img, hit.name, hit.name);
 }
 
 /***/ }),
