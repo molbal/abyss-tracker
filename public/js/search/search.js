@@ -9188,8 +9188,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var htm_preact__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! htm/preact */ "./node_modules/htm/preact/index.module.js");
 
 
-function _templateObject5() {
+function _templateObject7() {
   var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject6() {
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    <strong>", "</strong><span class=\"mx-2\">\xB7</span>", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject6 = function _templateObject6() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject5() {
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Tutorials</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -9199,7 +9219,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    <strong>", "</strong><span class=\"mx-2\">\xB7</span>", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Proving Ground events</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -9255,14 +9275,14 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
   container: '#autocomplete',
   placeholder: 'Search the Abyss Tracker',
   getSources: function getSources(_ref) {
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
       var query;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
               query = _ref.query;
-              return _context4.abrupt("return", [{
+              return _context6.abrupt("return", [{
                 sourceId: 'chars',
                 getItems: function getItems(_ref2) {
                   return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
@@ -9391,27 +9411,113 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                     return 'No fits found';
                   }
                 }
+              }, {
+                sourceId: 'events',
+                getItems: function getItems(_ref11) {
+                  return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+                    var query, a;
+                    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            query = _ref11.query;
+                            _context4.next = 3;
+                            return client.index('pvp_events').search(query);
+
+                          case 3:
+                            a = _context4.sent;
+                            return _context4.abrupt("return", a.hits);
+
+                          case 5:
+                          case "end":
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4);
+                  }))();
+                },
+                getItemUrl: function getItemUrl(_ref12) {
+                  var item = _ref12.item;
+                  return item.poster;
+                },
+                templates: {
+                  header: function header() {
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject4());
+                  },
+                  item: function item(_ref13) {
+                    var item = _ref13.item;
+                    return SimpleItem({
+                      hit: item
+                    });
+                  },
+                  noResults: function noResults() {
+                    return 'No events found';
+                  }
+                }
+              }, {
+                sourceId: 'tutorials',
+                getItems: function getItems(_ref14) {
+                  return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+                    var query, a;
+                    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+                      while (1) {
+                        switch (_context5.prev = _context5.next) {
+                          case 0:
+                            query = _ref14.query;
+                            _context5.next = 3;
+                            return client.index('tutorials').search(query);
+
+                          case 3:
+                            a = _context5.sent;
+                            return _context5.abrupt("return", a.hits);
+
+                          case 5:
+                          case "end":
+                            return _context5.stop();
+                        }
+                      }
+                    }, _callee5);
+                  }))();
+                },
+                getItemUrl: function getItemUrl(_ref15) {
+                  var item = _ref15.item;
+                  return item.poster;
+                },
+                templates: {
+                  header: function header() {
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject5());
+                  },
+                  item: function item(_ref16) {
+                    var item = _ref16.item;
+                    return SimpleItem({
+                      hit: item
+                    });
+                  },
+                  noResults: function noResults() {
+                    return 'No events found';
+                  }
+                }
               }]);
 
             case 2:
             case "end":
-              return _context4.stop();
+              return _context6.stop();
           }
         }
-      }, _callee4);
+      }, _callee6);
     }))();
   },
   debug: true
 });
 
-function FitItem(_ref11) {
-  var hit = _ref11.hit;
-  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject4(), hit.url, hit.img, hit.name, hit.name, hit.hull, hit.tags);
+function FitItem(_ref17) {
+  var hit = _ref17.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject6(), hit.url, hit.img, hit.name, hit.name, hit.hull, hit.tags);
 }
 
-function SimpleItem(_ref12) {
-  var hit = _ref12.hit;
-  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject5(), hit.url, hit.img, hit.name, hit.name);
+function SimpleItem(_ref18) {
+  var hit = _ref18.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject7(), hit.url, hit.img, hit.name, hit.name);
 }
 
 /***/ }),

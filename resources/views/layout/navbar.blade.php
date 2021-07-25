@@ -2,7 +2,7 @@
     $currentRoute = Route::currentRouteName();
 @endphp
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-    <a class="navbar-brand" href="{{route("home")}}" data-toggle="tooltip" title="Homepage"><img src="/icon.png" alt=""> {{config("app.name")}}</a>
+    <a class="navbar-brand" href="{{route("home")}}" data-toggle="tooltip" title="Homepage"><img src="/icon.png" alt=""></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -93,7 +93,8 @@
                 </div>
             </li>
         </ul>
-            <form class="ml-auto">
+        <div id="autocomplete" class="ml-auto mr-0" style="min-height: 45px; min-width: 200px;"></div>
+            <form class="ml-3">
             @if(\App\Http\Controllers\Auth\AuthController::isLoggedIn())
                 <li class="nav-item dropdown" style="list-style: none">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

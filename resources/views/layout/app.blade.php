@@ -106,6 +106,12 @@
         .triglavian {
             font-family: 'Triglavian', cursive;
         }
+        a.aa-ItemLink:hover, a.aa-ItemContentBody:hover {
+            text-decoration: none !important;
+        }
+        #autocomplete-0-label {
+            margin-bottom: 0;
+        }
     </style>
     @yield('styles')
     @if (isset($og))
@@ -232,6 +238,20 @@
         integrity="sha256-rOpd4voNU/iOOklhdb2rhwe4OaXfo7vIO3f7Tc8xe0o=" crossorigin="anonymous"></script>
 <script src="{{asset("js/app.js")}}"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+@if(\App\Http\Controllers\ThemeController::isDarkTheme())
+    <style>
+        :root {
+            --aa-input-background-color-rgb: 10,11,13;
+            --aa-background-color-rgb: 15,17,19;
+            --aa-background-color-alpha: 0.95;
+            --aa-text-color-rgb: 244,244,244;
+            --aa-primary-color-rgb:227,52,47;
+            --aa-muted-color-rgb:138,152,161;
+            --aa-input-border-color-alpha:0;
+        }
+    </style>
+@endif
 @yield('scripts')
 <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 <script>

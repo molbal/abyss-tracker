@@ -68,21 +68,40 @@ autocomplete({
                 },
             },
             {
-                sourceId: 'items',
+                sourceId: 'events',
                 async getItems({ query }) {
-                    const a =  await client.index('items').search(query);
+                    const a =  await client.index('pvp_events').search(query);
                     return a.hits;
                 },
                 getItemUrl({ item }) {
                     return item.poster;
                 },
                 templates: {
-                    header() {return html`<span className="aa-SourceHeaderTitle">Items</span><div className="aa-SourceHeaderLine" />`},
+                    header() {return html`<span className="aa-SourceHeaderTitle">Proving Ground events</span><div className="aa-SourceHeaderLine" />`},
                     item({ item }) {
                         return SimpleItem({hit: item});
                     },
                     noResults() {
-                        return 'No characters found';
+                        return 'No events found';
+                    },
+                },
+            },
+            {
+                sourceId: 'tutorials',
+                async getItems({ query }) {
+                    const a =  await client.index('tutorials').search(query);
+                    return a.hits;
+                },
+                getItemUrl({ item }) {
+                    return item.poster;
+                },
+                templates: {
+                    header() {return html`<span className="aa-SourceHeaderTitle">Tutorials</span><div className="aa-SourceHeaderLine" />`},
+                    item({ item }) {
+                        return SimpleItem({hit: item});
+                    },
+                    noResults() {
+                        return 'No events found';
                     },
                 },
             },

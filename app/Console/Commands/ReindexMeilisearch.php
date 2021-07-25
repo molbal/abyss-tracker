@@ -11,6 +11,7 @@ use App\VideoTutorial;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use MeiliSearch\Client;
 use MeiliSearch\Exceptions\ApiException;
 
@@ -182,8 +183,8 @@ class ReindexMeilisearch extends Command
                 $formeili[] = [
                     'id' => $item->slug,
                     'name' => $item->name,
-                    'img' => HelperController::getItemImgLink($item->ITEM_ID, 64),
-                    'url' => route('item_single', ['item_id' => $item->ITEM_ID])
+                    'img' => asset('event.webp'),
+                    'url' => route('pvp.get', ['slug' => $item->slug])
                 ];
             }
             $this->info('Sending chunk...');
@@ -195,22 +196,24 @@ class ReindexMeilisearch extends Command
 
         $this->info('Queuing tutorials for indexing');
         try {
-            $this->info('Deleting old index: tutorial');
-            $meili->deleteIndex('tutorial');
-            $this->info('Deleted old index: tutorial');
+            $this->info('Deleting old index: tutorials');
+            $meili->deleteIndex('tutorials');
+            $this->info('Deleted old index: tutorials');
         }
         catch (\Exception $e) {
             $this->warn("Old index could not be deleted: ".$e->getMessage());
         }
         sleep(1);
-        $tutorialsIndex = $meili->createIndex('tutorial');
+        $tutorialsIndex = $meili->createIndex('tutorials');
         /** @var FitSearchController $fss */
         VideoTutorial::orderBy('id')->chunk(100, function ($items) use ($tutorialsIndex, $fss) {
             $this->info('Collecting info...');
             foreach ($items as $item) {
                 $formeili[] = [
                     'id' => $item->id,
-                    'name' => $item->name
+                    'name' => $item->name,
+                    'img' => asset('aura.webp'),
+                    'url' => route('tutorials.get', ['id' => $item->id, 'slug' => Str::slug($item->name)])
                 ];
             }
             $this->info('Sending chunk...');
