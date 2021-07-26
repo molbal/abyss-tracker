@@ -41,14 +41,8 @@
             <li class="nav-item">
                 <a class="nav-link {{"pvp.index" == $currentRoute ? "active" : ""}}"
                    href="{{route("pvp.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("pvp.index" == $currentRoute)}}/sword.png">Proving Grounds<sup class="badge badge-danger ml-1">Beta</sup></a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("pvp.index" == $currentRoute)}}/sword.png">Event watch<sup class="badge badge-danger ml-1">β</sup></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{"tutorials.index" == $currentRoute ? "active" : ""}}"
-                   href="{{route("tutorials.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("tutorials.index" == $currentRoute)}}/signpost.png">Tutorials</a>
-            </li>
-
             <li class="nav-item dropdown has-megamenu">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == $currentRoute)}}/info.png">Overview</a></a>
@@ -80,9 +74,10 @@
             </li>
             <li class="nav-item dropdown" style="list-style: none">
                 <a href="#" class="nav-link dropdown-toggle" id="newsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/medical-id.png">Community <sup>({{config("tracker.version")}})</sup></a>
+                    <img src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/medical-id.png">Community</a>
                 </a>
                 <div class="dropdown-menu fade-down shadow" aria-labelledby="newsDropdown">
+                    <a href="{{route("tutorials.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/signpost.png"> Tutorials</a>
                     <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
                     <a href="{{route("donors.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/like.png"> Donations</a>
                     <a href="{{route('community.discord')}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/material-sharp/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/discord-logo.png"> Join Abyssal Lurkers</a>

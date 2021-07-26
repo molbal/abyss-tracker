@@ -28,7 +28,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="TOTAL_RUNS">Number of all runs and visibility in leaderboard</label>
+                        <label for="TOTAL_RUNS">Number of all runs and visibility in leaderboard and search</label>
                         <select class="form-control select2-nosearch-narrow w-25" name="TOTAL_RUNS" id="TOTAL_RUNS">
                             <option value="0">Hidden</option>
                             <option value="1" {{$access['TOTAL_RUNS'] == 1 ? 'selected' : ''}}>Visible</option>
@@ -55,13 +55,13 @@
                             <option value="1" {{$access['SURVIVAL'] == 1 ? 'selected' : ''}}>Visible</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="SURVIVAL">Display of {{\App\Http\Controllers\Auth\AuthController::getCharName()}} in the character picker in the <a href="{{route('alts.index')}}">Alts Manager</a></label>
-                        <select class="form-control select2-nosearch-narrow w-25" name="ALTS" id="ALTS">
-                            <option value="0">Hidden</option>
-                            <option value="1" {{$access['ALTS'] == 1 ? 'selected' : ''}}>Visible</option>
-                        </select>
-                    </div>
+{{--                    <div class="form-group">--}}
+{{--                        <label for="SURVIVAL">Display of {{\App\Http\Controllers\Auth\AuthController::getCharName()}} in the character picker in the <a href="{{route('alts.index')}}">Alts Manager</a></label>--}}
+{{--                        <select class="form-control select2-nosearch-narrow w-25" name="ALTS" id="ALTS">--}}
+{{--                            <option value="0">Hidden</option>--}}
+{{--                            <option value="1" {{$access['ALTS'] == 1 ? 'selected' : ''}}>Visible</option>--}}
+{{--                        </select>--}}
+{{--                    </div>--}}
                 </div>
                 <div class="card-footer">
                     <button class="btn btn-outline-primary" type="submit">Save</button>

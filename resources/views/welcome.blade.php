@@ -339,15 +339,8 @@
 
 @endsection
 
-@section("styles")
-    <style>
-
-
-        /*.aa-Panel {*/
-        /*    background: #0f1113;*/
-        /*}*/
-    </style>
-    @endsection
+{{--@section("styles")--}}
+{{--    @endsection--}}
 
 @section("scripts")
 {{--    {!! $loot_types_chart->script(); !!}--}}
@@ -356,7 +349,6 @@
 {{--    {!! $survival_chart->script(); !!}--}}
     {!! $lootDistributionCruiser->script(); !!}
     {!! $daily_add_chart->script(); !!}
-    <script type="text/javascript" src="{{asset('js/search/search.js')}}"></script>
     <script type="text/javascript">
 
         $('#tab-head-distribution').on('shown.bs.tab', function (e) {window.{{$lootDistributionCruiser->id}}.resize();});

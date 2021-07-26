@@ -48,30 +48,11 @@ class ReindexMeilisearch extends Command
      */
     public function handle()
     {
-        $meili = new Client(config('tracker.meili.endpoint'), config('tracker.meili.masterKey'));
-//        try {
-//
-//            $index = $meili->index('abyss');
-//            $updateFrom = $index->getAllUpdateStatus();
-//            if ($updateFrom === []) {
-//                $updateFrom = Carbon::parse('1990-01-01 00:00:00');
-//            }
-//            else {
-//                dd("now what? ", $updateFrom);
-//            }
-//        }
-//        catch (\Exception $e) {
-//            if ($e->getMessage() == "Index abyss not found") {
-//                $index = $meili->createIndex('abyss');
-//                $updateFrom = Carbon::parse('1990-01-01 00:00:00');
-//            }
-//            else {
-//                throw  $e;
-//            }
-//        }
-
-
-
+        $meili = new Client(config('tracker.meili.endpoint'), config('tracker.meili.masterKey'), new \GuzzleHttp\Client([
+            'timeout' => 2,
+            'headers' => ['Accept-Encoding' => 'gzip'],
+//            'debug' => true
+        ]));
         $this->info('Queuing chars for indexing');
         try {
             $this->info('Deleting old index: chars');
@@ -83,7 +64,7 @@ class ReindexMeilisearch extends Command
         }
         sleep(1);
         $charsIndex = $meili->createIndex('chars');
-        Char::chunk(100, function ($chars) use ($charsIndex) {
+        Char::with('publicRuns')->whereRaw("CHAR_ID not in (select char_id from privacy where PANEL='TOTAL_RUNS' and DISPLAY='private')")->chunk(100, function ($chars) use ($charsIndex) {
             $this->info('Collecting info...');
             $formeili = [];
             foreach ($chars as $char) {
@@ -92,7 +73,8 @@ class ReindexMeilisearch extends Command
                     'id' => $char->CHAR_ID,
                     'name' => $char->NAME,
                     'img' => HelperController::getCharImgLink($char->CHAR_ID, 64),
-                    'url' => route('profile.index', ['id' => $char->CHAR_ID])
+                    'url' => route('profile.index', ['id' => $char->CHAR_ID]),
+                    'runs' => $char->publicRuns()->count()
                 ];
             }
             $this->info('Sending chunk...');
@@ -121,7 +103,7 @@ class ReindexMeilisearch extends Command
                 /** @var  $fit Fit*/
                 $formeili[] = [
                     'id' => $fit->ID,
-                    'name' => $fit->NAME,
+                    'name' => $fit->NAME." (#".$fit->ID.")",
                     'hull' => $fit->SHIP_NAME,
                     'tags' => $fss->getFitTags($fit->ID)->where('TAG_VALUE', 1)->pluck('TAG_NAME')->map(fn($x) => __('tags.'.$x))->implode(', '),
                     'img' => HelperController::getRenderImgLink($fit->SHIP_ID, 64),
@@ -148,14 +130,16 @@ class ReindexMeilisearch extends Command
         $fitsIndex = $meili->createIndex('items');
         /** @var FitSearchController $fss */
         $fss = resolve('App\Http\Controllers\FitSearchController');
-        DB::table('item_prices')->orderBy('ITEM_ID')->chunk(100, function ($items) use ($fitsIndex, $fss) {
+        DB::table('item_prices')->orderBy('ITEM_ID')->select(['ITEM_ID','NAME','PRICE_SELL','PRICE_BUY'])->chunk(100, function ($items) use ($fitsIndex, $fss) {
             $this->info('Collecting info...');
             foreach ($items as $item) {
                 $formeili[] = [
                     'id' => $item->ITEM_ID,
                     'name' => $item->NAME,
                     'img' => HelperController::getItemImgLink($item->ITEM_ID, 64),
-                    'url' => route('item_single', ['item_id' => $item->ITEM_ID])
+                    'url' => route('item_single', ['item_id' => $item->ITEM_ID]),
+                    'sellPrice' => $item->PRICE_SELL,
+                    'buyPrice' => $item->PRICE_BUY,
                 ];
             }
             $this->info('Sending chunk...');
@@ -180,11 +164,14 @@ class ReindexMeilisearch extends Command
         PvpEvent::orderBy('id')->chunk(100, function ($items) use ($eventsIndex, $fss) {
             $this->info('Collecting info...');
             foreach ($items as $item) {
+                /** @var $item PvpEvent */
                 $formeili[] = [
                     'id' => $item->slug,
                     'name' => $item->name,
                     'img' => asset('event.webp'),
-                    'url' => route('pvp.get', ['slug' => $item->slug])
+                    'url' => route('pvp.get', ['slug' => $item->slug]),
+                    'from' => Carbon::parse($item->created_at)->toDateString(),
+                    'to' => Carbon::parse($item->updated_at)->toDateString()
                 ];
             }
             $this->info('Sending chunk...');
@@ -206,14 +193,16 @@ class ReindexMeilisearch extends Command
         sleep(1);
         $tutorialsIndex = $meili->createIndex('tutorials');
         /** @var FitSearchController $fss */
-        VideoTutorial::orderBy('id')->chunk(100, function ($items) use ($tutorialsIndex, $fss) {
+        VideoTutorial::with('content_creator')->orderBy('id')->chunk(100, function ($items) use ($tutorialsIndex, $fss) {
             $this->info('Collecting info...');
             foreach ($items as $item) {
+                /** @var $item VideoTutorial */
                 $formeili[] = [
                     'id' => $item->id,
                     'name' => $item->name,
-                    'img' => asset('aura.webp'),
-                    'url' => route('tutorials.get', ['id' => $item->id, 'slug' => Str::slug($item->name)])
+                    'img' => HelperController::getCharImgLink($item->content_creator->CHAR_ID ?? 1),
+                    'url' => route('tutorials.get', ['id' => $item->id, 'slug' => Str::slug($item->name)]),
+                    'creator' => $item->content_creator->NAME
                 ];
             }
             $this->info('Sending chunk...');

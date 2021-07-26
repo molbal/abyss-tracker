@@ -112,6 +112,12 @@
         #autocomplete-0-label {
             margin-bottom: 0;
         }
+        .aa-Panel{
+            backdrop-filter: blur(4px);
+        }
+        .aa-InputWrapper>input {
+            min-width: 220px;
+        }
     </style>
     @yield('styles')
     @if (isset($og))
@@ -244,7 +250,7 @@
         :root {
             --aa-input-background-color-rgb: 10,11,13;
             --aa-background-color-rgb: 15,17,19;
-            --aa-background-color-alpha: 0.95;
+            --aa-background-color-alpha: 0.9;
             --aa-text-color-rgb: 244,244,244;
             --aa-primary-color-rgb:227,52,47;
             --aa-muted-color-rgb:138,152,161;
@@ -253,15 +259,17 @@
     </style>
 @endif
 @yield('scripts')
+
 <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 <script>
-
+    window.search_token = @json(\App\Http\Controllers\Search\InstantSearchController::getMeiliSearchPublicKey());
     // Prevent closing from click inside dropdown
     $(document).on('click', '.dropdown-menu', function (e) {
         e.stopPropagation();
     });
     {!! \App\Http\Controllers\Misc\NotificationController::renderToast() !!}
 </script>
+<script type="text/javascript" src="{{asset('js/search/search.js')}}"></script>
 @if(!config("app.debug"))
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86961430-8"></script>
@@ -273,7 +281,6 @@
         gtag('js', new Date());
         gtag('config', 'UA-86961430-8');
     </script>
-
 @endif
 </body>
 </html>

@@ -4040,6 +4040,524 @@ var version = '1.2.2';
 
 /***/ }),
 
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/addHighlightedAttribute.js":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/addHighlightedAttribute.js ***!
+  \*******************************************************************************************************/
+/*! exports provided: addHighlightedAttribute */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addHighlightedAttribute", function() { return addHighlightedAttribute; });
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function addHighlightedAttribute(_ref) {
+  var item = _ref.item,
+      query = _ref.query;
+  return _objectSpread(_objectSpread({}, item), {}, {
+    _highlightResult: {
+      label: {
+        value: query ? item.label.replace(new RegExp(query.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi'), function (match) {
+          return "__aa-highlight__".concat(match, "__/aa-highlight__");
+        }) : item.label
+      }
+    }
+  });
+}
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/constants.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/constants.js ***!
+  \*****************************************************************************************/
+/*! exports provided: LOCAL_STORAGE_KEY, LOCAL_STORAGE_KEY_TEST */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LOCAL_STORAGE_KEY", function() { return LOCAL_STORAGE_KEY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LOCAL_STORAGE_KEY_TEST", function() { return LOCAL_STORAGE_KEY_TEST; });
+var LOCAL_STORAGE_KEY = 'AUTOCOMPLETE_RECENT_SEARCHES';
+var LOCAL_STORAGE_KEY_TEST = '__AUTOCOMPLETE_RECENT_SEARCHES_PLUGIN_TEST_KEY__';
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createLocalStorage.js":
+/*!**************************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createLocalStorage.js ***!
+  \**************************************************************************************************/
+/*! exports provided: createLocalStorage */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createLocalStorage", function() { return createLocalStorage; });
+/* harmony import */ var _getLocalStorage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./getLocalStorage */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/getLocalStorage.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+function createLocalStorage(_ref) {
+  var key = _ref.key,
+      limit = _ref.limit,
+      search = _ref.search;
+  var storage = Object(_getLocalStorage__WEBPACK_IMPORTED_MODULE_0__["getLocalStorage"])({
+    key: key
+  });
+  return {
+    onAdd: function onAdd(item) {
+      storage.setItem([item].concat(_toConsumableArray(storage.getItem())));
+    },
+    onRemove: function onRemove(id) {
+      storage.setItem(storage.getItem().filter(function (x) {
+        return x.id !== id;
+      }));
+    },
+    getAll: function getAll() {
+      var query = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      return search({
+        query: query,
+        items: storage.getItem(),
+        limit: limit
+      }).slice(0, limit);
+    }
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createLocalStorageRecentSearchesPlugin.js":
+/*!**********************************************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createLocalStorageRecentSearchesPlugin.js ***!
+  \**********************************************************************************************************************/
+/*! exports provided: createLocalStorageRecentSearchesPlugin */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createLocalStorageRecentSearchesPlugin", function() { return createLocalStorageRecentSearchesPlugin; });
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/constants.js");
+/* harmony import */ var _createLocalStorage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./createLocalStorage */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createLocalStorage.js");
+/* harmony import */ var _createRecentSearchesPlugin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createRecentSearchesPlugin */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createRecentSearchesPlugin.js");
+/* harmony import */ var _search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./search */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/search.js");
+
+
+
+
+function createLocalStorageRecentSearchesPlugin(_ref) {
+  var key = _ref.key,
+      _ref$limit = _ref.limit,
+      limit = _ref$limit === void 0 ? 5 : _ref$limit,
+      transformSource = _ref.transformSource,
+      _ref$search = _ref.search,
+      search = _ref$search === void 0 ? _search__WEBPACK_IMPORTED_MODULE_3__["search"] : _ref$search,
+      subscribe = _ref.subscribe;
+  var storage = Object(_createLocalStorage__WEBPACK_IMPORTED_MODULE_1__["createLocalStorage"])({
+    key: [_constants__WEBPACK_IMPORTED_MODULE_0__["LOCAL_STORAGE_KEY"], key].join(':'),
+    limit: limit,
+    search: search
+  });
+  return Object(_createRecentSearchesPlugin__WEBPACK_IMPORTED_MODULE_2__["createRecentSearchesPlugin"])({
+    transformSource: transformSource,
+    storage: storage,
+    subscribe: subscribe
+  });
+}
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createRecentSearchesPlugin.js":
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createRecentSearchesPlugin.js ***!
+  \**********************************************************************************************************/
+/*! exports provided: createRecentSearchesPlugin */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRecentSearchesPlugin", function() { return createRecentSearchesPlugin; });
+/* harmony import */ var _algolia_autocomplete_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @algolia/autocomplete-shared */ "./node_modules/@algolia/autocomplete-shared/dist/esm/index.js");
+/* harmony import */ var _createStorageApi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./createStorageApi */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createStorageApi.js");
+/* harmony import */ var _getTemplates__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./getTemplates */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/getTemplates.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+function getDefaultSubcribe(store) {
+  return function subscribe(_ref) {
+    var onSelect = _ref.onSelect;
+    onSelect(function (_ref2) {
+      var item = _ref2.item,
+          state = _ref2.state,
+          source = _ref2.source;
+      var inputValue = source.getItemInputValue({
+        item: item,
+        state: state
+      });
+
+      if (source.sourceId === 'querySuggestionsPlugin' && inputValue) {
+        var recentItem = {
+          id: inputValue,
+          label: inputValue,
+          category: item.__autocomplete_qsCategory
+        };
+        store.addItem(recentItem);
+      }
+    });
+  };
+}
+
+function createRecentSearchesPlugin(_ref3) {
+  var storage = _ref3.storage,
+      _ref3$transformSource = _ref3.transformSource,
+      transformSource = _ref3$transformSource === void 0 ? function (_ref4) {
+    var source = _ref4.source;
+    return source;
+  } : _ref3$transformSource,
+      subscribe = _ref3.subscribe;
+  var store = Object(_createStorageApi__WEBPACK_IMPORTED_MODULE_1__["createStorageApi"])(storage);
+  var lastItemsRef = Object(_algolia_autocomplete_shared__WEBPACK_IMPORTED_MODULE_0__["createRef"])([]);
+  return {
+    subscribe: subscribe !== null && subscribe !== void 0 ? subscribe : getDefaultSubcribe(store),
+    onSubmit: function onSubmit(_ref5) {
+      var state = _ref5.state;
+      var query = state.query;
+
+      if (query) {
+        var recentItem = {
+          id: query,
+          label: query
+        };
+        store.addItem(recentItem);
+      }
+    },
+    getSources: function getSources(_ref6) {
+      var query = _ref6.query,
+          setQuery = _ref6.setQuery,
+          refresh = _ref6.refresh,
+          state = _ref6.state;
+      lastItemsRef.current = store.getAll(query);
+
+      function onRemove(id) {
+        store.removeItem(id);
+        refresh();
+      }
+
+      function onTapAhead(item) {
+        setQuery(item.label);
+        refresh();
+      }
+
+      return Promise.resolve(lastItemsRef.current).then(function (items) {
+        if (items.length === 0) {
+          return [];
+        }
+
+        return [transformSource({
+          source: {
+            sourceId: 'recentSearchesPlugin',
+            getItemInputValue: function getItemInputValue(_ref7) {
+              var item = _ref7.item;
+              return item.label;
+            },
+            getItems: function getItems() {
+              return items;
+            },
+            templates: Object(_getTemplates__WEBPACK_IMPORTED_MODULE_2__["getTemplates"])({
+              onRemove: onRemove,
+              onTapAhead: onTapAhead
+            })
+          },
+          onRemove: onRemove,
+          onTapAhead: onTapAhead,
+          state: state
+        })];
+      });
+    },
+    data: _objectSpread(_objectSpread({}, store), {}, {
+      // @ts-ignore SearchOptions `facetFilters` is ReadonlyArray
+      getAlgoliaSearchParams: function getAlgoliaSearchParams() {
+        var _params$facetFilters, _params$hitsPerPage;
+
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+        // If the items returned by `store.getAll` are contained in a Promise,
+        // we cannot provide the search params in time when this function is called
+        // because we need to resolve the promise before getting the value.
+        if (!Array.isArray(lastItemsRef.current)) {
+           true ? Object(_algolia_autocomplete_shared__WEBPACK_IMPORTED_MODULE_0__["warn"])(false, 'The `getAlgoliaSearchParams` function is not supported with storages that return promises in `getAll`.') : undefined;
+          return params;
+        }
+
+        return _objectSpread(_objectSpread({}, params), {}, {
+          facetFilters: [].concat(_toConsumableArray((_params$facetFilters = params.facetFilters) !== null && _params$facetFilters !== void 0 ? _params$facetFilters : []), _toConsumableArray(lastItemsRef.current.map(function (item) {
+            return ["objectID:-".concat(item.label)];
+          }))),
+          hitsPerPage: Math.max(1, ((_params$hitsPerPage = params.hitsPerPage) !== null && _params$hitsPerPage !== void 0 ? _params$hitsPerPage : 10) - lastItemsRef.current.length)
+        });
+      }
+    })
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createStorageApi.js":
+/*!************************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createStorageApi.js ***!
+  \************************************************************************************************/
+/*! exports provided: createStorageApi */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createStorageApi", function() { return createStorageApi; });
+function createStorageApi(storage) {
+  return {
+    addItem: function addItem(item) {
+      storage.onRemove(item.id);
+      storage.onAdd(item);
+    },
+    removeItem: function removeItem(id) {
+      storage.onRemove(id);
+    },
+    getAll: function getAll(query) {
+      return storage.getAll(query);
+    }
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/getLocalStorage.js":
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/getLocalStorage.js ***!
+  \***********************************************************************************************/
+/*! exports provided: getLocalStorage */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocalStorage", function() { return getLocalStorage; });
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/constants.js");
+
+
+function isLocalStorageSupported() {
+  try {
+    localStorage.setItem(_constants__WEBPACK_IMPORTED_MODULE_0__["LOCAL_STORAGE_KEY_TEST"], '');
+    localStorage.removeItem(_constants__WEBPACK_IMPORTED_MODULE_0__["LOCAL_STORAGE_KEY_TEST"]);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function getLocalStorage(_ref) {
+  var key = _ref.key;
+
+  if (!isLocalStorageSupported()) {
+    return {
+      setItem: function setItem() {},
+      getItem: function getItem() {
+        return [];
+      }
+    };
+  }
+
+  return {
+    setItem: function setItem(items) {
+      return window.localStorage.setItem(key, JSON.stringify(items));
+    },
+    getItem: function getItem() {
+      var items = window.localStorage.getItem(key);
+      return items ? JSON.parse(items) : [];
+    }
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/getTemplates.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/getTemplates.js ***!
+  \********************************************************************************************/
+/*! exports provided: getTemplates */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTemplates", function() { return getTemplates; });
+/** @jsx createElement */
+function getTemplates(_ref) {
+  var onRemove = _ref.onRemove,
+      onTapAhead = _ref.onTapAhead;
+  return {
+    item: function item(_ref2) {
+      var item = _ref2.item,
+          createElement = _ref2.createElement,
+          components = _ref2.components;
+      return createElement("div", {
+        className: "aa-ItemWrapper"
+      }, createElement("div", {
+        className: "aa-ItemContent"
+      }, createElement("div", {
+        className: "aa-ItemIcon aa-ItemIcon--noBorder"
+      }, createElement("svg", {
+        viewBox: "0 0 24 24",
+        fill: "currentColor"
+      }, createElement("path", {
+        d: "M12.516 6.984v5.25l4.5 2.672-0.75 1.266-5.25-3.188v-6h1.5zM12 20.016q3.281 0 5.648-2.367t2.367-5.648-2.367-5.648-5.648-2.367-5.648 2.367-2.367 5.648 2.367 5.648 5.648 2.367zM12 2.016q4.125 0 7.055 2.93t2.93 7.055-2.93 7.055-7.055 2.93-7.055-2.93-2.93-7.055 2.93-7.055 7.055-2.93z"
+      }))), createElement("div", {
+        className: "aa-ItemContentBody"
+      }, createElement("div", {
+        className: "aa-ItemContentTitle"
+      }, createElement(components.ReverseHighlight, {
+        hit: item,
+        attribute: "label"
+      }), item.category && createElement("span", {
+        className: "aa-ItemContentSubtitle aa-ItemContentSubtitle--inline"
+      }, createElement("span", {
+        className: "aa-ItemContentSubtitleIcon"
+      }), " in", ' ', createElement("span", {
+        className: "aa-ItemContentSubtitleCategory"
+      }, item.category))))), createElement("div", {
+        className: "aa-ItemActions"
+      }, createElement("button", {
+        className: "aa-ItemActionButton",
+        title: "Remove this search",
+        onClick: function onClick(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          onRemove(item.id);
+        }
+      }, createElement("svg", {
+        viewBox: "0 0 24 24",
+        fill: "currentColor"
+      }, createElement("path", {
+        d: "M18 7v13c0 0.276-0.111 0.525-0.293 0.707s-0.431 0.293-0.707 0.293h-10c-0.276 0-0.525-0.111-0.707-0.293s-0.293-0.431-0.293-0.707v-13zM17 5v-1c0-0.828-0.337-1.58-0.879-2.121s-1.293-0.879-2.121-0.879h-4c-0.828 0-1.58 0.337-2.121 0.879s-0.879 1.293-0.879 2.121v1h-4c-0.552 0-1 0.448-1 1s0.448 1 1 1h1v13c0 0.828 0.337 1.58 0.879 2.121s1.293 0.879 2.121 0.879h10c0.828 0 1.58-0.337 2.121-0.879s0.879-1.293 0.879-2.121v-13h1c0.552 0 1-0.448 1-1s-0.448-1-1-1zM9 5v-1c0-0.276 0.111-0.525 0.293-0.707s0.431-0.293 0.707-0.293h4c0.276 0 0.525 0.111 0.707 0.293s0.293 0.431 0.293 0.707v1zM9 11v6c0 0.552 0.448 1 1 1s1-0.448 1-1v-6c0-0.552-0.448-1-1-1s-1 0.448-1 1zM13 11v6c0 0.552 0.448 1 1 1s1-0.448 1-1v-6c0-0.552-0.448-1-1-1s-1 0.448-1 1z"
+      }))), createElement("button", {
+        className: "aa-ItemActionButton",
+        title: "Fill query with \"".concat(item.label, "\""),
+        onClick: function onClick(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          onTapAhead(item);
+        }
+      }, createElement("svg", {
+        viewBox: "0 0 24 24",
+        fill: "currentColor"
+      }, createElement("path", {
+        d: "M8 17v-7.586l8.293 8.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414l-8.293-8.293h7.586c0.552 0 1-0.448 1-1s-0.448-1-1-1h-10c-0.552 0-1 0.448-1 1v10c0 0.552 0.448 1 1 1s1-0.448 1-1z"
+      })))));
+    }
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/index.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/index.js ***!
+  \*************************************************************************************/
+/*! exports provided: addHighlightedAttribute, createLocalStorageRecentSearchesPlugin, createRecentSearchesPlugin, getTemplates, search */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _addHighlightedAttribute__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./addHighlightedAttribute */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/addHighlightedAttribute.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "addHighlightedAttribute", function() { return _addHighlightedAttribute__WEBPACK_IMPORTED_MODULE_0__["addHighlightedAttribute"]; });
+
+/* harmony import */ var _createLocalStorageRecentSearchesPlugin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./createLocalStorageRecentSearchesPlugin */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createLocalStorageRecentSearchesPlugin.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createLocalStorageRecentSearchesPlugin", function() { return _createLocalStorageRecentSearchesPlugin__WEBPACK_IMPORTED_MODULE_1__["createLocalStorageRecentSearchesPlugin"]; });
+
+/* harmony import */ var _createRecentSearchesPlugin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createRecentSearchesPlugin */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/createRecentSearchesPlugin.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createRecentSearchesPlugin", function() { return _createRecentSearchesPlugin__WEBPACK_IMPORTED_MODULE_2__["createRecentSearchesPlugin"]; });
+
+/* harmony import */ var _getTemplates__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./getTemplates */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/getTemplates.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "getTemplates", function() { return _getTemplates__WEBPACK_IMPORTED_MODULE_3__["getTemplates"]; });
+
+/* harmony import */ var _search__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./search */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/search.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "search", function() { return _search__WEBPACK_IMPORTED_MODULE_4__["search"]; });
+
+
+
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/search.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/search.js ***!
+  \**************************************************************************************/
+/*! exports provided: search */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "search", function() { return search; });
+/* harmony import */ var _addHighlightedAttribute__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./addHighlightedAttribute */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/addHighlightedAttribute.js");
+
+function search(_ref) {
+  var query = _ref.query,
+      items = _ref.items,
+      limit = _ref.limit;
+
+  if (!query) {
+    return items.slice(0, limit).map(function (item) {
+      return Object(_addHighlightedAttribute__WEBPACK_IMPORTED_MODULE_0__["addHighlightedAttribute"])({
+        item: item,
+        query: query
+      });
+    });
+  }
+
+  return items.filter(function (item) {
+    return item.label.toLowerCase().includes(query.toLowerCase());
+  }).slice(0, limit).map(function (item) {
+    return Object(_addHighlightedAttribute__WEBPACK_IMPORTED_MODULE_0__["addHighlightedAttribute"])({
+      item: item,
+      query: query
+    });
+  });
+}
+
+/***/ }),
+
 /***/ "./node_modules/@algolia/autocomplete-preset-algolia/dist/esm/constants/index.js":
 /*!***************************************************************************************!*\
   !*** ./node_modules/@algolia/autocomplete-preset-algolia/dist/esm/constants/index.js ***!
@@ -9186,10 +9704,61 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var meilisearch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! meilisearch */ "./node_modules/meilisearch/dist/bundles/meilisearch.umd.js");
 /* harmony import */ var meilisearch__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(meilisearch__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var htm_preact__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! htm/preact */ "./node_modules/htm/preact/index.module.js");
+/* harmony import */ var _algolia_autocomplete_plugin_recent_searches__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @algolia/autocomplete-plugin-recent-searches */ "./node_modules/@algolia/autocomplete-plugin-recent-searches/dist/esm/index.js");
 
+
+function _templateObject12() {
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject11() {
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    Created by <strong>", "</strong>\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject10() {
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    <strong>", "</strong> to <strong>", "</strong>\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject9() {
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    <strong>", "</strong> - <strong>", "</strong>\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject9 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject8() {
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    <strong>", "</strong> public runs\n                </div>\n            </div>\n        </div>\n    </a>"]);
+
+  _templateObject8 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
 
 function _templateObject7() {
-  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
+  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    <strong>", "</strong><span class=\"mx-2\">\xB7</span>", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
 
   _templateObject7 = function _templateObject7() {
     return data;
@@ -9199,7 +9768,7 @@ function _templateObject7() {
 }
 
 function _templateObject6() {
-  var data = _taggedTemplateLiteral(["<a href=", " className=\"aa-ItemLink\">\n        <div className=\"aa-ItemContent\" style=\"overflow: visible\">\n            <div className=\"aa-ItemIcon aa-ItemIcon--picture aa-ItemIcon--alignTop shadow rounded-circle\" style=\"width: 40px; height: 40px; border: 1px solid #fff;\" >\n                <img src=", " alt=", "  class=\"p-0 w-100\" />\n            </div>\n            <div className=\"aa-ItemContentBody\">\n                <div className=\"aa-ItemContentTitle\">\n                    ", "\n                </div>\n                <div className=\"aa-ItemContentDescription\">\n                    <strong>", "</strong><span class=\"mx-2\">\xB7</span>", "\n                </div>\n            </div>\n        </div>\n    </a>"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Tutorials</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -9209,7 +9778,7 @@ function _templateObject6() {
 }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Tutorials</span><div className=\"aa-SourceHeaderLine\" />"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Proving Ground events</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -9219,7 +9788,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Proving Ground events</span><div className=\"aa-SourceHeaderLine\" />"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Fits</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -9229,7 +9798,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Fits</span><div className=\"aa-SourceHeaderLine\" />"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Items</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -9239,7 +9808,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Items</span><div className=\"aa-SourceHeaderLine\" />"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Characters</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -9248,8 +9817,12 @@ function _templateObject2() {
   return data;
 }
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Characters</span><div className=\"aa-SourceHeaderLine\" />"]);
+  var data = _taggedTemplateLiteral(["<span className=\"aa-SourceHeaderTitle\">Recent searches</span><div className=\"aa-SourceHeaderLine\" />"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -9260,40 +9833,94 @@ function _templateObject() {
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
 
 
+
+console.log('Abyss Tracker instant search is using ', "https://search.abyss.eve-nt.uk", ' as search server with token: ', window.search_token);
 var client = new meilisearch__WEBPACK_IMPORTED_MODULE_3__["MeiliSearch"]({
-  host: 'http://127.0.0.1:7700'
+  host: "https://search.abyss.eve-nt.uk",
+  apiKey: window.search_token
+});
+window.isk_formatter = new Intl.NumberFormat('de-DE', {
+  style: 'currency',
+  currency: 'ISK',
+  // These options are needed to round to whole numbers if that's what you want.
+  minimumFractionDigits: 2,
+  // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+  maximumFractionDigits: 2 // (causes 2500.99 to be printed as $2,501)
+
+});
+window.isk_formatter_mil = new Intl.NumberFormat('de-DE', {
+  style: 'currency',
+  currency: 'ISK',
+  // These options are needed to round to whole numbers if that's what you want.
+  minimumFractionDigits: 2,
+  // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+  maximumFractionDigits: 2 // (causes 2500.99 to be printed as $2,501)
+
+});
+
+function formatIsk(isk) {
+  return isk > 1000000 ? window.isk_formatter_mil.format(isk / 1000000).replace("ISK", "M ISK") : window.isk_formatter.format(isk);
+}
+
+var meiliQueryOptions = {
+  limit: 5,
+  attributesToHighlight: ['*']
+};
+var recentSearchesPlugin = Object(_algolia_autocomplete_plugin_recent_searches__WEBPACK_IMPORTED_MODULE_5__["createLocalStorageRecentSearchesPlugin"])({
+  key: 'navbar',
+  limit: 3,
+  transformSource: function transformSource(_ref) {
+    var source = _ref.source;
+    return _objectSpread(_objectSpread({}, source), {}, {
+      templates: _objectSpread(_objectSpread({}, source.templates), {}, {
+        header: function header(_ref2) {
+          var state = _ref2.state;
+
+          if (state.query) {
+            return null;
+          }
+
+          return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject());
+        }
+      })
+    });
+  }
 });
 Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
   container: '#autocomplete',
   placeholder: 'Search the Abyss Tracker',
-  getSources: function getSources(_ref) {
+  plugins: [recentSearchesPlugin],
+  detachedMediaQuery: '(max-width: 5000px)',
+  getSources: function getSources(_ref3) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
       var query;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
         while (1) {
           switch (_context6.prev = _context6.next) {
             case 0:
-              query = _ref.query;
+              query = _ref3.query;
               return _context6.abrupt("return", [{
                 sourceId: 'chars',
-                getItems: function getItems(_ref2) {
+                getItems: function getItems(_ref4) {
                   return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
                     var query, a;
                     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
                       while (1) {
                         switch (_context.prev = _context.next) {
                           case 0:
-                            query = _ref2.query;
+                            query = _ref4.query;
                             _context.next = 3;
-                            return client.index('chars').search(query);
+                            return client.index('chars').search(query, meiliQueryOptions);
 
                           case 3:
                             a = _context.sent;
@@ -9307,17 +9934,17 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                     }, _callee);
                   }))();
                 },
-                getItemUrl: function getItemUrl(_ref3) {
-                  var item = _ref3.item;
-                  return item.poster;
+                getItemUrl: function getItemUrl(_ref5) {
+                  var item = _ref5.item;
+                  return item.url;
                 },
                 templates: {
                   header: function header() {
-                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject());
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject2());
                   },
-                  item: function item(_ref4) {
-                    var item = _ref4.item;
-                    return SimpleItem({
+                  item: function item(_ref6) {
+                    var item = _ref6.item;
+                    return CharItem({
                       hit: item
                     });
                   },
@@ -9327,16 +9954,16 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                 }
               }, {
                 sourceId: 'items',
-                getItems: function getItems(_ref5) {
+                getItems: function getItems(_ref7) {
                   return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
                     var query, a;
                     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
-                            query = _ref5.query;
+                            query = _ref7.query;
                             _context2.next = 3;
-                            return client.index('items').search(query);
+                            return client.index('items').search(query, meiliQueryOptions);
 
                           case 3:
                             a = _context2.sent;
@@ -9350,17 +9977,17 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                     }, _callee2);
                   }))();
                 },
-                getItemUrl: function getItemUrl(_ref6) {
-                  var item = _ref6.item;
-                  return item.poster;
+                getItemUrl: function getItemUrl(_ref8) {
+                  var item = _ref8.item;
+                  return item.url;
                 },
                 templates: {
                   header: function header() {
-                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject2());
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject3());
                   },
-                  item: function item(_ref7) {
-                    var item = _ref7.item;
-                    return SimpleItem({
+                  item: function item(_ref9) {
+                    var item = _ref9.item;
+                    return ItemItem({
                       hit: item
                     });
                   },
@@ -9370,16 +9997,16 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                 }
               }, {
                 sourceId: 'fits',
-                getItems: function getItems(_ref8) {
+                getItems: function getItems(_ref10) {
                   return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
                     var query, a;
                     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
                       while (1) {
                         switch (_context3.prev = _context3.next) {
                           case 0:
-                            query = _ref8.query;
+                            query = _ref10.query;
                             _context3.next = 3;
-                            return client.index('fits').search(query);
+                            return client.index('fits').search(query, meiliQueryOptions);
 
                           case 3:
                             a = _context3.sent;
@@ -9393,16 +10020,16 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                     }, _callee3);
                   }))();
                 },
-                getItemUrl: function getItemUrl(_ref9) {
-                  var item = _ref9.item;
-                  return item.poster;
+                getItemUrl: function getItemUrl(_ref11) {
+                  var item = _ref11.item;
+                  return item.url;
                 },
                 templates: {
                   header: function header() {
-                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject3());
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject4());
                   },
-                  item: function item(_ref10) {
-                    var item = _ref10.item;
+                  item: function item(_ref12) {
+                    var item = _ref12.item;
                     return FitItem({
                       hit: item
                     });
@@ -9413,16 +10040,16 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                 }
               }, {
                 sourceId: 'events',
-                getItems: function getItems(_ref11) {
+                getItems: function getItems(_ref13) {
                   return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
                     var query, a;
                     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
                       while (1) {
                         switch (_context4.prev = _context4.next) {
                           case 0:
-                            query = _ref11.query;
+                            query = _ref13.query;
                             _context4.next = 3;
-                            return client.index('pvp_events').search(query);
+                            return client.index('pvp_events').search(query, meiliQueryOptions);
 
                           case 3:
                             a = _context4.sent;
@@ -9436,17 +10063,17 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                     }, _callee4);
                   }))();
                 },
-                getItemUrl: function getItemUrl(_ref12) {
-                  var item = _ref12.item;
-                  return item.poster;
+                getItemUrl: function getItemUrl(_ref14) {
+                  var item = _ref14.item;
+                  return item.url;
                 },
                 templates: {
                   header: function header() {
-                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject4());
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject5());
                   },
-                  item: function item(_ref13) {
-                    var item = _ref13.item;
-                    return SimpleItem({
+                  item: function item(_ref15) {
+                    var item = _ref15.item;
+                    return EventItem({
                       hit: item
                     });
                   },
@@ -9456,16 +10083,16 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                 }
               }, {
                 sourceId: 'tutorials',
-                getItems: function getItems(_ref14) {
+                getItems: function getItems(_ref16) {
                   return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
                     var query, a;
                     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
                       while (1) {
                         switch (_context5.prev = _context5.next) {
                           case 0:
-                            query = _ref14.query;
+                            query = _ref16.query;
                             _context5.next = 3;
-                            return client.index('tutorials').search(query);
+                            return client.index('tutorials').search(query, meiliQueryOptions);
 
                           case 3:
                             a = _context5.sent;
@@ -9479,17 +10106,17 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
                     }, _callee5);
                   }))();
                 },
-                getItemUrl: function getItemUrl(_ref15) {
-                  var item = _ref15.item;
-                  return item.poster;
+                getItemUrl: function getItemUrl(_ref17) {
+                  var item = _ref17.item;
+                  return item.url;
                 },
                 templates: {
                   header: function header() {
-                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject5());
+                    return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject6());
                   },
-                  item: function item(_ref16) {
-                    var item = _ref16.item;
-                    return SimpleItem({
+                  item: function item(_ref18) {
+                    var item = _ref18.item;
+                    return TutorialItem({
                       hit: item
                     });
                   },
@@ -9507,17 +10134,58 @@ Object(_algolia_autocomplete_js__WEBPACK_IMPORTED_MODULE_1__["autocomplete"])({
       }, _callee6);
     }))();
   },
-  debug: true
+  openOnFocus: false,
+  navigator: {
+    navigate: function navigate(_ref19) {
+      var itemUrl = _ref19.itemUrl;
+      console.log('navigator.navigate', itemUrl);
+      window.location.assign(itemUrl);
+    },
+    navigateNewTab: function navigateNewTab(_ref20) {
+      var itemUrl = _ref20.itemUrl;
+      console.log('navigator.navigateNewTab', itemUrl);
+      var windowReference = window.open(itemUrl, '_blank', 'noopener');
+
+      if (windowReference) {
+        windowReference.focus();
+      }
+    },
+    navigateNewWindow: function navigateNewWindow(_ref21) {
+      var itemUrl = _ref21.itemUrl;
+      console.log('navigator.navigateNewWindow', itemUrl);
+      window.open(itemUrl, '_blank', 'noopener');
+    }
+  }
 });
 
-function FitItem(_ref17) {
-  var hit = _ref17.hit;
-  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject6(), hit.url, hit.img, hit.name, hit.name, hit.hull, hit.tags);
+function FitItem(_ref22) {
+  var hit = _ref22.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject7(), hit.url, hit.img, hit.name, hit.name, hit.hull, hit.tags);
 }
 
-function SimpleItem(_ref18) {
-  var hit = _ref18.hit;
-  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject7(), hit.url, hit.img, hit.name, hit.name);
+function CharItem(_ref23) {
+  var hit = _ref23.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject8(), hit.url, hit.img, hit.name, hit.name, hit.runs);
+}
+
+function ItemItem(_ref24) {
+  var hit = _ref24.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject9(), hit.url, hit.img, hit.name, hit.name, formatIsk(hit.buyPrice), formatIsk(hit.sellPrice));
+}
+
+function EventItem(_ref25) {
+  var hit = _ref25.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject10(), hit.url, hit.img, hit.name, hit.name, hit.from, hit.to);
+}
+
+function TutorialItem(_ref26) {
+  var hit = _ref26.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject11(), hit.url, hit.img, hit.name, hit.name, hit.creator);
+}
+
+function SimpleItem(_ref27) {
+  var hit = _ref27.hit;
+  return Object(htm_preact__WEBPACK_IMPORTED_MODULE_4__["html"])(_templateObject12(), hit.url, hit.img, hit.name, hit.name);
 }
 
 /***/ }),

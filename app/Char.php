@@ -29,4 +29,8 @@ class Char extends Model
             return Char::where('CHAR_ID',$id)->firstOrFail()->NAME;
         });
     }
+
+    public function publicRuns() {
+        return $this->hasMany('App\Run', 'CHAR_ID', 'CHAR_ID')->where('PUBLIC', '=', '1');
+    }
 }
