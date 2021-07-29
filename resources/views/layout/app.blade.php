@@ -145,11 +145,13 @@
                     <p class="text-justify">
                         The Abyss Tracker is a "killboard" for your Abyssal Deadspace runs - you can save your exact loot saved, aggregated and compared with others.
                         <br>
+                        <span class="d-inline-block mt-2 pl-0 ml-0">Current EVE time: {{now()}}</span>
+                        <br>
                         <span class="d-inline-block mt-2 pl-0 ml-0">This is currently version {{config('tracker.version')}}.</span>
                     </p>
                     <p><img src="https://img.icons8.com/small/24/ffffff/github.png" class="tinyicon bringupper mr-1">
                         <a href="https://github.com/molbal/abyss-tracker" class="text-white" target="_blank">
-                            Open source
+                            Source code
                         </a>
                     </p>
                 </div>

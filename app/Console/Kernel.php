@@ -24,13 +24,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('abyss:recalc')->cron('0 12 * * *')->withoutOverlapping()->runInBackground();
+        $schedule->command('abyss:recalc')->dailyAt('11:00')->timezone('UTC')->withoutOverlapping()->runInBackground();
         $schedule->command('abyss:checksys')->everyMinute()->withoutOverlapping()->runInBackground();
         $schedule->command('abyss:igdonations')->hourly()->withoutOverlapping()->runInBackground();
         $schedule->command('abyss:clearsearch')->daily()->withoutOverlapping()->runInBackground();
         $schedule->command('abyss:get-missing-metadata')->hourly()->withoutOverlapping()->runInBackground();
         $schedule->command('abyss:requeue-pvp')->hourly()->withoutOverlapping()->runInBackground();
-        $schedule->command('abyss:events-pvp')->hourly()->withoutOverlapping()->runInBackground();
+        $schedule->command('abyss:events-pvp')->dailyAt('11:01')->timezone('UTC')->withoutOverlapping()->runInBackground();
+        $schedule->command('abyss:reindex')->everyTwoHours()->withoutOverlapping()->runInBackground();
     }
 
     /**

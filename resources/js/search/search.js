@@ -58,7 +58,7 @@ const recentSearchesPlugin = createLocalStorageRecentSearchesPlugin({
 autocomplete({
     container: '#autocomplete',
     placeholder: 'Search the Abyss Tracker',
-    plugins: [recentSearchesPlugin],
+    // plugins: [recentSearchesPlugin],
     detachedMediaQuery: '(max-width: 5000px)',
     async getSources({query}) {
         return [

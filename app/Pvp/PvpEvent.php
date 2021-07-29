@@ -46,6 +46,10 @@ class PvpEvent extends Model
     public function kills() {
         return $this->hasMany('App\Pvp\PvpVictim', 'pvp_event_id', 'id');
     }
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     /**
      * @return PvpEvent

@@ -12,7 +12,7 @@
         @if(isset($errors))
             @if ($errors->any())
                 <div class="col-sm-12 alert alert-danger border-0 shadow-sm d-flex justify-content-between">
-                    <img src="https://img.icons8.com/cotton/48/000000/cancel-2--v1.png" style="width: 48px;height: 48px">
+                    <img src="https://img.icons8.com/ios/48/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/cancel-2--v1.png" class="smallicon mr-2" style="width: 48px;height: 48px">
                     <div style="width: 100%">
                         <span class="ml-3">Please fix the following errors before submitting your search</span>
                         <ul>
@@ -28,7 +28,7 @@
     <div class="row mt-3">
         <div class="col-sm-12">
             <div class="card card-body border-0 shadow-sm">
-                <h5 class="font-weight-bold"><img src="https://img.icons8.com/cotton/32/000000/rocket.png"> Most common filters</h5>
+                <h5 class="font-weight-bold"><img src="https://img.icons8.com/ios/32/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/rocket.png" class="smallicon mr-2"> Most common filters</h5>
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-12 col-md-3">
@@ -80,7 +80,7 @@
                 </div>
             </div>
             <div class="card card-body shadow-sm border-0 mt-3">
-                <h5 class="font-weight-bold"><img src="https://img.icons8.com/cotton/32/000000/time.png"> Timing filters</h5>
+                <h5 class="font-weight-bold"><img src="https://img.icons8.com/ios/32/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/time.png" class="smallicon mr-2"> Timing filters</h5>
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
@@ -125,7 +125,7 @@
                 </div>
             </div>
             <div class="card card-body shadow-sm border-0 mt-3">
-                <h5 class="font-weight-bold"><img src="https://img.icons8.com/cotton/32/000000/thriller.png"> Survival filters</h5>
+                <h5 class="font-weight-bold"><img src="https://img.icons8.com/ios/32/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/thriller.png" class="smallicon mr-2"> Survival filters</h5>
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-12 col-md-3">
@@ -178,7 +178,7 @@
             </div>
 
             <div class="card card-body shadow-sm border-0 mt-3">
-                <h5 class="font-weight-bold"><img src="https://img.icons8.com/cotton/32/000000/bank-safe.png"> Looting filters</h5>
+                <h5 class="font-weight-bold"><img src="https://img.icons8.com/ios/32/{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}/bank-safe.png" class="smallicon mr-2"> Looting filters</h5>
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-12 col-md-3">

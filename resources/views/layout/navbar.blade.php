@@ -16,7 +16,7 @@
             <li class="nav-item">
                 <a class="nav-link {{"search.index" == $currentRoute || "search.do" == $currentRoute ? "active" : ""}}"
                    href="{{route("search.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("search.index" == $currentRoute || "search.index" == $currentRoute)}}/search.png">Search</a>
+                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("search.index" == $currentRoute || "search.index" == $currentRoute)}}/search.png">Runs</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{"item_all" == $currentRoute ? "active" : ""}}"
