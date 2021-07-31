@@ -23,7 +23,7 @@
                     </video></a>
                     <div class="p-3 text-center">
                         <a href="{{route('pvp.index')}}" class="font-weight-bold h5 text-dark">Track proving conduit events live</a>
-                        <p class="mb-0">On the Abyss Tracker, by EVE_NT</p>
+                        <p class="mb-0">On the Abyss Tracker, by <a href="https://eve-nt.uk/" rel="follow" target="_blank">EVE_NT</a></p>
                     </div>
                 </div>
             </div>

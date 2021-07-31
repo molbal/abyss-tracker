@@ -30,6 +30,7 @@
         "itsgoingd/clockwork": "^5.6",
         "laravel/framework": "^8.0",
         "laravel/nova": "@dev",
+        "laravel/sanctum": "^2.11",
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
         "livewire/livewire": "^2.2",

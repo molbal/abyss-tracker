@@ -1,6 +1,8 @@
 <?php
 
-return [
+    use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
+
+    return [
 
     /*
     |--------------------------------------------------------------------------
@@ -227,7 +229,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-
+//        'throttle' => ThrottleRequestsWithRedis::class,
 
         'Clockwork' => Clockwork\Support\Laravel\Facade::class,
     ],

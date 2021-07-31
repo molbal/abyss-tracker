@@ -177,6 +177,7 @@
       <path value="$PROJECT_DIR$/vendor/meilisearch/meilisearch-php" />
       <path value="$PROJECT_DIR$/vendor/http-interop/http-factory-guzzle" />
       <path value="$PROJECT_DIR$/vendor/clue/stream-filter" />
+      <path value="$PROJECT_DIR$/vendor/laravel/sanctum" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0" />
