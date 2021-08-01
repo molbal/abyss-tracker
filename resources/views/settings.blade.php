@@ -55,13 +55,6 @@
                             <option value="1" {{$access['SURVIVAL'] == 1 ? 'selected' : ''}}>Visible</option>
                         </select>
                     </div>
-{{--                    <div class="form-group">--}}
-{{--                        <label for="SURVIVAL">Display of {{\App\Http\Controllers\Auth\AuthController::getCharName()}} in the character picker in the <a href="{{route('alts.index')}}">Alts Manager</a></label>--}}
-{{--                        <select class="form-control select2-nosearch-narrow w-25" name="ALTS" id="ALTS">--}}
-{{--                            <option value="0">Hidden</option>--}}
-{{--                            <option value="1" {{$access['ALTS'] == 1 ? 'selected' : ''}}>Visible</option>--}}
-{{--                        </select>--}}
-{{--                    </div>--}}
                 </div>
                 <div class="card-footer">
                     <button class="btn btn-outline-primary" type="submit">Save</button>
@@ -134,6 +127,32 @@
                 </div>
             </form>
         </div>
+    </div>
+    <div class="row mt-5">
+
+        <div class="col-sm-12 col-md-10">
+            <h4 class="font-weight-bold">Abyss Tracker Tokens</h4>
+            @component('components.info-line')Applications such as the Abyssal Blackbox Recorder or Abyssal Telemetry may use Abyss Tracker on behalf of your character, if you make a token and enter it in the application.@endcomponent
+        </div>
+
+        <div class="col-md-6 offset-md-3">
+
+            <form action="{{route('settings.tokens.make')}}" method="post">
+                <div class="card card-body border-0 shadow-sm">
+                    {{csrf_field()}}
+                    <h5 class="font-weight-bold">Add a new token</h5>
+                    <label for="">Token name</label>
+                    <div class="input-group mb-3">
+                        <input type="text" name="name" class="form-control" required="required">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="submit">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
     </div>
 @endsection
 

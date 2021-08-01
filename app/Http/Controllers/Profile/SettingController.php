@@ -89,6 +89,12 @@
             Cache::forget("aft.setting.bool.{$userId}.{$setting}");
         }
 
+        public function addToken(Request $request) {
+            $request->validate([
+                'name' => ['required']
+            ]);
+        }
+
         public function removeEsi() {
 
             if (!session()->has("login_id")) {

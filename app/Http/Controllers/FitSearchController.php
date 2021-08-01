@@ -265,7 +265,7 @@
          *
          * @return \Illuminate\Database\Query\Builder
          */
-        public function getStartingQuery(bool $excludePrivate = true): Builder {
+        public function getStartingQuery(bool $excludePrivate = true, bool $excludeOldRevisions = true): Builder {
             $query = DB::table("fits")
                      ->where("STATUS", 'done')
                      ->join("ship_lookup", 'fits.SHIP_ID', '=', 'ship_lookup.ID')
@@ -291,6 +291,9 @@
                      ->distinct("fits.ID");
             if ($excludePrivate) {
                 $query->where("PRIVACY", '!=', 'private');
+            }
+            if ($excludeOldRevisions) {
+                $query->whereRaw("fits.ID in (SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null)");
             }
             return $query;
         }

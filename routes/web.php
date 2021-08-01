@@ -17,6 +17,7 @@
     use App\Http\Controllers\ItemController;
     use App\Http\Controllers\Misc\QrController;
     use App\Http\Controllers\Profile\ActivityChartController;
+    use App\Http\Controllers\Profile\SettingController;
     use App\Http\Controllers\PVP\PVPController;
     use App\Http\Controllers\StreamToolsController;
     use Illuminate\Support\Facades\Route;
@@ -60,10 +61,11 @@
     /**
      * Settings
      */
-    Route::get('/settings', 'Profile\SettingController@index')->name('settings.index')->middleware("sso");
-    Route::post('/settings/update', 'Profile\SettingController@save')->name('settings.save')->middleware("sso");
-    Route::post('/settings/remove-esi', 'Profile\SettingController@removeEsi')->name('settings.remove-esi')->middleware("sso");
-    Route::post('/settings/save-cargo', 'Profile\SettingController@saveCargo')->name('settings.save-cargo')->middleware("sso");
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware("sso");
+    Route::post('/settings/update', [SettingController::class, 'save'])->name('settings.save')->middleware("sso");
+    Route::post('/settings/remove-esi', [SettingController::class, 'removeEsi'])->name('settings.remove-esi')->middleware("sso");
+    Route::post('/settings/save-cargo', [SettingController::class, 'saveCargo'])->name('settings.save-cargo')->middleware("sso");
+    Route::post('/settings/tokens/add', [SettingController::class, 'addToken'])->name('settings.tokens.make')->middleware('sso');
 
     /**
      * Stopwatch

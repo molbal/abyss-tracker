@@ -2,8 +2,11 @@
 
 namespace App;
 
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * App\Char
@@ -21,7 +24,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class Char extends Model
 {
-
+    use HasApiTokens;
     protected $primaryKey = 'CHAR_ID';
 
     public static function loadName(int $id):string {
@@ -32,5 +35,22 @@ class Char extends Model
 
     public function publicRuns() {
         return $this->hasMany('App\Run', 'CHAR_ID', 'CHAR_ID')->where('PUBLIC', '=', '1');
+    }
+
+    public static function current(): Char {
+        if (!AuthController::isLoggedIn()) {
+            throw new \RuntimeException("Not logged in");
+        }
+
+        return Char::where('CHAR_ID', AuthController::getLoginId())->firstOrFail();
+    }
+
+
+    public function addToken(string $name) {
+        return ($this->createToken($name))->plainTextToken;
+    }
+
+    public function getTokens() {
+        return $this->tokens();
     }
 }
