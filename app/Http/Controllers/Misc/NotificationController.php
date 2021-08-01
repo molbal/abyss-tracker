@@ -17,7 +17,7 @@ class NotificationController extends Controller
             return '<div class="row mt-3">
                         <div class="col-sm-12"><div class="alert mb-3 border-'.session('infoline_style').' shadow-sm">
                             <div class="d-flex w-100 justify-content-start align-items-center ">
-                                <span class="tinyicon"><img src="https://img.icons8.com/small/24/ffffff/info.png" class="tinyicon mr-2"></span><span class="text-small text-justify">'.session('infoline_text').'</span>
+                                <span class="tinyicon"><img src="https://img.icons8.com/small/24/ffffff/info.png" class="tinyicon mr-2"></span><span class="text-justify">'.session('infoline_text').'</span>
                             </div>
                     </div>
     </div>';

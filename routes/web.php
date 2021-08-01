@@ -239,6 +239,11 @@
         Route::get('/widget/top-kills/{id}', [PVPController::class, 'renderToplist'])->name('pvp.widget.top-kills');
 
     });
+//
+//    Route::get('/bt', function ($req) {
+////        var_dump($req);
+//       return [$req];
+//    });
 
 
 

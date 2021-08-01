@@ -2,7 +2,10 @@
 
 namespace App;
 
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Fit
@@ -52,11 +55,42 @@ class Fit extends Model
 {
     protected $primaryKey = 'ID';
 
+    protected $casts = [
+      'STATS' => 'array'
+    ];
+
     public function char() {
         return $this->hasOne('App\Char', 'CHAR_ID', 'CHAR_ID');
     }
 
     public function ship() {
         return $this->hasOne('App\Ship', 'ID', 'SHIP_ID');
+    }
+
+    public static function getForApi(int $charId): Collection {
+        DB::enableQueryLog();
+        return Fit::with(['ship', 'char'])
+                  ->whereRaw("fits.ID in (SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null) and (fits.PRIVACY != 'private' OR fits.CHAR_ID=".$charId.")")
+                    ->orderBy('fits.NAME')
+            ->get()->map(fn ($a) => $a->shortForm());
+    }
+
+    public function shortForm(): array {
+        return [
+            'id' => $this->ID,
+            'name' => trim($this->NAME),
+            'uploader' => [
+                'privacy' => $this->PRIVACY,
+                'char' => AuthController::isItMe($this->char->CHAR_ID) || $this->PRIVACY=='public' ? [
+                    'id' => $this->char->CHAR_ID,
+                    'name' => $this->char->NAME,
+                ] : ['id' => null, 'name' => null]
+            ],
+            'ship'=> [
+                'id'=>$this->ship->ID ?? null,
+                'name'=>$this->ship->NAME ?? null,
+                'size'=>$this->ship->HULL_SIZE ?? null,
+            ]
+        ];
     }
 }

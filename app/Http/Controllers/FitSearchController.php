@@ -20,6 +20,10 @@
         /** @var TagsController */
         private $tags;
 
+        public static function getInstance(): FitSearchController {
+            return resolve('App\Http\Controllers\FitSearchController');
+        }
+
         /**
          * FitSearchController constructor.
          *

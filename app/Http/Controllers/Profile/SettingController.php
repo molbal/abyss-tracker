@@ -4,8 +4,10 @@
     namespace App\Http\Controllers\Profile;
 
 
+    use App\Char;
     use App\Charts\ShipCruiserChart;
     use App\Http\Controllers\Controller;
+    use App\Http\Controllers\HelperController;
     use App\Http\Controllers\ThemeController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
@@ -93,6 +95,16 @@
             $request->validate([
                 'name' => ['required']
             ]);
+
+            $token = Char::current()->addToken($request->get('name'));
+//            dd($token);
+
+            /** @var \App\Http\Controllers\Misc\NotificationController $nc */
+            $nc = resolve('App\Http\Controllers\Misc\NotificationController');
+            $nc->flashInfoLine("New token saved! Please copy it now, because it won't be visible ever again: <code>".$token."</code>", "success");
+
+            return redirect(route('settings.index'));
+
         }
 
         public function removeEsi() {

@@ -30,7 +30,7 @@
          * @return int|null
          */
         public static function getLoginId(): ?int {
-            return session('login_id', null);
+            return session('login_id', request()->user()->CHAR_ID);
         }
 
         /**

@@ -1,5 +1,6 @@
 <?php
 
+    use App\Http\Controllers\ConduitController;
     use App\Http\Controllers\PVP\PVPController;
     use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,5 @@
 
     Route::post("fit/callback", 'EFT\FitCallbackController@handleFitCallback');
     Route::post('killmail/push', [PVPController::class, 'addKillmail']);
+
+    Route::get("/fits/read", [ConduitController::class, 'fitsRead'])->middleware('auth:sanctum');

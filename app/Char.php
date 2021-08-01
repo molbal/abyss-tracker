@@ -47,10 +47,15 @@ class Char extends Model
 
 
     public function addToken(string $name) {
-        return ($this->createToken($name))->plainTextToken;
+        $newAccessToken = $this->createToken($name);
+        return $newAccessToken->plainTextToken;
     }
 
     public function getTokens() {
         return $this->tokens();
+    }
+
+    public function getAuthIdentifier() {
+        return $this->CHAR_ID;
     }
 }
