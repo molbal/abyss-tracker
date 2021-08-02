@@ -8,6 +8,7 @@
     use App\Charts\ShipCruiserChart;
     use App\Http\Controllers\Controller;
     use App\Http\Controllers\HelperController;
+    use App\Http\Controllers\Misc\NotificationController as NotificationControllerAlias;
     use App\Http\Controllers\ThemeController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
@@ -99,11 +100,21 @@
             $token = Char::current()->addToken($request->get('name'));
 //            dd($token);
 
-            /** @var \App\Http\Controllers\Misc\NotificationController $nc */
+            /** @var NotificationControllerAlias $nc */
             $nc = resolve('App\Http\Controllers\Misc\NotificationController');
-            $nc->flashInfoLine("New token saved! Please copy it now, because it won't be visible ever again: <code>".$token."</code>", "success");
+            $nc->flashInfoLine("New token named saved - Please copy it now, because it won't be visible ever again: <br> <input type='text' class='form-control' readonly='readonly' value='$token' />", "success");
 
             return redirect(route('settings.index'));
+
+        }
+
+        public function removeToken(int $id) {
+            if (Char::current()->tokens()->where('id', $id)->exists()) {
+                Char::current()->tokens()->where('id', $id)->delete();
+            }
+            NotificationControllerAlias::getInstance()->flashToast("The selected token was deleted!");
+            return redirect(route('settings.index'));
+
 
         }
 

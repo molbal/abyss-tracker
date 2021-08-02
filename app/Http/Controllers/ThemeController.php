@@ -6,6 +6,7 @@
 
     use App\Http\Controllers\Misc\Enums\ChartColor;
     use Illuminate\Support\Facades\Cookie;
+    use Illuminate\Support\Str;
 
     class ThemeController extends Controller {
 
@@ -54,7 +55,7 @@
 
         }
 
-        public static function getChartLineColor(string $color) {
+        public static function getChartLineColor(string $color) : string {
             switch ($color) {
                 case ChartColor::GREEN: return self::isDarkTheme() ? '#38c172' : '#38c172';
                 case ChartColor::GRAY:  return self::isDarkTheme() ? '#6c757d' : '#6c757d';
@@ -64,8 +65,13 @@
             return '#fff';
         }
 
+		 public static function getDangerColor(bool $addHash = false): string {
+            $c = self::getChartLineColor(ChartColor::RED);
+            return  $addHash ? $c : Str::of($c)->remove("#");
+		 }
 
-        public function setTheme(bool $isDark) {
+
+		 public function setTheme(bool $isDark) {
             if ($isDark) {
                 Cookie::queue("bright-theme", "false", time()+60*60*24*60);
                 Cookie::forget("bright-theme");

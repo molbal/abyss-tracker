@@ -66,6 +66,7 @@
     Route::post('/settings/remove-esi', [SettingController::class, 'removeEsi'])->name('settings.remove-esi')->middleware("sso");
     Route::post('/settings/save-cargo', [SettingController::class, 'saveCargo'])->name('settings.save-cargo')->middleware("sso");
     Route::post('/settings/tokens/add', [SettingController::class, 'addToken'])->name('settings.tokens.make')->middleware('sso');
+    Route::any('/settings/tokens/remove/{id}', [SettingController::class, 'removeToken'])->name('settings.tokens.remove')->middleware('sso');
 
     /**
      * Stopwatch
@@ -239,11 +240,5 @@
         Route::get('/widget/top-kills/{id}', [PVPController::class, 'renderToplist'])->name('pvp.widget.top-kills');
 
     });
-//
-//    Route::get('/bt', function ($req) {
-////        var_dump($req);
-//       return [$req];
-//    });
-
 
 

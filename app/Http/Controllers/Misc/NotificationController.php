@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
+    public static function getInstance(): NotificationController {
+        return resolve('App\Http\Controllers\Misc\NotificationController');
+    }
+
     public static function flashInfoLine(string $text, string $borderClass = "info") {
         session()->flash('infoline_text', $text);
         session()->flash('infoline_style', $borderClass);

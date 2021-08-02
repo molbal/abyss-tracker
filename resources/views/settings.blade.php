@@ -129,18 +129,16 @@
         </div>
     </div>
     <div class="row mt-5">
-
-        <div class="col-sm-12 col-md-10">
+        <div class="col-md-8 offset-md-2">
             <h4 class="font-weight-bold">Abyss Tracker Tokens</h4>
-            @component('components.info-line')Applications such as the Abyssal Blackbox Recorder or Abyssal Telemetry may use Abyss Tracker on behalf of your character, if you make a token and enter it in the application.@endcomponent
-        </div>
-
-        <div class="col-md-6 offset-md-3">
-
-            <form action="{{route('settings.tokens.make')}}" method="post">
+            <div class="card card-body mb-3 shadow-sm border-0">
+                @component('components.info-line')Applications such as the Abyssal Blackbox Recorder or Abyssal Telemetry may use Abyss Tracker on behalf of your character, if you make a token and enter it in the application.@endcomponent
+            </div>
                 <div class="card card-body border-0 shadow-sm">
-                    {{csrf_field()}}
+                    <form action="{{route('settings.tokens.make')}}" method="post">
+                        {{csrf_field()}}
                     <h5 class="font-weight-bold">Add a new token</h5>
+
                     <label for="">Token name</label>
                     <div class="input-group mb-3">
                         <input type="text" name="name" class="form-control" required="required">
@@ -148,9 +146,29 @@
                             <button class="btn btn-outline-primary" type="submit">Save</button>
                         </div>
                     </div>
-                </div>
-
             </form>
+                <h5 class="font-weight-bold">Existing tokens</h5>
+                <table class="table table-sm w-100">
+                    <tr>
+                        <th>Name</th>
+                        <th>Created</th>
+                        <th>Last used</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    @forelse(\App\Char::current()->tokens()->orderByDesc('created_at')->get() as $token)
+                        <tr>
+                            <td>{{$token->name}}</td>
+                            <td>{{$token->created_at}}</td>
+                            <td>{{$token->last_used_at ?? 'Never used'}}</td>
+                            <td><a href="{{route('settings.tokens.remove', ['id' => $token->id])}}" data-toggle="tooltip" title="Delete token"><img class="smallicon" src="https://img.icons8.com/fluency-systems-regular/24/{{\App\Http\Controllers\ThemeController::getDangerColor()}}/trash--v1.png"/></a></td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="3" class="my-3 text-center text-muted">No tokens for {{\App\Http\Controllers\Auth\AuthController::getCharName()}} yet</td>
+                        </tr>
+                    @endforelse
+                </table>
+            </div>
         </div>
 
     </div>

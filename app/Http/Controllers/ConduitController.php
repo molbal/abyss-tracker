@@ -13,11 +13,36 @@ use Laravel\Sanctum\Sanctum;
 
 class ConduitController extends Controller
 {
-    public function fitsRead(Request $request) {$charId = $request->user()->CHAR_ID;
+    public function fitsRead(Request $request) {
+        try {
+
+        $charId = $request->user()->CHAR_ID;
         $collection = Cache::remember('api.fits.list.'.$request, now()->addMinute(), function () use ($charId) {
             return Fit::getForApi($charId);
         });
 
-        return [$collection];
+        return [
+            'success' => true,
+            'char' => [
+                'id' => $request->user()->CHAR_ID,
+                'name' => $request->user()->NAME,
+            ],
+            'items' => $collection,
+            'count' => $collection->count(),
+            'error' => null
+        ];
+        }
+        catch (\Exception $e) {
+            return [
+                'success' => false,
+                'char' => [
+                    'id' => $request->user()->CHAR_ID ?? null,
+                    'name' => $request->user()->NAME ?? null,
+                ],
+                'items' => null,
+                'count' => null,
+                'error' => $e->getMessage()
+            ];
+        }
     }
 }

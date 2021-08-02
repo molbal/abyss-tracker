@@ -19,4 +19,4 @@
     Route::post("fit/callback", 'EFT\FitCallbackController@handleFitCallback');
     Route::post('killmail/push', [PVPController::class, 'addKillmail']);
 
-    Route::get("/fits/read", [ConduitController::class, 'fitsRead'])->middleware('auth:sanctum');
+    Route::get("/fits/list", [ConduitController::class, 'fitsRead'])->middleware('auth:sanctum');
