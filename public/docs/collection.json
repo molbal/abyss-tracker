@@ -1,0 +1,70 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "127.0.0.1"
+        }
+    ],
+    "info": {
+        "name": "Abyss Tracker Conduit",
+        "_postman_id": "22db5429-299a-4042-866c-62fcbb0e1df6",
+        "description": "An API interface for the Abyss Tracker",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Endpoints",
+            "description": "",
+            "item": [
+                {
+                    "name": "api\/conduit\/v1\/fits\/list",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conduit\/v1\/fits\/list",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/list"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                }
+                            ],
+                            "code": 200,
+                            "body": "{\"success\":false,\"error\":\"Please provide a valid authentication bearer token.\"}",
+                            "name": null
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer"
+    }
+}

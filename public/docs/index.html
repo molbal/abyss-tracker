@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Abyss Tracker Conduit</title>
+
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../docs/css/theme-default.style.css" media="screen">
+    <link rel="stylesheet" href="../docs/css/theme-default.print.css" media="print">
+    <script src="../docs/js/theme-default-3.8.0.js"></script>
+
+    <link rel="stylesheet"
+          href="//unpkg.com/@highlightjs/cdn-assets@10.7.2/styles/obsidian.min.css">
+    <script src="//unpkg.com/@highlightjs/cdn-assets@10.7.2/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <script src="//cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+    <script>
+        var baseUrl = "http://127.0.0.1:8000";
+    </script>
+    <script src="../docs/js/tryitout-3.8.0.js"></script>
+
+</head>
+
+<body data-languages="[&quot;bash&quot;,&quot;php&quot;,&quot;python&quot;,&quot;javascript&quot;]">
+<a href="#" id="nav-button">
+      <span>
+        MENU
+        <img src="../docs/images/navbar.png" alt="navbar-image" />
+      </span>
+</a>
+<div class="tocify-wrapper">
+        <img src="/conduit.png" alt="logo" class="logo" style="padding-top: 10px;" width="230px"/>
+                <div class="lang-selector">
+                            <a href="#" data-language-name="bash">bash</a>
+                            <a href="#" data-language-name="php">php</a>
+                            <a href="#" data-language-name="python">python</a>
+                            <a href="#" data-language-name="javascript">javascript</a>
+                    </div>
+        <div class="search">
+        <input type="text" class="search" id="input-search" placeholder="Search">
+    </div>
+    <ul class="search-results"></ul>
+
+    <ul id="toc">
+    </ul>
+
+            <ul class="toc-footer" id="toc-footer">
+                            <li><a href="../docs/collection.json">View Postman collection</a></li>
+                            <li><a href="../docs/openapi.yaml">View OpenAPI spec</a></li>
+                            <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
+                    </ul>
+            <ul class="toc-footer" id="last-updated">
+            <li>Last updated: August 3 2021</li>
+        </ul>
+</div>
+<div class="page-wrapper">
+    <div class="dark-box"></div>
+    <div class="content">
+        <h1>Introduction</h1>
+<p>An API interface for the Abyss Tracker</p>
+<p>This documentation aims to provide all the information you need to work with our API.</p>
+<aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
+You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
+<blockquote>
+<p>Base URL</p>
+</blockquote>
+<pre><code class="language-yaml">http://127.0.0.1:8000</code></pre>
+
+        <h1>Authenticating requests</h1>
+<p>Authenticate requests to this API's endpoints by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
+<p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
+<p>You can retrieve your token by visiting your dashboard and clicking <a href="/settings">Settings</a>.</p>
+
+        <h1 id="endpoints">Endpoints</h1>
+
+    
+
+            <h2 id="endpoints-GETapi-conduit-v1-fits-list">GET api/conduit/v1/fits/list</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-conduit-v1-fits-list">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/conduit/v1/fits/list" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://127.0.0.1:8000/api/conduit/v1/fits/list',
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre>
+
+<pre><code class="language-python">import requests
+import json
+
+url = 'http://127.0.0.1:8000/api/conduit/v1/fits/list'
+headers = {
+  'Authorization': 'Bearer {YOUR_AUTH_KEY}',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers)
+response.json()</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/conduit/v1/fits/list"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-conduit-v1-fits-list">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary>
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre>
+        </details>         <pre>
+
+<code class="language-json">{
+    &quot;success&quot;: false,
+    &quot;error&quot;: &quot;Please provide a valid authentication bearer token.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-conduit-v1-fits-list" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-conduit-v1-fits-list"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-conduit-v1-fits-list"></code></pre>
+</span>
+<span id="execution-error-GETapi-conduit-v1-fits-list" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-conduit-v1-fits-list"></code></pre>
+</span>
+<form id="form-GETapi-conduit-v1-fits-list" data-method="GET"
+      data-path="api/conduit/v1/fits/list"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-conduit-v1-fits-list', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-conduit-v1-fits-list"
+                    onclick="tryItOut('GETapi-conduit-v1-fits-list');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-conduit-v1-fits-list"
+                    onclick="cancelTryOut('GETapi-conduit-v1-fits-list');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-conduit-v1-fits-list" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/conduit/v1/fits/list</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-conduit-v1-fits-list" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-conduit-v1-fits-list"
+                                                                data-component="header"></label>
+        </p>
+                </form>
+
+    
+
+        
+    </div>
+    <div class="dark-box">
+                    <div class="lang-selector">
+                                    <a href="#" data-language-name="bash">bash</a>
+                                    <a href="#" data-language-name="php">php</a>
+                                    <a href="#" data-language-name="python">python</a>
+                                    <a href="#" data-language-name="javascript">javascript</a>
+                            </div>
+            </div>
+</div>
+<script>
+    $(function () {
+        var exampleLanguages = ["bash","php","python","javascript"];
+        setupLanguages(exampleLanguages);
+    });
+</script>
+</body>
+</html>
