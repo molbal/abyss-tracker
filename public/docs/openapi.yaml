@@ -9,8 +9,8 @@ servers:
 paths:
   /api/conduit/v1/fits/list:
     get:
-      summary: ''
-      description: ''
+      summary: 'List fits'
+      description: 'Lists all fits selectable by the authenticated user: public fits, incognito fits, and users'' private fits. Cached for a minute.'
       parameters:
         -
           in: header
@@ -35,23 +35,310 @@ paths:
             type: string
       responses:
         200:
-          description: ''
+          description: '200'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  success: false
-                  error: 'Please provide a valid authentication bearer token.'
+                  success: true
+                  char:
+                    id: 93940047
+                    name: 'Veetor Nara'
+                  items:
+                    -
+                      id: 157
+                      name: Example
+                      uploader:
+                        privacy: public
+                        char:
+                          id: 93940047
+                          name: 'Veetor Nara'
+                      ship:
+                        id: 629
+                        name: Rupture
+                        size: cruiser
+                  count: 1
+                  error: null
                 properties:
                   success:
                     type: boolean
-                    example: false
+                    example: true
+                    description: 'true on normal operation, false on exception'
+                  char:
+                    type: object
+                    example:
+                      id: 93940047
+                      name: 'Veetor Nara'
+                    description: 'contains the authenticated character''s ID and name'
+                  items:
+                    type: array
+                    example:
+                      -
+                        id: 157
+                        name: Example
+                        uploader:
+                          privacy: public
+                          char:
+                            id: 93940047
+                            name: 'Veetor Nara'
+                        ship:
+                          id: 629
+                          name: Rupture
+                          size: cruiser
+                    description: 'array contains the fits'' short forms'
+                    items:
+                      type: object
+                  count:
+                    type: integer
+                    example: 1
+                    description: 'contains how many records were returned'
                   error:
                     type: string
-                    example: 'Please provide a valid authentication bearer token.'
+                    example: null
+                    description: 'null on normal operation, string containing error message on exception'
       tags:
-        - Endpoints
+        - Fits
+  '/api/conduit/v1/fits/get/{id}':
+    get:
+      summary: 'Get a single fit'
+      description: 'Gets most data for a fit. Cached for a minute.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {YOUR_AUTH_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  char:
+                    id: 93940047
+                    name: 'Veetor Nara'
+                  item:
+                    id: 76
+                    name: 'Easy passive Gila'
+                    uploader:
+                      privacy: public
+                      char:
+                        id: 93940047
+                        name: 'Veetor Nara'
+                    ship:
+                      id: 17715
+                      name: Gila
+                      size: cruiser
+                    eft: "[Gila, Easy passive Gila]\r\n\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\n\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nAdaptive Invulnerability Shield Hardener II\r\nAdaptive Invulnerability Shield Hardener II\r\nFederation Navy 10MN Afterburner\r\n\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nMedium Ghoul Compact Energy Nosferatu\r\n\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\n\r\n\r\nRepublic Fleet Valkyrie x2\r\nRepublic Fleet Valkyrie x2\r\nValkyrie II x2\r\nValkyrie II x2\r\nValkyrie II x2"
+                    tags:
+                      - Afterburner
+                      - 'Strong drones'
+                      - Missiles
+                      - 'Shield regen tank'
+                    stats:
+                      offense:
+                        totalDps: '566.9'
+                        weaponDps: '121.62'
+                        droneDps: '445.28'
+                        totalVolley: '2303.62'
+                      defense:
+                        ehp:
+                          total: '51801.874919544'
+                          shield: '43082.278457411'
+                          armor: '4074.0740740741'
+                          hull: '4645.5223880597'
+                        resists:
+                          shield:
+                            em: '0.5418'
+                            therm: '0.6334'
+                            kin: '0.7251'
+                            exp: '0.7709'
+                          armor:
+                            em: '0.5'
+                            therm: '0.45'
+                            kin: '0.25'
+                            exp: '0.1'
+                          hull:
+                            em: '0.33'
+                            therm: '0.33'
+                            kin: '0.33'
+                            exp: '0.33'
+                        reps:
+                          burst:
+                            shieldRegen: '272.32'
+                            shieldBoost: '0'
+                            armor: '0'
+                            hull: '0'
+                            total: '272.32'
+                          sustained:
+                            shieldRegen: '272.32'
+                            shieldBoost: '0'
+                            armor: '0'
+                            hull: '0'
+                            total: '272.32'
+                      misc:
+                        ship:
+                          id: '17715'
+                          name: Gila
+                          cpuMax: '475'
+                          powerMax: '837.5'
+                          cpuUsed: '448'
+                          pgUsed: '829.7'
+                          calibrationUsed: '225'
+                          warpSpeed: '4'
+                        drones:
+                          activeDrones: '2'
+                          droneBayTotal: '100'
+                          droneBandwidthUsed: '20'
+                          droneBayUsed: '20'
+                        maxSpeed: '697.65'
+                        signature: '247.91'
+                        capacitor:
+                          capacity: '1750'
+                          stable: '1'
+                          stableAt: '90.48'
+                        targeting:
+                          range: '72500'
+                          resolution: '356.25'
+                          strength: '26.4'
+                    status: works
+                    price: 558598056
+                  error: null
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: 'true on normal operation, false on exception'
+                  char:
+                    type: object
+                    example:
+                      id: 93940047
+                      name: 'Veetor Nara'
+                    description: 'contains the authenticated character''s ID and name'
+                  item:
+                    type: object
+                    example:
+                      id: 76
+                      name: 'Easy passive Gila'
+                      uploader:
+                        privacy: public
+                        char:
+                          id: 93940047
+                          name: 'Veetor Nara'
+                      ship:
+                        id: 17715
+                        name: Gila
+                        size: cruiser
+                      eft: "[Gila, Easy passive Gila]\r\n\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\n\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nAdaptive Invulnerability Shield Hardener II\r\nAdaptive Invulnerability Shield Hardener II\r\nFederation Navy 10MN Afterburner\r\n\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nMedium Ghoul Compact Energy Nosferatu\r\n\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\n\r\n\r\nRepublic Fleet Valkyrie x2\r\nRepublic Fleet Valkyrie x2\r\nValkyrie II x2\r\nValkyrie II x2\r\nValkyrie II x2"
+                      tags:
+                        - Afterburner
+                        - 'Strong drones'
+                        - Missiles
+                        - 'Shield regen tank'
+                      stats:
+                        offense:
+                          totalDps: '566.9'
+                          weaponDps: '121.62'
+                          droneDps: '445.28'
+                          totalVolley: '2303.62'
+                        defense:
+                          ehp:
+                            total: '51801.874919544'
+                            shield: '43082.278457411'
+                            armor: '4074.0740740741'
+                            hull: '4645.5223880597'
+                          resists:
+                            shield:
+                              em: '0.5418'
+                              therm: '0.6334'
+                              kin: '0.7251'
+                              exp: '0.7709'
+                            armor:
+                              em: '0.5'
+                              therm: '0.45'
+                              kin: '0.25'
+                              exp: '0.1'
+                            hull:
+                              em: '0.33'
+                              therm: '0.33'
+                              kin: '0.33'
+                              exp: '0.33'
+                          reps:
+                            burst:
+                              shieldRegen: '272.32'
+                              shieldBoost: '0'
+                              armor: '0'
+                              hull: '0'
+                              total: '272.32'
+                            sustained:
+                              shieldRegen: '272.32'
+                              shieldBoost: '0'
+                              armor: '0'
+                              hull: '0'
+                              total: '272.32'
+                        misc:
+                          ship:
+                            id: '17715'
+                            name: Gila
+                            cpuMax: '475'
+                            powerMax: '837.5'
+                            cpuUsed: '448'
+                            pgUsed: '829.7'
+                            calibrationUsed: '225'
+                            warpSpeed: '4'
+                          drones:
+                            activeDrones: '2'
+                            droneBayTotal: '100'
+                            droneBandwidthUsed: '20'
+                            droneBayUsed: '20'
+                          maxSpeed: '697.65'
+                          signature: '247.91'
+                          capacitor:
+                            capacity: '1750'
+                            stable: '1'
+                            stableAt: '90.48'
+                          targeting:
+                            range: '72500'
+                            resolution: '356.25'
+                            strength: '26.4'
+                      status: works
+                      price: 558598056
+                    description: 'contains the fit''s extended form'
+                  error:
+                    type: string
+                    example: null
+                    description: 'null on normal operation, string containing error message on exception'
+      tags:
+        - Fits
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the get.'
+        example: voluptatem
+        required: true
+        schema:
+          type: string
 components:
   securitySchemes:
     default:

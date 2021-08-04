@@ -54,7 +54,7 @@
                             <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
                     </ul>
             <ul class="toc-footer" id="last-updated">
-            <li>Last updated: August 3 2021</li>
+            <li>Last updated: August 4 2021</li>
         </ul>
 </div>
 <div class="page-wrapper">
@@ -75,17 +75,16 @@ You can switch the language used with the tabs at the top right (or from the nav
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You can retrieve your token by visiting your dashboard and clicking <a href="/settings">Settings</a>.</p>
 
-        <h1 id="endpoints">Endpoints</h1>
+        <h1 id="fits">Fits</h1>
 
     
 
-            <h2 id="endpoints-GETapi-conduit-v1-fits-list">GET api/conduit/v1/fits/list</h2>
+            <h2 id="fits-GETapi-conduit-v1-fits-list">List fits</h2>
 
 <p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
+<em>Requires authentication</em></p>
 
-
+<p>Lists all fits selectable by the authenticated user: public fits, incognito fits, and users' private fits. Cached for a minute.</p>
 
 <span id="example-requests-GETapi-conduit-v1-fits-list">
 <blockquote>Example request:</blockquote>
@@ -143,18 +142,34 @@ fetch(url, {
             <blockquote>
             <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary>
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
- </code></pre>
-        </details>         <pre>
+                <pre>
 
 <code class="language-json">{
-    &quot;success&quot;: false,
-    &quot;error&quot;: &quot;Please provide a valid authentication bearer token.&quot;
+    &quot;success&quot;: true,
+    &quot;char&quot;: {
+        &quot;id&quot;: 93940047,
+        &quot;name&quot;: &quot;Veetor Nara&quot;
+    },
+    &quot;items&quot;: [
+        {
+            &quot;id&quot;: 157,
+            &quot;name&quot;: &quot;Example&quot;,
+            &quot;uploader&quot;: {
+                &quot;privacy&quot;: &quot;public&quot;,
+                &quot;char&quot;: {
+                    &quot;id&quot;: 93940047,
+                    &quot;name&quot;: &quot;Veetor Nara&quot;
+                }
+            },
+            &quot;ship&quot;: {
+                &quot;id&quot;: 629,
+                &quot;name&quot;: &quot;Rupture&quot;,
+                &quot;size&quot;: &quot;cruiser&quot;
+            }
+        }
+    ],
+    &quot;count&quot;: 1,
+    &quot;error&quot;: null
 }</code>
  </pre>
     </span>
@@ -207,7 +222,487 @@ content-type: application/json
         </p>
                 </form>
 
+    <h3>Response</h3>
+    <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
+            <p>
+            <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
+<p>true on normal operation, false on exception</p>
+
+
+        </p>
+            <p>
+            <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+<p>null on normal operation, string containing error message on exception</p>
+
+
+        </p>
+            <p>
+            <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+<p>contains the authenticated character's ID and name</p>
+
+
+        </p>
+            <p>
+            <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
+<p>authenticated character's ID  (might be null on error)</p>
+
+
+        </p>
+            <p>
+            <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+<p>authenticated character's name (might be null on error)</p>
+
+
+        </p>
+            <p>
+            <b><code>items</code></b>&nbsp;&nbsp;<small>array</small>  &nbsp;
+<p>array contains the fits' short forms</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+<p>Fit ID</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>Fit name</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.uploader</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+<p>contains the fits' uploader and privacy selection</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.uploader.privacy</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.uploader.char.id</code></b>&nbsp;&nbsp;  &nbsp;
+<p>Fit uploader's ID (null,incognito privacy setting)</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.uploader.char.name</code></b>&nbsp;&nbsp;  &nbsp;
+<p>Fit uploader's name (null,incognito privacy setting)</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.uploader.ship</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+<p>Contains the fit hull ID, hull name, and hull size</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.uploader.ship.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+<p>Hull ID</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.uploader.ship.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>Hull name</p>
+
+
+        </p>
+            <p>
+            <b><code>items.*.uploader.ship.size</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>
+
+
+        </p>
+            <p>
+            <b><code>count</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+<p>contains how many records were returned</p>
+
+
+        </p>
+                <h2 id="fits-GETapi-conduit-v1-fits-get--id-">Get a single fit</h2>
+
+<p>
+<em>Requires authentication</em></p>
+
+<p>Gets most data for a fit. Cached for a minute.</p>
+
+<span id="example-requests-GETapi-conduit-v1-fits-get--id-">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/conduit/v1/fits/get/voluptatem" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'http://127.0.0.1:8000/api/conduit/v1/fits/get/voluptatem',
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre>
+
+<pre><code class="language-python">import requests
+import json
+
+url = 'http://127.0.0.1:8000/api/conduit/v1/fits/get/voluptatem'
+headers = {
+  'Authorization': 'Bearer {YOUR_AUTH_KEY}',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers)
+response.json()</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/conduit/v1/fits/get/voluptatem"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-conduit-v1-fits-get--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json">{
+    &quot;success&quot;: true,
+    &quot;char&quot;: {
+        &quot;id&quot;: 93940047,
+        &quot;name&quot;: &quot;Veetor Nara&quot;
+    },
+    &quot;item&quot;: {
+        &quot;id&quot;: 76,
+        &quot;name&quot;: &quot;Easy passive Gila&quot;,
+        &quot;uploader&quot;: {
+            &quot;privacy&quot;: &quot;public&quot;,
+            &quot;char&quot;: {
+                &quot;id&quot;: 93940047,
+                &quot;name&quot;: &quot;Veetor Nara&quot;
+            }
+        },
+        &quot;ship&quot;: {
+            &quot;id&quot;: 17715,
+            &quot;name&quot;: &quot;Gila&quot;,
+            &quot;size&quot;: &quot;cruiser&quot;
+        },
+        &quot;eft&quot;: &quot;[Gila, Easy passive Gila]\r\n\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\n\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nAdaptive Invulnerability Shield Hardener II\r\nAdaptive Invulnerability Shield Hardener II\r\nFederation Navy 10MN Afterburner\r\n\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nMedium Ghoul Compact Energy Nosferatu\r\n\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\n\r\n\r\nRepublic Fleet Valkyrie x2\r\nRepublic Fleet Valkyrie x2\r\nValkyrie II x2\r\nValkyrie II x2\r\nValkyrie II x2&quot;,
+        &quot;tags&quot;: [
+            &quot;Afterburner&quot;,
+            &quot;Strong drones&quot;,
+            &quot;Missiles&quot;,
+            &quot;Shield regen tank&quot;
+        ],
+        &quot;stats&quot;: {
+            &quot;offense&quot;: {
+                &quot;totalDps&quot;: &quot;566.9&quot;,
+                &quot;weaponDps&quot;: &quot;121.62&quot;,
+                &quot;droneDps&quot;: &quot;445.28&quot;,
+                &quot;totalVolley&quot;: &quot;2303.62&quot;
+            },
+            &quot;defense&quot;: {
+                &quot;ehp&quot;: {
+                    &quot;total&quot;: &quot;51801.874919544&quot;,
+                    &quot;shield&quot;: &quot;43082.278457411&quot;,
+                    &quot;armor&quot;: &quot;4074.0740740741&quot;,
+                    &quot;hull&quot;: &quot;4645.5223880597&quot;
+                },
+                &quot;resists&quot;: {
+                    &quot;shield&quot;: {
+                        &quot;em&quot;: &quot;0.5418&quot;,
+                        &quot;therm&quot;: &quot;0.6334&quot;,
+                        &quot;kin&quot;: &quot;0.7251&quot;,
+                        &quot;exp&quot;: &quot;0.7709&quot;
+                    },
+                    &quot;armor&quot;: {
+                        &quot;em&quot;: &quot;0.5&quot;,
+                        &quot;therm&quot;: &quot;0.45&quot;,
+                        &quot;kin&quot;: &quot;0.25&quot;,
+                        &quot;exp&quot;: &quot;0.1&quot;
+                    },
+                    &quot;hull&quot;: {
+                        &quot;em&quot;: &quot;0.33&quot;,
+                        &quot;therm&quot;: &quot;0.33&quot;,
+                        &quot;kin&quot;: &quot;0.33&quot;,
+                        &quot;exp&quot;: &quot;0.33&quot;
+                    }
+                },
+                &quot;reps&quot;: {
+                    &quot;burst&quot;: {
+                        &quot;shieldRegen&quot;: &quot;272.32&quot;,
+                        &quot;shieldBoost&quot;: &quot;0&quot;,
+                        &quot;armor&quot;: &quot;0&quot;,
+                        &quot;hull&quot;: &quot;0&quot;,
+                        &quot;total&quot;: &quot;272.32&quot;
+                    },
+                    &quot;sustained&quot;: {
+                        &quot;shieldRegen&quot;: &quot;272.32&quot;,
+                        &quot;shieldBoost&quot;: &quot;0&quot;,
+                        &quot;armor&quot;: &quot;0&quot;,
+                        &quot;hull&quot;: &quot;0&quot;,
+                        &quot;total&quot;: &quot;272.32&quot;
+                    }
+                }
+            },
+            &quot;misc&quot;: {
+                &quot;ship&quot;: {
+                    &quot;id&quot;: &quot;17715&quot;,
+                    &quot;name&quot;: &quot;Gila&quot;,
+                    &quot;cpuMax&quot;: &quot;475&quot;,
+                    &quot;powerMax&quot;: &quot;837.5&quot;,
+                    &quot;cpuUsed&quot;: &quot;448&quot;,
+                    &quot;pgUsed&quot;: &quot;829.7&quot;,
+                    &quot;calibrationUsed&quot;: &quot;225&quot;,
+                    &quot;warpSpeed&quot;: &quot;4&quot;
+                },
+                &quot;drones&quot;: {
+                    &quot;activeDrones&quot;: &quot;2&quot;,
+                    &quot;droneBayTotal&quot;: &quot;100&quot;,
+                    &quot;droneBandwidthUsed&quot;: &quot;20&quot;,
+                    &quot;droneBayUsed&quot;: &quot;20&quot;
+                },
+                &quot;maxSpeed&quot;: &quot;697.65&quot;,
+                &quot;signature&quot;: &quot;247.91&quot;,
+                &quot;capacitor&quot;: {
+                    &quot;capacity&quot;: &quot;1750&quot;,
+                    &quot;stable&quot;: &quot;1&quot;,
+                    &quot;stableAt&quot;: &quot;90.48&quot;
+                },
+                &quot;targeting&quot;: {
+                    &quot;range&quot;: &quot;72500&quot;,
+                    &quot;resolution&quot;: &quot;356.25&quot;,
+                    &quot;strength&quot;: &quot;26.4&quot;
+                }
+            }
+        },
+        &quot;status&quot;: &quot;works&quot;,
+        &quot;price&quot;: 558598056
+    },
+    &quot;error&quot;: null
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-conduit-v1-fits-get--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-conduit-v1-fits-get--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-conduit-v1-fits-get--id-"></code></pre>
+</span>
+<span id="execution-error-GETapi-conduit-v1-fits-get--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-conduit-v1-fits-get--id-"></code></pre>
+</span>
+<form id="form-GETapi-conduit-v1-fits-get--id-" data-method="GET"
+      data-path="api/conduit/v1/fits/get/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-conduit-v1-fits-get--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-conduit-v1-fits-get--id-"
+                    onclick="tryItOut('GETapi-conduit-v1-fits-get--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-conduit-v1-fits-get--id-"
+                    onclick="cancelTryOut('GETapi-conduit-v1-fits-get--id-');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-conduit-v1-fits-get--id-" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/conduit/v1/fits/get/{id}</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-conduit-v1-fits-get--id-" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-conduit-v1-fits-get--id-"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>id</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>The ID of the get.</p>
+                <input type="text"
+               name="id"
+               data-endpoint="GETapi-conduit-v1-fits-get--id-"
+               data-component="url" required  hidden>
     
+
+            </p>
+                    </form>
+
+    <h3>Response</h3>
+    <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
+            <p>
+            <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
+<p>true on normal operation, false on exception</p>
+
+
+        </p>
+            <p>
+            <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+<p>null on normal operation, string containing error message on exception</p>
+
+
+        </p>
+            <p>
+            <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+<p>contains the authenticated character's ID and name</p>
+
+
+        </p>
+            <p>
+            <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
+<p>authenticated character's ID  (might be null on error)</p>
+
+
+        </p>
+            <p>
+            <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+<p>authenticated character's name (might be null on error)</p>
+
+
+        </p>
+            <p>
+            <b><code>item</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+<p>contains the fit's extended form</p>
+
+
+        </p>
+            <p>
+            <b><code>item.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+<p>Fit ID</p>
+
+
+        </p>
+            <p>
+            <b><code>item.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>Fit name</p>
+
+
+        </p>
+            <p>
+            <b><code>item.uploader</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+<p>contains the fits' uploader and privacy selection</p>
+
+
+        </p>
+            <p>
+            <b><code>item.uploader.privacy</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>
+
+
+        </p>
+            <p>
+            <b><code>item.uploader.char.id</code></b>&nbsp;&nbsp;  &nbsp;
+<p>Fit uploader's ID (null,incognito privacy setting)</p>
+
+
+        </p>
+            <p>
+            <b><code>item.uploader.char.name</code></b>&nbsp;&nbsp;  &nbsp;
+<p>Fit uploader's name (null,incognito privacy setting)</p>
+
+
+        </p>
+            <p>
+            <b><code>item.uploader.ship</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+<p>Contains the fit hull ID, hull name, and hull size</p>
+
+
+        </p>
+            <p>
+            <b><code>item.uploader.ship.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+<p>Hull ID</p>
+
+
+        </p>
+            <p>
+            <b><code>item.uploader.ship.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>Hull name</p>
+
+
+        </p>
+            <p>
+            <b><code>item.uploader.ship.size</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>
+
+
+        </p>
+            <p>
+            <b><code>item.eft</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>The raw EFT uploaded by the creator</p>
+
+
+        </p>
+            <p>
+            <b><code>item.tags</code></b>&nbsp;&nbsp;  &nbsp;
+<p>array Contains applicable tags (Automatically generated)</p>
+
+
+        </p>
+            <p>
+            <b><code>item.stats</code></b>&nbsp;&nbsp;  &nbsp;
+<p>array Stat's array, please see <a href='https://github.com/molbal/svcfitstat/'>SVCFITSTAT</a> for schema</p>
+
+
+        </p>
+            <p>
+            <b><code>item.status</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+<p>How well is the fit tested? Enum: 'untested', 'works', 'deprecated'</p>
+
+
+        </p>
+            <p>
+            <b><code>iotem.price</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+<p>estimated ISK value of the fit</p>
+
+
+        </p>
+            <p>
+            <b><code>count</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+<p>contains how many records were returned</p>
+
+
+        </p>
+        
 
         
     </div>

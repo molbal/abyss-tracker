@@ -10,17 +10,17 @@
     ],
     "info": {
         "name": "Abyss Tracker Conduit",
-        "_postman_id": "22db5429-299a-4042-866c-62fcbb0e1df6",
+        "_postman_id": "5849543e-bd61-4508-a4d3-fb6be864eb81",
         "description": "An API interface for the Abyss Tracker",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
         {
-            "name": "Endpoints",
+            "name": "Fits",
             "description": "",
             "item": [
                 {
-                    "name": "api\/conduit\/v1\/fits\/list",
+                    "name": "List fits",
                     "request": {
                         "url": {
                             "protocol": "http",
@@ -41,23 +41,55 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Lists all fits selectable by the authenticated user: public fits, incognito fits, and users' private fits. Cached for a minute."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
+                            "header": [],
                             "code": 200,
-                            "body": "{\"success\":false,\"error\":\"Please provide a valid authentication bearer token.\"}",
-                            "name": null
+                            "body": "{\"success\": true,\"char\": {\"id\": 93940047,\"name\": \"Veetor Nara\"},\"items\": [{\"id\": 157,\"name\": \"Example\",\"uploader\": {\"privacy\": \"public\",\"char\": {\"id\": 93940047,\"name\": \"Veetor Nara\"}},\"ship\": {\"id\": 629,\"name\": \"Rupture\",\"size\": \"cruiser\"}}],\"count\": 1,\"error\": null}",
+                            "name": "200"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get a single fit",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conduit\/v1\/fits\/get\/:id",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/get\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "voluptatem",
+                                    "description": "The ID of the get."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Gets most data for a fit. Cached for a minute."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"success\":true,\"char\":{\"id\":93940047,\"name\":\"Veetor Nara\"},\"item\":{\"id\":76,\"name\":\"Easy passive Gila\",\"uploader\":{\"privacy\":\"public\",\"char\":{\"id\":93940047,\"name\":\"Veetor Nara\"}},\"ship\":{\"id\":17715,\"name\":\"Gila\",\"size\":\"cruiser\"},\"eft\":\"[Gila, Easy passive Gila]\\r\\n\\r\\nDrone Damage Amplifier II\\r\\nDrone Damage Amplifier II\\r\\nDrone Damage Amplifier II\\r\\n\\r\\nCaldari Navy Large Shield Extender\\r\\nCaldari Navy Large Shield Extender\\r\\nCaldari Navy Large Shield Extender\\r\\nAdaptive Invulnerability Shield Hardener II\\r\\nAdaptive Invulnerability Shield Hardener II\\r\\nFederation Navy 10MN Afterburner\\r\\n\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nMedium Ghoul Compact Energy Nosferatu\\r\\n\\r\\nMedium Core Defense Field Purger II\\r\\nMedium Core Defense Field Purger II\\r\\nMedium Core Defense Field Purger II\\r\\n\\r\\n\\r\\nRepublic Fleet Valkyrie x2\\r\\nRepublic Fleet Valkyrie x2\\r\\nValkyrie II x2\\r\\nValkyrie II x2\\r\\nValkyrie II x2\",\"tags\":[\"Afterburner\",\"Strong drones\",\"Missiles\",\"Shield regen tank\"],\"stats\":{\"offense\":{\"totalDps\":\"566.9\",\"weaponDps\":\"121.62\",\"droneDps\":\"445.28\",\"totalVolley\":\"2303.62\"},\"defense\":{\"ehp\":{\"total\":\"51801.874919544\",\"shield\":\"43082.278457411\",\"armor\":\"4074.0740740741\",\"hull\":\"4645.5223880597\"},\"resists\":{\"shield\":{\"em\":\"0.5418\",\"therm\":\"0.6334\",\"kin\":\"0.7251\",\"exp\":\"0.7709\"},\"armor\":{\"em\":\"0.5\",\"therm\":\"0.45\",\"kin\":\"0.25\",\"exp\":\"0.1\"},\"hull\":{\"em\":\"0.33\",\"therm\":\"0.33\",\"kin\":\"0.33\",\"exp\":\"0.33\"}},\"reps\":{\"burst\":{\"shieldRegen\":\"272.32\",\"shieldBoost\":\"0\",\"armor\":\"0\",\"hull\":\"0\",\"total\":\"272.32\"},\"sustained\":{\"shieldRegen\":\"272.32\",\"shieldBoost\":\"0\",\"armor\":\"0\",\"hull\":\"0\",\"total\":\"272.32\"}}},\"misc\":{\"ship\":{\"id\":\"17715\",\"name\":\"Gila\",\"cpuMax\":\"475\",\"powerMax\":\"837.5\",\"cpuUsed\":\"448\",\"pgUsed\":\"829.7\",\"calibrationUsed\":\"225\",\"warpSpeed\":\"4\"},\"drones\":{\"activeDrones\":\"2\",\"droneBayTotal\":\"100\",\"droneBandwidthUsed\":\"20\",\"droneBayUsed\":\"20\"},\"maxSpeed\":\"697.65\",\"signature\":\"247.91\",\"capacitor\":{\"capacity\":\"1750\",\"stable\":\"1\",\"stableAt\":\"90.48\"},\"targeting\":{\"range\":\"72500\",\"resolution\":\"356.25\",\"strength\":\"26.4\"}}},\"status\":\"works\",\"price\":558598056},\"error\":null}",
+                            "name": "200"
                         }
                     ]
                 }

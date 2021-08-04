@@ -20,18 +20,10 @@
     Route::post('killmail/push', [PVPController::class, 'addKillmail']);
 
 
-    /**
-     * Conduit v1 routes
-     * @authenticated
-     */
+
     Route::prefix("conduit/v1/")->middleware('auth:sanctum')->group(function() {
 
-        /**
-         * @group Fits
-         *
-         * List use rfits
-         *
-         * Lists all fits selectable by the authenticated user: public fits, incognito fits, and users' private fits.
-         */
-        Route::get("fits/list", [ConduitController::class, 'fitsRead']);
+
+        Route::get("fits/list", [ConduitController::class, 'fitList']);
+        Route::get("fits/get/{id}", [ConduitController::class, 'fitGet']);
     });
