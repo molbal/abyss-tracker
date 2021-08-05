@@ -10,5 +10,5 @@ You can switch the language used with the tabs at the top right (or from the nav
 > Base URL
 
 ```yaml
-http://127.0.0.1:8000
+https://abyss.eve-nt.uk
 ```

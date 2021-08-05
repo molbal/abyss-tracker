@@ -8,9 +8,9 @@
 
     <link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../docs/css/theme-default.style.css" media="screen">
-    <link rel="stylesheet" href="../docs/css/theme-default.print.css" media="print">
-    <script src="../docs/js/theme-default-3.8.0.js"></script>
+    <link rel="stylesheet" href="./css/theme-default.style.css" media="screen">
+    <link rel="stylesheet" href="./css/theme-default.print.css" media="print">
+    <script src="./js/theme-default-3.8.0.js"></script>
 
     <link rel="stylesheet"
           href="//unpkg.com/@highlightjs/cdn-assets@10.7.2/styles/obsidian.min.css">
@@ -19,9 +19,9 @@
 
     <script src="//cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
     <script>
-        var baseUrl = "https://abyss.eve-nt.uk";
+        var baseUrl = "http://127.0.0.1:8000";
     </script>
-    <script src="../docs/js/tryitout-3.8.0.js"></script>
+    <script src="./js/tryitout-3.8.0.js"></script>
 
 </head>
 
@@ -29,7 +29,7 @@
 <a href="#" id="nav-button">
       <span>
         MENU
-        <img src="../docs/images/navbar.png" alt="navbar-image" />
+        <img src="./images/navbar.png" alt="navbar-image" />
       </span>
 </a>
 <div class="tocify-wrapper">
@@ -49,12 +49,12 @@
     </ul>
 
             <ul class="toc-footer" id="toc-footer">
-                            <li><a href="../docs/collection.json">View Postman collection</a></li>
-                            <li><a href="../docs/openapi.yaml">View OpenAPI spec</a></li>
+                            <li><a href="./collection.json">View Postman collection</a></li>
+                            <li><a href="./openapi.yaml">View OpenAPI spec</a></li>
                             <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
                     </ul>
             <ul class="toc-footer" id="last-updated">
-            <li>Last updated: August 5 2021</li>
+            <li>Last updated: August 4 2021</li>
         </ul>
 </div>
 <div class="page-wrapper">
@@ -68,10 +68,10 @@ You can switch the language used with the tabs at the top right (or from the nav
 <blockquote>
 <p>Base URL</p>
 </blockquote>
-<pre><code class="language-yaml">https://abyss.eve-nt.uk</code></pre>
+<pre><code class="language-yaml">http://127.0.0.1:8000</code></pre>
 
         <h1>Authenticating requests</h1>
-<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
+<p>This API is authenticated by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You can retrieve your token by visiting your dashboard and clicking <a href="/settings">Settings</a>.</p>
 
@@ -82,7 +82,8 @@ You can switch the language used with the tabs at the top right (or from the nav
             <h2 id="fits-GETapi-conduit-v1-fits-list">List fits</h2>
 
 <p>
-<em>Requires authentication</em></p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
 
 <p>Lists all fits selectable by the authenticated user: public fits, incognito fits, and users' private fits. Cached for a minute.</p>
 
@@ -91,14 +92,14 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 
 <pre><code class="language-bash">curl --request GET \
-    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/list" \
+    --get "http://127.0.0.1:8000/api/conduit/v1/fits/list" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
 
 <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'https://abyss.eve-nt.uk/api/conduit/v1/fits/list',
+    'http://127.0.0.1:8000/api/conduit/v1/fits/list',
     [
         'headers' =&gt; [
             'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
@@ -112,7 +113,7 @@ print_r(json_decode((string) $body));</code></pre>
 <pre><code class="language-python">import requests
 import json
 
-url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/list'
+url = 'http://127.0.0.1:8000/api/conduit/v1/fits/list'
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
   'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ response = requests.request('GET', url, headers=headers)
 response.json()</code></pre>
 
 <pre><code class="language-javascript">const url = new URL(
-    "https://abyss.eve-nt.uk/api/conduit/v1/fits/list"
+    "http://127.0.0.1:8000/api/conduit/v1/fits/list"
 );
 
 const headers = {
@@ -196,7 +197,7 @@ fetch(url, {
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
                     id="btn-tryout-GETapi-conduit-v1-fits-list"
-                    onclick="tryItOut('GETapi-conduit-v1-fits-list');">Try it out
+                    onclick="tryItOut('GETapi-conduit-v1-fits-list');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
@@ -205,7 +206,7 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-conduit-v1-fits-list" hidden>Send Request
+                    id="btn-executetryout-GETapi-conduit-v1-fits-list" hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -226,110 +227,77 @@ fetch(url, {
     <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
             <p>
             <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
-<p>true on normal operation, false on exception</p>
-
-
-        </p>
+<br>
+<p>true on normal operation, false on exception</p>        </p>
             <p>
             <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
-<p>null on normal operation, string containing error message on exception</p>
-
-
-        </p>
+<br>
+<p>null on normal operation, string containing error message on exception</p>        </p>
             <p>
             <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the authenticated character's ID and name</p>
-
-
-        </p>
+<br>
+<p>contains the authenticated character's ID and name</p>        </p>
             <p>
             <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
-<p>authenticated character's ID  (might be null on error)</p>
-
-
-        </p>
+<br>
+<p>authenticated character's ID  (might be null on error)</p>        </p>
             <p>
             <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
-<p>authenticated character's name (might be null on error)</p>
-
-
-        </p>
+<br>
+<p>authenticated character's name (might be null on error)</p>        </p>
             <p>
             <b><code>items</code></b>&nbsp;&nbsp;<small>array</small>  &nbsp;
-<p>array contains the fits' short forms</p>
-
-
-        </p>
+<br>
+<p>array contains the fits' short forms</p>        </p>
             <p>
             <b><code>items.*.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>Fit ID</p>
-
-
-        </p>
+<br>
+<p>Fit ID</p>        </p>
             <p>
             <b><code>items.*.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Fit name</p>
-
-
-        </p>
+<br>
+<p>Fit name</p>        </p>
             <p>
             <b><code>items.*.uploader</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the fits' uploader and privacy selection</p>
-
-
-        </p>
+<br>
+<p>contains the fits' uploader and privacy selection</p>        </p>
             <p>
             <b><code>items.*.uploader.privacy</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>
-
-
-        </p>
+<br>
+<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>        </p>
             <p>
             <b><code>items.*.uploader.char.id</code></b>&nbsp;&nbsp;  &nbsp;
-<p>Fit uploader's ID (null,incognito privacy setting)</p>
-
-
-        </p>
+<br>
+<p>Fit uploader's ID (null,incognito privacy setting)</p>        </p>
             <p>
             <b><code>items.*.uploader.char.name</code></b>&nbsp;&nbsp;  &nbsp;
-<p>Fit uploader's name (null,incognito privacy setting)</p>
-
-
-        </p>
+<br>
+<p>Fit uploader's name (null,incognito privacy setting)</p>        </p>
             <p>
             <b><code>items.*.uploader.ship</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>Contains the fit hull ID, hull name, and hull size</p>
-
-
-        </p>
+<br>
+<p>Contains the fit hull ID, hull name, and hull size</p>        </p>
             <p>
             <b><code>items.*.uploader.ship.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>Hull ID</p>
-
-
-        </p>
+<br>
+<p>Hull ID</p>        </p>
             <p>
             <b><code>items.*.uploader.ship.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Hull name</p>
-
-
-        </p>
+<br>
+<p>Hull name</p>        </p>
             <p>
             <b><code>items.*.uploader.ship.size</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>
-
-
-        </p>
+<br>
+<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>        </p>
             <p>
             <b><code>count</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>contains how many records were returned</p>
-
-
-        </p>
+<br>
+<p>contains how many records were returned</p>        </p>
                 <h2 id="fits-GETapi-conduit-v1-fits-get--id-">Get a single fit</h2>
 
 <p>
-<em>Requires authentication</em></p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
 
 <p>Gets most data for a fit. Cached for a minute.</p>
 
@@ -338,14 +306,14 @@ fetch(url, {
 
 
 <pre><code class="language-bash">curl --request GET \
-    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/et" \
+    --get "http://127.0.0.1:8000/api/conduit/v1/fits/get/nihil" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
 
 <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/et',
+    'http://127.0.0.1:8000/api/conduit/v1/fits/get/nihil',
     [
         'headers' =&gt; [
             'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
@@ -359,7 +327,7 @@ print_r(json_decode((string) $body));</code></pre>
 <pre><code class="language-python">import requests
 import json
 
-url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/et'
+url = 'http://127.0.0.1:8000/api/conduit/v1/fits/get/nihil'
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
   'Content-Type': 'application/json',
@@ -370,7 +338,7 @@ response = requests.request('GET', url, headers=headers)
 response.json()</code></pre>
 
 <pre><code class="language-javascript">const url = new URL(
-    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/et"
+    "http://127.0.0.1:8000/api/conduit/v1/fits/get/nihil"
 );
 
 const headers = {
@@ -531,7 +499,7 @@ fetch(url, {
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
                     id="btn-tryout-GETapi-conduit-v1-fits-get--id-"
-                    onclick="tryItOut('GETapi-conduit-v1-fits-get--id-');">Try it out
+                    onclick="tryItOut('GETapi-conduit-v1-fits-get--id-');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
@@ -540,7 +508,7 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-conduit-v1-fits-get--id-" hidden>Send Request
+                    id="btn-executetryout-GETapi-conduit-v1-fits-get--id-" hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -558,150 +526,104 @@ fetch(url, {
                 <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <p>
                 <b><code>id</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>The ID of the get.</p>
                 <input type="text"
                name="id"
                data-endpoint="GETapi-conduit-v1-fits-get--id-"
                data-component="url" required  hidden>
-    
-
-            </p>
+    <br>
+<p>The ID of the get.</p>            </p>
                     </form>
 
     <h3>Response</h3>
     <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
             <p>
             <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
-<p>true on normal operation, false on exception</p>
-
-
-        </p>
+<br>
+<p>true on normal operation, false on exception</p>        </p>
             <p>
             <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
-<p>null on normal operation, string containing error message on exception</p>
-
-
-        </p>
+<br>
+<p>null on normal operation, string containing error message on exception</p>        </p>
             <p>
             <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the authenticated character's ID and name</p>
-
-
-        </p>
+<br>
+<p>contains the authenticated character's ID and name</p>        </p>
             <p>
             <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
-<p>authenticated character's ID  (might be null on error)</p>
-
-
-        </p>
+<br>
+<p>authenticated character's ID  (might be null on error)</p>        </p>
             <p>
             <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
-<p>authenticated character's name (might be null on error)</p>
-
-
-        </p>
+<br>
+<p>authenticated character's name (might be null on error)</p>        </p>
             <p>
             <b><code>item</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the fit's extended form</p>
-
-
-        </p>
+<br>
+<p>contains the fit's extended form</p>        </p>
             <p>
             <b><code>item.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>Fit ID</p>
-
-
-        </p>
+<br>
+<p>Fit ID</p>        </p>
             <p>
             <b><code>item.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Fit name</p>
-
-
-        </p>
+<br>
+<p>Fit name</p>        </p>
             <p>
             <b><code>item.uploader</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the fits' uploader and privacy selection</p>
-
-
-        </p>
+<br>
+<p>contains the fits' uploader and privacy selection</p>        </p>
             <p>
             <b><code>item.uploader.privacy</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>
-
-
-        </p>
+<br>
+<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>        </p>
             <p>
             <b><code>item.uploader.char.id</code></b>&nbsp;&nbsp;  &nbsp;
-<p>Fit uploader's ID (null,incognito privacy setting)</p>
-
-
-        </p>
+<br>
+<p>Fit uploader's ID (null,incognito privacy setting)</p>        </p>
             <p>
             <b><code>item.uploader.char.name</code></b>&nbsp;&nbsp;  &nbsp;
-<p>Fit uploader's name (null,incognito privacy setting)</p>
-
-
-        </p>
+<br>
+<p>Fit uploader's name (null,incognito privacy setting)</p>        </p>
             <p>
             <b><code>item.uploader.ship</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>Contains the fit hull ID, hull name, and hull size</p>
-
-
-        </p>
+<br>
+<p>Contains the fit hull ID, hull name, and hull size</p>        </p>
             <p>
             <b><code>item.uploader.ship.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>Hull ID</p>
-
-
-        </p>
+<br>
+<p>Hull ID</p>        </p>
             <p>
             <b><code>item.uploader.ship.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Hull name</p>
-
-
-        </p>
+<br>
+<p>Hull name</p>        </p>
             <p>
             <b><code>item.uploader.ship.size</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>
-
-
-        </p>
+<br>
+<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>        </p>
             <p>
             <b><code>item.eft</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>The raw EFT uploaded by the creator</p>
-
-
-        </p>
+<br>
+<p>The raw EFT uploaded by the creator</p>        </p>
             <p>
             <b><code>item.tags</code></b>&nbsp;&nbsp;  &nbsp;
-<p>array Contains applicable tags (Automatically generated)</p>
-
-
-        </p>
+<br>
+<p>array Contains applicable tags (Automatically generated)</p>        </p>
             <p>
             <b><code>item.stats</code></b>&nbsp;&nbsp;  &nbsp;
-<p>array Stat's array, please see <a href='https://github.com/molbal/svcfitstat/'>SVCFITSTAT</a> for schema</p>
-
-
-        </p>
+<br>
+<p>array Stat's array, please see <a href='https://github.com/molbal/svcfitstat/'>SVCFITSTAT</a> for schema</p>        </p>
             <p>
             <b><code>item.status</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>How well is the fit tested? Enum: 'untested', 'works', 'deprecated'</p>
-
-
-        </p>
+<br>
+<p>How well is the fit tested? Enum: 'untested', 'works', 'deprecated'</p>        </p>
             <p>
             <b><code>iotem.price</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>estimated ISK value of the fit</p>
-
-
-        </p>
+<br>
+<p>estimated ISK value of the fit</p>        </p>
             <p>
             <b><code>count</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>contains how many records were returned</p>
-
-
-        </p>
+<br>
+<p>contains how many records were returned</p>        </p>
         
 
         

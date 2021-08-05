@@ -48,7 +48,7 @@ class ConduitController extends Controller
 
         $charId = $request->user()->CHAR_ID;
         $collection = Cache::remember('api.fits.list.'.$charId, now()->addMinute(), function () use ($charId) {
-            return Fit::getForApi($charId);
+            return Fit::listForApi($charId);
         });
 
         return [

@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'https://abyss.eve-nt.uk'
+    url: 'http://127.0.0.1:8000'
 paths:
   /api/conduit/v1/fits/list:
     get:
@@ -335,7 +335,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the get.'
-        example: et
+        example: nihil
         required: true
         schema:
           type: string

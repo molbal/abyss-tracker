@@ -108,7 +108,7 @@ endpoints:
         name: id
         description: 'The ID of the get.'
         required: true
-        example: voluptatem
+        example: et
         type: string
     queryParameters: []
     bodyParameters: []

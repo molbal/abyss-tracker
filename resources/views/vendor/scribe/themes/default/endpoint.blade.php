@@ -73,7 +73,7 @@
             <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
                     id="btn-tryout-{{ $endpoint->endpointId() }}"
-                    onclick="tryItOut('{{ $endpoint->endpointId() }}');">Try it out ⚡
+                    onclick="tryItOut('{{ $endpoint->endpointId() }}');">Try it out
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
@@ -82,7 +82,7 @@
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-{{ $endpoint->endpointId() }}" hidden>Send Request 💥
+                    id="btn-executetryout-{{ $endpoint->endpointId() }}" hidden>Send Request
             </button>
         @endif
     </h3>

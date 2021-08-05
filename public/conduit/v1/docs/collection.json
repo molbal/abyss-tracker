@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "abyss.eve-nt.uk"
+            "value": "127.0.0.1"
         }
     ],
     "info": {
         "name": "Abyss Tracker Conduit",
-        "_postman_id": "2c301cdf-85e8-4dbc-82ac-6494be015a4d",
+        "_postman_id": "d5a46acb-bc47-4e82-b86f-b0c5f38a15bb",
         "description": "An API interface for the Abyss Tracker",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -23,11 +23,11 @@
                     "name": "List fits",
                     "request": {
                         "url": {
-                            "protocol": "https",
+                            "protocol": "http",
                             "host": "{{baseUrl}}",
                             "path": "api\/conduit\/v1\/fits\/list",
                             "query": [],
-                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/list"
+                            "raw": "http:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/list"
                         },
                         "method": "GET",
                         "header": [
@@ -56,16 +56,16 @@
                     "name": "Get a single fit",
                     "request": {
                         "url": {
-                            "protocol": "https",
+                            "protocol": "http",
                             "host": "{{baseUrl}}",
                             "path": "api\/conduit\/v1\/fits\/get\/:id",
                             "query": [],
-                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/get\/:id",
+                            "raw": "http:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/get\/:id",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "et",
+                                    "value": "nihil",
                                     "description": "The ID of the get."
                                 }
                             ]
