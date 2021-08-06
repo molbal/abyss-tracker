@@ -70,11 +70,18 @@ class Fit extends Model
         return $this->hasOne('App\Ship', 'ID', 'SHIP_ID');
     }
 
-    public static function listForApi(int $charId): Collection {
-        return Fit::with(['ship', 'char'])
-                  ->whereRaw("fits.ID in (SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null) and (fits.PRIVACY != 'private' OR fits.CHAR_ID=".$charId.")")
-                    ->orderBy('fits.NAME')
-            ->get()->map(fn ($a) => $a->shortForm());
+    public static function listForApi(int $charId, ?string $ffh = null, ?int $revision = null): Collection {
+        $builder = Fit::with(['ship', 'char'])
+                      ->whereRaw("fits.ID in (SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null) and (fits.PRIVACY != 'private' OR fits.CHAR_ID=" . $charId . ")");
+        if ($ffh) {
+            $builder->where('fits.FFH', '=', $ffh);
+        }
+        if ($revision) {
+            $builder->where('fits.ID', '=', $revision)->orWhere('fits.ROOT_ID','=',$revision);
+        }
+        return $builder
+                  ->orderBy('fits.NAME')
+                  ->get()->map(fn ($a) => $a->shortForm());
     }
 
     /**
@@ -129,6 +136,7 @@ class Fit extends Model
                 'size'=>$this->ship->HULL_SIZE ?? null,
             ],
             'eft' => $this->RAW_EFT,
+            'flexibleFitHash' => $this->FFH,
             'tags' => FitSearchController::getInstance()->getFitTags($this->ID)->where('TAG_VALUE', 1)->pluck('TAG_NAME')->map(fn ($tag) => __('tags.'.$tag)),
             'stats' => $this->STATS,
             'status' => $this->LAST_PATCH,

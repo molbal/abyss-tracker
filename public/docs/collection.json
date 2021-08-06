@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Abyss Tracker Conduit",
-        "_postman_id": "2c301cdf-85e8-4dbc-82ac-6494be015a4d",
+        "_postman_id": "07e58f6f-d813-4e84-8f23-4ec9c2c03af8",
         "description": "An API interface for the Abyss Tracker",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -26,8 +26,21 @@
                             "protocol": "https",
                             "host": "{{baseUrl}}",
                             "path": "api\/conduit\/v1\/fits\/list",
-                            "query": [],
-                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/list"
+                            "query": [
+                                {
+                                    "key": "flexibleFitHash",
+                                    "value": "e892eac7e0c39ec6cb683211aed4f40a",
+                                    "description": "Fit hash to match (full match, lowercase, see https:\/\/github.com\/molbal\/abyss-tracker\/wiki\/Flexible-Fit-Hash)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "revisions",
+                                    "value": "76",
+                                    "description": "ID If provided, only fits with historical relation to this will be displayed.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/list?flexibleFitHash=e892eac7e0c39ec6cb683211aed4f40a&revisions=76"
                         },
                         "method": "GET",
                         "header": [
@@ -65,7 +78,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "et",
+                                    "value": "dignissimos",
                                     "description": "The ID of the get."
                                 }
                             ]
@@ -88,7 +101,46 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"success\":true,\"char\":{\"id\":93940047,\"name\":\"Veetor Nara\"},\"item\":{\"id\":76,\"name\":\"Easy passive Gila\",\"uploader\":{\"privacy\":\"public\",\"char\":{\"id\":93940047,\"name\":\"Veetor Nara\"}},\"ship\":{\"id\":17715,\"name\":\"Gila\",\"size\":\"cruiser\"},\"eft\":\"[Gila, Easy passive Gila]\\r\\n\\r\\nDrone Damage Amplifier II\\r\\nDrone Damage Amplifier II\\r\\nDrone Damage Amplifier II\\r\\n\\r\\nCaldari Navy Large Shield Extender\\r\\nCaldari Navy Large Shield Extender\\r\\nCaldari Navy Large Shield Extender\\r\\nAdaptive Invulnerability Shield Hardener II\\r\\nAdaptive Invulnerability Shield Hardener II\\r\\nFederation Navy 10MN Afterburner\\r\\n\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nMedium Ghoul Compact Energy Nosferatu\\r\\n\\r\\nMedium Core Defense Field Purger II\\r\\nMedium Core Defense Field Purger II\\r\\nMedium Core Defense Field Purger II\\r\\n\\r\\n\\r\\nRepublic Fleet Valkyrie x2\\r\\nRepublic Fleet Valkyrie x2\\r\\nValkyrie II x2\\r\\nValkyrie II x2\\r\\nValkyrie II x2\",\"tags\":[\"Afterburner\",\"Strong drones\",\"Missiles\",\"Shield regen tank\"],\"stats\":{\"offense\":{\"totalDps\":\"566.9\",\"weaponDps\":\"121.62\",\"droneDps\":\"445.28\",\"totalVolley\":\"2303.62\"},\"defense\":{\"ehp\":{\"total\":\"51801.874919544\",\"shield\":\"43082.278457411\",\"armor\":\"4074.0740740741\",\"hull\":\"4645.5223880597\"},\"resists\":{\"shield\":{\"em\":\"0.5418\",\"therm\":\"0.6334\",\"kin\":\"0.7251\",\"exp\":\"0.7709\"},\"armor\":{\"em\":\"0.5\",\"therm\":\"0.45\",\"kin\":\"0.25\",\"exp\":\"0.1\"},\"hull\":{\"em\":\"0.33\",\"therm\":\"0.33\",\"kin\":\"0.33\",\"exp\":\"0.33\"}},\"reps\":{\"burst\":{\"shieldRegen\":\"272.32\",\"shieldBoost\":\"0\",\"armor\":\"0\",\"hull\":\"0\",\"total\":\"272.32\"},\"sustained\":{\"shieldRegen\":\"272.32\",\"shieldBoost\":\"0\",\"armor\":\"0\",\"hull\":\"0\",\"total\":\"272.32\"}}},\"misc\":{\"ship\":{\"id\":\"17715\",\"name\":\"Gila\",\"cpuMax\":\"475\",\"powerMax\":\"837.5\",\"cpuUsed\":\"448\",\"pgUsed\":\"829.7\",\"calibrationUsed\":\"225\",\"warpSpeed\":\"4\"},\"drones\":{\"activeDrones\":\"2\",\"droneBayTotal\":\"100\",\"droneBandwidthUsed\":\"20\",\"droneBayUsed\":\"20\"},\"maxSpeed\":\"697.65\",\"signature\":\"247.91\",\"capacitor\":{\"capacity\":\"1750\",\"stable\":\"1\",\"stableAt\":\"90.48\"},\"targeting\":{\"range\":\"72500\",\"resolution\":\"356.25\",\"strength\":\"26.4\"}}},\"status\":\"works\",\"price\":558598056},\"error\":null}",
+                            "body": "{\"success\":true,\"char\":{\"id\":93940047,\"name\":\"Veetor Nara\"},\"item\":{\"id\":76,\"name\":\"Easy passive Gila\",\"uploader\":{\"privacy\":\"public\",\"char\":{\"id\":93940047,\"name\":\"Veetor Nara\"}},\"ship\":{\"id\":17715,\"name\":\"Gila\",\"size\":\"cruiser\"},\"eft\":\"[Gila, Easy passive Gila]\\r\\n\\r\\nDrone Damage Amplifier II\\r\\nDrone Damage Amplifier II\\r\\nDrone Damage Amplifier II\\r\\n\\r\\nCaldari Navy Large Shield Extender\\r\\nCaldari Navy Large Shield Extender\\r\\nCaldari Navy Large Shield Extender\\r\\nAdaptive Invulnerability Shield Hardener II\\r\\nAdaptive Invulnerability Shield Hardener II\\r\\nFederation Navy 10MN Afterburner\\r\\n\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\\r\\nMedium Ghoul Compact Energy Nosferatu\\r\\n\\r\\nMedium Core Defense Field Purger II\\r\\nMedium Core Defense Field Purger II\\r\\nMedium Core Defense Field Purger II\\r\\n\\r\\n\\r\\nRepublic Fleet Valkyrie x2\\r\\nRepublic Fleet Valkyrie x2\\r\\nValkyrie II x2\\r\\nValkyrie II x2\\r\\nValkyrie II x2\",\"flexibleFitHash\":\"e892eac7e0c39ec6cb683211aed4f40a\",\"tags\":[\"Afterburner\",\"Strong drones\",\"Missiles\",\"Shield regen tank\"],\"stats\":{\"offense\":{\"totalDps\":\"566.9\",\"weaponDps\":\"121.62\",\"droneDps\":\"445.28\",\"totalVolley\":\"2303.62\"},\"defense\":{\"ehp\":{\"total\":\"51801.874919544\",\"shield\":\"43082.278457411\",\"armor\":\"4074.0740740741\",\"hull\":\"4645.5223880597\"},\"resists\":{\"shield\":{\"em\":\"0.5418\",\"therm\":\"0.6334\",\"kin\":\"0.7251\",\"exp\":\"0.7709\"},\"armor\":{\"em\":\"0.5\",\"therm\":\"0.45\",\"kin\":\"0.25\",\"exp\":\"0.1\"},\"hull\":{\"em\":\"0.33\",\"therm\":\"0.33\",\"kin\":\"0.33\",\"exp\":\"0.33\"}},\"reps\":{\"burst\":{\"shieldRegen\":\"272.32\",\"shieldBoost\":\"0\",\"armor\":\"0\",\"hull\":\"0\",\"total\":\"272.32\"},\"sustained\":{\"shieldRegen\":\"272.32\",\"shieldBoost\":\"0\",\"armor\":\"0\",\"hull\":\"0\",\"total\":\"272.32\"}}},\"misc\":{\"ship\":{\"id\":\"17715\",\"name\":\"Gila\",\"cpuMax\":\"475\",\"powerMax\":\"837.5\",\"cpuUsed\":\"448\",\"pgUsed\":\"829.7\",\"calibrationUsed\":\"225\",\"warpSpeed\":\"4\"},\"drones\":{\"activeDrones\":\"2\",\"droneBayTotal\":\"100\",\"droneBandwidthUsed\":\"20\",\"droneBayUsed\":\"20\"},\"maxSpeed\":\"697.65\",\"signature\":\"247.91\",\"capacitor\":{\"capacity\":\"1750\",\"stable\":\"1\",\"stableAt\":\"90.48\"},\"targeting\":{\"range\":\"72500\",\"resolution\":\"356.25\",\"strength\":\"26.4\"}}},\"status\":\"works\",\"price\":462898985},\"error\":null}",
+                            "name": "200"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Misc",
+            "description": "",
+            "item": [
+                {
+                    "name": "Ping endpoint",
+                    "request": {
+                        "url": {
+                            "protocol": "https",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conduit\/v1\/ping",
+                            "query": [],
+                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/ping"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns a single success=>true endpoint if the auth token is valid."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"success\": true}",
                             "name": "200"
                         }
                     ]

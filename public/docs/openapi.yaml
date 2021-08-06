@@ -13,6 +13,26 @@ paths:
       description: 'Lists all fits selectable by the authenticated user: public fits, incognito fits, and users'' private fits. Cached for a minute.'
       parameters:
         -
+          in: query
+          name: flexibleFitHash
+          description: 'Fit hash to match (full match, lowercase, see https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash)'
+          example: e892eac7e0c39ec6cb683211aed4f40a
+          required: false
+          schema:
+            type: string
+            description: 'Fit hash to match (full match, lowercase, see https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash)'
+            example: e892eac7e0c39ec6cb683211aed4f40a
+        -
+          in: query
+          name: revisions
+          description: 'ID If provided, only fits with historical relation to this will be displayed.'
+          example: '76'
+          required: false
+          schema:
+            type: string
+            description: 'ID If provided, only fits with historical relation to this will be displayed.'
+            example: '76'
+        -
           in: header
           name: Authorization
           description: ''
@@ -150,6 +170,7 @@ paths:
                       name: Gila
                       size: cruiser
                     eft: "[Gila, Easy passive Gila]\r\n\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\n\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nAdaptive Invulnerability Shield Hardener II\r\nAdaptive Invulnerability Shield Hardener II\r\nFederation Navy 10MN Afterburner\r\n\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nMedium Ghoul Compact Energy Nosferatu\r\n\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\n\r\n\r\nRepublic Fleet Valkyrie x2\r\nRepublic Fleet Valkyrie x2\r\nValkyrie II x2\r\nValkyrie II x2\r\nValkyrie II x2"
+                    flexibleFitHash: e892eac7e0c39ec6cb683211aed4f40a
                     tags:
                       - Afterburner
                       - 'Strong drones'
@@ -222,7 +243,7 @@ paths:
                           resolution: '356.25'
                           strength: '26.4'
                     status: works
-                    price: 558598056
+                    price: 462898985
                   error: null
                 properties:
                   success:
@@ -250,6 +271,7 @@ paths:
                         name: Gila
                         size: cruiser
                       eft: "[Gila, Easy passive Gila]\r\n\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\n\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nAdaptive Invulnerability Shield Hardener II\r\nAdaptive Invulnerability Shield Hardener II\r\nFederation Navy 10MN Afterburner\r\n\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nMedium Ghoul Compact Energy Nosferatu\r\n\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\n\r\n\r\nRepublic Fleet Valkyrie x2\r\nRepublic Fleet Valkyrie x2\r\nValkyrie II x2\r\nValkyrie II x2\r\nValkyrie II x2"
+                      flexibleFitHash: e892eac7e0c39ec6cb683211aed4f40a
                       tags:
                         - Afterburner
                         - 'Strong drones'
@@ -322,7 +344,7 @@ paths:
                             resolution: '356.25'
                             strength: '26.4'
                       status: works
-                      price: 558598056
+                      price: 462898985
                     description: 'contains the fit''s extended form'
                   error:
                     type: string
@@ -335,10 +357,51 @@ paths:
         in: path
         name: id
         description: 'The ID of the get.'
-        example: et
+        example: dignissimos
         required: true
         schema:
           type: string
+  /api/conduit/v1/ping:
+    get:
+      summary: 'Ping endpoint'
+      description: 'Returns a single success=>true endpoint if the auth token is valid.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {YOUR_AUTH_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+      tags:
+        - Misc
 components:
   securitySchemes:
     default:

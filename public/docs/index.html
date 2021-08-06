@@ -54,7 +54,7 @@
                             <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
                     </ul>
             <ul class="toc-footer" id="last-updated">
-            <li>Last updated: August 5 2021</li>
+            <li>Last updated: August 6 2021</li>
         </ul>
 </div>
 <div class="page-wrapper">
@@ -71,7 +71,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 <pre><code class="language-yaml">https://abyss.eve-nt.uk</code></pre>
 
         <h1>Authenticating requests</h1>
-<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
+<p>Authenticate requests to this API's endpoints by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You can retrieve your token by visiting your dashboard and clicking <a href="/settings">Settings</a>.</p>
 
@@ -91,7 +91,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 
 <pre><code class="language-bash">curl --request GET \
-    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/list" \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/list?flexibleFitHash=e892eac7e0c39ec6cb683211aed4f40a&amp;revisions=76" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
@@ -104,6 +104,10 @@ $response = $client-&gt;get(
             'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
             'Accept' =&gt; 'application/json',
         ],
+        'query' =&gt; [
+            'flexibleFitHash'=&gt; 'e892eac7e0c39ec6cb683211aed4f40a',
+            'revisions'=&gt; '76',
+        ],
     ]
 );
 $body = $response-&gt;getBody();
@@ -113,18 +117,29 @@ print_r(json_decode((string) $body));</code></pre>
 import json
 
 url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/list'
+params = {
+  'flexibleFitHash': 'e892eac7e0c39ec6cb683211aed4f40a',
+  'revisions': '76',
+}
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
   'Content-Type': 'application/json',
   'Accept': 'application/json'
 }
 
-response = requests.request('GET', url, headers=headers)
+response = requests.request('GET', url, headers=headers, params=params)
 response.json()</code></pre>
 
 <pre><code class="language-javascript">const url = new URL(
     "https://abyss.eve-nt.uk/api/conduit/v1/fits/list"
 );
+
+const params = {
+    "flexibleFitHash": "e892eac7e0c39ec6cb683211aed4f40a",
+    "revisions": "76",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -220,110 +235,131 @@ fetch(url, {
                                                                 data-endpoint="GETapi-conduit-v1-fits-list"
                                                                 data-component="header"></label>
         </p>
+                    <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                    <p>
+                <b><code>flexibleFitHash</code></b>&nbsp;&nbsp;<small>string</small>     <i>optional</i> &nbsp;
+                <input type="text"
+               name="flexibleFitHash"
+               data-endpoint="GETapi-conduit-v1-fits-list"
+               data-component="query"  hidden>
+    
+<p>Fit hash to match (full match, lowercase, see <a href="https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash">https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash</a>)</p>
+
+            </p>
+                    <p>
+                <b><code>revisions</code></b>&nbsp;&nbsp;<small>string</small>     <i>optional</i> &nbsp;
+                <input type="text"
+               name="revisions"
+               data-endpoint="GETapi-conduit-v1-fits-list"
+               data-component="query"  hidden>
+    
+<p>ID If provided, only fits with historical relation to this will be displayed.</p>
+
+            </p>
                 </form>
 
     <h3>Response</h3>
     <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
             <p>
             <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
-<p>true on normal operation, false on exception</p>
 
+<p>true on normal operation, false on exception</p>
 
         </p>
             <p>
             <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
-<p>null on normal operation, string containing error message on exception</p>
 
+<p>null on normal operation, string containing error message on exception</p>
 
         </p>
             <p>
             <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the authenticated character's ID and name</p>
 
+<p>contains the authenticated character's ID and name</p>
 
         </p>
             <p>
             <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
-<p>authenticated character's ID  (might be null on error)</p>
 
+<p>authenticated character's ID  (might be null on error)</p>
 
         </p>
             <p>
             <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
-<p>authenticated character's name (might be null on error)</p>
 
+<p>authenticated character's name (might be null on error)</p>
 
         </p>
             <p>
             <b><code>items</code></b>&nbsp;&nbsp;<small>array</small>  &nbsp;
-<p>array contains the fits' short forms</p>
 
+<p>array contains the fits' short forms</p>
 
         </p>
             <p>
             <b><code>items.*.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>Fit ID</p>
 
+<p>Fit ID</p>
 
         </p>
             <p>
             <b><code>items.*.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Fit name</p>
 
+<p>Fit name</p>
 
         </p>
             <p>
             <b><code>items.*.uploader</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the fits' uploader and privacy selection</p>
 
+<p>contains the fits' uploader and privacy selection</p>
 
         </p>
             <p>
             <b><code>items.*.uploader.privacy</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>
 
+<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>
 
         </p>
             <p>
             <b><code>items.*.uploader.char.id</code></b>&nbsp;&nbsp;  &nbsp;
-<p>Fit uploader's ID (null,incognito privacy setting)</p>
 
+<p>Fit uploader's ID (null,incognito privacy setting)</p>
 
         </p>
             <p>
             <b><code>items.*.uploader.char.name</code></b>&nbsp;&nbsp;  &nbsp;
-<p>Fit uploader's name (null,incognito privacy setting)</p>
 
+<p>Fit uploader's name (null,incognito privacy setting)</p>
 
         </p>
             <p>
             <b><code>items.*.uploader.ship</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>Contains the fit hull ID, hull name, and hull size</p>
 
+<p>Contains the fit hull ID, hull name, and hull size</p>
 
         </p>
             <p>
             <b><code>items.*.uploader.ship.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>Hull ID</p>
 
+<p>Hull ID</p>
 
         </p>
             <p>
             <b><code>items.*.uploader.ship.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Hull name</p>
 
+<p>Hull name</p>
 
         </p>
             <p>
             <b><code>items.*.uploader.ship.size</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>
 
+<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>
 
         </p>
             <p>
             <b><code>count</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>contains how many records were returned</p>
 
+<p>contains how many records were returned</p>
 
         </p>
                 <h2 id="fits-GETapi-conduit-v1-fits-get--id-">Get a single fit</h2>
@@ -338,14 +374,14 @@ fetch(url, {
 
 
 <pre><code class="language-bash">curl --request GET \
-    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/et" \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/dignissimos" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
 
 <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/et',
+    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/dignissimos',
     [
         'headers' =&gt; [
             'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
@@ -359,7 +395,7 @@ print_r(json_decode((string) $body));</code></pre>
 <pre><code class="language-python">import requests
 import json
 
-url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/et'
+url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/dignissimos'
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
   'Content-Type': 'application/json',
@@ -370,7 +406,7 @@ response = requests.request('GET', url, headers=headers)
 response.json()</code></pre>
 
 <pre><code class="language-javascript">const url = new URL(
-    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/et"
+    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/dignissimos"
 );
 
 const headers = {
@@ -413,6 +449,7 @@ fetch(url, {
             &quot;size&quot;: &quot;cruiser&quot;
         },
         &quot;eft&quot;: &quot;[Gila, Easy passive Gila]\r\n\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\nDrone Damage Amplifier II\r\n\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nCaldari Navy Large Shield Extender\r\nAdaptive Invulnerability Shield Hardener II\r\nAdaptive Invulnerability Shield Hardener II\r\nFederation Navy 10MN Afterburner\r\n\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nRapid Light Missile Launcher II, Caldari Navy Nova Light Missile\r\nMedium Ghoul Compact Energy Nosferatu\r\n\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\nMedium Core Defense Field Purger II\r\n\r\n\r\nRepublic Fleet Valkyrie x2\r\nRepublic Fleet Valkyrie x2\r\nValkyrie II x2\r\nValkyrie II x2\r\nValkyrie II x2&quot;,
+        &quot;flexibleFitHash&quot;: &quot;e892eac7e0c39ec6cb683211aed4f40a&quot;,
         &quot;tags&quot;: [
             &quot;Afterburner&quot;,
             &quot;Strong drones&quot;,
@@ -502,7 +539,7 @@ fetch(url, {
             }
         },
         &quot;status&quot;: &quot;works&quot;,
-        &quot;price&quot;: 558598056
+        &quot;price&quot;: 462898985
     },
     &quot;error&quot;: null
 }</code>
@@ -558,12 +595,12 @@ fetch(url, {
                 <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <p>
                 <b><code>id</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>The ID of the get.</p>
                 <input type="text"
                name="id"
                data-endpoint="GETapi-conduit-v1-fits-get--id-"
                data-component="url" required  hidden>
     
+<p>The ID of the get.</p>
 
             </p>
                     </form>
@@ -572,137 +609,266 @@ fetch(url, {
     <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
             <p>
             <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
-<p>true on normal operation, false on exception</p>
 
+<p>true on normal operation, false on exception</p>
 
         </p>
             <p>
             <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
-<p>null on normal operation, string containing error message on exception</p>
 
+<p>null on normal operation, string containing error message on exception</p>
 
         </p>
             <p>
             <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the authenticated character's ID and name</p>
 
+<p>contains the authenticated character's ID and name</p>
 
         </p>
             <p>
             <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
-<p>authenticated character's ID  (might be null on error)</p>
 
+<p>authenticated character's ID  (might be null on error)</p>
 
         </p>
             <p>
             <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
-<p>authenticated character's name (might be null on error)</p>
 
+<p>authenticated character's name (might be null on error)</p>
 
         </p>
             <p>
             <b><code>item</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the fit's extended form</p>
 
+<p>contains the fit's extended form</p>
 
         </p>
             <p>
             <b><code>item.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>Fit ID</p>
 
+<p>Fit ID</p>
 
         </p>
             <p>
             <b><code>item.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+
 <p>Fit name</p>
 
+        </p>
+            <p>
+            <b><code>item.flexibleFitHash</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+
+<p>Fit hash (see <a href="https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash">https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash</a>)</p>
 
         </p>
             <p>
             <b><code>item.uploader</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>contains the fits' uploader and privacy selection</p>
 
+<p>contains the fits' uploader and privacy selection</p>
 
         </p>
             <p>
             <b><code>item.uploader.privacy</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>
 
+<p>Enum field, values: 'public', 'incognito', 'private'. If incognito is set, the char id and name are set to <strong>null</strong></p>
 
         </p>
             <p>
             <b><code>item.uploader.char.id</code></b>&nbsp;&nbsp;  &nbsp;
-<p>Fit uploader's ID (null,incognito privacy setting)</p>
 
+<p>Fit uploader's ID (null,incognito privacy setting)</p>
 
         </p>
             <p>
             <b><code>item.uploader.char.name</code></b>&nbsp;&nbsp;  &nbsp;
-<p>Fit uploader's name (null,incognito privacy setting)</p>
 
+<p>Fit uploader's name (null,incognito privacy setting)</p>
 
         </p>
             <p>
             <b><code>item.uploader.ship</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
-<p>Contains the fit hull ID, hull name, and hull size</p>
 
+<p>Contains the fit hull ID, hull name, and hull size</p>
 
         </p>
             <p>
             <b><code>item.uploader.ship.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>Hull ID</p>
 
+<p>Hull ID</p>
 
         </p>
             <p>
             <b><code>item.uploader.ship.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Hull name</p>
 
+<p>Hull name</p>
 
         </p>
             <p>
             <b><code>item.uploader.ship.size</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>
 
+<p>Hull size ('frigate', 'destroyer', 'cruiser')</p>
 
         </p>
             <p>
             <b><code>item.eft</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>The raw EFT uploaded by the creator</p>
 
+<p>The raw EFT uploaded by the creator</p>
 
         </p>
             <p>
             <b><code>item.tags</code></b>&nbsp;&nbsp;  &nbsp;
-<p>array Contains applicable tags (Automatically generated)</p>
 
+<p>array Contains applicable tags (Automatically generated)</p>
 
         </p>
             <p>
             <b><code>item.stats</code></b>&nbsp;&nbsp;  &nbsp;
-<p>array Stat's array, please see <a href='https://github.com/molbal/svcfitstat/'>SVCFITSTAT</a> for schema</p>
 
+<p>array Stat's array, please see <a href='https://github.com/molbal/svcfitstat/'>SVCFITSTAT</a> for schema</p>
 
         </p>
             <p>
             <b><code>item.status</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
-<p>How well is the fit tested? Enum: 'untested', 'works', 'deprecated'</p>
 
+<p>How well is the fit tested? Enum: 'untested', 'works', 'deprecated'</p>
 
         </p>
             <p>
-            <b><code>iotem.price</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
-<p>estimated ISK value of the fit</p>
+            <b><code>item.price</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
 
+<p>estimated ISK value of the fit</p>
 
         </p>
             <p>
             <b><code>count</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+
 <p>contains how many records were returned</p>
 
-
         </p>
-        
+            <h1 id="misc">Misc</h1>
+
+    
+
+            <h2 id="misc-GETapi-conduit-v1-ping">Ping endpoint</h2>
+
+<p>
+<em>Requires authentication</em></p>
+
+<p>Returns a single success=&gt;true endpoint if the auth token is valid.</p>
+
+<span id="example-requests-GETapi-conduit-v1-ping">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/ping" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'https://abyss.eve-nt.uk/api/conduit/v1/ping',
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre>
+
+<pre><code class="language-python">import requests
+import json
+
+url = 'https://abyss.eve-nt.uk/api/conduit/v1/ping'
+headers = {
+  'Authorization': 'Bearer {YOUR_AUTH_KEY}',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers)
+response.json()</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://abyss.eve-nt.uk/api/conduit/v1/ping"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-conduit-v1-ping">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json">{
+    &quot;success&quot;: true
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-conduit-v1-ping" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-conduit-v1-ping"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-conduit-v1-ping"></code></pre>
+</span>
+<span id="execution-error-GETapi-conduit-v1-ping" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-conduit-v1-ping"></code></pre>
+</span>
+<form id="form-GETapi-conduit-v1-ping" data-method="GET"
+      data-path="api/conduit/v1/ping"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-conduit-v1-ping', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-conduit-v1-ping"
+                    onclick="tryItOut('GETapi-conduit-v1-ping');">Try it out
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-conduit-v1-ping"
+                    onclick="cancelTryOut('GETapi-conduit-v1-ping');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-conduit-v1-ping" hidden>Send Request
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/conduit/v1/ping</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-conduit-v1-ping" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-conduit-v1-ping"
+                                                                data-component="header"></label>
+        </p>
+                </form>
+
+    
 
         
     </div>

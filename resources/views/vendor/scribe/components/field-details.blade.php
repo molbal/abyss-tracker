@@ -1,6 +1,5 @@
 <b><code>{{ $name }}</code></b>&nbsp;&nbsp;@if($type)<small>{{ $type }}</small>@endif @if(!$required)
     <i>optional</i>@endif &nbsp;
-{!! Parsedown::instance()->text($description) !!}
 @if(($isInput ?? true) && empty($hasChildren))
     @php
         $isList = Str::endsWith($type, '[]');
@@ -59,4 +58,5 @@
     @endif
 @endif
 {{--<br>--}}
+{!! Parsedown::instance()->text($description) !!}
 

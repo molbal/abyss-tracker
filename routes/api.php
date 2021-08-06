@@ -24,6 +24,7 @@
     Route::prefix("conduit/v1/")->middleware('auth:sanctum')->group(function() {
 
 
+        Route::get("ping", [ConduitController::class, 'ping']);
         Route::get("fits/list", [ConduitController::class, 'fitList']);
         Route::get("fits/get/{id}", [ConduitController::class, 'fitGet']);
     });
