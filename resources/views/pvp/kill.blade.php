@@ -100,15 +100,15 @@
                     @forelse($victim->attackers as $attacker)
                         @if($attacker->isCapsuleer())
                             <tr class="">
-                                <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getCharImgLink($attacker->character->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-md"></td>
-                                <td><a href="{{route('pvp.character', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->character->id])}}">{{$attacker->character->name}}</a></td>
+                                <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getCharImgLink($attacker->character->id ?? 0)}}" alt="" class="rounded-circle shadow-sm pvp-icon-md"></td>
+                                <td><a href="{{route('pvp.character', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->character->id ?? 0])}}">{{$attacker->character->name ?? 'Unknown'}}</a></td>
 
-                                <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getRenderImgLink($attacker->ship_type->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-sm"></td>
-                                <td><a href="{{route('pvp.ship', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->ship_type->id])}}" data-toggle="tooltip" title="{{$attacker->ship_type->name}}">{{Str::limit($attacker->ship_type->name, 12)}}</a></td>
+                                <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getRenderImgLink($attacker->ship_type->id ?? 1)}}" alt="" class="rounded-circle shadow-sm pvp-icon-sm"></td>
+                                <td><a href="{{route('pvp.ship', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->ship_type->id ?? 0])}}" data-toggle="tooltip" title="{{$attacker->ship_type->name ?? 'Unknown'}}">{{Str::limit($attacker->ship_type->name ?? 'Unknown', 12)}}</a></td>
 
                                 @if($attacker->hasWeaponInfo())
-                                    <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($attacker->weapon_type->id)}}" alt="" class="rounded-circle shadow-sm pvp-icon-sm"></td>
-                                    <td><a href="{{route('pvp.item', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->weapon_type->id])}}" data-toggle="tooltip" title="{{$attacker->weapon_type->name}}">{{Str::limit($attacker->weapon_type->name, 12)}}</a></td>
+                                    <td style="width: 26px;"><img src="{{\App\Http\Controllers\HelperController::getItemImgLink($attacker->weapon_type->id ?? 0)}}" alt="" class="rounded-circle shadow-sm pvp-icon-sm"></td>
+                                    <td><a href="{{route('pvp.item', ['slug' => $victim->pvp_event->slug, 'id' => $attacker->weapon_type->id ?? 0])}}" data-toggle="tooltip" title="{{$attacker->weapon_type->name ?? 'Unknown'}}">{{Str::limit($attacker->weapon_type->name ?? 'Unknown', 12)}}</a></td>
                                 @else
                                     <td style="width: 26px;">&nbsp;</td>
                                     <td class="text-muted">Unknown</td>

@@ -30,7 +30,12 @@
          * @return int|null
          */
         public static function getLoginId(): ?int {
-            return session('login_id', request()->user()->CHAR_ID);
+            try {
+                return session('login_id', request()->user()->CHAR_ID ?? null);
+            }
+            catch (\Exception $e) {
+                return null;
+            }
         }
 
         /**
@@ -40,7 +45,12 @@
          * @return bool
          */
         public static function isItMe(int $id) : bool {
-            return self::getLoginId() == $id;
+            try {
+                return self::getLoginId() == $id;
+            }
+            catch (\Exception $e) {
+                return false;
+            }
         }
 
         /**

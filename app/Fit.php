@@ -77,7 +77,14 @@ class Fit extends Model
             $builder->where('fits.FFH', '=', $ffh);
         }
         if ($revision) {
-            $builder->where('fits.ID', '=', $revision)->orWhere('fits.ROOT_ID','=',$revision);
+            $revisions = collect([$revision]);
+            if (Fit::where('ID', $revision)->exists()) {
+                $rootId = Fit::where('ID', $revision)->firstOrFail()->ROOT_ID;
+                if ($rootId) {
+                    $revisions->add($rootId);
+                }
+            }
+            $builder->whereIn('fits.ID', '=', $revisions)->orWhereIn('fits.ROOT_ID',$revisions);
         }
         return $builder
                   ->orderBy('fits.NAME')

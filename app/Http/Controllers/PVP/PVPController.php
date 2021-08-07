@@ -274,7 +274,7 @@ class PVPController extends Controller
 
         $littlekill = json_decode($request->get('killmail')["utf8Data"]);
         $typeIds = config('tracker.pvp.accept-ids.' . $currentEvent->slug);
-        if (!in_array($littlekill->ship_type_id, $typeIds)) {
+        if (!in_array($littlekill->ship_type_id, $typeIds ?? [])) {
             return ['success' => true, 'message' => 'Kill ignored - type ID not accepted', 'acceptedTypeIDs' => $typeIds];
         }
 

@@ -129,7 +129,10 @@
 <div class="container">
     {!! \App\Http\Controllers\Misc\NotificationController::renderInfoline() !!}
     @if(cache()->has("recalc-notice"))
-        <div class="alert alert-warning border-0 shadow-sm mt-3">{{cache("recalc-notice")}}  ({{round(cache('recalc-current')/min(1, cache('recalc-all')), 2)}})%</div>
+        <div class="card card-body border-warning shadow-sm mt-3 d-flex align-items-center justify-content-start flex-row p-2">
+            <img src="{{asset('loader.png')}}" alt="" class="mr-2 d-inline-block icon48p">
+            <span>{{cache("recalc-notice")}}  ({{cache('recalc-current') ?? '?'}} of {{cache('recalc-all') ?? '?'}})</span>
+        </div>
     @endif
     @yield('content')
 </div>

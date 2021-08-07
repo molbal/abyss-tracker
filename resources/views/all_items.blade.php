@@ -27,7 +27,7 @@
                             <td><a href="{{route("item_group", ["group_id" => $item->GROUP_ID])}}" class="text-dark">{{$item->GROUP_NAME}}</a></td>
                             <td class="text-right" data-order="{{$item->PRICE_SELL}}">{{number_format($item->PRICE_SELL, 0, ",", " ")}} ISK</td>
                             <td class="text-right" data-order="{{$item->PRICE_BUY}}">{{number_format($item->PRICE_BUY, 0, ",", " ")}} ISK</td>
-                            <td class="text-center">{{round($item->DROP_RATE*100,2)}}%</td>
+                            <td class="text-center">{{round(min(1,$item->DROP_RATE)*100,2)}}%</td>
                         </tr>
                     @endforeach
                     </tbody>
