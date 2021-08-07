@@ -13,11 +13,17 @@
 
 	class FitBreakEvenCalculator {
 
-        public static function getMaxTiers(int $fitId): Collection {
+        public static function getMaxTiers(int $fitId) : Collection {
             return collect(Cache::remember(sprintf("aft.median.max-tiers.%s", $fitId,), now()->addMinute(), function () use ($fitId) {
-                return DB::select("select MAX(TIER) as `MAX_TIER`, TYPE from runs where FIT_ID=? and SURVIVED=1 and LOOT_ISK>0 group by TYPE order by 1 desc limit 1;", [$fitId]);
+                return DB::select("select MAX(inn.MAX_TIER) as MAX_TIER, inn.TYPE
+                    from (select MAX(TIER) as `MAX_TIER`, TYPE
+                          from runs
+                          where FIT_ID = ? and SURVIVED = 1 and LOOT_ISK > 0
+                          group by TYPE) inn
+                    where inn.MAX_TIER=(select MAX(TIER) from runs where FIT_ID = ? and SURVIVED = 1 and LOOT_ISK > 0)
+                    group by inn.TYPE limit 1;", [$fitId, $fitId]);
             }));
-	    }
+        }
 
         /**
          * @param int                            $id

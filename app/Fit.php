@@ -74,7 +74,7 @@ class Fit extends Model
 
     public static function listForApi(int $charId, ?string $ffh = null, ?int $revision = null): Collection {
         $builder = Fit::with(['ship', 'char'])
-                      ->whereRaw("fits.ID in (SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null) and (fits.PRIVACY != 'private' OR fits.CHAR_ID=" . $charId . ")");
+            ->joinSub('SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null', 'lastrevs', 'fits.ID', '=', 'lastrevs.ID');
         if ($ffh) {
             $builder->where('fits.FFH', '=', $ffh);
         }

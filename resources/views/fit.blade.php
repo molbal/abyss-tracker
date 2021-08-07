@@ -155,7 +155,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-8">
-            @component("components.runs.list", ['title' => "Runs with this fit", 'items' => $runs]) @endcomponent
+            @component("components.runs.list", ['title' => "Runs with this fit (".$runs->total().")", 'items' => $runs]) @endcomponent
         </div>
 
         <div class="col-xs-12 col-sm-4">
