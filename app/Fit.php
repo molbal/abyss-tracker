@@ -5,6 +5,8 @@ namespace App;
 use App\Exceptions\ConduitSecurityViolationException;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\FitSearchController;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -30,29 +32,29 @@ use JetBrains\PhpStorm\ArrayShape;
  * @property int $REVISION_NUMBER
  * @property string $LAST_PATCH
  * @property string|null $CREATED_AT
- * @method static \Illuminate\Database\Eloquent\Builder|Fit newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Fit newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Fit query()
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereCHARID($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereCREATEDAT($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereDESCRIPTION($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereFFH($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereID($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereLASTPATCH($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereNAME($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit wherePRICE($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit wherePRIVACY($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereRAWEFT($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereREVISIONNUMBER($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereROOTID($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereSHIPID($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereSTATS($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereSTATUS($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereSUBMITTED($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fit whereVIDEOLINK($value)
- * @mixin \Eloquent
- * @property-read \App\Char|null $char
- * @property-read \App\Ship|null $ship
+ * @method static Builder|Fit newModelQuery()
+ * @method static Builder|Fit newQuery()
+ * @method static Builder|Fit query()
+ * @method static Builder|Fit whereCHARID($value)
+ * @method static Builder|Fit whereCREATEDAT($value)
+ * @method static Builder|Fit whereDESCRIPTION($value)
+ * @method static Builder|Fit whereFFH($value)
+ * @method static Builder|Fit whereID($value)
+ * @method static Builder|Fit whereLASTPATCH($value)
+ * @method static Builder|Fit whereNAME($value)
+ * @method static Builder|Fit wherePRICE($value)
+ * @method static Builder|Fit wherePRIVACY($value)
+ * @method static Builder|Fit whereRAWEFT($value)
+ * @method static Builder|Fit whereREVISIONNUMBER($value)
+ * @method static Builder|Fit whereROOTID($value)
+ * @method static Builder|Fit whereSHIPID($value)
+ * @method static Builder|Fit whereSTATS($value)
+ * @method static Builder|Fit whereSTATUS($value)
+ * @method static Builder|Fit whereSUBMITTED($value)
+ * @method static Builder|Fit whereVIDEOLINK($value)
+ * @mixin Eloquent
+ * @property-read Char|null $char
+ * @property-read Ship|null $ship
  */
 class Fit extends Model
 {
@@ -84,10 +86,13 @@ class Fit extends Model
                     $revisions->add($rootId);
                 }
             }
-            $builder->whereIn('fits.ID', '=', $revisions)->orWhereIn('fits.ROOT_ID',$revisions);
+//            return $revisions;
+            $builder->where(function ($builder) use ($revisions) {
+                return $builder->whereIn('fits.ID', '=', $revisions)->orWhereIn('fits.ROOT_ID',$revisions);
+            });
         }
         return $builder
-                  ->orderBy('fits.NAME')
+                  ->orderByDesc('fits.ID')
                   ->get()->map(fn ($a) => $a->shortForm());
     }
 

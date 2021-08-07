@@ -59,6 +59,9 @@
                     $type_drp = 0;
                     $type_ran = 0;
                     Cache::increment("recalc-current");
+                    ini_set('max_execution_time', 0);
+                    set_time_limit(0);
+                    sleep(1);
 
                     Log::channel("droprate")->info("Doing item ". $item->NAME);
                     for ($tier = 0; $tier <= 6; $tier++) {

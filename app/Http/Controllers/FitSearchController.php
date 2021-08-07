@@ -297,7 +297,8 @@
                 $query->where("PRIVACY", '!=', 'private');
             }
             if ($excludeOldRevisions) {
-                $query->whereRaw("fits.ID in (SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null)");
+//                $query->whereRaw("fits.ID in (SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null)");
+                $query->joinSub('SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null', 'lastrevs', 'fits.ID', '=', 'lastrevs.ID');
             }
             return $query;
         }
