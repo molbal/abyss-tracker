@@ -38,10 +38,10 @@
          * Must be secured by middleware
          */
         public function getIntegratedTypeList(Request $request) {
-            $myFits = Cache::remember("aft.my-fits", now()->addSeconds(30), function () {
+            $myFits = Cache::remember("aft.my-fits.".AuthController::getLoginId(), now()->addSeconds(30), function () {
                 return DB::table("fits as f")
                         ->join("ship_lookup as l", "f.SHIP_ID","=","l.ID")
-                        ->where("f.CHAR_ID", session()->get("login_id", 0))
+                        ->where("f.CHAR_ID", AuthController::getLoginId())
                         ->select([
                             'l.ID as SHIP_ID',
                             'f.ID as FIT_ID',
@@ -81,7 +81,7 @@
 
             $mapper = function ($item, $key) {
                 if ($item->FIT_NAME)
-                    $item->FIT_NAME = strip_tags(trim($item->FIT_NAME));
+                    $item->FIT_NAME = strip_tags(trim($item->FIT_NAME))." (#".$item->FIT_ID.")";
                 $item->id = json_encode([
                     'SHIP_ID' => $item->SHIP_ID,
                     'FIT_ID' => $item->FIT_ID
