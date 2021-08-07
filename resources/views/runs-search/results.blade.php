@@ -54,8 +54,8 @@
                         @forelse($results as $item)
                             <tr>
                                 <td><a href="{{route("view_single", ["id" => $item->ID ?? 0])}}" class="text-dark" title="Open">{{$item->ID}}</a></td>
-                                <td><img src="types/{{$item->TYPE}}.png" class="tinyicon bringupper mr-1" alt="">{{$item->TIER}}</td>
-                                <td><img src="tiers/{{$item->TIER}}.png" class="tinyicon bringupper mr-1" alt="">{{$item->TYPE}}</td>
+                                <td><img src="tiers/{{$item->TIER}}.png" class="tinyicon bringupper mr-1" alt="">{{$item->TIER}}</td>
+                                <td><img src="types/{{$item->TYPE}}.png" class="tinyicon bringupper mr-1" alt="">{{$item->TYPE}}</td>
                                 <td class="text-right" data-order="{{$item->LOOT_ISK}}">{{number_format($item->LOOT_ISK, 0, ',', ' ')}} ISK</td>
                                 <td>{{$item->SURVIVED ? "Survived" : "Failed"}}</td>
                                 <td>{{$item->RUN_DATE}}</td>
