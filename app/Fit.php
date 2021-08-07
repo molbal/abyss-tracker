@@ -72,9 +72,8 @@ class Fit extends Model
         return $this->hasOne('App\Ship', 'ID', 'SHIP_ID');
     }
 
-    public static function listForApi(int $charId, ?string $ffh = null, ?int $revision = null): Collection {
-        $builder = Fit::with(['ship', 'char'])
-            ->joinSub('SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null', 'lastrevs', 'fits.ID', '=', 'lastrevs.ID');
+    public static function listForApi(int $charId, ?string $ffh = null, ?int $revision = null, bool $mineOnly = false, bool $publicOnly = false): Collection {
+        $builder = Fit::with(['ship', 'char']);
         if ($ffh) {
             $builder->where('fits.FFH', '=', $ffh);
         }
@@ -86,11 +85,21 @@ class Fit extends Model
                     $revisions->add($rootId);
                 }
             }
-//            return $revisions;
-            $builder->where(function ($builder) use ($revisions) {
-                return $builder->whereIn('fits.ID', '=', $revisions)->orWhereIn('fits.ROOT_ID',$revisions);
-            });
+            $revisionsList = $revisions->implode(',');
+            $builder->whereRaw('(fits.ID in ('.$revisionsList.') or fits.ROOT_ID in ('.$revisionsList.'))');
         }
+        else {
+            if ($mineOnly) {
+                $builder->where('fits.CHAR_ID', $charId);
+            }
+            else {
+                $builder->whereIn('fits.PRIVACY', ['public', 'incognito']);
+            }
+
+            $builder->joinSub('SELECT MAX(ID) as ID FROM fits where ROOT_ID is not null GROUP BY ROOT_ID UNION SELECT ID from fits where ROOT_ID is null', 'lastrevs', 'fits.ID', '=', 'lastrevs.ID');
+        }
+
+
         return $builder
                   ->orderByDesc('fits.ID')
                   ->get()->map(fn ($a) => $a->shortForm());

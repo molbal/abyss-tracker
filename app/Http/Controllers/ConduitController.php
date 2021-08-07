@@ -3,6 +3,7 @@
     namespace App\Http\Controllers;
 
     use App\Char;
+    use App\Exceptions\BusinessLogicException;
     use App\Fit;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
@@ -42,7 +43,8 @@
          *
          * @group         Fits
          * @queryParam    flexibleFitHash string Fit hash to match (full match, lowercase, see https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash) Example: e892eac7e0c39ec6cb683211aed4f40a
-         * @queryParam    revisions ID If provided, only fits with historical relation to this will be displayed. Example: 76
+         * @queryParam    revisions int If provided, only fits with historical relation to this will be displayed. Example: 76
+         * @queryParam    mineOnly bool If provided, only the authenticated user's fits will be returned. If false, or not set, only public fits will be returned. Example: true
          * @responseField success boolean true on normal operation, false on exception
          * @responseField error string|null null on normal operation, string containing error message on exception
          * @responseField char object contains the authenticated character's ID and name
@@ -64,18 +66,18 @@
          */
         public function fitList(Request $request) : array {
             try {
-
                 $charId = $request->user()->CHAR_ID;
+
                 if ($request->has('flexibleFitHash')) {
-                    $collection = Fit::listForApi($charId, ffh: $request->get('flexibleFitHash'));
+                    $collection = Fit::listForApi(charId: $charId, ffh: $request->get('flexibleFitHash'), mineOnly: $request->get('mineOnly', false));
                 }
                 else {
                     if ($request->has('revisions')) {
-                        $collection = Fit::listForApi($charId, revision: $request->get('revisions'));
+                        $collection = Fit::listForApi(charId: $charId, revision: intval($request->get('revisions')), mineOnly: $request->get('mineOnly', false));
                     }
                     else {
-                        $collection = Cache::remember('api.fits.list.' . $charId, now()->addMinute(), function () use ($charId) {
-                            return Fit::listForApi($charId);
+                        $collection = Cache::remember('api.fits.list.' . $charId.".".$request->get('mineOnly', false) ? "mine" : "public", now()->addMinute(), function () use ($charId, $request) {
+                            return Fit::listForApi(charId:$charId, mineOnly: $request->get('mineOnly', false));
                         });
                     }
                 }
@@ -83,7 +85,7 @@
                 return ['success' => true, 'char' => ['id' => $request->user()->CHAR_ID, 'name' => $request->user()->NAME,], 'items' => $collection, 'count' => $collection->count(), 'error' => null];
             }
             catch (\Exception $e) {
-                return ['success' => false, 'char' => ['id' => $request->user()->CHAR_ID ?? null, 'name' => $request->user()->NAME ?? null,], 'items' => null, 'count' => null, 'error' => $e->getMessage()];
+                return ['success' => false, 'char' => ['id' => $request->user()->CHAR_ID ?? null, 'name' => $request->user()->NAME ?? null], 'items' => null, 'count' => null, 'error' => $e->getMessage()];
             }
         }
 

@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Abyss Tracker Conduit",
-        "_postman_id": "07e58f6f-d813-4e84-8f23-4ec9c2c03af8",
+        "_postman_id": "55bc50d7-9ab8-4b4b-bd11-705ea7fe92ef",
         "description": "An API interface for the Abyss Tracker",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -36,11 +36,17 @@
                                 {
                                     "key": "revisions",
                                     "value": "76",
-                                    "description": "ID If provided, only fits with historical relation to this will be displayed.",
+                                    "description": "If provided, only fits with historical relation to this will be displayed.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "mineOnly",
+                                    "value": "1",
+                                    "description": "If provided, only the authenticated user's fits will be returned. If false, or not set, only public fits will be returned.",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/list?flexibleFitHash=e892eac7e0c39ec6cb683211aed4f40a&revisions=76"
+                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/list?flexibleFitHash=e892eac7e0c39ec6cb683211aed4f40a&revisions=76&mineOnly=1"
                         },
                         "method": "GET",
                         "header": [
@@ -78,7 +84,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "dignissimos",
+                                    "value": "similique",
                                     "description": "The ID of the get."
                                 }
                             ]
@@ -140,7 +146,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"success\": true}",
+                            "body": "{\"success\": true,\"char\": {\"id\": 93940047,\"name\": \"Veetor Nara\"}}",
                             "name": "200"
                         }
                     ]

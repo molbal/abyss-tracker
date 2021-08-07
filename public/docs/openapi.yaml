@@ -25,13 +25,23 @@ paths:
         -
           in: query
           name: revisions
-          description: 'ID If provided, only fits with historical relation to this will be displayed.'
-          example: '76'
+          description: 'If provided, only fits with historical relation to this will be displayed.'
+          example: 76
           required: false
           schema:
-            type: string
-            description: 'ID If provided, only fits with historical relation to this will be displayed.'
-            example: '76'
+            type: integer
+            description: 'If provided, only fits with historical relation to this will be displayed.'
+            example: 76
+        -
+          in: query
+          name: mineOnly
+          description: 'If provided, only the authenticated user''s fits will be returned. If false, or not set, only public fits will be returned.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'If provided, only the authenticated user''s fits will be returned. If false, or not set, only public fits will be returned.'
+            example: true
         -
           in: header
           name: Authorization
@@ -357,7 +367,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the get.'
-        example: dignissimos
+        example: similique
         required: true
         schema:
           type: string
@@ -396,10 +406,19 @@ paths:
                 type: object
                 example:
                   success: true
+                  char:
+                    id: 93940047
+                    name: 'Veetor Nara'
                 properties:
                   success:
                     type: boolean
                     example: true
+                  char:
+                    type: object
+                    example:
+                      id: 93940047
+                      name: 'Veetor Nara'
+                    description: 'contains the authenticated character''s ID and name'
       tags:
         - Misc
 components:

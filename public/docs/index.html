@@ -54,7 +54,7 @@
                             <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
                     </ul>
             <ul class="toc-footer" id="last-updated">
-            <li>Last updated: August 6 2021</li>
+            <li>Last updated: August 7 2021</li>
         </ul>
 </div>
 <div class="page-wrapper">
@@ -71,7 +71,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 <pre><code class="language-yaml">https://abyss.eve-nt.uk</code></pre>
 
         <h1>Authenticating requests</h1>
-<p>Authenticate requests to this API's endpoints by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
+<p>This API is authenticated by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You can retrieve your token by visiting your dashboard and clicking <a href="/settings">Settings</a>.</p>
 
@@ -91,7 +91,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 
 <pre><code class="language-bash">curl --request GET \
-    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/list?flexibleFitHash=e892eac7e0c39ec6cb683211aed4f40a&amp;revisions=76" \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/list?flexibleFitHash=e892eac7e0c39ec6cb683211aed4f40a&amp;revisions=76&amp;mineOnly=1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
@@ -107,6 +107,7 @@ $response = $client-&gt;get(
         'query' =&gt; [
             'flexibleFitHash'=&gt; 'e892eac7e0c39ec6cb683211aed4f40a',
             'revisions'=&gt; '76',
+            'mineOnly'=&gt; '1',
         ],
     ]
 );
@@ -120,6 +121,7 @@ url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/list'
 params = {
   'flexibleFitHash': 'e892eac7e0c39ec6cb683211aed4f40a',
   'revisions': '76',
+  'mineOnly': '1',
 }
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
@@ -137,6 +139,7 @@ response.json()</code></pre>
 const params = {
     "flexibleFitHash": "e892eac7e0c39ec6cb683211aed4f40a",
     "revisions": "76",
+    "mineOnly": "1",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -247,13 +250,33 @@ fetch(url, {
 
             </p>
                     <p>
-                <b><code>revisions</code></b>&nbsp;&nbsp;<small>string</small>     <i>optional</i> &nbsp;
-                <input type="text"
+                <b><code>revisions</code></b>&nbsp;&nbsp;<small>integer</small>     <i>optional</i> &nbsp;
+                <input type="number"
                name="revisions"
                data-endpoint="GETapi-conduit-v1-fits-list"
                data-component="query"  hidden>
     
-<p>ID If provided, only fits with historical relation to this will be displayed.</p>
+<p>If provided, only fits with historical relation to this will be displayed.</p>
+
+            </p>
+                    <p>
+                <b><code>mineOnly</code></b>&nbsp;&nbsp;<small>boolean</small>     <i>optional</i> &nbsp;
+                <label data-endpoint="GETapi-conduit-v1-fits-list" hidden>
+            <input type="radio" name="mineOnly"
+                   value="1"
+                   data-endpoint="GETapi-conduit-v1-fits-list"
+                   data-component="query"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="GETapi-conduit-v1-fits-list" hidden>
+            <input type="radio" name="mineOnly"
+                   value="0"
+                   data-endpoint="GETapi-conduit-v1-fits-list"
+                   data-component="query"             >
+            <code>false</code>
+        </label>
+    
+<p>If provided, only the authenticated user's fits will be returned. If false, or not set, only public fits will be returned.</p>
 
             </p>
                 </form>
@@ -374,14 +397,14 @@ fetch(url, {
 
 
 <pre><code class="language-bash">curl --request GET \
-    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/dignissimos" \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/similique" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
 
 <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/dignissimos',
+    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/similique',
     [
         'headers' =&gt; [
             'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
@@ -395,7 +418,7 @@ print_r(json_decode((string) $body));</code></pre>
 <pre><code class="language-python">import requests
 import json
 
-url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/dignissimos'
+url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/similique'
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
   'Content-Type': 'application/json',
@@ -406,7 +429,7 @@ response = requests.request('GET', url, headers=headers)
 response.json()</code></pre>
 
 <pre><code class="language-javascript">const url = new URL(
-    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/dignissimos"
+    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/similique"
 );
 
 const headers = {
@@ -815,7 +838,11 @@ fetch(url, {
                 <pre>
 
 <code class="language-json">{
-    &quot;success&quot;: true
+    &quot;success&quot;: true,
+    &quot;char&quot;: {
+        &quot;id&quot;: 93940047,
+        &quot;name&quot;: &quot;Veetor Nara&quot;
+    }
 }</code>
  </pre>
     </span>
@@ -868,7 +895,33 @@ fetch(url, {
         </p>
                 </form>
 
-    
+    <h3>Response</h3>
+    <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
+            <p>
+            <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+
+<p>null on normal operation, string containing error message on exception</p>
+
+        </p>
+            <p>
+            <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+
+<p>contains the authenticated character's ID and name</p>
+
+        </p>
+            <p>
+            <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
+
+<p>authenticated character's ID  (might be null on error)</p>
+
+        </p>
+            <p>
+            <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+
+<p>authenticated character's name (might be null on error)</p>
+
+        </p>
+        
 
         
     </div>

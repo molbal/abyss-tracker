@@ -25,10 +25,16 @@ endpoints:
         type: string
       revisions:
         name: revisions
-        description: 'ID If provided, only fits with historical relation to this will be displayed.'
+        description: 'If provided, only fits with historical relation to this will be displayed.'
         required: false
-        example: '76'
-        type: string
+        example: 76
+        type: integer
+      mineOnly:
+        name: mineOnly
+        description: 'If provided, only the authenticated user''s fits will be returned. If false, or not set, only public fits will be returned.'
+        required: false
+        example: true
+        type: boolean
     bodyParameters: []
     responses:
       -
@@ -122,7 +128,7 @@ endpoints:
         name: id
         description: 'The ID of the get.'
         required: true
-        example: dignissimos
+        example: similique
         type: string
     queryParameters: []
     bodyParameters: []
