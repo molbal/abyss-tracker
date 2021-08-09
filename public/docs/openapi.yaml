@@ -367,10 +367,81 @@ paths:
         in: path
         name: id
         description: 'The ID of the get.'
-        example: similique
+        example: ut
         required: true
         schema:
           type: string
+  /api/conduit/v1/fits/ffh/calculate:
+    post:
+      summary: 'Calculate Flexible Fit Hash'
+      description: 'Calculates Flexible Fit Hash of a given fit. More about FFH: https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash'
+      parameters:
+        -
+          in: query
+          name: eft
+          description: 'Raw EFT string to calculate FFH from         *'
+          example: dolorem
+          required: false
+          schema:
+            type: string
+            description: 'Raw EFT string to calculate FFH from         *'
+            example: dolorem
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {YOUR_AUTH_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  char:
+                    id: 93940047
+                    name: 'Veetor Nara'
+                  flexibleFitHash: e892eac7e0c39ec6cb683211aed4f40a
+                  error: null
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: 'true on normal operation, false on exception'
+                  char:
+                    type: object
+                    example:
+                      id: 93940047
+                      name: 'Veetor Nara'
+                    description: 'contains the authenticated character''s ID and name'
+                  flexibleFitHash:
+                    type: string
+                    example: e892eac7e0c39ec6cb683211aed4f40a
+                    description: 'Calculated FFH'
+                  error:
+                    type: string
+                    example: null
+                    description: 'null on normal operation, string containing error message on exception'
+      tags:
+        - Fits
   /api/conduit/v1/ping:
     get:
       summary: 'Ping endpoint'

@@ -54,7 +54,7 @@
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://abyss.eve-nt.uk'),
 
     'asset_url' => env('ASSET_URL', null),
 

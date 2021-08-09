@@ -15,6 +15,13 @@
 
     class FitHelper {
 
+
+        /**
+         * @return FitHelper
+         */
+        public static function getInstance():FitHelper {
+            return resolve(self::class);
+        }
         /** @var ResourceLookupService */
         protected $resourceLookup;
 
@@ -44,10 +51,6 @@
                 throw new NotAnItemException("Item $itemName is not an EVE item");
             }
 
-            // Get local
-            if (DB::table("item_prices")->where("NAME", $itemName)->exists())
-                return DB::table("item_prices")->where("NAME", $itemName)->value("ITEM_ID");
-
             // Call the API
             return intval($this->resourceLookup->itemNameToId($itemName));
         }
@@ -66,7 +69,7 @@
                 throw new NotAnItemException("This is not an EVE Item and has no slot");
             }
 
-           return Cache::remember("aft.item-slot.$itemID", now()->addMinutes(15), function () use ($itemID) {
+           return Cache::remember("aft.item-slot.$itemID", now()->addMinutes(30), function () use ($itemID) {
                 if (DB::table("item_slot")->where("ITEM_ID", $itemID)->exists()) {
                     return DB::table("item_slot")->where("ITEM_ID", $itemID)->value("ITEM_SLOT");
                 }
@@ -182,7 +185,6 @@
          * @return string
          */
         public function getFitFFH(string $eft): string {
-
             return DBCacheController::remember("hash_links", md5($eft), function() use ($eft) {
                 $lines = explode("\n", trim($eft));
                 $first_line = array_shift($lines);
@@ -197,7 +199,6 @@
                     if (preg_match('/^.+x\d{0,4}$/m', $line)) {
                         $words = explode(' ', $line);
                         $last = array_pop($words);
-                        $count = intval(str_replace("x", "", $last));
                         $line = implode(" ", $words);
                     }
                     try {
@@ -206,9 +207,7 @@
                             $modules[] = $itemId;
                         }
                     }
-                    catch (NotAnItemException $ignored) {
-                        $itemId = -1;
-                    }
+                    catch (NotAnItemException $ignored) {}
                 }
                 sort($modules);
                 $str = $ship . ";" . implode(";", $modules);

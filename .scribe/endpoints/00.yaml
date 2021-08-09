@@ -126,7 +126,7 @@ endpoints:
         name: id
         description: 'The ID of the get.'
         required: true
-        example: similique
+        example: ut
         type: string
     queryParameters: []
     bodyParameters: []
@@ -229,3 +229,55 @@ endpoints:
         name: count
         description: 'contains how many records were returned'
         type: integer
+  -
+    httpMethods:
+      - POST
+    uri: api/conduit/v1/fits/ffh/calculate
+    metadata:
+      title: 'Calculate Flexible Fit Hash'
+      description: 'Calculates Flexible Fit Hash of a given fit. More about FFH: https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash'
+      authenticated: true
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    queryParameters:
+      eft:
+        name: eft
+        description: 'Raw EFT string to calculate FFH from         *'
+        required: false
+        example: dolorem
+        type: string
+    bodyParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"success":true,"char":{"id":93940047,"name":"Veetor Nara"},"flexibleFitHash":"e892eac7e0c39ec6cb683211aed4f40a","error":null}'
+        headers: []
+        description: '200'
+    responseFields:
+      success:
+        name: success
+        description: 'true on normal operation, false on exception'
+        type: boolean
+      error:
+        name: error
+        description: 'null on normal operation, string containing error message on exception'
+        type: string|null
+      char:
+        name: char
+        description: 'contains the authenticated character''s ID and name'
+        type: object
+      char.id:
+        name: char.id
+        description: 'authenticated character''s ID  (might be null on error)'
+        type: int|null
+      char.name:
+        name: char.name
+        description: 'authenticated character''s name (might be null on error)'
+        type: string|null
+      flexibleFitHash:
+        name: flexibleFitHash
+        description: 'Calculated FFH'
+        type: string

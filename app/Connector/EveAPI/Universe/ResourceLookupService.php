@@ -226,9 +226,18 @@
             $fullName = trim($fullName);
 
             // Try from item prices table
-            if(DB::table("item_prices")->where("NAME", $fullName)->exists()) {
-                return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
+            $itemId = Cache::remember("aft.item-id.".md5($fullName), now()->addHour(), function () use ($fullName) {
+                if(DB::table("item_prices")->where("NAME", $fullName)->exists()) {
+                    return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
+                }
+                else {
+                    return null;
+                }
+            });
+            if (!is_null($itemId)) {
+                return $itemId;
             }
+
 
             // Get old dumps
             $tables = Cache::remember("aft.dump-tablelists", now()->addHour(), function () {

@@ -19,7 +19,7 @@
 
     <script src="//cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
     <script>
-        var baseUrl = "https://abyss.eve-nt.uk";
+        var baseUrl = "http://127.0.0.1:8000";
     </script>
     <script src="../docs/js/tryitout-3.8.0.js"></script>
 
@@ -54,7 +54,7 @@
                             <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
                     </ul>
             <ul class="toc-footer" id="last-updated">
-            <li>Last updated: August 7 2021</li>
+            <li>Last updated: August 9 2021</li>
         </ul>
 </div>
 <div class="page-wrapper">
@@ -71,7 +71,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 <pre><code class="language-yaml">https://abyss.eve-nt.uk</code></pre>
 
         <h1>Authenticating requests</h1>
-<p>This API is authenticated by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
+<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You can retrieve your token by visiting your dashboard and clicking <a href="/settings">Settings</a>.</p>
 
@@ -397,14 +397,14 @@ fetch(url, {
 
 
 <pre><code class="language-bash">curl --request GET \
-    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/similique" \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/ut" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
 
 <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/similique',
+    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/ut',
     [
         'headers' =&gt; [
             'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
@@ -418,7 +418,7 @@ print_r(json_decode((string) $body));</code></pre>
 <pre><code class="language-python">import requests
 import json
 
-url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/similique'
+url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/ut'
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
   'Content-Type': 'application/json',
@@ -429,7 +429,7 @@ response = requests.request('GET', url, headers=headers)
 response.json()</code></pre>
 
 <pre><code class="language-javascript">const url = new URL(
-    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/similique"
+    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/ut"
 );
 
 const headers = {
@@ -768,6 +768,192 @@ fetch(url, {
 <p>contains how many records were returned</p>
 
         </p>
+                <h2 id="fits-POSTapi-conduit-v1-fits-ffh-calculate">Calculate Flexible Fit Hash</h2>
+
+<p>
+<em>Requires authentication</em></p>
+
+<p>Calculates Flexible Fit Hash of a given fit. More about FFH: <a href="https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash">https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash</a></p>
+
+<span id="example-requests-POSTapi-conduit-v1-fits-ffh-calculate">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request POST \
+    "https://abyss.eve-nt.uk/api/conduit/v1/fits/ffh/calculate?eft=dolorem" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;post(
+    'https://abyss.eve-nt.uk/api/conduit/v1/fits/ffh/calculate',
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
+            'Accept' =&gt; 'application/json',
+        ],
+        'query' =&gt; [
+            'eft'=&gt; 'dolorem',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre>
+
+<pre><code class="language-python">import requests
+import json
+
+url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/ffh/calculate'
+params = {
+  'eft': 'dolorem',
+}
+headers = {
+  'Authorization': 'Bearer {YOUR_AUTH_KEY}',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('POST', url, headers=headers, params=params)
+response.json()</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://abyss.eve-nt.uk/api/conduit/v1/fits/ffh/calculate"
+);
+
+const params = {
+    "eft": "dolorem",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-POSTapi-conduit-v1-fits-ffh-calculate">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json">{
+    &quot;success&quot;: true,
+    &quot;char&quot;: {
+        &quot;id&quot;: 93940047,
+        &quot;name&quot;: &quot;Veetor Nara&quot;
+    },
+    &quot;flexibleFitHash&quot;: &quot;e892eac7e0c39ec6cb683211aed4f40a&quot;,
+    &quot;error&quot;: null
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-conduit-v1-fits-ffh-calculate" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-conduit-v1-fits-ffh-calculate"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-conduit-v1-fits-ffh-calculate"></code></pre>
+</span>
+<span id="execution-error-POSTapi-conduit-v1-fits-ffh-calculate" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-conduit-v1-fits-ffh-calculate"></code></pre>
+</span>
+<form id="form-POSTapi-conduit-v1-fits-ffh-calculate" data-method="POST"
+      data-path="api/conduit/v1/fits/ffh/calculate"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-conduit-v1-fits-ffh-calculate', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-conduit-v1-fits-ffh-calculate"
+                    onclick="tryItOut('POSTapi-conduit-v1-fits-ffh-calculate');">Try it out
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-conduit-v1-fits-ffh-calculate"
+                    onclick="cancelTryOut('POSTapi-conduit-v1-fits-ffh-calculate');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-conduit-v1-fits-ffh-calculate" hidden>Send Request
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/conduit/v1/fits/ffh/calculate</code></b>
+        </p>
+                <p>
+            <label id="auth-POSTapi-conduit-v1-fits-ffh-calculate" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="POSTapi-conduit-v1-fits-ffh-calculate"
+                                                                data-component="header"></label>
+        </p>
+                    <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                    <p>
+                <b><code>eft</code></b>&nbsp;&nbsp;<small>string</small>     <i>optional</i> &nbsp;
+                <input type="text"
+               name="eft"
+               data-endpoint="POSTapi-conduit-v1-fits-ffh-calculate"
+               data-component="query"  hidden>
+    
+<p>Raw EFT string to calculate FFH from         *</p>
+
+            </p>
+                </form>
+
+    <h3>Response</h3>
+    <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
+            <p>
+            <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
+
+<p>true on normal operation, false on exception</p>
+
+        </p>
+            <p>
+            <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+
+<p>null on normal operation, string containing error message on exception</p>
+
+        </p>
+            <p>
+            <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+
+<p>contains the authenticated character's ID and name</p>
+
+        </p>
+            <p>
+            <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
+
+<p>authenticated character's ID  (might be null on error)</p>
+
+        </p>
+            <p>
+            <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+
+<p>authenticated character's name (might be null on error)</p>
+
+        </p>
+            <p>
+            <b><code>flexibleFitHash</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+
+<p>Calculated FFH</p>
+
+        </p>
             <h1 id="misc">Misc</h1>
 
     
@@ -883,6 +1069,26 @@ fetch(url, {
             </h3>
             <p>
             <small class="badge badge-green">GET</small>
+            <b><code>api/conduit/v1/ping</code></b>
+        </p>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/conduit/v1/ping</code></b>
+        </p>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/conduit/v1/ping</code></b>
+        </p>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>api/conduit/v1/ping</code></b>
+        </p>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/conduit/v1/ping</code></b>
+        </p>
+            <p>
+            <small class="badge badge-grey">OPTIONS</small>
             <b><code>api/conduit/v1/ping</code></b>
         </p>
                 <p>

@@ -5,6 +5,7 @@
     use App\Char;
     use App\Exceptions\BusinessLogicException;
     use App\Fit;
+    use App\Http\Controllers\EFT\FitHelper;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
@@ -35,6 +36,45 @@
             return ['success' => true, 'char' => ['id' => $request->user()->CHAR_ID, 'name' => $request->user()->NAME], 'error' => null];
         }
 
+        /**
+         * Calculate Flexible Fit Hash
+         *
+         * Calculates Flexible Fit Hash of a given fit. More about FFH: https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash
+         *
+         * @group         Fits
+         * @queryParam    eft string Raw EFT string to calculate FFH from         *
+         * @responseField success boolean true on normal operation, false on exception
+         * @responseField error string|null null on normal operation, string containing error message on exception
+         * @responseField char object contains the authenticated character's ID and name
+         * @responseField char.id int|null authenticated character's ID  (might be null on error)
+         * @responseField char.name string|null authenticated character's name (might be null on error)
+         * @responseField flexibleFitHash string Calculated FFH
+         * @response  {"success":true,"char":{"id":93940047,"name":"Veetor Nara"},"flexibleFitHash":"e892eac7e0c39ec6cb683211aed4f40a","error":null}
+         *
+         * @param Request $request
+         * @return array
+         */
+        public function getFlexibleFitHash(Request $request) : array {
+            try {
+                $ffh = FitHelper::getInstance()->getFitFFH($request->get('eft'));
+                return [
+                    'success' => true,
+                    'char' => ['id' => $request->user()->CHAR_ID, 'name' => $request->user()->NAME],
+                    'flexibleFitHash' => $ffh,
+                    'error' => null
+                ];
+            }
+            catch (\Exception $e) {
+                return [
+                    'success' => false,
+                    'char' => ['id' => $request->user()->CHAR_ID ?? null, 'name' => $request->user()->NAME ?? null],
+                    'flexibleFitHash' => null,
+                    'count' => null,
+                    'error' => get_class($e).': '.$e->getMessage()
+                ];
+            }
+
+        }
 
         /**
          * List fits
