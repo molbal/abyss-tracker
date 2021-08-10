@@ -294,7 +294,6 @@
                 $invType = $response->inventory_types[0]->id;
             } else {
                 $this->logError($this->apiRoot . "universe/ids", "Cannot find the Eve ID number for item [$fullName].");
-//                Log::warning("Cannot find the Eve ID number for this name: [$fullName]"." response: <".print_r($response, 1).">");
                 throw new \InvalidArgumentException("Cannot find the Eve ID number for this name: $fullName");
             }
 

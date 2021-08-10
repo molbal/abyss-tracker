@@ -5,6 +5,7 @@
 
 
     use App\Connector\EveAPI\Universe\ResourceLookupService;
+    use App\Http\Controllers\Cache\DBCacheController;
     use App\Http\Controllers\EFT\Constants\CategoryID;
     use App\Http\Controllers\EFT\Constants\DogmaAttribute;
     use App\Http\Controllers\EFT\Constants\DogmaEffect;
@@ -36,48 +37,47 @@
          * @throws \Exception
          */
         public function classify(int $id) : ?string {
-            try {
+            return DBCacheController::remember('item_classes', $id, function () use ($id) {
+                try {
 
-                $itemInfo = $this->resourceLookup->getItemInformation($id);
-                if (!isset($itemInfo["type_id"]) || $itemInfo["type_id"] != $id) {
-                    throw new \RuntimeException("Invalid item id provided or ESI is down");
-                }
-
-                // Is high slot?
-                $returned = $this->classifyItemSlots($itemInfo);
-                if ($returned != "") {
-                    return $returned;
-                }
-
-                // Is booster or implant?
-                $returned = $this->recognizeBoosterOrImplant($itemInfo);
-                if ($returned != "") {
-                    return $returned;
-                }
-
-                // Is drone?
-                $droneCategories = $this->resourceLookup->getCategoryGroups(CategoryID::DRONE_CATEGORY_ID);
-                foreach ($droneCategories as $pos => $catGroup) {
-                    if (intval($catGroup) == ($itemInfo["group_id"])) {
-                        return "drone";
+                    $itemInfo = $this->resourceLookup->getItemInformation($id);
+                    if (!isset($itemInfo["type_id"]) || $itemInfo["type_id"] != $id) {
+                        throw new \RuntimeException("Invalid item id provided or ESI is down");
                     }
-                }
-                // Ammo?
-                $ammoCategories = $this->resourceLookup->getCategoryGroups(CategoryID::CHARGE_CATEGORY_ID);
-                foreach ($ammoCategories as $pos => $catGroup) {
-                    if (intval($catGroup) == ($itemInfo["group_id"])) {
-                        return "ammo";
-                    }
-                    else {
-                        Log::info($id. " group not in ".$catGroup);
-                    }
-                }
 
-                return "cargo";
-            } catch (\Exception $e) {
-                Log::warning("Could not determine fit slot for item id [$id]" .$e->getMessage(). " ".$e->getFile()." ".$e->getLine());
-                return null;
-            }
+                    // Is high slot?
+                    $returned = $this->classifyItemSlots($itemInfo);
+                    if ($returned != "") {
+                        return $returned;
+                    }
+
+                    // Is booster or implant?
+                    $returned = $this->recognizeBoosterOrImplant($itemInfo);
+                    if ($returned != "") {
+                        return $returned;
+                    }
+
+                    // Is drone?
+                    $droneCategories = $this->resourceLookup->getCategoryGroups(CategoryID::DRONE_CATEGORY_ID);
+                    foreach ($droneCategories as $pos => $catGroup) {
+                        if (intval($catGroup) == ($itemInfo["group_id"])) {
+                            return "drone";
+                        }
+                    }
+                    // Ammo?
+                    $ammoCategories = $this->resourceLookup->getCategoryGroups(CategoryID::CHARGE_CATEGORY_ID);
+                    foreach ($ammoCategories as $pos => $catGroup) {
+                        if (intval($catGroup) == ($itemInfo["group_id"])) {
+                            return "ammo";
+                        }
+                    }
+
+                    return "cargo";
+                } catch (\Exception $e) {
+                    Log::warning("Could not determine fit slot for item id [$id]" .$e->getMessage(). " ".$e->getFile()." ".$e->getLine());
+                    return null;
+                }
+            });
         }
 
         /**

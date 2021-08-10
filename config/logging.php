@@ -103,6 +103,13 @@ return [
             'days' => 7,
         ],
 
+        'esi' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/esi.log'),
+            'level' => 'debug',
+            'days' => 7,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
@@ -155,11 +162,6 @@ return [
             'days' => 7,
         ],
 
-        'esi-errors' => [
-            'path' => storage_path('logs/esierrors.log'),
-            'level' => 'debug',
-            'days' => 7,
-        ],
 
 
     ],

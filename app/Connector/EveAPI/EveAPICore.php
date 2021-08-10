@@ -145,7 +145,8 @@
          * @param string $error
          */
 		protected function logError(string $url, string $error) {
-		     Log::channel('esi-errors')->error(sprintf("ESI related error: Url: [%s] Error message: [%s]", $url, $error));
+
+		     Log::channel('esi')->error(sprintf("ESI related error: Url: [%s] Error message: [%s]", $url, $error));
         }
 
 		/**

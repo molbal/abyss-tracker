@@ -13,6 +13,7 @@
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Str;
     use function Clue\StreamFilter\fun;
 
     class FitHelper {
@@ -195,10 +196,12 @@
                 $moduleStrings = [];
                 foreach ($lines as $line) {
                     $line = trim($line);
-                    if ($line == "") {
+                    $stringable = Str::of($line);
+                    if ($stringable->isEmpty() || $stringable->startsWith('[Empty')) {
                         continue;
                     }
                     $line = explode(',', $line, 2)[0];
+
                     if (preg_match('/^.+x\d{0,4}$/m', $line)) {
                         $words = explode(' ', $line);
                         $last = array_pop($words);
