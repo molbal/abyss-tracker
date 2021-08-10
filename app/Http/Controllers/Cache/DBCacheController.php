@@ -13,7 +13,7 @@
         public static function remember(string $table, $id, Closure $callback)
         {
             try {
-                $value = DB::table($table)->where("ID")->value("VALUE") ?? null;
+                $value = DB::table($table)->where("ID", $id)->value("VALUE") ?? null;
             }
             catch (\Exception $e) {
                 $value = null;

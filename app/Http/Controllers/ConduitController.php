@@ -65,6 +65,7 @@
                 ];
             }
             catch (\Exception $e) {
+                \Log::channel('conduit')->error('Error serving '.$request->getPathInfo().': '.get_class($e).': '.$e->getMessage()."\n".$e->getTraceAsString());
                 return [
                     'success' => false,
                     'char' => ['id' => $request->user()->CHAR_ID ?? null, 'name' => $request->user()->NAME ?? null],

@@ -153,25 +153,28 @@
 		 *
 		 * @param int|null $charId
 		 *
-		 * @return false|resource
+		 * @return CurlHandle|resource
 		 * @throws \Exception
 		 */
-		protected function createPost(?int $charId = null)
-		{
+		protected function createPost(?int $charId = null) : CurlHandle|bool {
+		    /** @var CurlHandle $curl */
 			$curl = curl_init();
 
 			if ($charId) {
 				$tokenController = new ESITokenController($charId);
 				$accessToken = $tokenController->getAccessToken();
 			}
-			curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => 1, CURLOPT_USERAGENT => $this->userAgent, CURLOPT_POST => true, CURLOPT_HTTPHEADER => [isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json'],
-
-									  CURLOPT_VERBOSE => true, CURLOPT_STDERR => fopen('./curl.log', 'a+'),
-
+			curl_setopt_array($curl, [
+			    CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_USERAGENT => $this->userAgent,
+                CURLOPT_POST => true,
+                CURLOPT_HTTPHEADER => [
+                    isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json'
+                ],
+                CURLOPT_VERBOSE => true,
 			]);
 
 			return $curl;
-
 		}
 
 

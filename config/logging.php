@@ -68,6 +68,13 @@ return [
             'days' => 7,
         ],
 
+        'conduit' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/conduit.log'),
+            'level' => 'debug',
+            'days' => 7,
+        ],
+
         'lootvalue' => [
             'driver' => 'daily',
             'path' => storage_path('logs/lootvalue.log'),

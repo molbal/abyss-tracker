@@ -16,7 +16,7 @@ return [
 	|
 	*/
 
-	'enable' => false,//env('CLOCKWORK_ENABLE', null),
+	'enable' => env('APP_DEBUG', false),//env('CLOCKWORK_ENABLE', null),
 
 	/*
 	|--------------------------------------------------------------------------

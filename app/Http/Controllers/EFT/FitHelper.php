@@ -9,9 +9,11 @@
     use App\Http\Controllers\EFT\Constants\DogmaAttribute;
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\NotAnItemException;
+    use App\Http\Controllers\Misc\MassConvertedItemIds;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use function Clue\StreamFilter\fun;
 
     class FitHelper {
 
@@ -69,7 +71,7 @@
                 throw new NotAnItemException("This is not an EVE Item and has no slot");
             }
 
-           return Cache::remember("aft.item-slot.$itemID", now()->addMinutes(30), function () use ($itemID) {
+           return Cache::remember("aft.item-slot.".$itemID, now()->addHour(), function () use ($itemID) {
                 if (DB::table("item_slot")->where("ITEM_ID", $itemID)->exists()) {
                     return DB::table("item_slot")->where("ITEM_ID", $itemID)->value("ITEM_SLOT");
                 }
@@ -190,6 +192,7 @@
                 $first_line = array_shift($lines);
                 $ship = explode(",", explode("[", $first_line,2)[1], 2)[0];
                 $modules = [];
+                $moduleStrings = [];
                 foreach ($lines as $line) {
                     $line = trim($line);
                     if ($line == "") {
@@ -202,12 +205,16 @@
                         $line = implode(" ", $words);
                     }
                     try {
-                        $itemId = $this->getItemID($line);
-                        if (in_array($this->getItemSlot($itemId), ["high", "mid", "low", "rig"])) {
-                            $modules[] = $itemId;
-                        }
+                        $moduleStrings[] = $line;
                     }
                     catch (NotAnItemException $ignored) {}
+                }
+                $quickLookup = MassConvertedItemIds::preLookup($moduleStrings);
+                foreach ($moduleStrings as $line) {
+                    $id = $quickLookup->getId($line);
+                    if (in_array($this->getItemSlot($id), ["high", "mid", "low", "rig"])) {
+                        $modules[] = $id;
+                    }
                 }
                 sort($modules);
                 $str = $ship . ";" . implode(";", $modules);

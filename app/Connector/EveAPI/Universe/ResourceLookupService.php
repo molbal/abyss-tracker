@@ -5,6 +5,7 @@
 
 
     use App\Connector\EveAPI\EveAPICore;
+    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -216,28 +217,63 @@
         }
 
         /**
+         * @param Collection|array $itemNames
+         *
+         * @return Collection
+         * @throws \Exception
+         */
+        public function massItemNamesToId(Collection|array $itemNames) : Collection {
+            if (is_array($itemNames)) {
+                $itemNames = collect($itemNames);
+            }
+
+            $itemNames->transform(fn ($name) => trim($name));
+
+            $itemIDs = DB::table("item_prices")->whereIn("NAME", $itemNames)->select(['NAME as name', 'ITEM_ID as id'])->get();
+
+            if ($itemIDs->count() == $itemNames->count()) {
+                return $itemIDs;
+            }
+
+            foreach ($itemNames as $itemName) {
+                if (!$itemIDs->firstWhere('name', '=', $itemName)) {
+                    $itemIDs->add([
+                        'name' => $itemName,
+                        'id' => $this->itemNameToId($itemName, true)
+                    ]);
+                }
+            }
+
+            return $itemIDs;
+        }
+
+        /**
          * Gets the item ID of an inventory name
          * @param string $fullName
          *
          * @return mixed
          * @throws \Exception
          */
-        public function itemNameToId(string $fullName) {
+        public function itemNameToId(string $fullName, bool $skipLocalCheck = false) {
             $fullName = trim($fullName);
 
-            // Try from item prices table
-            $itemId = Cache::remember("aft.item-id.".md5($fullName), now()->addHour(), function () use ($fullName) {
-                if(DB::table("item_prices")->where("NAME", $fullName)->exists()) {
-                    return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
-                }
-                else {
-                    return null;
-                }
-            });
-            if (!is_null($itemId)) {
-                return $itemId;
-            }
+            if (!$skipLocalCheck) {
+                // Try from item prices table
+                $itemId = Cache::remember("aft.item-id." . md5($fullName), now()->addHour(), function () use ($fullName) {
+                    if (DB::table("item_prices")->where("NAME", $fullName)->exists()) {
+                        return DB::table("item_prices")->where("NAME", $fullName)->value("ITEM_ID");
+                    }
+                    else {
+                        return null;
+                    }
 
+                });
+
+
+                if (!is_null($itemId)) {
+                    return $itemId;
+                }
+            }
 
             // Get old dumps
             $tables = Cache::remember("aft.dump-tablelists", now()->addHour(), function () {
@@ -298,7 +334,7 @@
          * @throws \Exception
          */
         public function getItemInformation(int $id): ?array {
-            return Cache::remember("ast.getItemInformation.$id", now()->addMinute(), function() use ($id) {
+            return Cache::remember("ast.getItemInformation.$id", now()->addHour(), function() use ($id) {
                 $resp = $this->simpleGet(null, sprintf("universe/types/%d", $id), true);
                 if (!$resp) {
                     $this->logError(sprintf("%suniverse/types/%d", $this->apiRoot,$id), __FUNCTION__." failed for [$id].");

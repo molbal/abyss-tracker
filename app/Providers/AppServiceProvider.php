@@ -1,40 +1,39 @@
 <?php
 
-namespace App\Providers;
+    namespace App\Providers;
 
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\ServiceProvider;
+    use App\Connector\EveAPI\EveAPICore;
+    use App\Connector\EveAPI\Universe\ResourceLookupService;
+    use App\Http\Controllers\EFT\ItemClassifier;
+    use Illuminate\Pagination\Paginator;
+    use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
-{
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
+    class AppServiceProvider extends ServiceProvider {
+        /**
+         * Register any application services.
+         *
+         * @return void
+         */
+        public function register() {
+            $this->loadViewsFrom(__DIR__ . '/../resources/views', 'nova');
 
-    $this->loadViewsFrom(__DIR__.'/../resources/views', 'nova');
+            $this->app->singleton(ResourceLookupService::class, function ($app) {
+                return new ResourceLookupService();
+            });
+
+            $this->app->singleton(ItemClassifier::class, function ($app) {
+                return new ItemClassifier($app->make(ResourceLookupService::class));
+            });
+        }
+
+        /**
+         * Bootstrap any application services.
+         *
+         * @return void
+         */
+        public function boot() {
+            Paginator::useBootstrap();
+
+
+        }
     }
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        Paginator::useBootstrap();
-//        if(env('APP_DEBUG')) {
-//            DB::listen(function($query) {
-////                File::append(
-////                    storage_path('/logs/query.log'),
-////                    $query->sql . ' [' . implode(', ', $query->bindings) . ']' . PHP_EOL
-////                );
-//
-//                Log::channel("query")->info($query->time."ms ".$query->sql." ".implode(",", $query->bindings));
-//            });
-//        }
-    }
-}
