@@ -24,8 +24,7 @@
         }
 
 
-        /** @var ResourceLookupService */
-        protected $resourceLookup;
+        protected ResourceLookupService $resourceLookup;
 
 
         /**
@@ -37,7 +36,6 @@
          * @throws \Exception
          */
         public function classify(int $id) : ?string {
-            return DBCacheController::remember('item_classes', $id, function () use ($id) {
                 try {
 
                     $itemInfo = $this->resourceLookup->getItemInformation($id);
@@ -77,7 +75,6 @@
                     Log::warning("Could not determine fit slot for item id [$id]" .$e->getMessage(). " ".$e->getFile()." ".$e->getLine());
                     return null;
                 }
-            });
         }
 
         /**

@@ -10,6 +10,7 @@
     use App\Http\Controllers\EFT\DTO\ItemObject;
     use App\Http\Controllers\EFT\Exceptions\NotAnItemException;
     use App\Http\Controllers\Misc\MassConvertedItemIds;
+    use App\Http\Controllers\Misc\MassItemSlotClassifier;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
@@ -23,7 +24,7 @@
          * @return FitHelper
          */
         public static function getInstance():FitHelper {
-            return resolve(self::class);
+            return app()->make(self::class);
         }
         /** @var ResourceLookupService */
         protected $resourceLookup;
@@ -73,31 +74,26 @@
             }
 
            return Cache::remember("aft.item-slot.".$itemID, now()->addHour(), function () use ($itemID) {
-                if (DB::table("item_slot")->where("ITEM_ID", $itemID)->exists()) {
-                    return DB::table("item_slot")->where("ITEM_ID", $itemID)->value("ITEM_SLOT");
-                }
+               return DBCacheController::remember(['item_slot' => 'ITEM_SLOT'], ['ITEM_ID' => $itemID], function () use ($itemID) {
+                   $itemSlot = app()->make(ItemClassifier::class)->classify($itemID);
+                   if ($itemSlot) {
+                       if (!DB::table("item_prices")->where("ITEM_ID", $itemID)->exists()) {
+                           DB::table("item_prices")
+                               ->insertOrIgnore([
+                                   'ITEM_ID' => $itemID,
+                                   'PRICE_BUY' => 0,
+                                   'PRICE_SELL' => 0,
+                                   'PRICE_LAST_UPDATED' => now(),
+                                   'DESCRIPTION' => '',
+                                   'GROUP_ID' => 0,
+                                   'GROUP_NAME' => '',
+                                   'NAME' => ''
+                               ]);
+                       }
+                   }
 
-                /** @var ItemClassifier $itemClassifier */
-                $itemClassifier = resolve("App\Http\Controllers\EFT\ItemClassifier");
-                $itemSlot =  $itemClassifier->classify($itemID);
-                if ($itemSlot) {
-
-                    if (!DB::table("item_prices")->where("ITEM_ID", $itemID)->exists()) {
-                        DB::table("item_prices")->insertOrIgnore([
-                            'ITEM_ID' => $itemID,
-                            'PRICE_BUY' => 0,
-                            'PRICE_SELL' => 0,
-                            'PRICE_LAST_UPDATED' => now(),
-                            'DESCRIPTION' => '',
-                            'GROUP_ID' => 0,
-                            'GROUP_NAME' => '',
-                            'NAME' => '',
-                        ]);
-                    }
-                    DB::table("item_slot")
-                      ->insert(["ITEM_ID" => $itemID, "ITEM_SLOT" => $itemSlot]);
-                }
-                return $itemSlot;
+                   return $itemSlot;
+               });
             });
 
         }
@@ -192,7 +188,6 @@
                 $lines = explode("\n", trim($eft));
                 $first_line = array_shift($lines);
                 $ship = explode(",", explode("[", $first_line,2)[1], 2)[0];
-                $modules = [];
                 $moduleStrings = [];
                 foreach ($lines as $line) {
                     $line = trim($line);
@@ -213,10 +208,18 @@
                     catch (NotAnItemException $ignored) {}
                 }
                 $quickLookup = MassConvertedItemIds::preLookup($moduleStrings);
+
+                $moduleIds = [];
                 foreach ($moduleStrings as $line) {
-                    $id = $quickLookup->getId($line);
-                    if (in_array($this->getItemSlot($id), ["high", "mid", "low", "rig"])) {
-                        $modules[] = $id;
+                    $moduleIds[] = $quickLookup->getId($line);
+                }
+
+
+                $modules = [];
+                $itemSlotClassifier = MassItemSlotClassifier::preLookup($moduleIds);
+                foreach ($moduleIds as $moduleId) {
+                    if (in_array($itemSlotClassifier->getItemSlot($moduleId), ["high", "mid", "low", "rig"])) {
+                        $modules[] = $moduleId;
                     }
                 }
                 sort($modules);

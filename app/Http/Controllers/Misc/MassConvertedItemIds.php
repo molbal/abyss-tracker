@@ -65,14 +65,13 @@
             if (isset($item->id) && !is_null($item->id)) {
                 return $item->id;
             }
-            else {
-                try {
-                    return $this->resourceLookupService->itemNameToId($itemName);
-                }
-                catch (\Exception $e) {
-                    Log::warning("Could not convert item to ID: ".get_class($e).": ".$e->getMessage());
-                    return 0;
-                }
+
+            try {
+                return $this->resourceLookupService->itemNameToId($itemName);
+            }
+            catch (\Exception $e) {
+                Log::warning("Could not convert item to ID: ".get_class($e).": ".$e->getMessage());
+                return 0;
             }
         }
 
