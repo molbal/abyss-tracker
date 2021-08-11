@@ -6,6 +6,8 @@
 
 	use Closure;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
+    use Psr\Log\LogLevel;
 
     class DBCacheController {
 
@@ -34,8 +36,8 @@
                 return $value;
             }
             $value = $callback();
-            DB::table($tableName)->insertOrIgnore([$idColumn => $idValue, $valueColumn => $value]);
-
+            $affectedRows = DB::table($tableName)->insertOrIgnore([$idColumn => $idValue, $valueColumn => $value]);
+            clock()->log(LogLevel::DEBUG, 'Inserted '.$affectedRows.' row to '.$tableName.' ('.$idColumn.'='.$idValue.')');
             return $value;
         }
 	}

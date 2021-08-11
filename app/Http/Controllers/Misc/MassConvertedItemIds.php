@@ -39,7 +39,9 @@
         public function __construct(Collection $itemNames) {
             $this->resourceLookupService = app()->make(ResourceLookupService::class);
             try {
+                clock()->event("Mass name to ID conversion", "")->begin();
                 $this->itemIds = $this->resourceLookupService->massItemNamesToId($itemNames);
+                clock()->event("Mass name to ID conversion", "")->end();
             }
             catch (\Exception $e) {
                 Log::warning(sprintf("Could not mass convert item names to IDs: %s: %s", get_class($e), $e->getMessage()));

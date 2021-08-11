@@ -25,16 +25,19 @@
         private function __construct(Collection $itemIds) {
             $this->helper = FitHelper::getInstance();
 
+            clock()->event("Loading item classifier cached entries", "")->begin();
             $itemClasses = DB::table('item_slot')
                 ->whereIn('ITEM_ID', $itemIds)
                 ->get(['ITEM_ID as id', 'ITEM_SLOT as class']);
 
+            clock()->event("Loading item classifier cached entries", "")->end();
             if ($itemIds->count() == $itemClasses->count()) {
                 $this->itemClass = $itemClasses;
                 return;
             }
             Log::warning(sprintf("Not all items were cached: %d / %d", $itemClasses->count(), $itemIds->count()));
 
+            clock()->event("Building item classifier cache", "")->begin();
             foreach ($itemIds as $itemId) {
                 if ($itemClasses->firstWhere('id', $itemIds)) continue;
 
@@ -44,6 +47,7 @@
                     'class' => $this->helper->getItemSlot($itemId)
                 ]);
             }
+            clock()->event("Building item classifier cache", "")->end();
             $this->itemClass = $itemClasses;
         }
 
