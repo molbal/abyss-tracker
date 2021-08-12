@@ -1,6 +1,7 @@
 <?php
 
     use App\Http\Controllers\ConduitController;
+    use App\Http\Controllers\ConduitImpl\FitConduitController;
     use App\Http\Controllers\PVP\PVPController;
     use App\Http\Middleware\LogConduitRequests;
     use Illuminate\Support\Facades\Route;
@@ -24,9 +25,11 @@
 
     Route::prefix("conduit/v1/")->middleware(['auth:sanctum', LogConduitRequests::class])->group(function() {
 
-
+        // Ping endpoint
         Route::any("ping", [ConduitController::class, 'ping']);
-        Route::get("fits/list", [ConduitController::class, 'fitList']);
-        Route::post("fits/ffh/calculate", [ConduitController::class, 'getFlexibleFitHash']);
-        Route::get("fits/get/{id}", [ConduitController::class, 'fitGet']);
+
+        // Fit endpoints
+        Route::get ("fits/list", [FitConduitController::class, 'fitList']);
+        Route::post("fits/ffh/calculate", [FitConduitController::class, 'getFlexibleFitHash']);
+        Route::get ("fits/get/{id}", [FitConduitController::class, 'fitGet']);
     });
