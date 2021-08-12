@@ -89,6 +89,7 @@
                                    'GROUP_NAME' => '',
                                    'NAME' => ''
                                ]);
+                           Log::debug(sprintf("First time classified item %d as %s", $itemID, $itemSlot));
                        }
                    }
 

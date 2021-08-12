@@ -2,6 +2,7 @@
 
     use App\Http\Controllers\ConduitController;
     use App\Http\Controllers\PVP\PVPController;
+    use App\Http\Middleware\LogConduitRequests;
     use Illuminate\Support\Facades\Route;
 
     /*
@@ -21,7 +22,7 @@
 
 
 
-    Route::prefix("conduit/v1/")->middleware('auth:sanctum')->group(function() {
+    Route::prefix("conduit/v1/")->middleware(['auth:sanctum', LogConduitRequests::class])->group(function() {
 
 
         Route::any("ping", [ConduitController::class, 'ping']);

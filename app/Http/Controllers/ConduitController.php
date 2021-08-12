@@ -70,7 +70,6 @@
                     'success' => false,
                     'char' => ['id' => $request->user()->CHAR_ID ?? null, 'name' => $request->user()->NAME ?? null],
                     'flexibleFitHash' => null,
-                    'count' => null,
                     'error' => get_class($e).': '.$e->getMessage()
                 ];
             }
