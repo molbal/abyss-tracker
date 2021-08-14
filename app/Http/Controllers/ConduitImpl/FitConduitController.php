@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\ConduitImpl;
 
-use App\Http\Controllers\Controller;
+use App\Fit;
+use App\Http\Controllers\ConduitController;
+use App\Http\Controllers\EFT\FitHelper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class FitConduitController extends ConduitController
 {
@@ -13,7 +16,7 @@ class FitConduitController extends ConduitController
      * Calculates Flexible Fit Hash of a given fit. More about FFH: https://github.com/molbal/abyss-tracker/wiki/Flexible-Fit-Hash
      *
      * @group         Fits
-     * @queryParam    eft string Raw EFT string to calculate FFH from         *
+     * @queryParam    eft string Raw EFT string to calculate FFH from
      * @responseField success boolean true on normal operation, false on exception
      * @responseField error string|null null on normal operation, string containing error message on exception
      * @responseField char object contains the authenticated character's ID and name
