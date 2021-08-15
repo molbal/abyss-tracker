@@ -40,9 +40,40 @@ class Item extends Model
 
     protected $primaryKey='ITEM_ID';
 
+    protected $casts = [
+        'PRICE_SELL'=> 'int',
+        'PRICE_BUY'=> 'int',
+    ];
+
+    public function mapToShort(): array {
+        return [
+          'id' => $this->ITEM_ID,
+          'name' => $this->NAME,
+          'group' => [
+              'id' => $this->GROUP_ID,
+              'name' => $this->GROUP_NAME,
+          ]
+        ];
+    }
+
+    public function mapToDetailed(): array {
+        return [
+            'id' => $this->ITEM_ID,
+            'name' => $this->NAME,
+            'group' => [
+                'id' => $this->GROUP_ID,
+                'name' => $this->GROUP_NAME,
+            ],
+            'description' => $this->DESCRIPTION,
+            'price' => [
+                'sell' => $this->PRICE_SELL,
+                'buy' => $this->PRICE_BUY,
+            ]
+        ];
+    }
 
     public static function getAll() : Collection {
         return self::whereIn('GROUP_ID', config('tracker.items.group_whitelist', []))
-            ->whereNotIn('ITEM_ID', config('tracker.items.items_blacklist', []))->get();
+            ->whereNotIn('ITEM_ID', config('tracker.items.items_blacklist', []))->get(['ITEM_ID','NAME','GROUP_ID','GROUP_NAME'])->map(fn($item) => $item->mapToShort());
     }
 }

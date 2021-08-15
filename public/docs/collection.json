@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Abyss Tracker Conduit",
-        "_postman_id": "1dc94bc2-c0e2-4bc1-81e6-44ca0c99836e",
+        "_postman_id": "9fcaafae-fc52-453e-82be-9e4191c29ade",
         "description": "An API interface for the Abyss Tracker",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -84,7 +84,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "ut",
+                                    "value": "veniam",
                                     "description": "The ID of the get."
                                 }
                             ]
@@ -122,12 +122,12 @@
                             "query": [
                                 {
                                     "key": "eft",
-                                    "value": "dolorem",
-                                    "description": "Raw EFT string to calculate FFH from         *",
+                                    "value": "quae",
+                                    "description": "Raw EFT string to calculate FFH from",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/ffh\/calculate?eft=dolorem"
+                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/fits\/ffh\/calculate?eft=quae"
                         },
                         "method": "POST",
                         "header": [
@@ -149,6 +149,104 @@
                             "code": 200,
                             "body": "{\"success\":true,\"char\":{\"id\":93940047,\"name\":\"Veetor Nara\"},\"flexibleFitHash\":\"e892eac7e0c39ec6cb683211aed4f40a\",\"error\":null}",
                             "name": "200"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Loot table",
+            "description": "",
+            "item": [
+                {
+                    "name": "List dropped items",
+                    "request": {
+                        "url": {
+                            "protocol": "https",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conduit\/v1\/drop-table\/list",
+                            "query": [],
+                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/drop-table\/list"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Lists all items dropped from Abyssal Deadspace. Cached for up to 15 minutes."
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                }
+                            ],
+                            "code": 403,
+                            "body": "{\"success\":false,\"error\":\"Please provide a valid authentication bearer token.\"}",
+                            "name": null
+                        }
+                    ]
+                },
+                {
+                    "name": "Get a dropped item",
+                    "request": {
+                        "url": {
+                            "protocol": "https",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conduit\/v1\/drop-table\/get\/:id",
+                            "query": [],
+                            "raw": "https:\/\/{{baseUrl}}\/api\/conduit\/v1\/drop-table\/get\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "16",
+                                    "description": "EVE Type ID"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Gets a dropped item, including drop rates and limited market data. Cached for up to 1 minute."
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                }
+                            ],
+                            "code": 403,
+                            "body": "{\"success\":false,\"error\":\"Please provide a valid authentication bearer token.\"}",
+                            "name": null
                         }
                     ]
                 }

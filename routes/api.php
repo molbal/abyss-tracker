@@ -2,6 +2,7 @@
 
     use App\Http\Controllers\ConduitController;
     use App\Http\Controllers\ConduitImpl\FitConduitController;
+    use App\Http\Controllers\ConduitImpl\ItemConduitControllers;
     use App\Http\Controllers\PVP\PVPController;
     use App\Http\Middleware\LogConduitRequests;
     use Illuminate\Support\Facades\Route;
@@ -32,4 +33,8 @@
         Route::get ("fits/list", [FitConduitController::class, 'fitList']);
         Route::post("fits/ffh/calculate", [FitConduitController::class, 'getFlexibleFitHash']);
         Route::get ("fits/get/{id}", [FitConduitController::class, 'fitGet']);
+
+        // Item endpoints
+        Route::get('/drop-table/list', [ItemConduitControllers::class, 'getDroppedItems']);
+        Route::get('/drop-table/get/{id}', [ItemConduitControllers::class, 'getItem']);
     });

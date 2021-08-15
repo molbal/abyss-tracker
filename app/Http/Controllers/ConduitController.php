@@ -7,6 +7,7 @@
     use App\Fit;
     use App\Http\Controllers\EFT\FitHelper;
     use Illuminate\Http\Request;
+    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use JetBrains\PhpStorm\ArrayShape;
@@ -37,9 +38,53 @@
             return ['success' => true, 'char' => ['id' => $request->user()->CHAR_ID, 'name' => $request->user()->NAME], 'error' => null];
         }
 
+        /**
+         * @param string     $keyName
+         * @param Collection $items
+         *
+         * @return array
+         */
+        protected function wrapListResponse(Collection $items, string $keyName = 'items'): array {
+            $request = request();
+            return [
+                'success' => true,
+                'char' => ['id' => $request->user()->CHAR_ID, 'name' => $request->user()->NAME],
+                $keyName => $items,
+                'count' => $items->count(),
+                'error' => null
+            ];
+        }
+
+        /**
+         * @param mixed  $item
+         * @param string $keyName
+         *
+         * @return array
+         */
+        protected function wrapSingleResponse(mixed $item, string $keyName = 'item'): array {
+            $request = request();
+            return [
+                'success' => true,
+                'char' => ['id' => $request->user()->CHAR_ID, 'name' => $request->user()->NAME],
+                $keyName => $item,
+                'error' => null
+            ];
+        }
 
 
-        protected function getErrorResponse($e): array {
-            return ['success' => false, 'char' => ['id' => \request()->user()->CHAR_ID ?? null, 'name' => \request()->user()->NAME ?? null,], 'item' => null, 'count' => null, 'error' => $e->getMessage()];
+        /**
+         * Creates an error response
+         * @param $e
+         *
+         * @return array
+         */
+        #[ArrayShape(['success' => "false", 'char' => "array", 'error' => "mixed"])]
+        protected function getErrorResponse(\Exception $e): array {
+            $request = request();
+            return [
+                'success' => false,
+                'char' => ['id' => $request->user()->CHAR_ID ?? null, 'name' => $request->user()->NAME ?? null],
+                'error' => 'Conduit function ['.collect($e->getTrace())->first()['function'].'] failed: ['. get_class($e).']: '. $e->getMessage()
+            ];
         }
     }

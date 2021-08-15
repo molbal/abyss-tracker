@@ -91,7 +91,7 @@ class FitConduitController extends ConduitController
                 }
             }
 
-            return ['success' => true, 'char' => ['id' => $request->user()->CHAR_ID, 'name' => $request->user()->NAME,], 'items' => $collection, 'count' => $collection->count(), 'error' => null];
+            return $this->wrapListResponse($collection);
         }
         catch (\Exception $e) {
             return $this->getErrorResponse($e);

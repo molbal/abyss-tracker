@@ -367,7 +367,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the get.'
-        example: ut
+        example: veniam
         required: true
         schema:
           type: string
@@ -379,13 +379,13 @@ paths:
         -
           in: query
           name: eft
-          description: 'Raw EFT string to calculate FFH from         *'
-          example: dolorem
+          description: 'Raw EFT string to calculate FFH from'
+          example: quae
           required: false
           schema:
             type: string
-            description: 'Raw EFT string to calculate FFH from         *'
-            example: dolorem
+            description: 'Raw EFT string to calculate FFH from'
+            example: quae
         -
           in: header
           name: Authorization
@@ -442,6 +442,115 @@ paths:
                     description: 'null on normal operation, string containing error message on exception'
       tags:
         - Fits
+  /api/conduit/v1/drop-table/list:
+    get:
+      summary: 'List dropped items'
+      description: 'Lists all items dropped from Abyssal Deadspace. Cached for up to 15 minutes.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {YOUR_AUTH_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  error: 'Please provide a valid authentication bearer token.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                    description: 'true on normal operation, false on exception'
+                  error:
+                    type: string
+                    example: 'Please provide a valid authentication bearer token.'
+                    description: 'null on normal operation, string containing error message on exception'
+      tags:
+        - 'Loot table'
+  '/api/conduit/v1/drop-table/get/{id}':
+    get:
+      summary: 'Get a dropped item'
+      description: 'Gets a dropped item, including drop rates and limited market data. Cached for up to 1 minute.'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {YOUR_AUTH_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  error: 'Please provide a valid authentication bearer token.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                    description: 'true on normal operation, false on exception'
+                  error:
+                    type: string
+                    example: 'Please provide a valid authentication bearer token.'
+                    description: 'null on normal operation, string containing error message on exception'
+      tags:
+        - 'Loot table'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Optional parameter. EVE Type ID'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 16
   /api/conduit/v1/ping:
     get:
       summary: 'Ping endpoint'

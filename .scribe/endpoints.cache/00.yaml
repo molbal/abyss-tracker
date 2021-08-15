@@ -128,7 +128,7 @@ endpoints:
         name: id
         description: 'The ID of the get.'
         required: true
-        example: ut
+        example: veniam
         type: string
     queryParameters: []
     bodyParameters: []
@@ -247,9 +247,9 @@ endpoints:
     queryParameters:
       eft:
         name: eft
-        description: 'Raw EFT string to calculate FFH from         *'
+        description: 'Raw EFT string to calculate FFH from'
         required: false
-        example: dolorem
+        example: quae
         type: string
     bodyParameters: []
     responses:

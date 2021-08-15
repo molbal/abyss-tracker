@@ -54,7 +54,7 @@
                             <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
                     </ul>
             <ul class="toc-footer" id="last-updated">
-            <li>Last updated: August 9 2021</li>
+            <li>Last updated: August 15 2021</li>
         </ul>
 </div>
 <div class="page-wrapper">
@@ -397,14 +397,14 @@ fetch(url, {
 
 
 <pre><code class="language-bash">curl --request GET \
-    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/ut" \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/veniam" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
 
 <pre><code class="language-php">$client = new \GuzzleHttp\Client();
 $response = $client-&gt;get(
-    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/ut',
+    'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/veniam',
     [
         'headers' =&gt; [
             'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
@@ -418,7 +418,7 @@ print_r(json_decode((string) $body));</code></pre>
 <pre><code class="language-python">import requests
 import json
 
-url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/ut'
+url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/get/veniam'
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
   'Content-Type': 'application/json',
@@ -429,7 +429,7 @@ response = requests.request('GET', url, headers=headers)
 response.json()</code></pre>
 
 <pre><code class="language-javascript">const url = new URL(
-    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/ut"
+    "https://abyss.eve-nt.uk/api/conduit/v1/fits/get/veniam"
 );
 
 const headers = {
@@ -780,7 +780,7 @@ fetch(url, {
 
 
 <pre><code class="language-bash">curl --request POST \
-    "https://abyss.eve-nt.uk/api/conduit/v1/fits/ffh/calculate?eft=dolorem" \
+    "https://abyss.eve-nt.uk/api/conduit/v1/fits/ffh/calculate?eft=quae" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>
@@ -794,7 +794,7 @@ $response = $client-&gt;post(
             'Accept' =&gt; 'application/json',
         ],
         'query' =&gt; [
-            'eft'=&gt; 'dolorem',
+            'eft'=&gt; 'quae',
         ],
     ]
 );
@@ -806,7 +806,7 @@ import json
 
 url = 'https://abyss.eve-nt.uk/api/conduit/v1/fits/ffh/calculate'
 params = {
-  'eft': 'dolorem',
+  'eft': 'quae',
 }
 headers = {
   'Authorization': 'Bearer {YOUR_AUTH_KEY}',
@@ -822,7 +822,7 @@ response.json()</code></pre>
 );
 
 const params = {
-    "eft": "dolorem",
+    "eft": "quae",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -911,7 +911,7 @@ fetch(url, {
                data-endpoint="POSTapi-conduit-v1-fits-ffh-calculate"
                data-component="query"  hidden>
     
-<p>Raw EFT string to calculate FFH from         *</p>
+<p>Raw EFT string to calculate FFH from</p>
 
             </p>
                 </form>
@@ -952,6 +952,399 @@ fetch(url, {
             <b><code>flexibleFitHash</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
 
 <p>Calculated FFH</p>
+
+        </p>
+            <h1 id="loot-table">Loot table</h1>
+
+    
+
+            <h2 id="loot-table-GETapi-conduit-v1-drop-table-list">List dropped items</h2>
+
+<p>
+<em>Requires authentication</em></p>
+
+<p>Lists all items dropped from Abyssal Deadspace. Cached for up to 15 minutes.</p>
+
+<span id="example-requests-GETapi-conduit-v1-drop-table-list">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/drop-table/list" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'https://abyss.eve-nt.uk/api/conduit/v1/drop-table/list',
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre>
+
+<pre><code class="language-python">import requests
+import json
+
+url = 'https://abyss.eve-nt.uk/api/conduit/v1/drop-table/list'
+headers = {
+  'Authorization': 'Bearer {YOUR_AUTH_KEY}',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers)
+response.json()</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://abyss.eve-nt.uk/api/conduit/v1/drop-table/list"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-conduit-v1-drop-table-list">
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary>
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre>
+        </details>         <pre>
+
+<code class="language-json">{
+    &quot;success&quot;: false,
+    &quot;error&quot;: &quot;Please provide a valid authentication bearer token.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-conduit-v1-drop-table-list" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-conduit-v1-drop-table-list"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-conduit-v1-drop-table-list"></code></pre>
+</span>
+<span id="execution-error-GETapi-conduit-v1-drop-table-list" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-conduit-v1-drop-table-list"></code></pre>
+</span>
+<form id="form-GETapi-conduit-v1-drop-table-list" data-method="GET"
+      data-path="api/conduit/v1/drop-table/list"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-conduit-v1-drop-table-list', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-conduit-v1-drop-table-list"
+                    onclick="tryItOut('GETapi-conduit-v1-drop-table-list');">Try it out
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-conduit-v1-drop-table-list"
+                    onclick="cancelTryOut('GETapi-conduit-v1-drop-table-list');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-conduit-v1-drop-table-list" hidden>Send Request
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/conduit/v1/drop-table/list</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-conduit-v1-drop-table-list" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-conduit-v1-drop-table-list"
+                                                                data-component="header"></label>
+        </p>
+                </form>
+
+    <h3>Response</h3>
+    <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
+            <p>
+            <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
+
+<p>true on normal operation, false on exception</p>
+
+        </p>
+            <p>
+            <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+
+<p>null on normal operation, string containing error message on exception</p>
+
+        </p>
+            <p>
+            <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+
+<p>contains the authenticated character's ID and name</p>
+
+        </p>
+            <p>
+            <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
+
+<p>authenticated character's ID  (might be null on error)</p>
+
+        </p>
+            <p>
+            <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+
+<p>authenticated character's name (might be null on error)</p>
+
+        </p>
+            <p>
+            <b><code>items.*.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+
+<p>EVE Type ID</p>
+
+        </p>
+            <p>
+            <b><code>items.*.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+
+<p>EVE type name</p>
+
+        </p>
+            <p>
+            <b><code>items.*.group.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+
+<p>EVE group ID</p>
+
+        </p>
+            <p>
+            <b><code>items.*.group.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+
+<p>EVE group name</p>
+
+        </p>
+            <p>
+            <b><code>count</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+
+<p>contains how many records were returned</p>
+
+        </p>
+                <h2 id="loot-table-GETapi-conduit-v1-drop-table-get--id-">Get a dropped item</h2>
+
+<p>
+<em>Requires authentication</em></p>
+
+<p>Gets a dropped item, including drop rates and limited market data. Cached for up to 1 minute.</p>
+
+<span id="example-requests-GETapi-conduit-v1-drop-table-get--id-">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "https://abyss.eve-nt.uk/api/conduit/v1/drop-table/get/16" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$response = $client-&gt;get(
+    'https://abyss.eve-nt.uk/api/conduit/v1/drop-table/get/16',
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_AUTH_KEY}',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre>
+
+<pre><code class="language-python">import requests
+import json
+
+url = 'https://abyss.eve-nt.uk/api/conduit/v1/drop-table/get/16'
+headers = {
+  'Authorization': 'Bearer {YOUR_AUTH_KEY}',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}
+
+response = requests.request('GET', url, headers=headers)
+response.json()</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://abyss.eve-nt.uk/api/conduit/v1/drop-table/get/16"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-conduit-v1-drop-table-get--id-">
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary>
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre>
+        </details>         <pre>
+
+<code class="language-json">{
+    &quot;success&quot;: false,
+    &quot;error&quot;: &quot;Please provide a valid authentication bearer token.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-conduit-v1-drop-table-get--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-conduit-v1-drop-table-get--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-conduit-v1-drop-table-get--id-"></code></pre>
+</span>
+<span id="execution-error-GETapi-conduit-v1-drop-table-get--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-conduit-v1-drop-table-get--id-"></code></pre>
+</span>
+<form id="form-GETapi-conduit-v1-drop-table-get--id-" data-method="GET"
+      data-path="api/conduit/v1/drop-table/get/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-conduit-v1-drop-table-get--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-conduit-v1-drop-table-get--id-"
+                    onclick="tryItOut('GETapi-conduit-v1-drop-table-get--id-');">Try it out
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-conduit-v1-drop-table-get--id-"
+                    onclick="cancelTryOut('GETapi-conduit-v1-drop-table-get--id-');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-conduit-v1-drop-table-get--id-" hidden>Send Request
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/conduit/v1/drop-table/get/{id}</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-conduit-v1-drop-table-get--id-" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-conduit-v1-drop-table-get--id-"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>id</code></b>&nbsp;&nbsp;<small>integer</small>     <i>optional</i> &nbsp;
+                <input type="number"
+               name="id"
+               data-endpoint="GETapi-conduit-v1-drop-table-get--id-"
+               data-component="url"  hidden>
+    
+<p>EVE Type ID</p>
+
+            </p>
+                    </form>
+
+    <h3>Response</h3>
+    <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
+            <p>
+            <b><code>success</code></b>&nbsp;&nbsp;<small>boolean</small>  &nbsp;
+
+<p>true on normal operation, false on exception</p>
+
+        </p>
+            <p>
+            <b><code>error</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+
+<p>null on normal operation, string containing error message on exception</p>
+
+        </p>
+            <p>
+            <b><code>char</code></b>&nbsp;&nbsp;<small>object</small>  &nbsp;
+
+<p>contains the authenticated character's ID and name</p>
+
+        </p>
+            <p>
+            <b><code>char.id</code></b>&nbsp;&nbsp;<small>int|null</small>  &nbsp;
+
+<p>authenticated character's ID  (might be null on error)</p>
+
+        </p>
+            <p>
+            <b><code>char.name</code></b>&nbsp;&nbsp;<small>string|null</small>  &nbsp;
+
+<p>authenticated character's name (might be null on error)</p>
+
+        </p>
+            <p>
+            <b><code>items.*.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+
+<p>EVE Type ID</p>
+
+        </p>
+            <p>
+            <b><code>items.*.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+
+<p>EVE type name</p>
+
+        </p>
+            <p>
+            <b><code>items.*.group.id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+
+<p>EVE group ID</p>
+
+        </p>
+            <p>
+            <b><code>items.*.group.name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+
+<p>EVE group name</p>
+
+        </p>
+            <p>
+            <b><code>count</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+
+<p>contains how many records were returned</p>
 
         </p>
             <h1 id="misc">Misc</h1>
