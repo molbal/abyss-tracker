@@ -424,6 +424,19 @@
             });
         }
 
+        public function getShipFits(int $shipId) {
+            return Cache::remember("aft.ship.summary.".$shipId, now()->addMinutes(15), function () use ($shipId) {
+                $query = $this->getStartingQuery()
+                    ->where("fits.SHIP_ID", $shipId)
+                    ->limit(config('tracker.homepage.fits.count'))
+                    ->orderByDesc("RUNS_COUNT");
+                $popularFits = $query->get();
+                foreach ($popularFits as $i => $result) {
+                    $popularFits[$i]->TAGS = $this->getFitTags($result->ID);
+                }
+                return $popularFits;
+            });
+        }
 
 
         /**

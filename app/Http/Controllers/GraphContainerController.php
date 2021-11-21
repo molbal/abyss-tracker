@@ -25,7 +25,6 @@
             $chart = new BellChart1();
 
             $chart->export(true, "Download");
-//            $chart->height("400px");
             $chart->theme(ThemeController::getChartTheme());
             $chart->load(route("chart.run.averages", [
                 "tier" => $tier, "isCruiser"=>$isCruiser, "thisRun" => $thisRun

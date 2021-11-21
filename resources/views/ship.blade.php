@@ -24,6 +24,11 @@
                 <h5 class="font-weight-bold mb-2">Popularity over the last 3 months <small class="float-right">This graph shows the percentage of Abyss runs using/day using a {{$name}}</small></h5>
                 {!! $pop_chart->container() !!}
             </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: User submissions and Abyss Tracker calculations &middot; Cached for up to 15 minutes
+                @endcomponent
+            </div>
         </div>
     </div>
     <div class="row mt-3">
@@ -32,6 +37,11 @@
                 <h5 class="font-weight-bold mb-2">Ship usage by tier</h5>
                 {!! $pop_tiers->container() !!}
             </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: User submissions and Abyss Tracker calculations &middot; Cached for up to 15 minutes
+                @endcomponent
+            </div>
         </div>
     </div>
     <div class="row mt-3">
@@ -39,6 +49,37 @@
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Ship usage by weather</h5>
                 {!! $pop_types->container() !!}
+            </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: User submissions and Abyss Tracker calculations &middot; Cached for up to 15 minutes
+                @endcomponent
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12 col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Fits DPS distribution</h5>
+                {!! $dps_chart->container() !!}
+            </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: User submissions and Abyss Tracker calculations &middot; Cached for up to 15 minutes
+                @endcomponent
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12 col-sm-12">
+            <div class="card card-body border-0 shadow-sm">
+                <h5 class="font-weight-bold mb-2">Most popular fits for {{$name}}</h5>
+                @component("components.fits.filter.result-list", ["results" => $fits]) @endcomponent
+            </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: Abyss Tracker user submissions &middot; Cached for up to 15 minutes
+                @endcomponent
             </div>
         </div>
     </div>
@@ -76,4 +117,5 @@
     {!! $death_chart->script() !!}
     {!! $loot_chart->script() !!}
     {!! $priceChart->script() !!}
+    {!! $dps_chart->script() !!}
 @endsection

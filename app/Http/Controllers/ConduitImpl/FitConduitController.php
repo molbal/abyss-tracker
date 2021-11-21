@@ -77,25 +77,25 @@ class FitConduitController extends ConduitController
         try {
             $charId = $request->user()->CHAR_ID;
 
-            if ($request->has('flexibleFitHash')) {
-                $collection = Fit::listForApi(charId: $charId, ffh: $request->get('flexibleFitHash'), mineOnly: $request->get('mineOnly', false));
-            }
-            else {
-                if ($request->has('revisions')) {
-                    $collection = Fit::listForApi(charId: $charId, revision: intval($request->get('revisions')), mineOnly: $request->get('mineOnly', false));
+            $collection = Cache::remember('api.fits.list.'.md5(json_encode([$charId => $request->all()])), now()->addSecond(), function () use ($request, $charId) {
+                if ($request->has('flexibleFitHash')) {
+                    $collection = Fit::listForApi(charId: $charId, ffh: $request->get('flexibleFitHash'), mineOnly: $request->get('mineOnly', false));
                 }
                 else {
-                    $collection = Cache::remember('api.fits.list.' . $charId.".".$request->get('mineOnly', false) ? "mine" : "public", now()->addMinute(), function () use ($charId, $request) {
-                        return Fit::listForApi(charId:$charId, mineOnly: $request->get('mineOnly', false));
-                    });
+                    if ($request->has('revisions')) {
+                        $collection = Fit::listForApi(charId: $charId, revision: intval($request->get('revisions')), mineOnly: $request->get('mineOnly', false));
+                    }
+                    else {
+                        $collection =  Fit::listForApi(charId:$charId, mineOnly: $request->get('mineOnly', false));
+                    }
                 }
-            }
+                return $collection;
+            });
 
             return $this->wrapListResponse($collection);
         }
         catch (\Exception $e) {
             return $this->getErrorResponse($e);
-
         }
     }
 

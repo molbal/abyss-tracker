@@ -12,6 +12,7 @@
     use App\Charts\ShipCruiserChart;
     use App\Charts\ShipDestroyerChart;
     use App\Charts\ShipFrigateChart;
+    use App\Http\Controllers\DS\ShipStatsController;
     use App\Http\Controllers\Loot\LootCacheController;
     use Carbon\Carbon;
     use Illuminate\Support\Facades\Cache;
@@ -113,7 +114,9 @@
                 "items" => $items,
                 "death_chart" => $death_reason,
                 "loot_chart" => $loot_chart,
-                'priceChart' => $priceChart
+                'priceChart' => $priceChart,
+                'dps_chart' => ShipStatsController::getDpsChart($id),
+                'fits' => FitSearchController::getInstance()->getShipFits($id)
             ]);
         }
 

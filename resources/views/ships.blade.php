@@ -7,8 +7,11 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-6 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm rounded-b-none">
                 <div class="graph-container h-400px">{!! $cruiser_chart->container() !!}</div>
+            </div>
+            <div class="card-footer">
+                @component('components.info-line')Data source: Abyss Tracker run submissions @endcomponent
             </div>
         </div>
         <div class="col-md-6 col-sm-12">
@@ -41,8 +44,11 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-6 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm rounded-b-none">
                 <div class="graph-container h-400px">{!! $destroyer_chart->container() !!}</div>
+            </div>
+            <div class="card-footer">
+                @component('components.info-line')Data source: Abyss Tracker run submissions @endcomponent
             </div>
         </div>
         <div class="col-md-6 col-sm-12">
@@ -75,9 +81,12 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-6 col-sm-12">
-            <div class="card card-body border-0 shadow-sm">
+            <div class="card card-body border-0 shadow-sm rounded-b-none">
                 <h5 class="font-weight-bold mb-2">Most used frigates</h5>
                 <div class="graph-container h-400px">{!! $frigate_chart->container() !!}</div>
+            </div>
+            <div class="card-footer">
+                @component('components.info-line')Data source: Abyss Tracker run submissions @endcomponent
             </div>
         </div>
         <div class="col-md-6 col-sm-12">
