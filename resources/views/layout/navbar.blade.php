@@ -23,11 +23,11 @@
                    href="{{route("item_all")}}">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("item_all" == $currentRoute)}}/empty-box.png">Loot table</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{"leaderboard.index" == $currentRoute ? "active" : ""}}"
-                   href="{{route("leaderboard.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == $currentRoute)}}/trophy.png">Leaderboard</a>
-            </li>
+{{--            <li class="nav-item">--}}
+{{--                <a class="nav-link {{"leaderboard.index" == $currentRoute ? "active" : ""}}"--}}
+{{--                   href="{{route("leaderboard.index")}}">--}}
+{{--                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("leaderboard.index" == $currentRoute)}}/trophy.png">Leaderboard</a>--}}
+{{--            </li>--}}
             <li class="nav-item">
                 <a class="nav-link {{"ships_all" == $currentRoute ? "active" : ""}}"
                    href="{{route("ships_all")}}">
@@ -38,11 +38,11 @@
                    href="{{route("fit.index")}}">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("fit.index" == $currentRoute)}}/job.png">Fits</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{"pvp.index" == $currentRoute ? "active" : ""}}"
-                   href="{{route("pvp.index")}}">
-                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("pvp.index" == $currentRoute)}}/sword.png">Event watch<sup class="badge badge-danger ml-1">β</sup></a>
-            </li>
+{{--            <li class="nav-item">--}}
+{{--                <a class="nav-link {{"pvp.index" == $currentRoute ? "active" : ""}}"--}}
+{{--                   href="{{route("pvp.index")}}">--}}
+{{--                    <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("pvp.index" == $currentRoute)}}/sword.png">Event watch<sup class="badge badge-danger ml-1">β</sup></a>--}}
+{{--            </li>--}}
             <li class="nav-item dropdown has-megamenu">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
                     <img src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("infopage.tier" == $currentRoute)}}/info.png">Overview</a></a>
@@ -77,6 +77,8 @@
                     <img src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor("changelog" == $currentRoute)}}/medical-id.png">Community</a>
                 </a>
                 <div class="dropdown-menu fade-down shadow" aria-labelledby="newsDropdown">
+                    <a href="{{route("pvp.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/sword.png"> Event watch</a>
+                    <a href="{{route("leaderboard.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/trophy.png"> Leaderboard</a>
                     <a href="{{route("tutorials.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/signpost.png"> Tutorials</a>
                     <a href="{{route("changelog")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/ios/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/financial-changes.png"> Changelog</a>
                     <a href="{{route("donors.index")}}" class="dropdown-item pl-2"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/like.png"> Donations</a>

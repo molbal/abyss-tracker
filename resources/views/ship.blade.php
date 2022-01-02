@@ -12,14 +12,6 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">
-            <div class="btn-group float-right" style="position: relative; top: -76px; margin-right: 6px; margin-bottom: -76px">
-                <a href="{{route("fit.search", ["SHIP_ID" => $id])}}"  class="btn btn-secondary">Show fits</a>
-                <a href="{{route("search.do", ["ship_id" => $id])}}"  class="btn btn-secondary">Show all runs</a>
-            </div>
-        </div>
-    </div>
-    <div class="row mt-3">
-        <div class="col-md-12 col-sm-12">
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Popularity over the last 3 months <small class="float-right">This graph shows the percentage of Abyss runs using/day using a {{$name}}</small></h5>
                 {!! $pop_chart->container() !!}
@@ -75,6 +67,8 @@
             <div class="card card-body border-0 shadow-sm">
                 <h5 class="font-weight-bold mb-2">Most popular fits for {{$name}}</h5>
                 @component("components.fits.filter.result-list", ["results" => $fits]) @endcomponent
+
+                <a href="{{route("fit.search", ["SHIP_ID" => $id])}}"  class="text-dark"><img class="tinyicon mr-1" src="https://img.icons8.com/small/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/job.png">Show more fits</a>
             </div>
             <div class="card-footer">
                 @component("components.info-line")

@@ -1,4 +1,4 @@
-@extends("layout.app")
+@extends("event-watch.layout.app")
 @section("browser-title","Event list")
 @section("content")
 

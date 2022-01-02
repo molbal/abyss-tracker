@@ -297,7 +297,14 @@
                 }
 
                 DB::table("item_prices")
-                  ->insert(["ITEM_ID" => $item->getItemId(), "NAME" => $item->getItemName(), "PRICE_BUY" => $item->getBuyValue(), "PRICE_SELL" => $item->getSellValue(), "DESCRIPTION" => $data->description, "GROUP_ID" => $data->group_id, "GROUP_NAME" => $group_data->name]);
+                  ->insert([
+                      "ITEM_ID" => $item->getItemId(),
+                      "NAME" => $item->getItemName(),
+                      "PRICE_BUY" => $item->getBuyValue() ?? 0,
+                      "PRICE_SELL" => $item->getSellValue() ?? 0,
+                      "DESCRIPTION" => $data->description,
+                      "GROUP_ID" => $data->group_id,
+                      "GROUP_NAME" => $group_data->name]);
             } else {
                 if (DB::table("item_prices")
                       ->where("ITEM_ID", $item->getItemId())
