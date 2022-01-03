@@ -80,7 +80,7 @@ class SearchController extends Controller
             $scb->addCondition(new SearchCriteria("Ship type: ".DB::table("ship_lookup")->where("ID", $request->get("ship_id"))->value("NAME"), "runs", "SHIP_ID", "=", $request->get("ship_id")));
         }
         if ($request->filled("hull_size")) {
-            $scb->addCondition(new SearchCriteria(($request->get("hull_size") ? "Cruiser" : "Frigate")." size ships", "ship_lookup", "HULL_SIZE", "=", $request->get("hull_size")));
+            $scb->addCondition(new SearchCriteria($request->get("hull_size")." size ships", "ship_lookup", "HULL_SIZE", "=", $request->get("hull_size")));
         }
         if ($request->filled("run_date_start")) {
             $scb->addCondition(new SearchCriteria("Runs from ".$request->get("run_date_start"), "runs", "RUN_DATE", ">=", $request->get("run_date_start")));
