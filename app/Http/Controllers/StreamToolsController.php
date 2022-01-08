@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Misc\ErrorHelper;
 use App\Http\Requests\NewStreamToolDailyLinkRequest;
 use App\Http\Requests\NewStreamToolFullScreenModalRequest;
+use Exception;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -17,6 +18,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use function auth;
 
 class StreamToolsController extends Controller
@@ -177,7 +179,7 @@ from (`abyss`.`lost_items` `dl`
             return view('stream.daily', $data);
 
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             return ErrorHelper::errorPage("Something went wrong while loading this widget.", "Abyss Tracker error");
         }
 

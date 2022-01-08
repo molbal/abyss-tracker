@@ -3,22 +3,21 @@
 @section("content")
     <div class="row mt-5">
         <div class="col-sm-8 mb-3 offset-md-2">
-{{--            <div class="card card-body border-warning shadow-sm mb-3 p-0 overflow-hidden">--}}
-{{--                <img src="{{asset("home/roadmap-1.8.png")}}" alt="" class="w-100 shadow">--}}
-{{--                <small class="text-capitalize font-weight-bold text-dark pt-0">IN DEVELOPMENT / PLANNED</small>--}}
-{{--                <h4 class="mb-0 pb-0">Future releases</h4>--}}
-{{--                <p>--}}
-{{--                    The following features are planned (in no particular order or grouping).--}}
-{{--                <ul>--}}
-{{--                    <li>Blueprint price estimation</li>--}}
-{{--                    <li>Dynamically adding and removing search filters</li>--}}
-{{--                    <li>Dynamically adding and removing fit search filters</li>--}}
-{{--                    <li>General search</li>--}}
-{{--                </ul>--}}
 
-{{--                </p>--}}
-{{--            </div>--}}
+
             <div class="card card-body border-danger shadow-sm mb-3 p-0 overflow-hidden">
+                <video autoplay loop muted poster="{{asset("home/1.11.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none">
+                    <source src="{{asset("home/1.11/webm.webm")}}" type="video/webm">
+                </video>
+
+
+                <div class="p-3">
+                    <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
+                    <h4 class="mb-0 pb-0"><strong>1.11</strong> 'Conduit' release</h4>
+                </div>
+            </div>
+
+            <div class="card card-body border-0 shadow-sm mb-3 p-0 overflow-hidden">
 {{--                <img src="{{asset("home/1.10.jpg")}}" alt="1.9 release" class="w-100 shadow">--}}
                 <video autoplay loop muted poster="{{asset("home/1.10.jpg")}}" class="w-100 rounded-top shadow-sm" style="min-height: 170px; pointer-events: none">
                     <source src="{{asset("home/1.10/mp4.mp4")}}" type="video/mp4">
@@ -26,7 +25,6 @@
                     <source src="{{asset("home/1.10/ogv.ogv")}}" type="video/ogg">
                 </video>
                 <div class="p-3">
-                    <small class="text-capitalize font-weight-bold text-danger pt-0">CURRENT</small>
                     <h4 class="mb-0 pb-0"><strong>1.10</strong> 'Negotiation' release</h4>
                     <small class="mt-0">2021 April 19</small>
                     <p class="text-justify font-weight-bold">
