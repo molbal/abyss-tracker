@@ -61,4 +61,16 @@ class PvpEvent extends Model
             throw new BusinessLogicException("No current event.");
         }
     }
+
+    public function acceptsTypeId($ship_type_id) {
+        return Cache::remember("pvp.typeIds.event.".$this->slug.".ship.".$ship_type_id, now()->addMinute(), function () use ($ship_type_id) {
+            return PvpEventShip::whereEventId($this->id)->where("type_id", $ship_type_id)->exists();
+        });
+    }
+
+    public function getAcceptedTypeIds() {
+        return Cache::remember("pvp.typeIds.event.".$this->slug, now()->addMinute(), function () {
+           return PvpEventShip::whereEventId($this->id)->get();
+        });
+    }
 }

@@ -3,35 +3,23 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\KeyValue;
-use Laravel\Nova\Fields\Markdown;
-use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
-class PvpEvent extends Resource
+class PvpEventShip extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Pvp\PvpEvent::class;
-
-    public static $group = "Event Watch";
+    public static $model = \App\Pvp\PvpEventShip::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -52,13 +40,6 @@ class PvpEvent extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make("Slug", 'slug'),
-            Text::make("Name", 'name'),
-            Boolean::make("Current event?", "is_current"),
-            DateTime::make('Event start','created_at'),
-            DateTime::make('Event end','updated_at'),
-
-//            HasMany::make("Related fits", "fits", "App\Nova\VideoTutorialFit")
         ];
     }
 
