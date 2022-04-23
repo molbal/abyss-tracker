@@ -167,6 +167,7 @@
 
             echo "Starting <br><pre>";
             foreach ($IDs as $id) {
+                set_time_limit(9999);
                 $id = $id->ID;
                 /** @var \App\Http\Controllers\FitsController $fits */
                 $fits = resolve('App\Http\Controllers\FitsController');

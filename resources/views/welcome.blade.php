@@ -7,6 +7,16 @@
     </div>
 {{--    <div class="d-flex justify-content-between align-items-start mt-5">--}}
 {{--    </div>--}}
+
+{{--    <div class="row mt-3">--}}
+{{--        <div class="col-sm-12 col-md-6 offset-md-3">--}}
+{{--            <div class="card card-body border-success shadow-sm mb-3 text-center">--}}
+{{--                Thank you for your incredible patience, all services are working again.--}}
+{{--                <br>--}}
+{{--                <span class="text-right">- Veetor</span>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
     <div class="row mt-3">
         <div class="col-xs-12 col-sm-12 col-md-8">
             <div class="row">

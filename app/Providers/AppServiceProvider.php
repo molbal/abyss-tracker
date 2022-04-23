@@ -6,6 +6,7 @@
     use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\EFT\ItemClassifier;
     use Illuminate\Pagination\Paginator;
+    use Illuminate\Support\Facades\Schema;
     use Illuminate\Support\ServiceProvider;
 
     class AppServiceProvider extends ServiceProvider {
@@ -33,7 +34,7 @@
          */
         public function boot() {
             Paginator::useBootstrap();
-
+//            Schema::defaultStringLength(191);
 
         }
     }

@@ -20,6 +20,7 @@
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Controllers\PVP\PVPController;
     use App\Http\Controllers\StreamToolsController;
+    use Illuminate\Support\Facades\Http;
     use Illuminate\Support\Facades\Route;
 
     Route::get("/", 'AbyssController@home')->name("home");
@@ -240,5 +241,4 @@
         Route::get('/widget/top-kills/{id}', [PVPController::class, 'renderToplist'])->name('pvp.widget.top-kills');
 
     });
-
 
