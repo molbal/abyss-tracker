@@ -491,7 +491,7 @@
 
                 // Get the fit - with some caching
                 clock()->event("Getting the fit from DB", "")->begin();
-                $fit = Cache::remember("aft.fit-record-full.".$id, now()->addSeconds(15), function () use ($id) {
+                $fit = Cache::remember("aft.fit-record-full.".$id, now()->addMinute(), function () use ($id) {
                     return $this->getFitsQB($id)->first();
                 });
                 clock()->event("Getting the fit from DB")->end();
@@ -506,9 +506,11 @@
 
                 // Get ship name and character name
                 clock()->event("Lookup ship name and character name", "")->begin();
-                $ship_name = DB::table('ship_lookup')
-                               ->where('ID', $fit->SHIP_ID)
-                               ->value('NAME');
+                $ship_name = Cache::remember('aft.ship-name.'.$fit->SHIP_ID, now()->addMinutes(15), function () use ($fit) {
+                   return DB::table('ship_lookup')
+                            ->where('ID', $fit->SHIP_ID)
+                            ->value('NAME');
+                });
                 $char_name = DB::table('chars')
                                ->where('CHAR_ID', $fit->CHAR_ID)
                                ->value('NAME');
@@ -520,7 +522,12 @@
                 clock()->event("Parse description")->end();
 
                 clock()->event("Get ship type ID", "")->begin();
-                $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
+//                $shipType = DB::table("ship_lookup")->where("ID", $fit->SHIP_ID)->value("GROUP") ?? "Unknown type";
+                $shipType = Cache::remember('aft.ship-type.'.$fit->SHIP_ID, now()->addMinutes(15), function () use ($fit) {
+                    return DB::table('ship_lookup')
+                             ->where('ID', $fit->SHIP_ID)
+                             ->value('GROUP') ?? 'Unknown type';
+                });
                 clock()->event("Get ship type ID")->end();
 
                 clock()->event("Get shipitemObject", "")->begin();
@@ -549,7 +556,9 @@
 
                 // Get recommendations
                 clock()->event("Load fit recommendations", "")->begin();
-                $recommendations = DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
+                $recommendations = Cache::remember('aft.fit-recommendations.'.$id, now()->addMinutes(15), function () use ($id) {
+                    return DB::table("fit_recommendations")->where("FIT_ID", $id)->first();
+                });
                 clock()->event("Load fit recommendations")->end();
 
                 // Make open graph tags
@@ -570,10 +579,14 @@
 
                 // Get last runs with this fit
                 clock()->event("Load fit's saved runs", "")->begin();
-                $runs = DB::table("runs")
-                  ->where("FIT_ID", $id)
-                  ->orderBy("CREATED_AT", 'DESC')
-                  ->paginate(25);
+                $runs =
+                    Cache::remember('aft.fit-runs.'.$id.'.page.'.\request()->get('page', 1), now()->addMinute(), function () use ($id) {
+                        return DB::table("runs")
+                                 ->where("FIT_ID", $id)
+                                 ->orderBy("CREATED_AT", 'DESC')
+                                 ->paginate(25);
+                    });
+
                 clock()->event("Load fit's saved runs")->end();
 
                 // Get max tiers and "break even" stats
@@ -854,13 +867,15 @@ order by d.day asc;
          * @return mixed
          */
         public function getSimilarFitsAsIdList(string $ffh, bool $includePrivate = false) {
-            $query = DB::table("fits")
-                ->where("FFH", $ffh);
-            if (!$includePrivate) {
-                $query->where("PRIVACY", "!=", 'private');
-            }
-            $ids = $query->select("ID")->get();
-            return Arr::pluck($ids, "ID");
+            return Cache::remember('aft.fit-similar'.$ffh.'.privates.'.$includePrivate ? '1' : '0', now()->addMinutes(5), function () use ($ffh, $includePrivate) {
+                $query = DB::table("fits")
+                           ->where("FFH", $ffh);
+                if (!$includePrivate) {
+                    $query->where("PRIVACY", "!=", 'private');
+                }
+                $ids = $query->select("ID")->get();
+                return Arr::pluck($ids, "ID");
+            });
         }
 
 

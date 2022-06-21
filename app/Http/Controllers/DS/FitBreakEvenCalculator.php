@@ -14,7 +14,7 @@
 	class FitBreakEvenCalculator {
 
         public static function getMaxTiers(int $fitId) : Collection {
-            return collect(Cache::remember(sprintf("aft.median.max-tiers.%s", $fitId,), now()->addMinute(), function () use ($fitId) {
+            return collect(Cache::remember(sprintf("aft.median.max-tiers.%s", $fitId,), now()->addMinutes(5), function () use ($fitId) {
                 return DB::select("select MAX(inn.MAX_TIER) as MAX_TIER, inn.TYPE
                     from (select MAX(TIER) as `MAX_TIER`, TYPE
                           from runs

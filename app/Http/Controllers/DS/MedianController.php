@@ -285,7 +285,7 @@ WHERE
          */
         public static function getFitMedian(int $fitId, int $tier, string $type): int {
 //            Log::info("Median calculation for $fitId $tier $type");
-            return Cache::remember(sprintf("aft.median.fit.%s.%d.%s", $fitId, $tier, $type), now()->addMinute(), function () use ($fitId, $tier, $type) {
+            return Cache::remember(sprintf("aft.median.fit.%s.%d.%s", $fitId, $tier, $type), now()->addMinutes(5), function () use ($fitId, $tier, $type) {
                 try {
                     return intval(DB::select("select MEDIAN_FOR_FIT_TYPE_TIER(?, ?, ?) as `MEDIAN`;", [$fitId, strval($tier), $type])[0]->MEDIAN);
                 }
@@ -305,7 +305,7 @@ WHERE
          * @return int
          */
         public static function getFitMedianRuntime(int $fitId, int $tier, string $type): int {
-            return Cache::remember(sprintf("aft.median.rutime.fit.%s.%d.%s", $fitId, $tier, $type), now()->addMinute(), function () use ($fitId, $tier, $type) {
+            return Cache::remember(sprintf("aft.median.rutime.fit.%s.%d.%s", $fitId, $tier, $type), now()->addMinutes(5), function () use ($fitId, $tier, $type) {
                 return intval(DB::select("select MEDIAN_FOR_FIT_TYPE_TIER_RUNTIME(?, ?, ?) as `MEDIAN`;", [$fitId, strval($tier), $type])[0]->MEDIAN);
             });
         }
