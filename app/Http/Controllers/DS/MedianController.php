@@ -25,9 +25,13 @@
          */
         public static function getLootForRange(int $tier, string $type, int $fromInt, Carbon $to, string $hullSize) : ?int {
 
+            return Cache::remember('aft.loot-median.tier.'.md5("".$tier.$type.$fromInt.$to->toISOString().$hullSize), now()->addHour(), function () use ($tier, $type, $fromInt, $to, $hullSize) {
+
             Validator::make(['type' => $type], [
-                'type' => 'required|in:Electrical,Dark,Exotic,Firestorm,Gamma,%'
+                'type' => 'required|in:Electrical,Dark,Exotic,Firestorm,Gamma,all'
             ])->validate();
+
+            $type == 'all' ? '%' : $type;
 
             $from = (new Carbon($to))->addDays(-$fromInt);
 
@@ -74,6 +78,7 @@ WHERE
 
             return $median ?? null;
 
+            });
         }
 
 

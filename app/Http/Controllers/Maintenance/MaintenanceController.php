@@ -168,13 +168,19 @@
             echo "Starting <br><pre>";
             foreach ($IDs as $id) {
                 set_time_limit(9999);
-                $id = $id->ID;
-                /** @var \App\Http\Controllers\FitsController $fits */
-                $fits = resolve('App\Http\Controllers\FitsController');
-                $fit = DB::table("fits")->where("ID", $id)->select(["RAW_EFT", "SHIP_ID"])->first();
-                $fits->submitSvcFitService($fits->getFitHelper()->pyfaBugWorkaround($fit->RAW_EFT, $fit->SHIP_ID), $id);
+                try {
 
-                echo "Resubmitted $id \n";
+                    $id = $id->ID;
+                    /** @var \App\Http\Controllers\FitsController $fits */
+                    $fits = resolve('App\Http\Controllers\FitsController');
+                    $fit = DB::table("fits")->where("ID", $id)->select(["RAW_EFT", "SHIP_ID"])->first();
+                    $fits->submitSvcFitService($fits->getFitHelper()->pyfaBugWorkaround($fit->RAW_EFT, $fit->SHIP_ID), $id);
+
+                    echo "Resubmitted $id \n";
+                }
+                catch (\Exception $e) {
+                    echo "Error with $id: ".$e->getMessage();
+                }
             }
             echo "</pre>";
         }

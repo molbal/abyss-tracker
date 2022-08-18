@@ -244,7 +244,7 @@ ORDER BY 6 DESC LIMIT ?;
             $labels = $this->historicLootController->getLabel();
 
             $cc = new CruiserChart();
-            $cc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => '%', 'hullSize' => ShipHullSize::CRUISER]));
+            $cc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => 'all', 'hullSize' => ShipHullSize::CRUISER]));
             $cc->displayAxes(true);
             $cc->displayLegend(true);
             $cc->export(true, "Download");
@@ -263,7 +263,7 @@ ORDER BY 6 DESC LIMIT ?;
             $cc->labels($labels);
 
             $dc = new DestroyerChart();
-            $dc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => '%', 'hullSize' => ShipHullSize::DESTROYER]));
+            $dc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => 'all', 'hullSize' => ShipHullSize::DESTROYER]));
             $dc->displayAxes(true);
             $dc->displayLegend(true);
             $dc->export(true, "Download");
@@ -282,7 +282,7 @@ ORDER BY 6 DESC LIMIT ?;
             $dc->labels($labels);
 
             $fc = new FrigateChart();
-            $fc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => '%', 'hullSize' => ShipHullSize::FRIGATE]));
+            $fc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => 'all', 'hullSize' => ShipHullSize::FRIGATE]));
             $fc->displayAxes(true);
             $fc->displayLegend(true);
             $fc->export(true, "Download");
