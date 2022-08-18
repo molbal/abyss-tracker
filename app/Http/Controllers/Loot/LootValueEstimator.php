@@ -246,8 +246,6 @@
                 ]);
 
             } catch (\Exception $e) {
-                dd($e);
-                exit;
                 throw new RemoteAppraisalToolException("EVE Workbench connection error: " . $e->getMessage());
             }
 
