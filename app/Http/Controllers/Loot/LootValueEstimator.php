@@ -152,7 +152,8 @@
                 Log::warning("Janice appraisal failed - using EWB: ".$e->getMessage());
             }
 
-            if (count($this->items) == 0) {
+            // null if janice not configured or breaking?
+            if ($this->items == null || count($this->items) == 0) {
                 Log::channel("lootvalue")->warning("Janice failed, trying Eve Workbench");
                 // Try EWB
                 try {
@@ -161,59 +162,49 @@
                     $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
                     $this->totalPrice = 0;
                     foreach ($data->items as $item) {
-                        $ex = false;
-                        foreach ($this->items as $eitem) {
-                            if ($eitem->getItemId() == $item->typeID) {
-                                $ex = true;
-                                $eitem->setCount($eitem->getCount() + $item->amount);
-                                break;
-                            }
+                        if ($item->typeID == 0 && $item->name != "") {
+                            /** @var ResourceLookupService $res */
+                            $res = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+                            $item->typeID = $res->itemNameToId($item->name);
                         }
-                        if (!$ex) {
-                            if ($item->typeID == 0 && $item->name != "") {
-                                /** @var ResourceLookupService $res */
-                                $res = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
-                                $item->typeID = $res->itemNameToId($item->name);
-                            }
 
-                            if (!$item->typeID) {
-                                throw new FitFatalException("Unable to recognize module '$item->name'.");
-                            }
+                        if (!$item->typeID) {
+                            throw new FitFatalException("Unable to recognize module '$item->name'.");
+                        }
 
 
-                            $eveItem = new EveItem();
-                            $eveItem->setItemName($item->name)
-                                    ->setItemId($item->typeID)
-                                    ->setCount($item->amount);
+                        $eveItem = new EveItem();
+                        $eveItem->setItemName($item->name)
+                                ->setItemId($item->typeID)
+                                ->setCount($item->amount);
 
-                            // Burnt in value for red loot
-                            if ($eveItem->getItemId() == 48121) {
-                                $eveItem->setBuyValue(100000);
-                                $eveItem->setSellValue(100000);
+                        // Burnt in value for red loot
+                        if ($eveItem->getItemId() == 48121) {
+                            $eveItem->setBuyValue(100000);
+                            $eveItem->setSellValue(100000);
+                        }
+                        else {
+                            if (stripos($eveItem->getItemName(), "blueprint") !== false) {
+                                $eveItem->setSellValue(0)
+                                        ->setBuyValue(0);
                             }
                             else {
-                                if (stripos($eveItem->getItemName(), "blueprint") !== false) {
-                                    $eveItem->setSellValue(0)
-                                            ->setBuyValue(0);
-                                }
-                                else {
 
-                                    /** @var ItemObject $itemObj */
-                                    $itemObj = $this->priceEstimator->getFromTypeId($item->typeID);
-                                    if ($itemObj) {
-                                        $eveItem->setBuyValue($itemObj->getBuyPrice())
-                                                ->setSellValue($itemObj->getSellPrice());
-                                    } else {
-                                        Log::channel("itempricecalculator could not find for typeID ".$item->typeID);
-                                        $eveItem->setBuyValue($item->buyPrice)
-                                                ->setSellValue($item->sellPrice);
-
-                                    }
+                                /** @var ItemObject $itemObj */
+                                $itemObj = $this->priceEstimator->getFromTypeId($item->typeID);
+                                if ($itemObj) {
+                                    $eveItem->setBuyValue($itemObj->getBuyPrice())
+                                            ->setSellValue($itemObj->getSellPrice());
+                                } else {
+                                    Log::channel("itempricecalculator could not find for typeID ".$item->typeID);
+                                    $eveItem->setBuyValue($item->buyPrice)
+                                            ->setSellValue($item->sellPrice);
 
                                 }
+
                             }
-                            $this->items[] = $eveItem;
                         }
+                        $this->items[] = $eveItem;
                     }
                 }
                 catch (FitFatalException $e) {
@@ -242,15 +233,21 @@
             $client = new Client();
             $response = null;
             try {
-                $response = $client->request('POST', config('tracker.market.eveworkbench.service-root') . "appraisal?Type=1", [
-                    'auth' => [
-                        config('tracker.market.eveworkbench.client-id'),
-                        config('tracker.market.eveworkbench.app-key')],
+                $response = $client->request('POST', config('tracker.market.eveworkbench.service-root') . "api/remote/appraisal?Type=1&Station=60003760", [
+                    'headers' => [
+                        'Authorization' => implode(":", [
+                                config('tracker.market.eveworkbench.client-id'),
+                                config('tracker.market.eveworkbench.app-key')
+                            ]
+                        )
+                    ],
                     'body' => $this->rawData,
                     'timeout' => 12
                 ]);
 
             } catch (\Exception $e) {
+                dd($e);
+                exit;
                 throw new RemoteAppraisalToolException("EVE Workbench connection error: " . $e->getMessage());
             }
 

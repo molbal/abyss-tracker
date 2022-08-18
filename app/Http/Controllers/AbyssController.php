@@ -206,7 +206,10 @@
 
             DB::table("stopwatch")->where("CHAR_ID", $loginId)->delete();
 
-            broadcast(RunSaved::createEventForUser($loginId));
+            if ( config('broadcasting.connections.pusher.is_enabled') == true ) {
+                broadcast(RunSaved::createEventForUser($loginId));
+            }
+
             if ($request->get("submit") == "view-details") {
                 return redirect(route("view_single", ["id" => $id]));
             }
