@@ -246,7 +246,7 @@
                 $this->totalPrice+=$eveItem->getStackAverageValue();
             }
 
-            dd($this->items,$this->totalPrice);
+            //dd($this->items,$this->totalPrice);
         }
 
         /**
