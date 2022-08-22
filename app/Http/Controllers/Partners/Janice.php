@@ -66,43 +66,45 @@
                 throw new Exception("Could not appraise the following item(s): ". $appraised->failures);
             }
 
-
             $ret = collect();
             foreach ($appraised->items as $item) {
 
+                //janice adds stuff together now, disabling 08/22/2022 -zorky
+                // /** @var EveItem $retItem */
+                // $eveItem = null;
+                // foreach ($ret as $retItem) {
+                //     if ($retItem->getItemId() == $item->itemType->eid) {
+                //         $eveItem = $retItem;
+                //         $ret = $ret->reject(function ($check) use ($item) {
+                //             return $check->getItemId() == $item->itemType->eid;
+                //         });
 
-                /** @var EveItem $retItem */
-                $eveItem = null;
-                foreach ($ret as $retItem) {
-                    if ($retItem->getItemId() == $item->itemType->eid) {
-                        $eveItem = $retItem;
-                        $ret = $ret->reject(function ($check) use ($item) {
-                            return $check->getItemId() == $item->itemType->eid;
-                        });
+                //         $eveItem->setCount($eveItem->getCount()+$item->amount);
+                //     }
+                // }
+                ////janice adds stuff together now, disabling 08/22/2022 -zorky
+                //if (!$eveItem) {
+                    //below block used to be here
+                //}
 
-                        $eveItem->setCount($eveItem->getCount()+$item->amount);
-                    }
-                }
-
-                if (!$eveItem) {
-                    $eveItem = (new EveItem())
+                $eveItem = (new EveItem())
                     ->setCount($item->amount)
                     ->setBuyValue($item->buyPriceMedian5)
                     ->setSellValue($item->sellPriceMedian5)
                     ->setItemId($item->itemType->eid)
                     ->setItemName($item->itemType->name);
-                }
 
 
                 // Burnt in value for red loot
-                if ($eveItem->getItemId() == 48121) {
-                    $eveItem->setBuyValue(100000);
-                    $eveItem->setSellValue(100000);
-                }
-                elseif (stripos($eveItem->getItemName(), "blueprint") !== false) {
-                    $eveItem->setSellValue(0)
-                            ->setBuyValue(0);
-                }
+                // disabling logic here to move to shared code later -- zorky 08/22/2022
+                // if ($eveItem->getItemId() == 48121) {
+                //     $eveItem->setBuyValue(100000);
+                //     $eveItem->setSellValue(100000);
+                // }
+                // elseif (stripos($eveItem->getItemName(), "blueprint") !== false) {
+                //     $eveItem->setSellValue(0)
+                //             ->setBuyValue(0);
+                // }
 
                 $ret->add($eveItem);
             }

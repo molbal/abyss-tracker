@@ -157,55 +157,69 @@
                 Log::channel("lootvalue")->warning("Janice failed, trying Eve Workbench");
                 // Try EWB
                 try {
+                    $this->items = [];
                     $data = $this->sendToEveWorkbench();
-
-                    $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
-                    $this->totalPrice = 0;
-                    foreach ($data->items as $item) {
-                        if ($item->typeID == 0 && $item->name != "") {
-                            /** @var ResourceLookupService $res */
-                            $res = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
-                            $item->typeID = $res->itemNameToId($item->name);
-                        }
-
-                        if (!$item->typeID) {
-                            throw new FitFatalException("Unable to recognize module '$item->name'.");
-                        }
-
-
-                        $eveItem = new EveItem();
-                        $eveItem->setItemName($item->name)
-                                ->setItemId($item->typeID)
-                                ->setCount($item->amount);
-
-                        // Burnt in value for red loot
-                        if ($eveItem->getItemId() == 48121) {
-                            $eveItem->setBuyValue(100000);
-                            $eveItem->setSellValue(100000);
-                        }
-                        else {
-                            if (stripos($eveItem->getItemName(), "blueprint") !== false) {
-                                $eveItem->setSellValue(0)
-                                        ->setBuyValue(0);
-                            }
-                            else {
-
-                                /** @var ItemObject $itemObj */
-                                $itemObj = $this->priceEstimator->getFromTypeId($item->typeID);
-                                if ($itemObj) {
-                                    $eveItem->setBuyValue($itemObj->getBuyPrice())
-                                            ->setSellValue($itemObj->getSellPrice());
-                                } else {
-                                    Log::channel("itempricecalculator could not find for typeID ".$item->typeID);
-                                    $eveItem->setBuyValue($item->buyPrice)
-                                            ->setSellValue($item->sellPrice);
-
-                                }
-
-                            }
-                        }
+                    foreach( $data->items as $d ) {
+                        $eveItem = (new EveItem())
+                            ->setItemName($d->name)
+                            ->setItemId($d->typeID)
+                            ->setCount($d->amount)
+                            ->setSellValue(($d->sellPrice/$d->amount))
+                            ->setBuyValue(($d->buyPrice/$d->amount));
                         $this->items[] = $eveItem;
                     }
+
+                    // $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+                    // $this->totalPrice = 0;
+                    // foreach ($data->items as $item) {
+                    //     if ($item->typeID == 0 && $item->name != "") {
+                    //         /** @var ResourceLookupService $res */
+                    //         $res = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+                    //         $item->typeID = $res->itemNameToId($item->name);
+                    //     }
+
+                    //     if (!$item->typeID) {
+                    //         throw new FitFatalException("Unable to recognize module '$item->name'.");
+                    //     }
+
+
+                    //     $eveItem = new EveItem();
+                    //     $eveItem->setItemName($item->name)
+                    //             ->setItemId($item->typeID)
+                    //             ->setCount($item->amount);
+
+                    //     // Burnt in value for red loot
+                    //     if ($eveItem->getItemId() == 48121) {
+                    //         $eveItem->setBuyValue(100000);
+                    //         $eveItem->setSellValue(100000);
+                    //     }
+                    //     else if (stripos($eveItem->getItemName(), "blueprint") !== false) {
+                    //         $eveItem->setSellValue(0)
+                    //                 ->setBuyValue(0);
+                    //     }
+                    //     else  {
+
+                    //         /** @var ItemObject $itemObj */
+                    //         $itemObj = $this->priceEstimator->getFromTypeId($item->typeID);
+                    //         if ($itemObj) {
+                    //             $eveItem->setBuyValue($itemObj->getBuyPrice())
+                    //                     ->setSellValue($itemObj->getSellPrice());
+                    //             if ( $eveItem->getSellValue() == null ) {
+                    //                 dd($itemObj,$eveItem);
+                    //             }
+                    //         } else {
+                    //             Log::channel("itempricecalculator could not find for typeID ".$item->typeID);
+                    //             $eveItem->setBuyValue($item->buyPrice)
+                    //                     ->setSellValue($item->sellPrice);
+                    //             if ( $eveItem->getSellValue() == null ) {
+                    //                 dd($item,$eveItem);
+                    //             }
+                    //         }
+
+                    //     }
+
+                        //$this->items[] = $eveItem;
+                    //}
                 }
                 catch (FitFatalException $e) {
                     Log::error($e);
@@ -217,9 +231,22 @@
                 }
             }
 
-            foreach ($this->items as $item) {
-                $this->totalPrice+=$item->getStackAverageValue();
+
+            foreach ($this->items as $eveItem) {
+                //Do overrides on either Janice or EWB data as they are in the same format.
+                //Burnt in value for red loot
+                if ($eveItem->getItemId() == 48121) {
+                    $eveItem->setBuyValue(100000)
+                            ->setSellValue(100000);
+                } else if (stripos($eveItem->getItemName(), "blueprint") !== false) {
+                    $eveItem->setSellValue(0)
+                            ->setBuyValue(0);
+                }
+
+                $this->totalPrice+=$eveItem->getStackAverageValue();
             }
+
+            dd($this->items,$this->totalPrice);
         }
 
         /**
@@ -233,7 +260,7 @@
             $client = new Client();
             $response = null;
             try {
-                $response = $client->request('POST', config('tracker.market.eveworkbench.service-root') . "api/remote/appraisal?Type=1&Station=60003760", [
+                $response = $client->request('POST', config('tracker.market.eveworkbench.service-root') . "appraisal?Type=1&Station=60003760", [
                     'headers' => [
                         'Authorization' => implode(":", [
                                 config('tracker.market.eveworkbench.client-id'),
