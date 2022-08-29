@@ -7,9 +7,9 @@
     use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Exceptions\FitFatalException;
     use App\Http\Controllers\EFT\DTO\ItemObject;
-    use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use App\Http\Controllers\EFT\ItemPriceCalculator;
     use App\Http\Controllers\Partners\Janice;
+    use App\Http\Controllers\Partners\EveWorkbench;
     use Carbon\Carbon;
     use GuzzleHttp\Client;
     use Illuminate\Support\Facades\DB;
@@ -137,6 +137,9 @@
          * @throws FitFatalException
          */
         private function process() {
+            // Notes.  First tries Janice, then tries EWB, else empty array
+            // Then does math and returns result! -- if both fail, it's an empty array and returns 0
+
             if ($this->rawData == "") {
                 $this->totalPrice = 0;
                 $this->items = [];
@@ -152,74 +155,12 @@
                 Log::warning("Janice appraisal failed - using EWB: ".$e->getMessage());
             }
 
-            // null if janice not configured or breaking?
+            // Try EWB
             if ($this->items == null || count($this->items) == 0) {
                 Log::channel("lootvalue")->warning("Janice failed, trying Eve Workbench");
                 // Try EWB
                 try {
-                    $this->items = [];
-                    $data = $this->sendToEveWorkbench();
-                    foreach( $data->items as $d ) {
-                        $eveItem = (new EveItem())
-                            ->setItemName($d->name)
-                            ->setItemId($d->typeID)
-                            ->setCount($d->amount)
-                            ->setSellValue(($d->sellPrice/$d->amount))
-                            ->setBuyValue(($d->buyPrice/$d->amount));
-                        $this->items[] = $eveItem;
-                    }
-
-                    // $this->priceEstimator = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
-                    // $this->totalPrice = 0;
-                    // foreach ($data->items as $item) {
-                    //     if ($item->typeID == 0 && $item->name != "") {
-                    //         /** @var ResourceLookupService $res */
-                    //         $res = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
-                    //         $item->typeID = $res->itemNameToId($item->name);
-                    //     }
-
-                    //     if (!$item->typeID) {
-                    //         throw new FitFatalException("Unable to recognize module '$item->name'.");
-                    //     }
-
-
-                    //     $eveItem = new EveItem();
-                    //     $eveItem->setItemName($item->name)
-                    //             ->setItemId($item->typeID)
-                    //             ->setCount($item->amount);
-
-                    //     // Burnt in value for red loot
-                    //     if ($eveItem->getItemId() == 48121) {
-                    //         $eveItem->setBuyValue(100000);
-                    //         $eveItem->setSellValue(100000);
-                    //     }
-                    //     else if (stripos($eveItem->getItemName(), "blueprint") !== false) {
-                    //         $eveItem->setSellValue(0)
-                    //                 ->setBuyValue(0);
-                    //     }
-                    //     else  {
-
-                    //         /** @var ItemObject $itemObj */
-                    //         $itemObj = $this->priceEstimator->getFromTypeId($item->typeID);
-                    //         if ($itemObj) {
-                    //             $eveItem->setBuyValue($itemObj->getBuyPrice())
-                    //                     ->setSellValue($itemObj->getSellPrice());
-                    //             if ( $eveItem->getSellValue() == null ) {
-                    //                 dd($itemObj,$eveItem);
-                    //             }
-                    //         } else {
-                    //             Log::channel("itempricecalculator could not find for typeID ".$item->typeID);
-                    //             $eveItem->setBuyValue($item->buyPrice)
-                    //                     ->setSellValue($item->sellPrice);
-                    //             if ( $eveItem->getSellValue() == null ) {
-                    //                 dd($item,$eveItem);
-                    //             }
-                    //         }
-
-                    //     }
-
-                        //$this->items[] = $eveItem;
-                    //}
+                    $this->items = EveWorkbench::appraise($this->rawData);
                 }
                 catch (FitFatalException $e) {
                     Log::error($e);
@@ -246,48 +187,9 @@
                 $this->totalPrice+=$eveItem->getStackAverageValue();
             }
 
-            //dd($this->items,$this->totalPrice);
         }
 
-        /**
-         * Sends the raw data from eve praisal and returns
-         *
-         * @return mixed
-         * @throws RemoteAppraisalToolException
-         */
-        private function sendToEveWorkbench() {
 
-            $client = new Client();
-            $response = null;
-            try {
-                $response = $client->request('POST', config('tracker.market.eveworkbench.service-root') . "appraisal?Type=1&Station=60003760", [
-                    'headers' => [
-                        'Authorization' => implode(":", [
-                                config('tracker.market.eveworkbench.client-id'),
-                                config('tracker.market.eveworkbench.app-key')
-                            ]
-                        )
-                    ],
-                    'body' => $this->rawData,
-                    'timeout' => 12
-                ]);
-
-            } catch (\Exception $e) {
-                throw new RemoteAppraisalToolException("EVE Workbench connection error: " . $e->getMessage());
-            }
-
-            $item = json_decode($response->getBody()->getContents());
-
-            if ($item->error != false) {
-                throw new RemoteAppraisalToolException("EVE Workbench returned an error: " . $item->message);
-            }
-            if ($item->resultCount == 0) {
-                throw new RemoteAppraisalToolException("EVE Workbench returned an invalid result count: " . $item->resultCount . ", 0+ expected.");
-            }
-
-//            dd($this->rawData, $item);
-            return $item->result;
-        }
 
         public static function getEvePraisalItem(int $itemId) {
             $raw = file_get_contents(sprintf("https://evepraisal.com/item/%d.json", $itemId));
