@@ -13,6 +13,7 @@
     use http\Exception\RuntimeException;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Str;
+    use Illuminate\Support\Collection;
 
     class Janice {
 
@@ -78,6 +79,11 @@
 
                 $ret->add($eveItem);
             }
+
+            //Update Cache!
+            $ret_collection = new Collection($ret->toArray());
+            $ipc = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+            $ipc->updateBulkTablePrices($ret_collection);
 
             Log::channel("lootvalue")->debug('Estimated '.count($ret)." lines with Janice");
             return $ret->toArray();

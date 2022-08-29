@@ -12,6 +12,7 @@
     use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
     use GuzzleHttp\Client;
     use App\Http\Controllers\Loot\EveItem;
+    use Illuminate\Support\Collection;
 
     class EveWorkbench {
 
@@ -89,7 +90,7 @@
 
             $return_data = [];
 
-            foreach( $item->result as $d ) {
+            foreach( $item->result->items as $d ) {
                 $eveItem = (new EveItem())
                     ->setItemName($d->name)
                     ->setItemId($d->typeID)
@@ -98,6 +99,11 @@
                     ->setBuyValue(($d->buyPrice/$d->amount));
                 $return_data[] = $eveItem;
             }
+
+            //Update Cache!
+            $ret_collection = new Collection($return_data);
+            $ipc = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+            $ipc->updateBulkTablePrices($ret_collection);
 
             return $return_data;
         }

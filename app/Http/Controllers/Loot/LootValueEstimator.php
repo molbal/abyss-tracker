@@ -25,9 +25,6 @@
         /** @var int */
         private $totalPrice;
 
-        /** @var ItemPriceCalculator */
-        private $priceEstimator;
-
 
         /**
          * LootValueEstimator constructor.
@@ -139,7 +136,6 @@
         private function process() {
             // Notes.  First tries Janice, then tries EWB, else empty array
             // Then does math and returns result! -- if both fail, it's an empty array and returns 0
-
             if ($this->rawData == "") {
                 $this->totalPrice = 0;
                 $this->items = [];
@@ -172,6 +168,59 @@
                 }
             }
 
+            // Try Table_Prices / Fuzzy / EWB Single
+            if ($this->items == null || count($this->items) == 0) {
+                try {
+                    $ipc = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+                    $raw_by_line = explode("\n",$this->rawData);
+                    $_tmp = [];
+                    $_tmp_bps = [];
+                    foreach ( $raw_by_line as $line ) {
+                        try {
+                            $line_exploded = explode("\t",$line);
+                            $name = $line_exploded[0];
+                            $itemObj = $ipc->getFromItemName($name);
+
+                            // blueprints are silly and don't stack and don't include a number >.>
+                            // blueprints are silly and don't stack and don't include a number >.>
+                            if (stripos($name, "blueprint") !== false) {
+                                $_tmp_bps[] = (new EveItem())
+                                ->setCount(1)
+                                ->setItemId($itemObj->getTypeId())
+                                ->setItemName($name);
+                                continue;
+                            }
+
+                            // CHECK if we already have placed item into $_tmp!
+                            if ( isset($_tmp[ $itemObj->getTypeId() ] ) ) {
+                                $cur_eveitem = $_tmp[ $itemObj->getTypeId() ];
+                                $_tmp[ $cur_eveitem->getItemId() ]->setCount( $cur_eveitem->getCount()+$line_exploded[1]);
+                            //First add!
+                            } else {
+                                $_tmp[ $itemObj->getTypeId() ] = (new EveItem())
+                                ->setCount($line_exploded[1])
+                                ->setBuyValue($itemObj->getBuyPrice())
+                                ->setSellValue($itemObj->getSellPrice())
+                                ->setItemId($itemObj->getTypeId())
+                                ->setItemName($name);
+                            }
+
+                        } catch (\InvalidArgumentException $e) {
+                            //not found... at this point just ignore and move on with life
+                        } catch (\Error $e) {
+                            Log::error($e);
+                        }
+                    }
+
+
+                    $this->items = array_merge($_tmp,$_tmp_bps);
+                } catch (\Error $e ) {
+                    Log::error($e);
+                    $this->totalPrice = 0;
+                    $this->items = [];
+                }
+            }
+
 
             foreach ($this->items as $eveItem) {
                 //Do overrides on either Janice or EWB data as they are in the same format.
@@ -186,7 +235,6 @@
 
                 $this->totalPrice+=$eveItem->getStackAverageValue();
             }
-
         }
 
 
