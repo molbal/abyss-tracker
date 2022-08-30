@@ -9,6 +9,10 @@
     use DOMXPath;
     use Illuminate\Support\Facades\Http;
     use RuntimeException;
+    use App\Http\Controllers\EFT\Exceptions\RemoteAppraisalToolException;
+    use GuzzleHttp\Client;
+    use App\Http\Controllers\Loot\EveItem;
+    use Illuminate\Support\Collection;
 
     class EveWorkbench {
 
@@ -46,5 +50,61 @@
             libxml_use_internal_errors(false);
 
             return $eft;
+        }
+
+        /**
+         * Sends the raw data from eve praisal and returns
+         *
+         * @return mixed
+         * @throws RemoteAppraisalToolException
+         */
+        public static function appraise(string $body) {
+
+            $client = new Client();
+            $response = null;
+            try {
+                $response = $client->request('POST', config('tracker.market.eveworkbench.service-root') . "appraisal?Type=1&Station=60003760", [
+                    'headers' => [
+                        'Authorization' => implode(":", [
+                                config('tracker.market.eveworkbench.client-id'),
+                                config('tracker.market.eveworkbench.app-key')
+                            ]
+                        )
+                    ],
+                    'body' => $body,
+                    'timeout' => 12
+                ]);
+
+            } catch (\Exception $e) {
+                throw new RemoteAppraisalToolException("EVE Workbench connection error: " . $e->getMessage());
+            }
+
+            $item = json_decode($response->getBody()->getContents());
+
+            if ($item->error != false) {
+                throw new RemoteAppraisalToolException("EVE Workbench returned an error: " . $item->message);
+            }
+            if ($item->resultCount == 0) {
+                throw new RemoteAppraisalToolException("EVE Workbench returned an invalid result count: " . $item->resultCount . ", 0+ expected.");
+            }
+
+            $return_data = [];
+
+            foreach( $item->result->items as $d ) {
+                $eveItem = (new EveItem())
+                    ->setItemName($d->name)
+                    ->setItemId($d->typeID)
+                    ->setCount($d->amount)
+                    ->setSellValue(($d->sellPrice/$d->amount))
+                    ->setBuyValue(($d->buyPrice/$d->amount));
+                $return_data[] = $eveItem;
+            }
+
+            //Update Cache!
+            $ret_collection = new Collection($return_data);
+            $ipc = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+            $ipc->updateBulkTablePrices($ret_collection);
+
+            return $return_data;
         }
 	}

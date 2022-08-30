@@ -58,7 +58,7 @@
         /**
          * @param string $name
          *
-         * @return int
+         * @return ItemObject
          * @throws \Exception
          */
         public function getFromItemName(string $name): ?ItemObject {
@@ -124,6 +124,24 @@
                     return collect([]);
                 }
             });
+        }
+        // Function to be called from Janice / EWB!
+        public function updateBulkTablePrices(Collection $EveItems ) {
+            try {
+                foreach( $EveItems as $EveItem ) {
+                    $itemObj = new ItemObject();
+                    $itemObj->setName($EveItem->getItemName())
+                        ->setTypeId($EveItem->getItemId())
+                        ->setBuyPrice($EveItem->getBuyValue())
+                        ->setSellPrice($EveItem->getSellValue());
+
+                    $this->updateItemPricesTable($itemObj);
+                    Cache::put("aft.singleitemestimator." . $EveItem->getItemId(), now()->addMinutes(30), $itemObj->serialize());
+                }
+            } catch(\Error $e) {
+                Log::channel("itempricecalculator")->error("updateBulk issue: ".$e->getMessage());
+                Log::channel("itempricecalculator")->error("EveItems: ".json_encode($EveItems->toArray()));
+            }
         }
 
         /**

@@ -37,9 +37,13 @@
             $response = null;
             try {
                 $response = $client->request('POST', config('tracker.market.eveworkbench.service-root') . "appraisal?Station=6003760&Type=1", [
-                    'auth' => [
-                        config('tracker.market.eveworkbench.client-id'),
-                        config('tracker.market.eveworkbench.app-key')],
+                    'headers' => [
+                        'Authorization' => implode(":", [
+                                config('tracker.market.eveworkbench.client-id'),
+                                config('tracker.market.eveworkbench.app-key')
+                            ]
+                        )
+                    ],
                     'body' => $resourceLookup->generalNameLookup($this->typeId),
                     'timeout' => 12
                 ]);

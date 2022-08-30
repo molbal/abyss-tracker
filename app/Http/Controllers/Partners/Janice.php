@@ -13,6 +13,7 @@
     use http\Exception\RuntimeException;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Str;
+    use Illuminate\Support\Collection;
 
     class Janice {
 
@@ -66,46 +67,23 @@
                 throw new Exception("Could not appraise the following item(s): ". $appraised->failures);
             }
 
-
             $ret = collect();
             foreach ($appraised->items as $item) {
 
-
-                /** @var EveItem $retItem */
-                $eveItem = null;
-                foreach ($ret as $retItem) {
-                    if ($retItem->getItemId() == $item->itemType->eid) {
-                        $eveItem = $retItem;
-                        $ret = $ret->reject(function ($check) use ($item) {
-                            return $check->getItemId() == $item->itemType->eid;
-                        });
-
-                        $eveItem->setCount($eveItem->getCount()+$item->amount);
-                    }
-                }
-
-                if (!$eveItem) {
-                    $eveItem = (new EveItem())
+                $eveItem = (new EveItem())
                     ->setCount($item->amount)
                     ->setBuyValue($item->buyPriceMedian5)
                     ->setSellValue($item->sellPriceMedian5)
                     ->setItemId($item->itemType->eid)
                     ->setItemName($item->itemType->name);
-                }
-
-
-                // Burnt in value for red loot
-                if ($eveItem->getItemId() == 48121) {
-                    $eveItem->setBuyValue(100000);
-                    $eveItem->setSellValue(100000);
-                }
-                elseif (stripos($eveItem->getItemName(), "blueprint") !== false) {
-                    $eveItem->setSellValue(0)
-                            ->setBuyValue(0);
-                }
 
                 $ret->add($eveItem);
             }
+
+            //Update Cache!
+            $ret_collection = new Collection($ret->toArray());
+            $ipc = resolve('App\Http\Controllers\EFT\ItemPriceCalculator');
+            $ipc->updateBulkTablePrices($ret_collection);
 
             Log::channel("lootvalue")->debug('Estimated '.count($ret)." lines with Janice");
             return $ret->toArray();
