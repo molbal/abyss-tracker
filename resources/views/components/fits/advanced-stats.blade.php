@@ -35,7 +35,7 @@
         </tr>
         @empty
         <tr>
-            <td colspan="10"><p class="y5 text-center font-italic">No advanced stats yet.</p></td>
+            <td colspan="10"><p class="py-5 mb-0 text-center font-italic">No advanced stats yet.</p></td>
         </tr>
     @endforelse
 </table>
