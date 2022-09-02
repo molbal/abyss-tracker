@@ -184,7 +184,9 @@
 
         </div>
     </div>
-
+    <div class="row mt-3 card card-body border-0 shadow-sm rounded-b-none">
+        @component("components.fits.advanced-stats", ['title' => "*BETA* Advanced Stats", 'advanced_stats' => $advanced_stats]) @endcomponent
+    </div>
 
     @if (count($fitIdsAll) > 1)
     <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
