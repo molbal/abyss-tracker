@@ -642,7 +642,15 @@
 
                 clock()->event("Generate Advanced Stats")->begin();
 
-                $advanced_stats = FitAdvancedStatsCalculator::generate($id);
+                $advanced_stats = [];
+                try {
+                    $advanced_stats = cache()->remember('fit.advanced-stats.'.$id, now()->addMinutes(5), fn() => FitAdvancedStatsCalculator::generate($id));
+
+                }
+                catch (Exception $e) {
+                    logger()->warning('Could not calculate advanced fit stats: '.$e->getMessage());
+
+                }
 
                 clock()->event("Generate Advanced Stats")->end();
 

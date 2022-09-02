@@ -184,9 +184,23 @@
 
         </div>
     </div>
-    <div class="row mt-3 card card-body border-0 shadow-sm rounded-b-none">
-        @component("components.fits.advanced-stats", ['title' => "*BETA* Advanced Stats", 'advanced_stats' => $advanced_stats]) @endcomponent
+
+    <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
+        <h4 class="font-weight-bold">Advanced fit performance statistics<sup class="badge badge-danger ml-2" style="font-size: 0.9rem" data-toggle="tooltip" title="Beta feature">β</sup></h4>
+        @component("components.info-toggle")
+            Note, ISK/Run 80 for example is removing low/high 20% to cut out bad and extremely good runs.
+            Using stats within last year for now! Empty run times ignored.
+        @endcomponent
     </div>
+    <div class="card card-body border-0 shadow-sm mt-3">
+        @component("components.fits.advanced-stats", ["advanced_stats" => $advanced_stats]) @endcomponent
+    </div>
+    <div class="card-footer">
+        @component('components.info-line')
+            Data source: Abyss Tracker, user submissions. Runs older, than 1 year are ignored in this panel. Data is cached for up to 5 minutes.
+        @endcomponent
+    </div>
+
 
     @if (count($fitIdsAll) > 1)
     <div class="d-flex justify-content-between align-items-start mb-1 mt-5">
