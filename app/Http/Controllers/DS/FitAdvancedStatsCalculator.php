@@ -14,7 +14,7 @@
 	class FitAdvancedStatsCalculator {
 
         public static function generate($fit_id) {
-            $_data = DB::select("select * from runs where fit_id = ? order by tier desc,type asc",[$fit_id]);
+            $_data = DB::select("select * from runs where fit_id = ? and created_at > DATE_SUB(NOW(),INTERVAL 1 YEAR) order by tier desc,type asc",[$fit_id]);
 
             //organize
             $data = [];
@@ -30,6 +30,9 @@
                 $total = 0;
                 $time = 0;
                 foreach($tt as $run){
+                    if ( $run->RUNTIME_SECONDS == null ) {
+                        continue;
+                    }
                     $run_count++;
                     $total += $run->LOOT_ISK;
                     $time += $run->RUNTIME_SECONDS;
@@ -67,6 +70,10 @@
             $total = 0;
             $time = 0;
             foreach($tt as $run){
+
+                if ( $run->RUNTIME_SECONDS == null ) {
+                    continue;
+                }
 
                 if ( $run->LOOT_ISK > $__ISK
                     && $run->LOOT_ISK < ($info->AVERAGE_ISK*2-$__ISK)
