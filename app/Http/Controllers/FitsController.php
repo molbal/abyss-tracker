@@ -9,6 +9,7 @@
     use App\Connector\EveAPI\Universe\ResourceLookupService;
     use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\DS\FitBreakEvenCalculator;
+    use App\Http\Controllers\DS\FitAdvancedStatsCalculator;
     use App\Http\Controllers\EFT\DTO\Eft;
     use App\Http\Controllers\EFT\FitHelper;
     use App\Http\Controllers\EFT\FitHistoryController;
@@ -68,7 +69,6 @@
             $this->fitParser = $fitParser;
             $this->sipc = $sipc;
         }
-
 
         /**
          * Renders the new fit screen
@@ -640,6 +640,12 @@
                     ]));
                 clock()->event("Generate Eve Workbench export URL")->end();
 
+                clock()->event("Generate Advanced Stats")->begin();
+
+                $advanced_stats = FitAdvancedStatsCalculator::generate($id);
+
+                clock()->event("Generate Advanced Stats")->end();
+
                 return view('fit', [
                     'fit' => $fit,
                     'ship_name' => $ship_name,
@@ -665,7 +671,8 @@
                     'history' => $history,
                     'lastRevision' => $newestRevision,
                     'questions' => $questions,
-                    'eveworkbenchLink' => $eveworkbenchLink
+                    'eveworkbenchLink' => $eveworkbenchLink,
+                    'advanced_stats' => $advanced_stats
                 ]);
 
             }
