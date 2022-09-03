@@ -1,25 +1,25 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\VideoTutorial
+ * App\Models\VideoTutorial
  *
- * @property int $id
- * @property string $youtube_id
- * @property string $name
- * @property int $content_creator_id
- * @property array $video_bookmarks
- * @property string|null $tier
- * @property string|null $type
- * @property string $description
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\ContentCreator $content_creator
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\VideoTutorialFit[] $fits
- * @property-read int|null $fits_count
+ * @property int                                                                          $id
+ * @property string                                                                       $youtube_id
+ * @property string                                                                       $name
+ * @property int                                                                          $content_creator_id
+ * @property array                                                                        $video_bookmarks
+ * @property string|null                                                                  $tier
+ * @property string|null                                                                  $type
+ * @property string                                                                       $description
+ * @property \Illuminate\Support\Carbon|null                                              $created_at
+ * @property \Illuminate\Support\Carbon|null                                              $updated_at
+ * @property-read \App\Models\ContentCreator                                              $content_creator
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VideoTutorialFit[] $fits
+ * @property-read int|null                                                                $fits_count
  * @method static \Illuminate\Database\Eloquent\Builder|VideoTutorial newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|VideoTutorial newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|VideoTutorial query()
@@ -46,11 +46,11 @@ class VideoTutorial extends Model
     protected $table = 'video_tutorials';
 
     function fits() {
-        return $this->hasMany("App\VideoTutorialFit");
+        return $this->hasMany("App\Models\VideoTutorialFit");
     }
 
     function content_creator() {
-        return $this->belongsTo('App\ContentCreator');
+        return $this->belongsTo('App\Models\ContentCreator');
     }
 
     /**

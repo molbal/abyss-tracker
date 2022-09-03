@@ -3,15 +3,14 @@
     namespace App\Http\Controllers\VideoTutorials;
 
     use App\Http\Controllers\Controller;
-    use App\Http\Controllers\FitSearchController;
-    use App\Tracker\YoutubeEmbed;
-    use App\VideoTutorial;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Arr;
-    use Illuminate\Support\Facades\Cache;
-    use Illuminate\Support\Facades\DB;
+	 use App\Http\Controllers\FitSearchController;
+	 use App\Models\VideoTutorial;
+	 use App\Tracker\YoutubeEmbed;
+	 use Illuminate\Support\Arr;
+	 use Illuminate\Support\Facades\Cache;
+	 use Illuminate\Support\Facades\DB;
 
-    class VideoTutorialsController extends Controller {
+	 class VideoTutorialsController extends Controller {
 
 
         /** @var FitSearchController */

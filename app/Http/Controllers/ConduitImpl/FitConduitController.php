@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\ConduitImpl;
 
-use App\Fit;
 use App\Http\Controllers\ConduitController;
 use App\Http\Controllers\EFT\FitHelper;
+use App\Models\Fit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 

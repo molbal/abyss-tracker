@@ -82,13 +82,13 @@
             <div class="card card-body border-0 shadow-sm pb-2 mt-md-0 mt-3">
                 <div class="donor">
                     <img src="{{asset('me_irl.jpg')}}" class="portrait rounded-circle shadow-sm" alt="">
-                    <p class="h5 font-weight-bold mb-0 mt-2">Please hire my team</p>
-                    <span style="">The creator of the Abyss Tracker and his team is looking for contracted IT work.</span>
+                    <p class="h5 font-weight-bold mb-0 mt-2">I'm open to offers</p>
+                    <span style="">The creator of the Abyss Tracker is open to remote work.</span>
                 </div>
             </div>
             <div class="card-footer shadow-sm d-flex justify-content-between mb-4">
                 <span>
-                    <a href="https://sundayit.hu" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-outlined/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/commercial-development-management.png"/>Visit company website</a>
+                    <a href="https://www.linkedin.com/in/balint-molnar/" class="text-dark" target="_blank"><img class="tinyicon mr-1" src="https://img.icons8.com/material-outlined/24/{{App\Http\Controllers\ThemeController::getThemedNavBarIconColor(false)}}/linkedin--v1.png"/>Get in touch</a>
                 </span>
 
             </div>

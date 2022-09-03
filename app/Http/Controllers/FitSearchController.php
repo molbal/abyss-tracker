@@ -6,13 +6,12 @@
 
     use App\Http\Controllers\Auth\AuthController;
     use App\Http\Controllers\EFT\Tags\TagsController;
-    use App\Run;
+    use App\Models\Run;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Http\Request;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Str;
 
     class FitSearchController extends Controller {

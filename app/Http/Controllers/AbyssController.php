@@ -17,12 +17,10 @@
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Requests\NewRunRequest;
     use App\Mail\RunFlagged;
-    use App\PatreonDonorDisplay;
-    use Carbon\Carbon;
+    use App\Models\PatreonDonorDisplay;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Mail;
     use Illuminate\Support\Facades\Validator;
     use Illuminate\Support\Str;

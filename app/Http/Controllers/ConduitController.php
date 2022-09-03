@@ -2,19 +2,12 @@
 
     namespace App\Http\Controllers;
 
-    use App\Char;
-    use App\Exceptions\BusinessLogicException;
-    use App\Fit;
-    use App\Http\Controllers\EFT\FitHelper;
     use Illuminate\Http\Request;
-    use Illuminate\Support\Collection;
-    use Illuminate\Support\Facades\Cache;
-    use Illuminate\Support\Facades\DB;
-    use JetBrains\PhpStorm\ArrayShape;
-    use Laravel\Sanctum\Sanctum;
+	 use Illuminate\Support\Collection;
+	 use JetBrains\PhpStorm\ArrayShape;
 
 
-    /**
+	 /**
      * Conduit v1 routes
      *
      * @authenticated

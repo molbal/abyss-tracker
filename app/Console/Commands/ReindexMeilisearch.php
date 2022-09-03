@@ -2,18 +2,17 @@
 
 namespace App\Console\Commands;
 
-use App\Char;
-use App\Fit;
 use App\Http\Controllers\FitSearchController;
 use App\Http\Controllers\HelperController;
+use App\Models\Char;
+use App\Models\Fit;
+use App\Models\VideoTutorial;
 use App\Pvp\PvpEvent;
-use App\VideoTutorial;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use MeiliSearch\Client;
-use MeiliSearch\Exceptions\ApiException;
 
 class ReindexMeilisearch extends Command
 {
@@ -100,7 +99,7 @@ class ReindexMeilisearch extends Command
         $fss->getStartingQuery(true)->orderBy('fits.ID')->chunk(100, function ($fits) use ($fitsIndex, $fss) {
             $this->info('Collecting info...');
             foreach ($fits as $fit) {
-                /** @var  $fit Fit*/
+                /** @var  $fit \App\Models\Fit*/
                 $formeili[] = [
                     'id' => $fit->ID,
                     'name' => $fit->NAME." (#".$fit->ID.")",
@@ -196,7 +195,7 @@ class ReindexMeilisearch extends Command
         VideoTutorial::with('content_creator')->orderBy('id')->chunk(100, function ($items) use ($tutorialsIndex, $fss) {
             $this->info('Collecting info...');
             foreach ($items as $item) {
-                /** @var $item VideoTutorial */
+                /** @var $item \App\Models\VideoTutorial */
                 $formeili[] = [
                     'id' => $item->id,
                     'name' => $item->name,

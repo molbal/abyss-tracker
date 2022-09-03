@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\FitQuestion
+ * App\Models\FitQuestion
  *
  * @property int $id
  * @property int $fit_id
@@ -23,12 +23,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|FitQuestion whereQuestion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FitQuestion whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \App\Char|null $char
+ * @property-read \App\Models\Char|null $char
  */
 class FitQuestion extends Model
 {
 
     public function char() {
-        return $this->hasOne('App\Char', 'CHAR_ID', 'char_id');
+        return $this->hasOne('App\Models\Char', 'CHAR_ID', 'char_id');
     }
 }

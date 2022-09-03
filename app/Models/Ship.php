@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Ship
+ * App\Models\Ship
  *
  * @property int $ID
  * @property string $NAME

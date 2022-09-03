@@ -45,6 +45,8 @@ use Illuminate\Support\Carbon;
  * @property-read PvpVictim           $victim
  * @property int $weapon_type_id
  * @method static Builder|PvpAttacker whereWeaponTypeId($value)
+ * @property-read \App\Pvp\PvpTypeIdLookup|null $ship_type
+ * @property-read \App\Pvp\PvpTypeIdLookup|null $weapon_type
  */
 class PvpAttacker extends Model
 {
