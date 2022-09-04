@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Exceptions\ConduitSecurityViolationException;
 use App\Http\Controllers\Auth\AuthController;
@@ -9,11 +9,10 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
- * App\Fit
+ * App\Models\Fit
  *
  * @property int $ID
  * @property int $CHAR_ID Fit owner
@@ -65,11 +64,11 @@ class Fit extends Model
     ];
 
     public function char() {
-        return $this->hasOne('App\Char', 'CHAR_ID', 'CHAR_ID');
+        return $this->hasOne('App\Models\Char', 'CHAR_ID', 'CHAR_ID');
     }
 
     public function ship() {
-        return $this->hasOne('App\Ship', 'ID', 'SHIP_ID');
+        return $this->hasOne('App\Models\Ship', 'ID', 'SHIP_ID');
     }
 
     public static function listForApi(int $charId, ?string $ffh = null, ?int $revision = null, bool $mineOnly = false, bool $publicOnly = false): Collection {

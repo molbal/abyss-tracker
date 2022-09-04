@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Char;
 use App\Charts\ActivityChart;
 use App\Charts\TimelineChart;
 use App\Exceptions\SecurityViolationException;
@@ -10,6 +9,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Misc\Enums\CharacterType;
 use App\Http\Controllers\ThemeController;
+use App\Models\Char;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;

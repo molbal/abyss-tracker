@@ -98,7 +98,8 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <h5 class="font-weight-bold">Remembering cargo</h5>
-                            <p class="text-justify mb-0">Would you like to automatically copy your 'after cargo' loot in the 'before cargo' field of your next run?<br><span class="text-muted">The site will only remember the cargo for {{config("tracker.cargo.saveTime")}} minutes.</span></p>
+                            <p class="text-justify mb-0">Would you like to automatically copy your 'after cargo' loot in the 'before cargo' field of your next run?<br><span
+                                    class="text-muted">The site will only remember the cargo for {{config("tracker.cargo.saveTime")}} minutes.</span></p>
                         </div>
                     </div>
                     <div class="row">
@@ -132,11 +133,14 @@
         <div class="col-md-8 offset-md-2">
             <h4 class="font-weight-bold">Abyss Tracker Tokens</h4>
             <div class="card card-body mb-3 shadow-sm border-0">
-                @component('components.info-line')Applications such as the Abyssal Blackbox Recorder or Abyssal Telemetry may use Abyss Tracker on behalf of your character, if you make a token and enter it in the application.@endcomponent
+                @component('components.info-line')
+                    Applications such as the Abyssal Blackbox Recorder or Abyssal Telemetry may use Abyss Tracker on behalf of your character, if you make a token and enter it in
+                    the application.
+                @endcomponent
             </div>
-                <div class="card card-body border-0 shadow-sm">
-                    <form action="{{route('settings.tokens.make')}}" method="post">
-                        {{csrf_field()}}
+            <div class="card card-body border-0 shadow-sm">
+                <form action="{{route('settings.tokens.make')}}" method="post">
+                    {{csrf_field()}}
                     <h5 class="font-weight-bold">Add a new token</h5>
 
                     <label for="">Token name</label>
@@ -146,7 +150,7 @@
                             <button class="btn btn-outline-primary" type="submit">Save</button>
                         </div>
                     </div>
-            </form>
+                </form>
                 <h5 class="font-weight-bold">Existing tokens</h5>
                 <table class="table table-sm w-100">
                     <tr>
@@ -155,14 +159,16 @@
                         <th>Last used</th>
                         <th>&nbsp;</th>
                     </tr>
-                    @forelse(\App\Char::current()->tokens()->orderByDesc('created_at')->get() as $token)
+                    @forelse(\App\Models\Char::current()->tokens()->orderByDesc('created_at')->get() as $token)
                         <tr>
                             <td>{{$token->name}}</td>
                             <td>{{$token->created_at}}</td>
                             <td>{{$token->last_used_at ?? 'Never used'}}</td>
-                            <td><a href="{{route('settings.tokens.remove', ['id' => $token->id])}}" data-toggle="tooltip" title="Delete token"><img class="smallicon" src="https://img.icons8.com/fluency-systems-regular/24/{{\App\Http\Controllers\ThemeController::getDangerColor()}}/trash--v1.png"/></a></td>
+                            <td><a href="{{route('settings.tokens.remove', ['id' => $token->id])}}" data-toggle="tooltip" title="Delete token"><img class="smallicon"
+                                                                                                                                                    src="https://img.icons8.com/fluency-systems-regular/24/{{\App\Http\Controllers\ThemeController::getDangerColor()}}/trash--v1.png"/></a>
+                            </td>
                         </tr>
-                        @empty
+                    @empty
                         <tr>
                             <td colspan="3" class="my-3 text-center text-muted">No tokens for {{\App\Http\Controllers\Auth\AuthController::getCharName()}} yet</td>
                         </tr>

@@ -3,11 +3,9 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ShipLookup extends Resource
 {
@@ -16,7 +14,7 @@ class ShipLookup extends Resource
      *
      * @var string
      */
-    public static $model = \App\Ship::class;
+    public static $model = \App\Models\Ship::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.

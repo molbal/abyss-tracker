@@ -17,12 +17,12 @@
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Requests\NewRunRequest;
     use App\Mail\RunFlagged;
-    use App\PatreonDonorDisplay;
-    use Carbon\Carbon;
+    use App\Models\PatreonDonorDisplay;
+    use App\Runs\CreateRunHelper;
+    use App\Runs\DeleteHelper;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Mail;
     use Illuminate\Support\Facades\Validator;
     use Illuminate\Support\Str;
@@ -194,7 +194,7 @@
         public function store(NewRunRequest $request) {
 
             $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
-            $id = $this->runsController->storeNewRunWithAdvancedLoot($request, $difference);
+            $id = CreateRunHelper::storeFromUI($request, $difference);
 
             $loginId = AuthController::getLoginId();
             if (SettingController::getBooleanSetting((int) $loginId, "remember_cargo", true)) {
@@ -497,41 +497,19 @@ from (`abyss`.`lost_items` `dl`
          */
         public function delete(int $id) {
 
-            $run_owner = DB::table("runs")
-                ->where("ID", $id)
-                ->value("CHAR_ID");
-
-            if ($run_owner == session()->get('login_id')) {
-                DB::beginTransaction();
+            if (DeleteHelper::canDeleteRun($id)) {
                 try {
-
-                    $run = DB::table("runs")->where("ID", $id)->first();
-                    $lootItems = DB::table("detailed_loot")->where("RUN_ID", $id)->get();
-                    foreach ($lootItems as $lootItem) {
-                        DB::table("delete_cleanup")->insert([
-                            "ITEM_ID" => $lootItem->ITEM_ID,
-                            "TYPE" => $run->TYPE,
-                            "TIER" => $run->TIER,
-                            "DELETES_SUM" => $lootItem->COUNT
-                        ]);
-                    }
-
-
-                    DB::table("detailed_loot")->where("RUN_ID", $id)->delete();
-                    DB::table("lost_items")->where("RUN_ID", $id)->delete();
-                    DB::table("runs")->where("ID", $id)->where("CHAR_ID", session()->get('login_id'))->delete();
-                    DB::commit();
+                    DeleteHelper::deleteRun($id);
                 }
-                catch (\Exception $w) {
-                    DB::rollBack();
-                    return view("error", ['error' => 'Could not delete this run, because we ran into an error: '.$w->getMessage()]);
+                catch (\Throwable $e) {
+                    return view("error", ['error' => 'Could not delete this run, because we ran into an error: '.$e->getMessage()]);
                 }
+
                 return view('sp_message', ['title' => 'Run deleted', 'message' => "Run #$id successfully deleted."]);
             }
             else {
                 return view('error', ['error' => 'Please log in to delete your run.']);
             }
-
         }
 
         /**
@@ -544,7 +522,7 @@ from (`abyss`.`lost_items` `dl`
          */
         public function normalizeLootAndLost($id, $all_data, array $lost, \Illuminate\Support\Collection $loot) : array
         {
-// Get which filament shall be used now
+            // Get which filament shall be used now
             $filament_id = DB::table("filament_types")->where("TIER", $all_data->TIER)->where("TYPE", $all_data->TYPE)->value("ITEM_ID");
 
             // Check if we there is anything here

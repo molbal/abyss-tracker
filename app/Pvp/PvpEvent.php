@@ -35,6 +35,8 @@ use Illuminate\Support\Facades\Cache;
  * @method static Builder|PvpEvent whereUpdatedAt($value)
  * @property-read Collection|PvpVictim[] $kills
  * @property-read int|null                                             $kills_count
+ * @property string $display_component
+ * @method static Builder|PvpEvent whereDisplayComponent($value)
  */
 class PvpEvent extends Model
 {

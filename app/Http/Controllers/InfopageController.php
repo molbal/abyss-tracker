@@ -12,7 +12,7 @@
     use App\Http\Controllers\DS\HistoricLootController;
     use App\Http\Controllers\DS\MedianController;
     use App\Http\Controllers\Misc\Enums\ShipHullSize;
-    use App\Run;
+    use App\Models\Run;
     use Illuminate\Support\Facades\Cache;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Validator;

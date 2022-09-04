@@ -4,10 +4,8 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 class VideoTutorialFit extends Resource
 {
@@ -16,7 +14,7 @@ class VideoTutorialFit extends Resource
      *
      * @var string
      */
-    public static $model = \App\VideoTutorialFit::class;
+    public static $model = \App\Models\VideoTutorialFit::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
