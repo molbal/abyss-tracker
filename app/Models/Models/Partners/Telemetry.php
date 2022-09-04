@@ -15,5 +15,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Telemetry extends Model
 {
+    public static function make(array $payload, int $run_id) {
+        $model = new self();
+        $model->uuid = $payload['recordUUID'];
+        $model->run_id = $run_id;
+        $model->raw_import = $payload;
+        $model->saveOrFail();
+    }
+
+    protected $casts = [
+      'raw_import' => 'array',
+      'created_at' => 'datetime',
+      'updated_at' => 'datetime',
+    ];
+    protected $table = 'telemetry';
     use HasFactory;
 }

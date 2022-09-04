@@ -3,6 +3,7 @@
     use App\Http\Controllers\ConduitController;
     use App\Http\Controllers\ConduitImpl\FitConduitController;
     use App\Http\Controllers\ConduitImpl\ItemConduitControllers;
+    use App\Http\Controllers\Partners\TelemetryController;
     use App\Http\Controllers\PVP\PVPController;
     use App\Http\Middleware\LogConduitRequests;
     use Illuminate\Support\Facades\Route;
@@ -38,3 +39,5 @@
         Route::get('/drop-table/list', [ItemConduitControllers::class, 'getDroppedItems']);
         Route::get('/drop-table/get/{id}', [ItemConduitControllers::class, 'getItem']);
     });
+
+    Route::post('telemetry/v1/import', [TelemetryController::class, 'consumePayload']);
