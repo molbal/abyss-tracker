@@ -16,7 +16,7 @@
         "fast-sass-loader": "^1.0.7",
         "jquery": "^3.5",
         "laravel-echo": "^1.10.0",
-        "laravel-mix": "^5.0.5",
+        "laravel-mix": "^6.0.49",
         "lodash": "^4.17.21",
         "popper.js": "^1.12",
         "pusher-js": "^7.0.3",
