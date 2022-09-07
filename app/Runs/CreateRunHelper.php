@@ -13,7 +13,9 @@
 
         public static function storeFromTelemetry(array $payload): int {
 
-            $ship_payload = [];
+            $ship_payload = [
+                'foreignID' => null
+            ];
             foreach ($payload['ships'] as $ship) {
                 if ($ship['characterName'] == $payload['CharacterName']) {
                     $ship_payload = $ship;
@@ -24,6 +26,8 @@
             if ($ship_payload['foreignID'] && Fit::where('ID', $ship_payload['foreignID'])->doesntExist()) {
                 $ship_payload['foreignID'] = null;
             }
+
+            logger()->debug('Processed payload: '.json_encode($payload));
 
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID'           => $payload['CharacterID'],

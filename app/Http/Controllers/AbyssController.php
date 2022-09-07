@@ -1,311 +1,349 @@
 <?php
 
 
-    namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 
 
-    use App\Events\RunSaved;
-    use App\Http\Controllers\Auth\AuthController;
-    use App\Http\Controllers\Loot\LootCacheController;
-    use App\Http\Controllers\Loot\LootValueEstimator;
-    use App\Http\Controllers\Misc\DonorController;
-    use App\Http\Controllers\Misc\Enums\CharacterType;
-    use App\Http\Controllers\Misc\Enums\ShipHullSize;
-    use App\Http\Controllers\Profile\ActivityChartController;
-    use App\Http\Controllers\Profile\AltRelationController;
-    use App\Http\Controllers\Profile\LeaderboardController;
-    use App\Http\Controllers\Profile\SettingController;
-    use App\Http\Requests\NewRunRequest;
-    use App\Mail\RunFlagged;
-    use App\Models\PatreonDonorDisplay;
-    use App\Runs\CreateRunHelper;
-    use App\Runs\DeleteHelper;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Cache;
-    use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Mail;
-    use Illuminate\Support\Facades\Validator;
-    use Illuminate\Support\Str;
+use App\Events\RunSaved;
+use App\Http\Controllers\Auth\AuthController;
+//use App\Http\Controllers\Loot\LootCacheController;
+use App\Http\Controllers\Loot\LootValueEstimator;
+use App\Http\Controllers\Misc\DonorController;
+use App\Http\Controllers\Misc\Enums\CharacterType;
+use App\Http\Controllers\Misc\Enums\ShipHullSize;
+use App\Http\Controllers\Misc\ErrorHelper;
+use App\Http\Controllers\Profile\ActivityChartController;
+use App\Http\Controllers\Profile\AltRelationController;
+use App\Http\Controllers\Profile\LeaderboardController;
+use App\Http\Controllers\Profile\SettingController;
+use App\Http\Requests\NewRunRequest;
+use App\Mail\RunFlagged;
+use App\Models\Models\Partners\Telemetry;
+use App\Models\PatreonDonorDisplay;
+use App\Runs\CreateRunHelper;
+use App\Runs\DeleteHelper;
+use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
+use Throwable;
 
-    class AbyssController extends Controller {
+class AbyssController extends Controller
+{
 
-        /** @var LootCacheController */
-        private $lootCacheController;
+//    /** @var LootCacheController */
+//    private LootCacheController $lootCacheController;
 
-        /** @var GraphContainerController */
-        private $graphContainerController;
+    /** @var GraphContainerController */
+    private GraphContainerController $graphContainerController;
 
-        /** @var HomeQueriesController */
-        private $homeQueriesController;
+    /** @var HomeQueriesController */
+    private HomeQueriesController $homeQueriesController;
 
-        /** @var RunsController */
-        private $runsController;
+    /** @var RunsController */
+    private RunsController $runsController;
 
-        /** @var BarkController */
-        private $barkController;
+    /** @var BarkController */
+    private BarkController $barkController;
 
-        /** @var LeaderboardController */
-        private $leaderboardController;
+    /** @var LeaderboardController */
+    private LeaderboardController $leaderboardController;
 
-        /** @var DonorController */
-        private $donationController;
+    /** @var DonorController */
+    private DonorController $donationController;
 
-        /** @var FitSearchController */
-        private $fitSearchController;
+    /** @var FitSearchController */
+    private FitSearchController $fitSearchController;
 
-        /**
-         * AbyssController constructor.
-         *
-         * @param LootCacheController      $lootCacheController
-         * @param GraphContainerController $graphContainerController
-         * @param HomeQueriesController    $homeQueriesController
-         * @param RunsController           $runsController
-         * @param BarkController           $barkController
-         * @param LeaderboardController    $leaderboardController
-         * @param DonorController          $donationController
-         * @param FitSearchController      $fitSearchController
-         */
-        public function __construct(LootCacheController $lootCacheController, GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController, DonorController $donationController, FitSearchController $fitSearchController) {
-            $this->lootCacheController = $lootCacheController;
-            $this->graphContainerController = $graphContainerController;
-            $this->homeQueriesController = $homeQueriesController;
-            $this->runsController = $runsController;
-            $this->barkController = $barkController;
-            $this->leaderboardController = $leaderboardController;
-            $this->donationController = $donationController;
-            $this->fitSearchController = $fitSearchController;
-        }
-
-
-        /**
-         * Handles homepage view
-         *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         */
-        public function home() {
-
-            $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
-            $last_runs = $this->homeQueriesController->getLastRuns();
-            $drops = $this->homeQueriesController->getCommonDrops();
-            $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
-            $today_num = Cache::remember("aft.home.todayruns", now()->addMinutes(5), function () {return DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();});
-            $count =  Cache::remember("aft.home.count", now()->addMinutes(5), function () {return DB::table("runs")->count();});
-
-            $leaderboard_90 = $this->leaderboardController->getLeaderboard("-90 day", "", 10);
-            $leaderboard_30 = $this->leaderboardController->getLeaderboard("-30 day", "", 10);
-            $leaderboard_07 = $this->leaderboardController->getLeaderboard("-7 day", "", 10);
-
-            $lastPatreon = PatreonDonorDisplay::getLatestDonorForHomepage();
-            $lastDonation = $this->donationController->getDonations(1, 1000000, true)->first();
-
-            $popularFits = $this->fitSearchController->getHomepagePopularFits();
-            $popularShipsGraph = $this->graphContainerController->getPopularShipsGraph();
-            $newFits = $this->fitSearchController->getHomepageNewFits();
-            $popularClassesGraph = $this->graphContainerController->getPopularShipsClasses();
+    /**
+     * AbyssController constructor.
+     *
+     * @param GraphContainerController $graphContainerController
+     * @param HomeQueriesController $homeQueriesController
+     * @param RunsController $runsController
+     * @param BarkController $barkController
+     * @param LeaderboardController $leaderboardController
+     * @param DonorController $donationController
+     * @param FitSearchController $fitSearchController
+     */
+    public function __construct(GraphContainerController $graphContainerController, HomeQueriesController $homeQueriesController, RunsController $runsController, BarkController $barkController, LeaderboardController $leaderboardController, DonorController $donationController, FitSearchController $fitSearchController)
+    {
+//        $this->lootCacheController = $lootCacheController;
+        $this->graphContainerController = $graphContainerController;
+        $this->homeQueriesController = $homeQueriesController;
+        $this->runsController = $runsController;
+        $this->barkController = $barkController;
+        $this->leaderboardController = $leaderboardController;
+        $this->donationController = $donationController;
+        $this->fitSearchController = $fitSearchController;
+    }
 
 
+    /**
+     * Handles homepage view
+     *
+     * @return Factory|View
+     */
+    public function home(): View
+    {
 
-            return view("welcome", [
-                'lootDistributionCruiser'   => $lootDistributionCruiser,
+        $lootDistributionCruiser = $this->graphContainerController->getHomeLootAveragesCruisers();
+        $last_runs = $this->homeQueriesController->getLastRuns();
+        $drops = $this->homeQueriesController->getCommonDrops();
+        $daily_add_chart = $this->graphContainerController->getHomeDailyRunCounts();
+        $today_num = Cache::remember("aft.home.todayruns", now()->addMinutes(5), function () {
+            return DB::table("runs")->where("RUN_DATE", date("Y-m-d"))->count();
+        });
+        $count = Cache::remember("aft.home.count", now()->addMinutes(5), function () {
+            return DB::table("runs")->count();
+        });
+
+        $leaderboard_90 = $this->leaderboardController->getLeaderboard("-90 day", "", 10);
+        $leaderboard_30 = $this->leaderboardController->getLeaderboard("-30 day", "", 10);
+        $leaderboard_07 = $this->leaderboardController->getLeaderboard("-7 day", "", 10);
+
+        $lastPatreon = PatreonDonorDisplay::getLatestDonorForHomepage();
+        $lastDonation = $this->donationController->getDonations(1, 1000000, true)->first();
+
+        $popularFits = $this->fitSearchController->getHomepagePopularFits();
+        $popularShipsGraph = $this->graphContainerController->getPopularShipsGraph();
+        $newFits = $this->fitSearchController->getHomepageNewFits();
+        $popularClassesGraph = $this->graphContainerController->getPopularShipsClasses();
+
+
+        return view("welcome", [
+            'lootDistributionCruiser' => $lootDistributionCruiser,
 //                'lootDistributionFrigate'   => $lootDistributionfrigate,
-                'abyss_num'         => $count,
-                'today_num'         => $today_num,
-                'items'             => $last_runs,
-                'drops'             => $drops,
-                'daily_add_chart'   => $daily_add_chart,
-                'leaderboard_90' => $leaderboard_90,
-                'leaderboard_30' => $leaderboard_30,
-                'leaderboard_07' => $leaderboard_07,
-                'patreon_last' => $lastPatreon,
-                'ingame_last' => $lastDonation,
-                'popularFits' => $popularFits,
-                'popularShipsGraph' => $popularShipsGraph,
-                'popularClassesGraph' => $popularClassesGraph,
-                'newFits' => $newFits
-            ]);
-        }
+            'abyss_num' => $count,
+            'today_num' => $today_num,
+            'items' => $last_runs,
+            'drops' => $drops,
+            'daily_add_chart' => $daily_add_chart,
+            'leaderboard_90' => $leaderboard_90,
+            'leaderboard_30' => $leaderboard_30,
+            'leaderboard_07' => $leaderboard_07,
+            'patreon_last' => $lastPatreon,
+            'ingame_last' => $lastDonation,
+            'popularFits' => $popularFits,
+            'popularShipsGraph' => $popularShipsGraph,
+            'popularClassesGraph' => $popularClassesGraph,
+            'newFits' => $newFits
+        ]);
+    }
 
 
-        /**
-         * Handles the my stats view
-         *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         */
-        public function home_mine() {
+    /**
+     * Handles the my stats view
+     *
+     * @return Factory|View
+     */
+    public function home_mine()
+    {
 
-            $years = ActivityChartController::getYears();
-            $year = session()->get('home_year', $years->last());
-            $activity_chart = ActivityChartController::getChartContainer($year);
+        $years = ActivityChartController::getYears();
+        $year = session()->get('home_year', $years->last());
+        $activity_chart = ActivityChartController::getChartContainer($year);
 
-            $chars = AltRelationController::getAllMyAvailableCharacters(false);
-            $characterType = AltRelationController::getCharacterType();
-            $isMain = $characterType == CharacterType::MAIN;
+        $chars = AltRelationController::getAllMyAvailableCharacters(false);
+        $characterType = AltRelationController::getCharacterType();
+        $isMain = $characterType == CharacterType::MAIN;
 
-            $timeline_charts = [];
-            $my_runs = [];
-            $my_avg_loot = [];
-            $my_sum_loot = [];
-            $my_survival_ratio = [];
-            if (!$isMain) {
-                $loginId = AuthController::getLoginId();
-                $timeline_charts[$loginId] = ActivityChartController::getTimelineContainer($loginId);
-                [$my_runs[$loginId], $my_avg_loot[$loginId], $my_sum_loot[$loginId], $my_survival_ratio[$loginId]] = HomeQueriesController::getPersonalStats();
-            }
-            else {
-                foreach ($chars as $char) {
-                    $timeline_charts[$char->id] = ActivityChartController::getTimelineContainer($char->id);
-                    [$my_runs[$char->id], $my_avg_loot[$char->id], $my_sum_loot[$char->id], $my_survival_ratio[$char->id]] = HomeQueriesController::getPersonalStats($char->id);
-                }
-
-                [$runsCountOV, $avgLootOV,$survivalChartOV, $sumLootChartOV]= HomeQueriesController::getOverviewCharts($my_runs,$my_avg_loot,$my_sum_loot,$my_survival_ratio);
-            }
-
-            $lastRuns = DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->whereIn('CHAR_ID', array_keys($my_runs))->paginate();
-
-
-            return view("home_mine", [
-                'my_runs'               => $my_runs,
-                'my_avg_loot'           => $my_avg_loot,
-                'my_sum_loot'           => $my_sum_loot,
-                'my_survival_ratio'     => $my_survival_ratio,
-                'activity_chart'     => $activity_chart,
-                'timeline_charts'     => $timeline_charts,
-                'years' => $years,
-                'year' => $year,
-                'chars' => $chars,
-                'is_main' => $isMain,
-                'character_type' => $characterType,
-
-                'runs_count_ov'=> $runsCountOV ?? null,
-                'avg_loot_ov'=> $avgLootOV ?? null,
-                'survival_ov'=> $survivalChartOV ?? null,
-                'sum_loot_ov'=> $sumLootChartOV ?? null,
-
-                'last_runs' => $lastRuns
-            ]);
-        }
-
-
-        /**
-         * @param NewRunRequest $request
-         *
-         * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
-         */
-        public function store(NewRunRequest $request) {
-
-            $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
-            $id = CreateRunHelper::storeFromUI($request, $difference);
-
+        $timeline_charts = [];
+        $my_runs = [];
+        $my_avg_loot = [];
+        $my_sum_loot = [];
+        $my_survival_ratio = [];
+        if (!$isMain) {
             $loginId = AuthController::getLoginId();
-            if (SettingController::getBooleanSetting((int) $loginId, "remember_cargo", true)) {
-                Cache::put(sprintf("at.last_dropped.%s", $loginId), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
-            }
-            else {
-                Cache::forget(sprintf("at.last_dropped.%s", $loginId));
-            }
-
-            DB::table("stopwatch")->where("CHAR_ID", $loginId)->delete();
-
-            if ( config('broadcasting.connections.pusher.is_enabled') == true ) {
-                broadcast(RunSaved::createEventForUser($loginId));
+            $timeline_charts[$loginId] = ActivityChartController::getTimelineContainer($loginId);
+            [$my_runs[$loginId], $my_avg_loot[$loginId], $my_sum_loot[$loginId], $my_survival_ratio[$loginId]] = HomeQueriesController::getPersonalStats();
+        } else {
+            foreach ($chars as $char) {
+                $timeline_charts[$char->id] = ActivityChartController::getTimelineContainer($char->id);
+                [$my_runs[$char->id], $my_avg_loot[$char->id], $my_sum_loot[$char->id], $my_survival_ratio[$char->id]] = HomeQueriesController::getPersonalStats($char->id);
             }
 
-            if ($request->get("submit") == "view-details") {
-                return redirect(route("view_single", ["id" => $id]));
-            }
-            else {
-                return view("autoredirect", [
-                    'title' => "Run saved!",
-                    'message' => "Its ID is $id. You will be redirected back to the previous screen in a few seconds.",
-                    'redirect' => route("new"),
-                ]);
-            }
+            [$runsCountOV, $avgLootOV, $survivalChartOV, $sumLootChartOV] = HomeQueriesController::getOverviewCharts($my_runs, $my_avg_loot, $my_sum_loot, $my_survival_ratio);
         }
 
-        /**
-         * Changes privacy
-         * @param int    $id
-         * @param string $privacy
-         *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
-         */
-        public function change_privacy(int $id, string $privacy) {
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please log in to access this page"]);
-            }
+        $lastRuns = DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->whereIn('CHAR_ID', array_keys($my_runs))->paginate();
 
-            $run = DB::table("runs")->where("ID", $id)->get()->get(0);
-            if ($run->CHAR_ID != session()->get("login_id")) {
-                return view("error", ["error" => "Please log in to access this page"]);
-            }
 
-            DB::table("runs")->where("ID", $id)->update([
-                "PUBLIC" => $privacy == "public" ? 1 : 0
-            ]);
+        return view("home_mine", [
+            'my_runs' => $my_runs,
+            'my_avg_loot' => $my_avg_loot,
+            'my_sum_loot' => $my_sum_loot,
+            'my_survival_ratio' => $my_survival_ratio,
+            'activity_chart' => $activity_chart,
+            'timeline_charts' => $timeline_charts,
+            'years' => $years,
+            'year' => $year,
+            'chars' => $chars,
+            'is_main' => $isMain,
+            'character_type' => $characterType,
 
+            'runs_count_ov' => $runsCountOV ?? null,
+            'avg_loot_ov' => $avgLootOV ?? null,
+            'survival_ov' => $survivalChartOV ?? null,
+            'sum_loot_ov' => $sumLootChartOV ?? null,
+
+            'last_runs' => $lastRuns
+        ]);
+    }
+
+
+    /**
+     * @param NewRunRequest $request
+     *
+     * @return Application|Factory|RedirectResponse|Redirector|View
+     */
+    public function store(NewRunRequest $request)
+    {
+
+        $difference = LootValueEstimator::difference($request->get("LOOT_DETAILED") ?? "", $request->get("LOOT_DETAILED_BEFORE") ?? "");
+        $id = CreateRunHelper::storeFromUI($request, $difference);
+
+        $loginId = AuthController::getLoginId();
+        if (SettingController::getBooleanSetting((int)$loginId, "remember_cargo", true)) {
+            Cache::put(sprintf("at.last_dropped.%s", $loginId), $request->get("LOOT_DETAILED"), now()->addMinutes(config('tracker.cargo.saveTime')));
+        } else {
+            Cache::forget(sprintf("at.last_dropped.%s", $loginId));
+        }
+
+        DB::table("stopwatch")->where("CHAR_ID", $loginId)->delete();
+
+        if (config('broadcasting.connections.pusher.is_enabled') == true) {
+            broadcast(RunSaved::createEventForUser($loginId));
+        }
+
+        if ($request->get("submit") == "view-details") {
             return redirect(route("view_single", ["id" => $id]));
-
-        }
-
-        /**
-         * Handles getting the new run screen
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         */
-        public function form_new() {
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please sign in first to add a new run"]);
-            }
-            $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
-
-            $loginId = session()->get('login_id');
-            $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", $loginId)->value('REFRESH_TOKEN');
-            $last_loot = Cache::get(sprintf("at.last_dropped.%s", $loginId), "");
-
-            try {
-                $prev = $this->runsController->getPreviousRun();
-                $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
-                $last_fit_name = $prev->FIT_ID ? DB::table("fits")->where("ID", $prev->FIT_ID)->value("NAME") : null;
-            }
-            catch (\Exception $e) {
-                $advanced_open = false;
-            }
-
-            $lastSelected = FitSearchController::getLastSelected($prev);
-
-            return view("new", [
-                "ships" => $ships,
-                "prev"  => $prev,
-                "stopwatch" => $stopwatch_enabled,
-                "last_loot" => $last_loot,
-                "advanced_open" => $advanced_open,
-                "last_fit_name" => $last_fit_name ?? "",
-                "last_selected" => $lastSelected
+        } else {
+            return view("autoredirect", [
+                'title' => "Run saved!",
+                'message' => "Its ID is $id. You will be redirected back to the previous screen in a few seconds.",
+                'redirect' => route("new"),
             ]);
         }
+    }
 
-        /**
-         * Handles the display of a single run.
-         * @param $id
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         */
-        public function get_single($id) {
+    /**
+     * Handles the deletion of a run
+     * @param int $id
+     *
+     * @return Factory|View
+     */
+    public function delete(int $id)
+    {
 
-            // Check if exists
-            $runExists = DB::table("runs")->where("ID", $id)->exists();
-            if (!$runExists) {
-                return view("error", ["error" => "Sorry, we could not find an Abyss run with this ID"]);
+        if (DeleteHelper::canDeleteRun($id)) {
+            try {
+                DeleteHelper::deleteRun($id);
+            } catch (Throwable $e) {
+                return view("error", ['error' => 'Could not delete this run, because we ran into an error: ' . $e->getMessage()]);
             }
 
-            // Get run view
-            $data = DB::table("v_runall")->where("ID", $id)->first();
+            return view('sp_message', ['title' => 'Run deleted', 'message' => "Run #$id successfully deleted."]);
+        } else {
+            return view('error', ['error' => 'Please log in to delete your run.']);
+        }
+    }
 
-            // Get graphs
-            [$otherCharts, $medianLootForTier] = $this->graphContainerController->getRunGraphs($data);
+    /**
+     * Changes privacy
+     * @param int $id
+     * @param string $privacy
+     *
+     * @return Factory|RedirectResponse|Redirector|View
+     */
+    public function change_privacy(int $id, string $privacy)
+    {
+        if (!session()->has("login_id")) {
+            return view("error", ["error" => "Please log in to access this page"]);
+        }
 
-            // Get all data and all loot
-            $all_data = DB::table("runs")->where("ID", $id)->first();
-            $loot = DB::table("v_loot_details")->where("RUN_ID", $id)->get();
-            $lost = DB::select("select `dl`.`ITEM_ID`                   AS `ITEM_ID`,
+        $run = DB::table("runs")->where("ID", $id)->get()->get(0);
+        if ($run->CHAR_ID != session()->get("login_id")) {
+            return view("error", ["error" => "Please log in to access this page"]);
+        }
+
+        DB::table("runs")->where("ID", $id)->update([
+            "PUBLIC" => $privacy == "public" ? 1 : 0
+        ]);
+
+        return redirect(route("view_single", ["id" => $id]));
+
+    }
+
+    /**
+     * Handles getting the new run screen
+     * @return Factory|View
+     */
+    public function form_new()
+    {
+        if (!session()->has("login_id")) {
+            return view("error", ["error" => "Please sign in first to add a new run"]);
+        }
+        $ships = DB::table("ship_lookup")->orderBy("NAME", "ASC")->get();
+
+        $loginId = session()->get('login_id');
+        $stopwatch_enabled = DB::table("chars")->where("CHAR_ID", $loginId)->value('REFRESH_TOKEN');
+        $last_loot = Cache::get(sprintf("at.last_dropped.%s", $loginId), "");
+
+        try {
+            $prev = $this->runsController->getPreviousRun();
+            $advanced_open = $last_loot != "" || DB::table("lost_items")->where("RUN_ID", $prev->ID)->exists();
+            $last_fit_name = $prev->FIT_ID ? DB::table("fits")->where("ID", $prev->FIT_ID)->value("NAME") : null;
+        } catch (Exception $e) {
+            $advanced_open = false;
+        }
+
+        $lastSelected = FitSearchController::getLastSelected($prev);
+
+        return view("new", [
+            "ships" => $ships,
+            "prev" => $prev,
+            "stopwatch" => $stopwatch_enabled,
+            "last_loot" => $last_loot,
+            "advanced_open" => $advanced_open,
+            "last_fit_name" => $last_fit_name ?? "",
+            "last_selected" => $lastSelected
+        ]);
+    }
+
+    /**
+     * Handles the display of a single run.
+     * @param $id
+     * @return Factory|View
+     */
+    public function get_single(int $id)
+    {
+
+        // Check if exists
+        $runExists = DB::table("runs")->where("ID", $id)->exists();
+        if (!$runExists) {
+            return ErrorHelper::errorPage('Could not find run with this ID.');
+        }
+
+        // Get run view
+        $data = DB::table("v_runall")->where("ID", $id)->first();
+
+        // Get graphs
+        [$otherCharts, $medianLootForTier] = $this->graphContainerController->getRunGraphs($data);
+
+        // Get all data and all loot
+        $all_data = DB::table("runs")->where("ID", $id)->first();
+        $loot = DB::table("v_loot_details")->where("RUN_ID", $id)->get();
+        $lost = DB::select("select `dl`.`ITEM_ID`                   AS `ITEM_ID`,
        `dl`.`RUN_ID`                    AS `RUN_ID`,
        `dl`.`COUNT`                     AS `COUNT`,
        `ip`.`NAME`                      AS `NAME`,
@@ -317,257 +355,114 @@
        `ip`.`PRICE_SELL` * `dl`.`COUNT` AS `SELL_PRICE_ALL`
 from (`abyss`.`lost_items` `dl`
          join `abyss`.`item_prices` `ip` on (`dl`.`ITEM_ID` = `ip`.`ITEM_ID`)) where dl.`RUN_ID`=?;", [intval($id)]);
-            $lost = $this->normalizeLootAndLost($id, $all_data, $lost, $loot);
+        $lost = $this->normalizeLootAndLost($id, $all_data, $lost, $loot);
 
-            // Get customization options
-            [$percent, $run_summary] = $this->barkController->getRunSummaryBark($data, $medianLootForTier);
-            $death_reason = $this->barkController->getDeathReasonBark($all_data);
-            $looting = $this->barkController->getLootStrategyDescription($all_data);
+        // Get customization options
+        [$percent, $run_summary] = $this->barkController->getRunSummaryBark($data, $medianLootForTier);
+        $death_reason = $this->barkController->getDeathReasonBark($all_data);
+        $looting = $this->barkController->getLootStrategyDescription($all_data);
 
-            // Count same tiers
-            $count_same_type_tier = DB::table("runs")->where("TYPE", $all_data->TYPE)->where("TIER", $all_data->TIER)->count();
-            $count_same_ship = DB::table("runs")->where("SHIP_ID", $all_data->SHIP_ID)->count();
+        // Count same tiers
+        $count_same_type_tier = DB::table("runs")->where("TYPE", $all_data->TYPE)->where("TIER", $all_data->TIER)->count();
+        $count_same_ship = DB::table("runs")->where("SHIP_ID", $all_data->SHIP_ID)->count();
 
-            // Get drop rates
-//            dd($loot, $all_data);
-            $this->runsController->extendDropListWithRates($loot, $all_data);
+        // Get drop rates
+        $this->runsController->extendDropListWithRates($loot, $all_data);
 
-            $reported = DB::table("run_report")->where("RUN_ID", $id)->exists();
-            $reported_message = DB::table("run_report")->where("RUN_ID", $id)->value("MESSAGE");
+        $reported = DB::table("run_report")->where("RUN_ID", $id)->exists();
+        $reported_message = DB::table("run_report")->where("RUN_ID", $id)->value("MESSAGE");
 
-            $fit_name = Str::of($all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit");
-            if ($fit_name->trim()->isEmpty()) {
-                $fit_name = "Deleted fit";
-            }
-            $fit_privacy = DB::table("fits")->where("ID", $all_data->FIT_ID)->value("PRIVACY");
+        $fit_name = Str::of($all_data->FIT_ID ? DB::table("fits")->where("ID", $all_data->FIT_ID)->value("NAME") : "Unknown fit");
+        if ($fit_name->trim()->isEmpty()) {
+            $fit_name = "Deleted fit";
+        }
+        $fit_privacy = DB::table("fits")->where("ID", $all_data->FIT_ID)->value("PRIVACY");
 
-            $bell = $this->graphContainerController->getLootBellGraphs($data->TIER, 1, $all_data->LOOT_ISK);
+        $bell = $this->graphContainerController->getLootBellGraphs($data->TIER, 1, $all_data->LOOT_ISK);
 
-
-            return view("run", [
-                "id"                   => $id,
-                "run"                  => $data,
-                "bell"                  => $bell,
-                "other"                => $otherCharts,
-                "loot_table"           => $loot,
-                "lost_table"           => $lost,
-                "all_data"             => $all_data,
-                "percent"              => ($percent),
-                "run_summary"          => $run_summary,
-                "death_reason"         => $death_reason,
-                "loot_type"            => $looting,
-                "count_same_type_tier" => $count_same_type_tier,
-                "count_same_ship" => $count_same_ship,
-                "reported" => $reported,
-                "reported_message" => $reported_message,
-                'fit_name' => $fit_name,
-                'fit_privacy' => $fit_privacy
-            ]);
+        // Telemetry display
+        if (Telemetry::existsForRun($id)) {
+            $telemetry = Telemetry::getForRun($id);
         }
 
-        public function get_all($order_by = "", $order_type = "") {
-            $builder = DB::table("v_runall");
-            [$order_by, $order_by_text, $order_type_text, $order_type] = $this->getSort($order_by, $order_type);
+        return view("run", [
+            "id" => $id,
+            "run" => $data,
+            "bell" => $bell,
+            "other" => $otherCharts,
+            "loot_table" => $loot,
+            "lost_table" => $lost,
+            "all_data" => $all_data,
+            "percent" => ($percent),
+            "run_summary" => $run_summary,
+            "death_reason" => $death_reason,
+            "loot_type" => $looting,
+            "count_same_type_tier" => $count_same_type_tier,
+            "count_same_ship" => $count_same_ship,
+            "reported" => $reported,
+            "reported_message" => $reported_message,
+            'fit_name' => $fit_name,
+            'fit_privacy' => $fit_privacy,
+            'telemetry' => $telemetry ?? null
+        ]);
+    }
 
-            $items = $builder->orderBy($order_by, $order_type)->paginate(25);
-            return view("runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items]);
-        }
+    /**
+     * @param                                $id
+     * @param                                $all_data
+     * @param array $lost
+     * @param Collection $loot
+     *
+     * @return array
+     */
+    public function normalizeLootAndLost($id, $all_data, array $lost, Collection $loot): array
+    {
+        // Get which filament shall be used now
+        $filament_id = DB::table("filament_types")->where("TIER", $all_data->TIER)->where("TYPE", $all_data->TYPE)->value("ITEM_ID");
 
+        // Check if we there is anything here
+        if (count($lost) == 0) {
 
-        /**
-         * Gets the logged in user's runs
-         * @param string $order_by
-         * @param string $order_type
-         *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         */
-        public function get_mine($order_by = "", $order_type = "") {
-            if (!session()->has("login_id")) {
-                return view("error", ["error" => "Please log in to list your runs"]);
-            }
-            $builder = DB::table("v_runall")
-                         ->select(["v_runall.*","runs.RUNTIME_SECONDS"])
-                        ->join("runs", "runs.ID",'=', 'v_runall.ID')
-                         ->where("runs.CHAR_ID", session()->get('login_id'));
-            [$order_by, $order_by_text, $order_type_text, $order_type] = $this->getSort($order_by, $order_type);
-
-            $items = $builder->orderBy($order_by, $order_type);
-            if ($order_by == "RUN_DATE") {
-                $items->orderBy("CREATED_AT", $order_type);
-            }
-            return view("my_runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items->paginate(25)]);
-        }
-
-        /**
-         * Flags a run for review
-         * @param Request $request
-         *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         */
-        public function flag(Request $request)
-        {
-            Validator::make($request->all(), ['id' => 'int|required', 'message' => 'required|min:5|max:1000'])->validate();
-
-            $id = $request->get('id');
-            $message = $request->get('message');
-
-            $run_owner = DB::table("runs")->where("ID", $id)->value("CHAR_ID");
-
-            if ($run_owner == session()->get('login_id')) {
-                return view('error', ['error' => 'You can not flag your own run. Please delete it instead.']);
-            } else {
-                if (DB::table("run_report")->where("RUN_ID", $id)->exists()) {
-                    return view('sp_message', ['title' => 'Run already flagged', 'message' => "This run was already flagged by someone else."]);
+            $multiply = 1;
+            if ($all_data->SHIP_ID) {
+                $hull_size = DB::table("ship_lookup")->where("ID", $all_data->SHIP_ID)->value("HULL_SIZE");
+                switch ($hull_size) {
+                    case ShipHullSize::CRUISER:
+                        $multiply = 1;
+                        break;
+                    case ShipHullSize::DESTROYER:
+                        $multiply = 2;
+                        break;
+                    case ShipHullSize::FRIGATE:
+                        $multiply = 3;
+                        break;
                 }
-
-
-
-
-                DB::table("run_report")->insert([
-                    'REPORTER_CHAR_ID' => session()->get("login_id"),
-                    'RUN_ID' => $id,
-                    'MESSAGE' => $message,
-                    'PROCESSED' => false
-                ]);
-
-                $text = "Run number $id was flagged by ".session()->get("login_name")." at ".date("Y-m-d H:i:s"). " because ".htmlentities($message);
-
-                Mail::to(config('tracker.flag-address'))->send(new RunFlagged($id, $message));
-
-                return view('sp_message', ['title' => 'Run flagged', 'message' => "You have flagged this run! It will be manually reviewed soon."]);
             }
 
-        }
-
-
-        /**
-         * @param $order_by
-         * @param $order_type
-         * @return array
-         */
-        private function getSort($order_by, $order_type): array {
-            switch (strtoupper($order_by)) {
-                case 'CHAR_ID':
-                    $order_by = "NAME";
-                    $order_by_text = "character name";
-                    break;
-                case 'TIER':
-                    $order_by = "TIER";
-                    $order_by_text = "Abyss tier";
-                    break;
-                case 'TYPE':
-                    $order_by = "TYPE";
-                    $order_by_text = "Abyss type";
-                    break;
-                case 'LOOT_ISK':
-                    $order_by = "LOOT_ISK";
-                    $order_by_text = "éoot value";
-                    break;
-                case 'SURVIVED':
-                    $order_by = "SURVIVED";
-                    $order_by_text = "survival";
-                    break;
-                default:
-                case 'RUN_DATE':
-                    $order_by = "RUN_DATE";
-                    $order_by_text = "date of run";
-                    break;
-            }
-
-            switch (strtoupper($order_type)) {
-                case 'DESC':
-                default:
-                    $order_type_text = "in descending order";
-                    $order_type = "DESC";
-                    break;
-                case 'ASC':
-                    $order_type = "ASC";
-                    $order_type_text = "in ascending order";
-            }
-            return [$order_by, $order_by_text, $order_type_text, $order_type];
-        }
-
-
-
-        /**
-         * Handles the deletion of a run
-         * @param int $id
-         *
-         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-         */
-        public function delete(int $id) {
-
-            if (DeleteHelper::canDeleteRun($id)) {
-                try {
-                    DeleteHelper::deleteRun($id);
-                }
-                catch (\Throwable $e) {
-                    return view("error", ['error' => 'Could not delete this run, because we ran into an error: '.$e->getMessage()]);
-                }
-
-                return view('sp_message', ['title' => 'Run deleted', 'message' => "Run #$id successfully deleted."]);
-            }
-            else {
-                return view('error', ['error' => 'Please log in to delete your run.']);
-            }
-        }
-
-        /**
-         * @param                                $id
-         * @param                                $all_data
-         * @param array                          $lost
-         * @param \Illuminate\Support\Collection $loot
-         *
-         * @return array
-         */
-        public function normalizeLootAndLost($id, $all_data, array $lost, \Illuminate\Support\Collection $loot) : array
-        {
-            // Get which filament shall be used now
-            $filament_id = DB::table("filament_types")->where("TIER", $all_data->TIER)->where("TYPE", $all_data->TYPE)->value("ITEM_ID");
-
-            // Check if we there is anything here
-            if (count($lost) == 0) {
-
-                $multiply = 1;
-                if ($all_data->SHIP_ID) {
-                    $hull_size = DB::table("ship_lookup")->where("ID", $all_data->SHIP_ID)->value("HULL_SIZE");
-                    switch ($hull_size) {
-                        case ShipHullSize::CRUISER:
-                            $multiply = 1;
-                            break;
-                        case ShipHullSize::DESTROYER:
-                            $multiply = 2;
-                            break;
-                        case ShipHullSize::FRIGATE:
-                            $multiply = 3;
-                            break;
-                    }
-                }
-
-                // Add the missing filament
-                $lost = DB::select("select
+            // Add the missing filament
+            $lost = DB::select("select
                     `ip`.`ITEM_ID`                   AS `ITEM_ID`,
-                    ".($multiply)."                 AS `COUNT`,
+                    " . ($multiply) . "                 AS `COUNT`,
                     `ip`.`NAME`                      AS `NAME`,
                     `ip`.`DESCRIPTION`               AS `DESCRIPTION`,
                     `ip`.`GROUP_NAME`                AS `GROUP_NAME`,
                     `ip`.`PRICE_BUY`                 AS `PRICE_BUY`,
                     `ip`.`PRICE_SELL`                AS `PRICE_SELL`,
-                    ".($multiply)."*`ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
-                    ".($multiply)."*`ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
+                    " . ($multiply) . "*`ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
+                    " . ($multiply) . "*`ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
 from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]);
-            } else {
-                // If it doesnt exist in the list probably it was both looted and used
-                $lost_has_filament = false;
-                foreach ($lost as $item) {
-                    if ($item->ITEM_ID == $filament_id) {
-                        $lost_has_filament = true;
-                        break;
-                    }
+        } else {
+            // If it doesnt exist in the list probably it was both looted and used
+            $lost_has_filament = false;
+            foreach ($lost as $item) {
+                if ($item->ITEM_ID == $filament_id) {
+                    $lost_has_filament = true;
+                    break;
                 }
+            }
 
-                if (!$lost_has_filament) {
-                    $item = DB::select("select
+            if (!$lost_has_filament) {
+                $item = DB::select("select
                     `ip`.`ITEM_ID`                   AS `ITEM_ID`,
                     " . intval($id) . " AS `RUN_ID`,
                     1                 AS `COUNT`,
@@ -579,14 +474,134 @@ from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)]
                     `ip`.`PRICE_BUY` AS `BUY_PRICE_ALL`,
                     `ip`.`PRICE_SELL` AS `SELL_PRICE_ALL`
 from (`abyss`.`item_prices` `ip`) where ip.`ITEM_ID`=?;", [intval($filament_id)])[0];
-                    $loot->add($item);
-                    $lost[] = $item;
-                }
+                $loot->add($item);
+                $lost[] = $item;
             }
-
-            return $lost;
         }
 
+        return $lost;
+    }
 
+    public function get_all($order_by = "", $order_type = "")
+    {
+        $builder = DB::table("v_runall");
+        [$order_by, $order_by_text, $order_type_text, $order_type] = $this->getSort($order_by, $order_type);
+
+        $items = $builder->orderBy($order_by, $order_type)->paginate(25);
+        return view("runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items]);
+    }
+
+    /**
+     * @param $order_by
+     * @param $order_type
+     * @return array
+     */
+    private function getSort($order_by, $order_type): array
+    {
+        switch (strtoupper($order_by)) {
+            case 'CHAR_ID':
+                $order_by = "NAME";
+                $order_by_text = "character name";
+                break;
+            case 'TIER':
+                $order_by = "TIER";
+                $order_by_text = "Abyss tier";
+                break;
+            case 'TYPE':
+                $order_by = "TYPE";
+                $order_by_text = "Abyss type";
+                break;
+            case 'LOOT_ISK':
+                $order_by = "LOOT_ISK";
+                $order_by_text = "éoot value";
+                break;
+            case 'SURVIVED':
+                $order_by = "SURVIVED";
+                $order_by_text = "survival";
+                break;
+            default:
+            case 'RUN_DATE':
+                $order_by = "RUN_DATE";
+                $order_by_text = "date of run";
+                break;
+        }
+
+        switch (strtoupper($order_type)) {
+            case 'DESC':
+            default:
+                $order_type_text = "in descending order";
+                $order_type = "DESC";
+                break;
+            case 'ASC':
+                $order_type = "ASC";
+                $order_type_text = "in ascending order";
+        }
+        return [$order_by, $order_by_text, $order_type_text, $order_type];
+    }
+
+    /**
+     * Gets the logged in user's runs
+     * @param string $order_by
+     * @param string $order_type
+     *
+     * @return Factory|View
+     */
+    public function get_mine($order_by = "", $order_type = "")
+    {
+        if (!session()->has("login_id")) {
+            return view("error", ["error" => "Please log in to list your runs"]);
+        }
+        $builder = DB::table("v_runall")
+            ->select(["v_runall.*", "runs.RUNTIME_SECONDS"])
+            ->join("runs", "runs.ID", '=', 'v_runall.ID')
+            ->where("runs.CHAR_ID", session()->get('login_id'));
+        [$order_by, $order_by_text, $order_type_text, $order_type] = $this->getSort($order_by, $order_type);
+
+        $items = $builder->orderBy($order_by, $order_type);
+        if ($order_by == "RUN_DATE") {
+            $items->orderBy("CREATED_AT", $order_type);
+        }
+        return view("my_runs", ["order_type" => $order_type_text, "order_by" => $order_by_text, "items" => $items->paginate(25)]);
+    }
+
+    /**
+     * Flags a run for review
+     * @param Request $request
+     *
+     * @return Factory|View
+     */
+    public function flag(Request $request)
+    {
+        Validator::make($request->all(), ['id' => 'int|required', 'message' => 'required|min:5|max:1000'])->validate();
+
+        $id = $request->get('id');
+        $message = $request->get('message');
+
+        $run_owner = DB::table("runs")->where("ID", $id)->value("CHAR_ID");
+
+        if ($run_owner == session()->get('login_id')) {
+            return view('error', ['error' => 'You can not flag your own run. Please delete it instead.']);
+        } else {
+            if (DB::table("run_report")->where("RUN_ID", $id)->exists()) {
+                return view('sp_message', ['title' => 'Run already flagged', 'message' => "This run was already flagged by someone else."]);
+            }
+
+
+            DB::table("run_report")->insert([
+                'REPORTER_CHAR_ID' => session()->get("login_id"),
+                'RUN_ID' => $id,
+                'MESSAGE' => $message,
+                'PROCESSED' => false
+            ]);
+
+            $text = "Run number $id was flagged by " . session()->get("login_name") . " at " . date("Y-m-d H:i:s") . " because " . htmlentities($message);
+
+            Mail::to(config('tracker.flag-address'))->send(new RunFlagged($id, $message));
+
+            return view('sp_message', ['title' => 'Run flagged', 'message' => "You have flagged this run! It will be manually reviewed soon."]);
+        }
 
     }
+
+
+}

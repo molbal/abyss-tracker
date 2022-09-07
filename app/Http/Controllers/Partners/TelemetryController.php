@@ -15,46 +15,51 @@ use Throwable;
 class TelemetryController extends Controller
 {
     public function consumePayload(Request $request) {
-        $packet = $request->getContent();
-        $data = json_decode($packet, true)['message'];
-//        dd($data);
-        $payload = json_decode(base64_decode($data['data']), true);
+        try {
 
-        // Query token from the data store
-        $token = PersonalAccessToken::findToken($payload['AbyssTrackerToken']);
+            $packet = $request->getContent();
+            $data = json_decode($packet, true)['message'];
+            $payload = json_decode(base64_decode($data['data']), true);
 
-        // Check token access
-        if (!$this->isAuthorized($payload, $token)) {
-            return $this->failPayload('The issuer of the token provided in AbyssTrackerToken does not match the CharacterID of the Telemetry run. Telemetry recordUUID: ['.$payload['recordUUID'].']');
-        }
+            // Query token from the data store
+            $token = PersonalAccessToken::findToken($payload['AbyssTrackerToken']);
 
-        // Delete old run if exits
-        if ($run_id = $this->getRunForTelemetry($payload)) {
-            if (!DeleteHelper::canDeleteRun($run_id, $token)) {
-                return $this->failPayload('There is already a run with this Telemetry recordUUID: ['.$payload['recordUUID'].'], but that belongs to a different Tracker character.');
+            // Check token access
+            if (!$this->isAuthorized($payload, $token)) {
+                return $this->failPayload('The issuer of the token provided in AbyssTrackerToken does not match the CharacterID of the Telemetry run. Telemetry recordUUID: ['.$payload['recordUUID'].']');
             }
-            try {
-                DeleteHelper::deleteRun($run_id);
+
+            // Delete old run if exits
+            if ($run_id = $this->getRunForTelemetry($payload)) {
+                if (!DeleteHelper::canDeleteRun($run_id, $token)) {
+                    return $this->failPayload('There is already a run with this Telemetry recordUUID: ['.$payload['recordUUID'].'], but that belongs to a different Tracker character.');
+                }
+                try {
+                    DeleteHelper::deleteRun($run_id);
+                }
+                catch (Throwable $e) {
+                    return $this->failPayload(sprintf("Could not delete previous run with this Telemetry recordUUID: [%s]: %s", $payload['recordUUID'], $e->getMessage()));
+                }
             }
-            catch (Throwable $e) {
-                return $this->failPayload(sprintf("Could not delete previous run with this Telemetry recordUUID: [%s]: %s", $payload['recordUUID'], $e->getMessage()));
+            Telemetry::where('uuid',  $payload['recordUUID'])->delete();
+
+            // Persist new run
+            $new_run_id = CreateRunHelper::storeFromTelemetry($payload);
+
+            // Persist new telemetry
+            Telemetry::make($payload, $new_run_id);
+
+            logger()->channel('telemetry')->info(sprintf("Successfully imported Telemetry run: %s and linked it to Tracker run #%d", $payload['recordUUID'], $new_run_id));
+
+            if ( config('broadcasting.connections.pusher.is_enabled') == true ) {
+                broadcast(RunSaved::createEventForUser($token->tokenable_id));
             }
+            return response()->noContent();
+
         }
-        Telemetry::where('uuid',  $payload['recordUUID'])->delete();
-
-        // Persist new run
-        $new_run_id = CreateRunHelper::storeFromTelemetry($payload);
-
-        // Persist new telemetry
-        Telemetry::make($payload, $new_run_id);
-
-        logger()->channel('telemetry')->info(sprintf("Successfully imported Telemetry run: %s and linked it to Tracker run #%d", $payload['recordUUID'], $new_run_id));
-
-        if ( config('broadcasting.connections.pusher.is_enabled') == true ) {
-            broadcast(RunSaved::createEventForUser($token->tokenable_id));
+        catch (\Exception $exception) {
+            return $this->failPayload('Could not process Telemetry run: '.$exception->getMessage().' '.$exception->getTraceAsString());
         }
-        return response()->noContent();
-
     }
 
 

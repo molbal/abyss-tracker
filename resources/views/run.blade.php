@@ -7,7 +7,9 @@
                                                                   title="Loot value compared to median loot of this tier with the same ship size: {{round($percent)}}%">{{$run_summary}}</span>
             Abyssal run</h4>
         <p class="text-right font-italic text-sm mb-0 pb-0">
-            Saved <span data-toggle="tooltip" title="Exact date and time (EVE time): {{$run->CREATED_AT ?? $run->RUN_DATE}}" style="border: 1px dashed #{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}; border-width: 0 0 1px 0">{{\App\Http\Controllers\TimeHelper::timeElapsedString($run->CREATED_AT ?? $run->RUN_DATE)}}</span>
+            Saved <span data-toggle="tooltip"
+                        title="Exact date and time (EVE time): {{$run->CREATED_AT ?? $run->RUN_DATE}}"
+                        style="border: 1px dashed #{{\App\Http\Controllers\ThemeController::getThemedIconColor()}}; border-width: 0 0 1px 0">{{\App\Http\Controllers\TimeHelper::timeElapsedString($run->CREATED_AT ?? $run->RUN_DATE)}}</span>
         </p>
     </div>
 
@@ -16,7 +18,8 @@
             <div class="col-md-12">
                 <div class="card card-body border-danger shadow-sm text-center p-0">
                     <div class="d-flex justify-content-start m-2">
-                        <img src="https://image.eveonline.com/Type/{{!$run->SURVIVED ? "37885" : "34432"}}_64.png" class="" style="width: 48px; height: 48px">
+                        <img src="https://image.eveonline.com/Type/{{!$run->SURVIVED ? "37885" : "34432"}}_64.png"
+                             class="" style="width: 48px; height: 48px">
                         <span class="mb-0 h6 text-danger my-2 py-0" style="position: relative;top: 7px">This is a failed run - the ship and the capsule was lost.</span>
                     </div>
                 </div>
@@ -30,16 +33,16 @@
             @if ($errors->any())
                 <div class="col-sm-12">
 
-                <div class="alert alert-danger border-0 shadow-sm d-flex justify-content-between">
-                    <img src="https://img.icons8.com/cotton/64/000000/cancel-2--v1.png">
-                    <div style="width: 100%">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                    <div class="alert alert-danger border-0 shadow-sm d-flex justify-content-between">
+                        <img src="https://img.icons8.com/cotton/64/000000/cancel-2--v1.png">
+                        <div style="width: 100%">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
-                </div>
                 </div>
             @endif
         @endif
@@ -56,7 +59,9 @@
                     <div class="col">
 
                         @if($run->PUBLIC)
-                            <h2 class="font-weight-bold mb-0"><a class="text-dark" href="{{route('profile.index', ['id' => $run->CHAR_ID])}}">{{$run->NAME}}</a></h2>
+                            <h2 class="font-weight-bold mb-0"><a class="text-dark"
+                                                                 href="{{route('profile.index', ['id' => $run->CHAR_ID])}}">{{$run->NAME}}</a>
+                            </h2>
                         @else
                             <h2 class="font-weight-bold mb-0">Private</h2>
                         @endif
@@ -78,7 +83,7 @@
                     <div class="col">
                         @if($all_data->SHIP_ID)
                             <h2 class="font-weight-bold mb-0"><a class="text-dark"
-                                    href="{{route("ship_single", ["id" => $all_data->SHIP_ID])}}">{{$run->SHIP_NAME}}</a>
+                                                                 href="{{route("ship_single", ["id" => $all_data->SHIP_ID])}}">{{$run->SHIP_NAME}}</a>
                             </h2>
                         @else
                             <h2 class="font-weight-bold mb-0">Unknown</h2>
@@ -96,17 +101,19 @@
                     @else
                         <img src="/_icons/search-icons/ship.png" class="pull-left ml-2 rounded-circle">
                     @endif
-                    <div class="col"><h2 class="font-weight-bold mb-0">
+                    <div class="col">
+                        <h2 class="font-weight-bold mb-0">
                             @if ($fit_privacy == "private")
                                 <h2 class="mb-0">Private fit</h2>
                             @else
                                 @if($all_data->FIT_ID)
-                                    <h2 class="mb-0"><a href="{{route("fit_single", ["id" => $all_data->FIT_ID])}}" class="text-dark">{{$fit_name}}</a></h2>
+                                    <h2 class="mb-0"><a href="{{route("fit_single", ["id" => $all_data->FIT_ID])}}"
+                                                        class="text-dark">{{$fit_name}}</a></h2>
                                 @else
                                     <h2 class="mb-0">Unknown fit</h2>
                                 @endif
                             @endif
-                        <small class="text-muted font-weight-bold">Fit name</small>
+                            <small class="text-muted font-weight-bold">Fit name</small>
                     </div>
                 </div>
             </div>
@@ -118,7 +125,9 @@
                 <div class="row">
                     <img src="types/{{$run->TYPE}}.png" class="pull-left ml-2">
                     <div class="col">
-                        <h2 class="font-weight-bold mb-0"><a class="text-dark" href="{{route("search.do", ["type" => $run->TYPE])}}">{{$run->TYPE}}</a></h2>
+                        <h2 class="font-weight-bold mb-0"><a class="text-dark"
+                                                             href="{{route("search.do", ["type" => $run->TYPE])}}">{{$run->TYPE}}</a>
+                        </h2>
                         <small class="text-muted font-weight-bold">Filament type</small>
                     </div>
                 </div>
@@ -129,7 +138,9 @@
                 <div class="row">
                     <img src="tiers/{{$run->TIER}}.png" class="pull-left ml-2">
                     <div class="col">
-                        <h2 class="font-weight-bold mb-0"><a class="text-dark" href="{{route("search.do", ["tier" => $run->TIER])}}">Tier {{$run->TIER}}</a></h2>
+                        <h2 class="font-weight-bold mb-0"><a class="text-dark"
+                                                             href="{{route("search.do", ["tier" => $run->TIER])}}">Tier {{$run->TIER}}</a>
+                        </h2>
                         <small class="text-muted font-weight-bold">Deadspace tier</small>
                     </div>
                 </div>
@@ -167,7 +178,8 @@
         <div class="row mt-3">
             <div class="col-md-12">
                 <div class="card card-body border-0 shadow-sm text-center">
-                    This run got the bonus room where there is only one room in the deadspace (full of Leshaks) and the origin gate is open by default.
+                    This run got the bonus room where there is only one room in the deadspace (full of Leshaks) and the
+                    origin gate is open by default.
                 </div>
             </div>
         </div>
@@ -180,31 +192,31 @@
 $lost_sell = 0;
 $lost_buy = 0;
     @endphp
+
+    <x-section-head>Loot info</x-section-head>
     <div class="row mt-3">
         <div class="col-md-12">
             <div class="card card-body border-0 shadow-sm">
-                    <table class="table table-hover table-sm table-responsive-sm">
-                        <tr>
-                            <td colspan="8">
-                                <h5 class="font-weight-bold">Exact loot &nbsp;<img
-                                        src="https://img.icons8.com/small/16/{{App\Http\Controllers\ThemeController::getThemedIconColor()}}/info.png"
-                                        data-toggle="tooltip"
-                                        title="Jita prices were used to calculate loot value">
-                                    <small class="float-right">{{$loot_type}}</small>
-                                </h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>&nbsp;</th>
-                            <th>Name</th>
-                            <th class="text-right">Count</th>
-                            <th class="text-right">Sell price/piece</th>
-                            <th class="text-right">Buy price/piece</th>
-                            <th class="text-right">Sell price/all</th>
-                            <th class="text-right">Buy price/all</th>
-                            <th class="text-right">Drop rate</th>
-                        </tr>
-                        @if(count($loot_table) > 0)
+                <table class="table table-hover table-sm table-responsive-sm">
+                    <tr>
+                        <td colspan="8">
+                            <h5 class="font-weight-bold">Items looted
+                                <x-info-toggle>Jita prices were used to calculate the loot.</x-info-toggle>
+                                <small class="float-right">{{$loot_type}}</small>
+                            </h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Name</th>
+                        <th class="text-right">Count</th>
+                        <th class="text-right">Sell price/piece</th>
+                        <th class="text-right">Buy price/piece</th>
+                        <th class="text-right">Sell price/all</th>
+                        <th class="text-right">Buy price/all</th>
+                        <th class="text-right">Drop rate</th>
+                    </tr>
+                    @if(count($loot_table) > 0)
                         @foreach($loot_table as $loot_item)
                             @php
                                 $all_sell += $loot_item->SELL_PRICE_ALL;
@@ -247,32 +259,34 @@ $lost_buy = 0;
                             </tr>
                         @endforeach
 
-                        @elseif($run->LOOT_ISK)
-                            <tr>
-                                <td colspan="8">
-                                    <p class="m-5 text-center font-italic">Unfortunately we do not have information about exact
-                                        loot.</p></td>
-                            </tr>
-                        @else
-                            <tr>
-                                <td colspan="8">
-                            <p class="m-5 text-center font-italic">Unfortunately no loot could be gathered from this run.</p></td>
-                            </tr>
-                        @endif
-                        <tr>
-                            <td colspan="5" class="text-right font-weight-bold">Total:</td>
-                            <td class="text-right font-weight-bold">{{number_format($all_sell, 0, ",", " ")}}&nbsp;ISK
-                            </td>
-                            <td class="text-right font-weight-bold">{{number_format($all_buy, 0, ",", " ")}}&nbsp;ISK
-                            </td>
-                            <td>&nbsp;</td>
-                        </tr>
+                    @elseif($run->LOOT_ISK)
                         <tr>
                             <td colspan="8">
-                                <h5 class="font-weight-bold mt-2">Items consumed or lost
-                                </h5>
-                            </td>
+                                <p class="m-5 text-center font-italic">Unfortunately we do not have information about
+                                    exact
+                                    loot.</p></td>
                         </tr>
+                    @else
+                        <tr>
+                            <td colspan="8">
+                                <p class="m-5 text-center font-italic">Unfortunately no loot could be gathered from this
+                                    run.</p></td>
+                        </tr>
+                    @endif
+                    <tr>
+                        <td colspan="5" class="text-right font-weight-bold">Total:</td>
+                        <td class="text-right font-weight-bold">{{number_format($all_sell, 0, ",", " ")}}&nbsp;ISK
+                        </td>
+                        <td class="text-right font-weight-bold">{{number_format($all_buy, 0, ",", " ")}}&nbsp;ISK
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8">
+                            <h5 class="font-weight-bold mt-2">Items consumed or lost
+                            </h5>
+                        </td>
+                    </tr>
                     <tr>
                         <th>&nbsp;</th>
                         <th>Name</th>
@@ -350,8 +364,11 @@ $lost_buy = 0;
                     </tr>
                     <tr>
                         <td class="font-weight-bold text-right" colspan="5">Profit</td>
-                        <td class="font-weight-bold text-right">{{number_format($all_sell-$lost_sell, 0, " ", " ")}} ISK</td>
-                        <td class="font-weight-bold text-right">{{number_format($all_buy-$lost_buy, 0, " ", " ")}} ISK</td>
+                        <td class="font-weight-bold text-right">{{number_format($all_sell-$lost_sell, 0, " ", " ")}}
+                            ISK
+                        </td>
+                        <td class="font-weight-bold text-right">{{number_format($all_buy-$lost_buy, 0, " ", " ")}}ISK
+                        </td>
                         <td>&nbsp;</td>
                     </tr>
                 </table>
@@ -364,9 +381,37 @@ $lost_buy = 0;
                 <div class="card card-body border-0 shadow-sm">
                     <h5 class="font-weight-bold">Death details</h5>
                     <p class=" mb-0">{{$death_reason}}
-                        @if($all_data->KILLMAIL)<br><a target="_blank" class="btn btn-outline-secondary mt-2"
-                                                       href="{{$all_data->KILLMAIL}}">Lossmail on zKillboard</a>@endif
+                        @if($all_data->KILLMAIL)
+                            <br><a target="_blank" class="btn btn-outline-secondary mt-2"
+                                   href="{{$all_data->KILLMAIL}}">Lossmail on zKillboard</a>
+                        @endif
                     </p>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if($telemetry)
+        <x-section-head>Telemetry info</x-section-head>
+        @component('components.section-head', [
+                            'link_url' => "https://abyssal.space/telemetry/".$telemetry['AbyssalSpaceID']."/",
+                            'link_external',
+                            'link_text' => 'More on Abyssal.space'])
+            Telemetry summary
+        @endcomponent
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card card-body border-0 shadow-sm">
+
+{{--                    @dump($telemetry)--}}
+                    <h4 class="font-weight-bold">Rooms</h4>
+
+                    @forelse($telemetry['Rooms'] as $room)
+                        <h5>Room took {{\App\Http\Controllers\TimeHelper::formatSecondsToMMSS($room['RoomDurationSeconds'])}} to finish. (Was idling for {{$room['RoomIdleDurationSeconds']}} seconds)</h5>
+                    @dump($room['Spawn'])
+                        @empty
+                            No rooms recorded
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -376,24 +421,27 @@ $lost_buy = 0;
         <div class="col-md-12 col-sm-12">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="tab-head-bell" data-toggle="tab" href="#tab-bell" role="tab" aria-controls="home" aria-selected="true">Tier {{$all_data->TIER}} loot distribution chart</a>
+                    <a class="nav-link active" id="tab-head-bell" data-toggle="tab" href="#tab-bell" role="tab"
+                       aria-controls="home" aria-selected="true">Tier {{$all_data->TIER}} loot distribution chart</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="tab-head-legacy" data-toggle="tab" href="#tab-legacy" role="tab" aria-controls="profile" aria-selected="false">Bar chart</a>
+                    <a class="nav-link" id="tab-head-legacy" data-toggle="tab" href="#tab-legacy" role="tab"
+                       aria-controls="profile" aria-selected="false">Bar chart</a>
                 </li>
             </ul>
             <div class="card card-body border-0 shadow-sm top-left-no-round">
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="tab-bell" role="tabpanel" aria-labelledby="tab-head-bell">
-                            <div class="graph-container h-400px">
-                                {!! $bell->container(); !!}
-                            </div>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab-bell" role="tabpanel"
+                         aria-labelledby="tab-head-bell">
+                        <div class="graph-container h-400px">
+                            {!! $bell->container(); !!}
                         </div>
-                        <div class="tab-pane fade" id="tab-legacy" role="tabpanel" aria-labelledby="tab-head-legacy">
-                            <div class="graph-container h-400px">
-                                {!! $other->container(); !!}
-                            </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-legacy" role="tabpanel" aria-labelledby="tab-head-legacy">
+                        <div class="graph-container h-400px">
+                            {!! $other->container(); !!}
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -402,15 +450,19 @@ $lost_buy = 0;
         <div class="col-sm-12 text-right">
             @if(session()->get('login_id') == $all_data->CHAR_ID)
                 <a href="{{route('new')}}" class="text-dark">Add new run</a> &centerdot;
-                <a href="{{route('run.change_privacy', ['id' => $id, 'privacy' => $all_data->PUBLIC ? 'private' : 'public'])}}" class="text-dark"><img
-                        src="https://img.icons8.com/officexs/16/000000/key-security.png"> Make run {{$all_data->PUBLIC ? 'private' : 'public'}}</a> &centerdot;
+                <a href="{{route('run.change_privacy', ['id' => $id, 'privacy' => $all_data->PUBLIC ? 'private' : 'public'])}}"
+                   class="text-dark"><img
+                        src="https://img.icons8.com/officexs/16/000000/key-security.png"> Make
+                    run {{$all_data->PUBLIC ? 'private' : 'public'}}</a> &centerdot;
                 <a href="{{route('run_delete', ['id' => $id])}}" class="text-danger"><img
                         src="https://img.icons8.com/officexs/16/000000/delete-sign.png"> Delete</a>
             @elseif(!$reported)
                 <a href="javascript:void(0)" id="flag" class="text-danger"><img
                         src="https://img.icons8.com/officexs/16/000000/filled-flag2.png"> Flag for review</a>
-                @elseif($reported_message)
-                <p><img src="https://img.icons8.com/officexs/16/000000/filled-flag2.png"> This run was flagged for manual review with the following reason: <em>{{$reported_message}}</em>. It will be reviewed soon.</p>
+            @elseif($reported_message)
+                <p><img src="https://img.icons8.com/officexs/16/000000/filled-flag2.png"> This run was flagged for
+                    manual review with the following reason: <em>{{$reported_message}}</em>. It will be reviewed soon.
+                </p>
             @endif
         </div>
     </div>
@@ -446,7 +498,7 @@ $lost_buy = 0;
 @section("styles")
     <style>
         td {
-            border:0!important;
+            border: 0 !important;
         }
     </style>
 @endsection
