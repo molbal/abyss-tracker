@@ -1,1 +1,71 @@
-.table-sm td,.table-sm th{padding:.1rem}img.fit-item-icon{border-radius:.25rem;width:32px;height:32px}img.fit-ammo-icon{width:16px;height:16px;margin-right:4px}span.fit-header-line .last-patch{position:relative;top:-5px;margin-left:12px;text-transform:uppercase;letter-spacing:1px}.icon-overusage{width:16px;height:16px}.comment-image,.comment-image img{width:72px!important;height:72px!important;padding:0;margin:0}.comment-image img{border:2px solid #fff}.answer-image,.answer-image img{width:48px!important;height:48px!important;padding:0;margin:0}.answer-image img{border:1px solid #fff}.answer-image img.compose{border:1px dashed #fff;opacity:.8;filter:grayscale(60%)}.question-container:not(:first-child){margin-top:12px}.comment-content .badge{text-transform:uppercase;letter-spacing:1px}#char_prof.avatar-incognito{border-style:dashed!important;width:72px!important;height:72px!important}
+.table-sm td, .table-sm th {
+  padding: 0.1rem;
+}
+
+img.fit-item-icon {
+  border-radius: 0.25rem;
+  width: 32px;
+  height: 32px;
+}
+
+img.fit-ammo-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+span.fit-header-line .last-patch {
+  position: relative;
+  top: -5px;
+  margin-left: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.icon-overusage {
+  width: 16px;
+  height: 16px;
+}
+
+.comment-image, .comment-image img {
+  width: 72px !important;
+  height: 72px !important;
+  padding: 0;
+  margin: 0;
+}
+
+.comment-image img {
+  border: 2px solid #fff;
+}
+
+.answer-image, .answer-image img {
+  width: 48px !important;
+  height: 48px !important;
+  padding: 0;
+  margin: 0;
+}
+
+.answer-image img {
+  border: 1px solid #fff;
+}
+
+.answer-image img.compose {
+  border: 1px dashed #fff;
+  opacity: 0.8;
+  filter: grayscale(60%);
+}
+
+.question-container:not(:first-child) {
+  margin-top: 12px;
+}
+
+.comment-content .badge {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#char_prof.avatar-incognito {
+  border-style: dashed !important;
+  width: 72px !important;
+  height: 72px !important;
+}

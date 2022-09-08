@@ -1,4 +1,3 @@
-
 <div class="d-flex justify-content-between align-items-start mt-5">
     <h4 class="font-weight-bold">{!! $slot !!}</h4>
     {!! $other ?? '' !!}

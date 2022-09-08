@@ -392,26 +392,27 @@ $lost_buy = 0;
     @endif
 
     @if($telemetry)
-        <x-section-head>Telemetry info</x-section-head>
         @component('components.section-head', [
                             'link_url' => "https://abyssal.space/telemetry/".$telemetry['AbyssalSpaceID']."/",
                             'link_external',
-                            'link_text' => 'More on Abyssal.space'])
+                            'link_text' => 'View all details on Abyssal Space Telemetry'])
             Telemetry summary
         @endcomponent
         <div class="row mt-3">
             <div class="col-md-12">
                 <div class="card card-body border-0 shadow-sm">
-
-{{--                    @dump($telemetry)--}}
-                    <h4 class="font-weight-bold">Rooms</h4>
-
-                    @forelse($telemetry['Rooms'] as $room)
-                        <h5>Room took {{\App\Http\Controllers\TimeHelper::formatSecondsToMMSS($room['RoomDurationSeconds'])}} to finish. (Was idling for {{$room['RoomIdleDurationSeconds']}} seconds)</h5>
-                    @dump($room['Spawn'])
+                    <ul class="bookmarks">
+                        @forelse($telemetry['Rooms'] as $i => $room)
+                            <x-telemetry.room  :i="$i" :room="$room" />
                         @empty
-                            No rooms recorded
-                    @endforelse
+                            <li class="bookmark">
+                                <span class="bookmark-label">
+                        No room spawn information provided in Telemetry summary.
+                                </span>
+                            </li>
+                        @endforelse
+                    </ul>
+
                 </div>
             </div>
         </div>

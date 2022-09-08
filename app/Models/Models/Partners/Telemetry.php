@@ -63,4 +63,5 @@ class Telemetry extends Model
     {
         return self::where('run_id', $run_id)->firstOrFail()->raw_import;
     }
+
 }
