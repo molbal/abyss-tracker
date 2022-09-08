@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Partners;
 
+use App\Connector\EveAPI\Universe\ResourceLookupService;
 use App\Events\RunSaved;
 use App\Http\Controllers\Controller;
+use App\Models\Models\Partners\NPC;
 use App\Models\Models\Partners\Telemetry;
 use App\Runs\CreateRunHelper;
 use App\Runs\DeleteHelper;
@@ -14,6 +16,23 @@ use Throwable;
 
 class TelemetryController extends Controller
 {
+    public function renderNpc(int $id)
+    {
+        $npc = NPC::makeFromId($id);
+
+
+        /** @var ResourceLookupService $resourceService */
+        $resourceService = resolve('App\Connector\EveAPI\Universe\ResourceLookupService');
+
+        $groupName = $resourceService->getGroupInfo($npc->groupID);
+
+
+        return view('npc', [
+           'item' => $npc,
+           'groupName' => $groupName['name'] ?? ''
+        ]);
+    }
+
     public function consumePayload(Request $request) {
         try {
 

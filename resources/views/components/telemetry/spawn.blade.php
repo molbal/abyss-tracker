@@ -9,5 +9,5 @@
          alt=""
          style="border: 1px solid white"
          class="rounded-circle shadow-sm mx-2 h-24px">
-    <a href="{{route("profile.index", ["id" => $npc->typeId])}}">{{$npc->typeName}}</a>
+    <a href="{{route("npc.get", ["id" => $npc->typeId])}}">{{$npc->typeName}}</a>
 </div>

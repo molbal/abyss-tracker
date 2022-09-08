@@ -21,7 +21,32 @@ class NPC
     {
     }
 
-    public static function make(string $name)
+    public static function makeFromId(int $id) : NPC
+    {
+
+        return Cache::remember("npc.id-".$id, now()->addHour(), function () use ($id){
+            // Get old dumps
+            $tables = DB::table("previous_dumps_tables")->orderBy("ORDER_ASC", "ASC")->get();
+
+            $item = null;
+            // Try old dumps
+            foreach ($tables as $table) {
+                if (DB::table($table->TABLE_NAME)->where("typeID", '=', $id)->exists()) {
+                    $item = DB::table($table->TABLE_NAME)->where("typeID", '=', $id)->first(['typeID', 'typeName', 'description', 'groupID']);
+                    break;
+                }
+            }
+
+            if (!$item) {
+                return new NPC($id, 0, "Unknown NPC or can", "Unknown item.");
+            }
+
+            return new NPC($item->typeID, $item->groupID, $item->typeName, $item->description);
+        });
+    }
+
+
+    public static function make(string $name) : NPC
     {
         return Cache::remember("npc.".Str::slug($name), now()->addHour(), function () use ($name){
             // Get old dumps

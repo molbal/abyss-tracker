@@ -414,10 +414,18 @@ $lost_buy = 0;
                     </ul>
 
                 </div>
+                <div class="card-footer">
+                    @component("components.info-line")
+                        Data source: Abyssal Telemetry recording
+                    @endcomponent
+                </div>
             </div>
         </div>
     @endif
 
+    @component('components.section-head', [])
+        Comparsion with other runs
+    @endcomponent
     <div class="row mt-3">
         <div class="col-md-12 col-sm-12">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -444,6 +452,11 @@ $lost_buy = 0;
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="card-footer">
+                @component("components.info-line")
+                    Data source: Abyss Tracker user submissions
+                @endcomponent
             </div>
         </div>
     </div>

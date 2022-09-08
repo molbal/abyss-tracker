@@ -16,7 +16,8 @@
     use App\Http\Controllers\GraphHelper;
     use App\Http\Controllers\ItemController;
     use App\Http\Controllers\Misc\QrController;
-    use App\Http\Controllers\Profile\ActivityChartController;
+use App\Http\Controllers\Partners\TelemetryController;
+use App\Http\Controllers\Profile\ActivityChartController;
     use App\Http\Controllers\Profile\SettingController;
     use App\Http\Controllers\PVP\PVPController;
     use App\Http\Controllers\StreamToolsController;
@@ -108,6 +109,7 @@
     Route::view("/changelog", "changelog")->name("changelog");
     Route::get("/loot/all", 'ItemController@get_all')->name("item_all");
     Route::get("/api/search/items", 'ItemController@search_items')->name("search_items");
+    Route::get("/npc/{id}/", [TelemetryController::class, 'renderNpc'])->name("npc.get");
 
     /**
      * Chart APIs
