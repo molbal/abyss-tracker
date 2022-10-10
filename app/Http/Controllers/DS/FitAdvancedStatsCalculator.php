@@ -15,7 +15,7 @@
 
         public static function generate($fit_id) {
             try {
-                $_data = DB::select("select * from runs where fit_id = ? and created_at > DATE_SUB(NOW(),INTERVAL 1 YEAR) and RUNTIME_SECONDS is not null order by tier desc,type asc",[$fit_id]);
+                $_data = DB::select("select * from runs where fit_id = ? and created_at > DATE_SUB(NOW(),INTERVAL 1 YEAR) and RUNTIME_SECONDS is not null and RUNTIME_SECONDS > 0 order by tier desc,type asc",[$fit_id]);
 
                 //organize
                 $data = [];
