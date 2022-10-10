@@ -124,6 +124,8 @@
                 //so pluck('id') instead!
                 $fq_ids = DB::table('fit_questions')->where('fit_id', $id)->select('id')->get()->pluck('id');
                 DB::table("fit_answers")->whereIn("question_id", $fq_ids)->delete();
+                //remove fit from video tutorial table
+                DB::table("video_tutorial_fits")->where("fit_id", $id)->delete();
                 DB::table("fit_logs")->where("fit_root_id", $id)->delete();
                 DB::table("fit_logs")->where("fit_it", $id)->delete();
                 DB::table("fit_questions")->where("fit_id", $id)->delete();
