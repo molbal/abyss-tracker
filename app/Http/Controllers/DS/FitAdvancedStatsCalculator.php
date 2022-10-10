@@ -14,51 +14,53 @@
 	class FitAdvancedStatsCalculator {
 
         public static function generate($fit_id) {
-//            $_data = DB::select("select * from runs where fit_id = ? and created_at > DATE_SUB(NOW(),INTERVAL 1 YEAR) order by tier desc,type asc",[$fit_id]);
-            $_data = DB::select("select * from runs where fit_id = ? and created_at > DATE_SUB(NOW(),INTERVAL 1 YEAR) and RUNTIME_SECONDS is not null order by tier desc,type asc",[$fit_id]);
 
-            //organize
-            $data = [];
-            foreach ( $_data as $d ) {
-                $data[$d->TYPE."-".$d->TIER][] = $d;
-            }
+            try {
+                $_data = DB::select("select * from runs where fit_id = ? and created_at > DATE_SUB(NOW(),INTERVAL 1 YEAR) and RUNTIME_SECONDS is not null and RUNTIME_SECONDS > 0 order by tier desc,type asc",[$fit_id]);
 
-            //tt type tier
-            $stats = [];
-            foreach( $data as $index => $tt ) {
-                $tmp = new \stdClass();
-                $run_count = 0;
-                $total = 0;
-                $time = 0;
-                foreach($tt as $run){
-                    if ( $run->RUNTIME_SECONDS == null ) {
-                        continue;
-                    }
-                    $run_count++;
-                    $total += $run->LOOT_ISK;
-                    $time += $run->RUNTIME_SECONDS;
+                //organize
+                $data = [];
+                foreach ( $_data as $d ) {
+                    $data[$d->TYPE."-".$d->TIER][] = $d;
                 }
-                $tmp->TYPE = $run->TYPE;
-                $tmp->TIER = $run->TIER;
-                $tmp->TOTAL = $total;
-                $tmp->COUNT = $run_count;
-                $tmp->AVERAGE_ISK = $total/$run_count;
-                $tmp->AVERAGE_TIME = $time/$run_count;
-                $tmp->AVERAGE_ISK_BY_HR = ($tmp->AVERAGE_ISK/$tmp->AVERAGE_TIME)*60*60;
-                $tmp->AVERAGE_DISPLAY = number_format($tmp->AVERAGE_ISK/1000000,2,","," ");
-                $tmp->AVERAGE_TIME_DISPLAY = number_format($tmp->AVERAGE_TIME,0);
-                $tmp->AVERAGE_ISK_BY_HR_DISPLAY = number_format($tmp->AVERAGE_ISK_BY_HR/1000000,2,","," ");
 
-                $stats[$index] = $tmp;
-            }
-
-            //cut out 80% type runs
-            if ( !!$stats ) {
+                //tt type tier
+                $stats = [];
                 foreach( $data as $index => $tt ) {
-                    $info = $stats[$index];
-                    self::calculate_threshold($info,$tt,.8);
+                    $tmp = new \stdClass();
+                    $run_count = 0;
+                    $total = 0;
+                    $time = 0;
+                    foreach($tt as $run){
+                        $run_count++;
+                        $total += $run->LOOT_ISK;
+                        $time += $run->RUNTIME_SECONDS;
+                    }
+                    $tmp->TYPE = $run->TYPE;
+                    $tmp->TIER = $run->TIER;
+                    $tmp->TOTAL = $total;
+                    $tmp->COUNT = $run_count;
+                    $tmp->AVERAGE_ISK = $total/$run_count;
+                    $tmp->AVERAGE_TIME = $time/$run_count;
+                    $tmp->AVERAGE_ISK_BY_HR = ($tmp->AVERAGE_ISK/$tmp->AVERAGE_TIME)*60*60;
+                    $tmp->AVERAGE_DISPLAY = number_format($tmp->AVERAGE_ISK/1000000,2,","," ");
+                    $tmp->AVERAGE_TIME_DISPLAY = number_format($tmp->AVERAGE_TIME,0);
+                    $tmp->AVERAGE_ISK_BY_HR_DISPLAY = number_format($tmp->AVERAGE_ISK_BY_HR/1000000,2,","," ");
+
+                    $stats[$index] = $tmp;
                 }
+
+                //cut out 80% type runs
+                if ( !!$stats ) {
+                    foreach( $data as $index => $tt ) {
+                        $info = $stats[$index];
+                        self::calculate_threshold($info,$tt,.8);
+                    }
+                }
+            } catch (\Error $e) {
+                $stats = [];
             }
+
 
             return $stats;
         }
@@ -71,10 +73,6 @@
             $total = 0;
             $time = 0;
             foreach($tt as $run){
-
-                if ( $run->RUNTIME_SECONDS == null ) {
-                    continue;
-                }
 
                 if ( $run->LOOT_ISK > $__ISK
                     && $run->LOOT_ISK < ($info->AVERAGE_ISK*2-$__ISK)
