@@ -4,18 +4,17 @@
     namespace App\Http\Controllers\Profile;
 
 
-    use App\Char;
     use App\Charts\ShipCruiserChart;
-    use App\Http\Controllers\Controller;
-    use App\Http\Controllers\HelperController;
-    use App\Http\Controllers\Misc\NotificationController as NotificationControllerAlias;
-    use App\Http\Controllers\ThemeController;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Cache;
-    use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Log;
+	 use App\Http\Controllers\Controller;
+	 use App\Http\Controllers\Misc\NotificationController as NotificationControllerAlias;
+	 use App\Http\Controllers\ThemeController;
+	 use App\Models\Char;
+	 use Illuminate\Http\Request;
+	 use Illuminate\Support\Facades\Cache;
+	 use Illuminate\Support\Facades\DB;
+	 use Illuminate\Support\Facades\Log;
 
-    class SettingController extends Controller {
+	 class SettingController extends Controller {
 
 
         /**

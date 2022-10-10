@@ -1,15 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * App\Char
+ * App\Models\Char
  *
  * @property int $CHAR_ID
  * @property string $NAME
@@ -21,6 +20,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|Char whereNAME($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Char whereREFRESHTOKEN($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Run[] $publicRuns
+ * @property-read int|null $public_runs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[] $tokens
+ * @property-read int|null $tokens_count
  */
 class Char extends Model
 {
@@ -34,7 +37,7 @@ class Char extends Model
     }
 
     public function publicRuns() {
-        return $this->hasMany('App\Run', 'CHAR_ID', 'CHAR_ID')->where('PUBLIC', '=', '1');
+        return $this->hasMany('App\Models\Run', 'CHAR_ID', 'CHAR_ID')->where('PUBLIC', '=', '1');
     }
 
     public static function current(): Char {

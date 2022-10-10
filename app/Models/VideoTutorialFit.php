@@ -1,18 +1,18 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\VideoTutorialFit
+ * App\Models\VideoTutorialFit
  *
- * @property int $id
- * @property int $video_tutorial_id
- * @property int $fit_id
+ * @property int                             $id
+ * @property int                             $video_tutorial_id
+ * @property int                             $fit_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\VideoTutorial $video_tutorial
+ * @property-read \App\Models\VideoTutorial  $video_tutorial
  * @method static \Illuminate\Database\Eloquent\Builder|VideoTutorialFit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|VideoTutorialFit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|VideoTutorialFit query()
@@ -34,6 +34,6 @@ class VideoTutorialFit extends Model
 
 
     function video_tutorial() {
-        return $this->belongsTo('App\VideoTutorial');
+        return $this->belongsTo('App\Models\VideoTutorial');
     }
 }

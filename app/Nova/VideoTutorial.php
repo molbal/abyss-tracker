@@ -5,13 +5,11 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\KeyValue;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 class VideoTutorial extends Resource
 {
@@ -20,7 +18,7 @@ class VideoTutorial extends Resource
      *
      * @var string
      */
-    public static $model = \App\VideoTutorial::class;
+    public static $model = \App\Models\VideoTutorial::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.

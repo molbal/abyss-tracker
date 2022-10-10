@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
  * @method static Builder|PvpTypeIdLookup whereGroupId($value)
  * @method static Builder|PvpTypeIdLookup whereId($value)
  * @method static Builder|PvpTypeIdLookup whereName($value)
+ * @property-read \App\Pvp\PvpGroupIdLookup|null $group_type
  */
 class PvpTypeIdLookup extends Model
 {

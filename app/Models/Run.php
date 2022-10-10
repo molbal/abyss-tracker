@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Run
+ * App\Models\Run
  *
  * @property int $ID
  * @property int $CHAR_ID

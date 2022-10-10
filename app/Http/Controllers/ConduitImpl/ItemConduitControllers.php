@@ -5,11 +5,11 @@
 
 
 	use App\Http\Controllers\ConduitController;
-    use App\Item;
-    use Cache;
-    use Exception;
+	use App\Models\Item;
+	use Cache;
+	use Exception;
 
-    class ItemConduitControllers extends ConduitController {
+	class ItemConduitControllers extends ConduitController {
 
         /**
          * List dropped items

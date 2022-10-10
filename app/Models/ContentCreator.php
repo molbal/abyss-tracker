@@ -1,22 +1,22 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\ContentCreator
+ * App\Models\ContentCreator
  *
- * @property int $id
- * @property string $NAME
- * @property int|null $CHAR_ID
- * @property string|null $DISCORD
- * @property string|null $YOUTUBE
- * @property string|null $TWITTER
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\VideoTutorial[] $video_tutorials
- * @property-read int|null $video_tutorials_count
+ * @property int                                                                       $id
+ * @property string                                                                    $NAME
+ * @property int|null                                                                  $CHAR_ID
+ * @property string|null                                                               $DISCORD
+ * @property string|null                                                               $YOUTUBE
+ * @property string|null                                                               $TWITTER
+ * @property \Illuminate\Support\Carbon|null                                           $created_at
+ * @property \Illuminate\Support\Carbon|null                                           $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VideoTutorial[] $video_tutorials
+ * @property-read int|null                                                             $video_tutorials_count
  * @method static \Illuminate\Database\Eloquent\Builder|ContentCreator newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContentCreator newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContentCreator query()
@@ -33,6 +33,6 @@ use Illuminate\Database\Eloquent\Model;
 class ContentCreator extends Model
 {
     public function video_tutorials() {
-        return $this->hasMany("App\VideoTutorial");
+        return $this->hasMany("App\Models\VideoTutorial");
     }
 }

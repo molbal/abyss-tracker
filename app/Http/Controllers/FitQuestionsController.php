@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Char;
-use App\Connector\EveAPI\Mail\MailService;
-use App\Fit;
-use App\FitAnswer;
-use App\FitQuestion;
 use App\Http\Controllers\Profile\NotificationController;
 use App\Http\Requests\PostAnswerRequest;
 use App\Http\Requests\PostQuestionRequest;
-use Illuminate\Http\Request;
+use App\Models\Char;
+use App\Models\Fit;
+use App\Models\FitAnswer;
+use App\Models\FitQuestion;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 

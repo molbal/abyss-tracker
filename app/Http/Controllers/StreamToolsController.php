@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 
-use App\Char;
 use App\Events\RunSaved;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Misc\ErrorHelper;
 use App\Http\Requests\NewStreamToolDailyLinkRequest;
 use App\Http\Requests\NewStreamToolFullScreenModalRequest;
+use App\Models\Char;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;

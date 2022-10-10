@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Char;
 use App\Connector\EveAPI\Mail\MailService;
-use App\Fit;
-use App\FitAnswer;
-use App\FitQuestion;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Char;
+use App\Models\Fit;
+use App\Models\FitAnswer;
+use App\Models\FitQuestion;
 
 class NotificationController extends Controller
 {

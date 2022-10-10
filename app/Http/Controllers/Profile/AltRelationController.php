@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Char;
 use App\Exceptions\BusinessLogicException;
 use App\Exceptions\SecurityViolationException;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Misc\Enums\CharacterType;
+use App\Models\Char;
 use Carbon\Carbon;
-//use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+
+//use Illuminate\Http\Request;
 
 class AltRelationController extends Controller
 {

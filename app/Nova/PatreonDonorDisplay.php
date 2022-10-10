@@ -7,7 +7,6 @@ use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 class PatreonDonorDisplay extends Resource
 {
@@ -16,7 +15,7 @@ class PatreonDonorDisplay extends Resource
      *
      * @var string
      */
-    public static $model = \App\PatreonDonorDisplay::class;
+    public static $model = \App\Models\PatreonDonorDisplay::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.

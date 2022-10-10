@@ -408,22 +408,22 @@
         },
         {
             "name": "consoletvs/charts",
-            "version": "6.5.5",
+            "version": "6.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ConsoleTVs/Charts.git",
-                "reference": "0005d14e4fe6715f4146a4dc3b56add768233001"
+                "reference": "6914e85086749ac90832b0b14479642fe0337cf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ConsoleTVs/Charts/zipball/0005d14e4fe6715f4146a4dc3b56add768233001",
-                "reference": "0005d14e4fe6715f4146a4dc3b56add768233001",
+                "url": "https://api.github.com/repos/ConsoleTVs/Charts/zipball/6914e85086749ac90832b0b14479642fe0337cf4",
+                "reference": "6914e85086749ac90832b0b14479642fe0337cf4",
                 "shasum": ""
             },
             "require": {
                 "balping/json-raw-encoder": "^1.0",
-                "illuminate/console": "^5.0|^6.0|^7.0|^8.0",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
+                "illuminate/console": "^5.0|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
                 "php": ">=7.0"
             },
             "type": "library",
@@ -452,19 +452,15 @@
             "description": "The laravel charting package",
             "support": {
                 "issues": "https://github.com/ConsoleTVs/Charts/issues",
-                "source": "https://github.com/ConsoleTVs/Charts/tree/6.5.5"
+                "source": "https://github.com/ConsoleTVs/Charts/tree/6.5.6"
             },
             "funding": [
-                {
-                    "url": "https://github.com/ConsoleTVs",
-                    "type": "github"
-                },
                 {
                     "url": "https://www.patreon.com/ErikCampobadal",
                     "type": "patreon"
                 }
             ],
-            "time": "2020-09-10T14:20:26+00:00"
+            "time": "2022-08-08T11:01:59+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -11941,5 +11937,5 @@
         "ext-libxml": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }
