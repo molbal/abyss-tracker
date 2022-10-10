@@ -120,8 +120,10 @@
 
             try {
                 DB::beginTransaction();
-                $ids = DB::table('fit_questions')->where('fit_id', $id)->select('id')->get()->pluck('fit_id');
-                DB::table("fit_answers")->whereIn("question_id", $ids)->delete();
+                //before this was pluck('fit_id') however I think it needs to be fit_questions IDS
+                //so pluck('id') instead!
+                $fq_ids = DB::table('fit_questions')->where('fit_id', $id)->select('id')->get()->pluck('id');
+                DB::table("fit_answers")->whereIn("question_id", $fq_ids)->delete();
                 DB::table("fit_logs")->where("fit_root_id", $id)->delete();
                 DB::table("fit_logs")->where("fit_it", $id)->delete();
                 DB::table("fit_questions")->where("fit_id", $id)->delete();
