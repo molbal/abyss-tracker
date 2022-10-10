@@ -218,12 +218,14 @@ $(function () {
 
     $("#LOOT_DETAILED").change(function () {
         $("#loot_value").html("...");
+        console.log('ZORK');
         $.ajax({
             method: "POST",
             url: window.loot_detailed_url,
             data: {
                 "_token":  window.csrf_token,
-                "LOOT_DETAILED": $("#LOOT_DETAILED").val()
+                "LOOT_DETAILED": $("#LOOT_DETAILED").val(),
+                "LOOT_DETAILED_BEFORE": $("LOOT_DETAILED_BEFORE").val()
             }
         }).done(function (msg) {
             console.log(msg);
