@@ -29,6 +29,22 @@
 
             logger()->debug('Processed payload: '.json_encode($payload));
 
+
+            // Get fit ID
+            $fitId = null;
+            if ($ship_payload['foreignID']) {
+                // Use the fit ID from the telemetry data, if it was explicitly provided
+                $fitId = $ship_payload['foreignID'];
+            }
+            else {
+                // Look up a fit from the users stored fits that matches the FFH
+                $fitId = Fit::where('CHAR_ID', $payload['CharacterID'])->where('FFH', $ship_payload['FFH'])->first('ID')->ID ?? null;
+                if (!$fitId) {
+                    // Look up from public fits, if the user has no mathing FFH.
+                    $fitId = Fit::whereIn('PRIVACY', ['public', 'incognito'])->where('FFH', $ship_payload['FFH'])->first('ID')->ID ?? null;
+                }
+            }
+
             $id = DB::table("runs")->insertGetId([
                 'CHAR_ID'           => $payload['CharacterID'],
                 'PUBLIC'            => $payload['Privacy'] == 'PUBLIC' ? 1 : 0,
@@ -47,7 +63,7 @@
                 'KILLMAIL'          => null,
                 'RUNTIME_SECONDS'   => $payload['RunDurationSeconds'],
                 'IS_BONUS'          => null,
-                'FIT_ID'            => $ship_payload['foreignID'],
+                'FIT_ID'            => $fitId,
             ]);
 
             $gainedItems = [];
