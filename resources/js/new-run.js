@@ -225,7 +225,7 @@ $(function () {
             data: {
                 "_token":  window.csrf_token,
                 "LOOT_DETAILED": $("#LOOT_DETAILED").val(),
-                "LOOT_DETAILED_BEFORE": $("LOOT_DETAILED_BEFORE").val()
+                "LOOT_DETAILED_BEFORE": $("#LOOT_DETAILED_BEFORE").val()
             }
         }).done(function (msg) {
             console.log(msg);
