@@ -218,7 +218,6 @@ $(function () {
 
     $("#LOOT_DETAILED").change(function () {
         $("#loot_value").html("...");
-        console.log('ZORK');
         $.ajax({
             method: "POST",
             url: window.loot_detailed_url,
@@ -228,7 +227,6 @@ $(function () {
                 "LOOT_DETAILED_BEFORE": $("#LOOT_DETAILED_BEFORE").val()
             }
         }).done(function (msg) {
-            console.log(msg);
             sum = JSON.parse(msg);
             $("#loot_value").html(sum.formatted);
         });
