@@ -13,6 +13,12 @@
     use Illuminate\Support\Facades\Log;
 
     class FitCallbackController extends Controller {
+        /**
+        * Handles Fit callback with the given request
+         * 
+         * @param Request $request The request object
+         * @return array The response array
+        */
 
         function handleFitCallback(Request $request) {
 //            Log::debug('Fit callback with '.print_r($request->all(), 1));
@@ -83,6 +89,14 @@
                                     ->value("RAW_EFT"), $data);
             FitHistoryController::addEntry($id, "Fit stats calculation finished.");
         }
+        /**
+        * Handle the callback from the PVP API
+         * 
+         * @param int $id The ID of the killmail
+         * @param mixed $data The data received from the PVP API
+         * 
+         * @return void
+        */
 
 
         private function handlePvpCallback(int $id, mixed $data) {

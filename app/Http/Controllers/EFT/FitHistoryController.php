@@ -37,6 +37,14 @@ class FitHistoryController extends Controller
             throw new $e;
         }
     }
+    /**
+    * Add an entry to the FitHistoryItem table
+     *
+     * @param int $fitId The ID of the fit
+     * @param string $text The text of the entry
+     *
+     * @throws \RuntimeException if the text is longer than 255 characters
+    */
 
     public static function addEntry(int $fitId, string $text) {
         if (Str::of($text)->length() >= 255) {

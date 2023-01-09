@@ -186,6 +186,11 @@
         private function getSingleItemEstimators() {
             return config('tracker.market.estimators.single-item');
         }
+        /**
+        * Get the bulk item estimators from the config file
+         *
+         * @return array The array of estimators from the config file
+        */
 
         protected function getBulkItemEstimators() {
             return config('tracker.market.estimators.bulk');

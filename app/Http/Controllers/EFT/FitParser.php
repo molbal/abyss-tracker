@@ -38,6 +38,16 @@
             $this->resourceLookup = $resourceLookup;
             $this->itemClassifier = $itemClassifier;
         }
+        /**
+        * This function gets the fit types from a given string.
+         *
+         * @param string $eft The string to extract the fit types from
+         *
+         * @return Eft An object containing the extracted fit types
+         *
+         * @throws MalformedEFTException If the given string is malformed
+         * @throws NotAnItemException If the given string is not an item
+        */
 
 
         public function getFitTypes(string $eft): Eft {
@@ -136,6 +146,15 @@
 
             });
         }
+        /**
+        * Get the item ID from the given item name
+         *
+         * @param string $itemName The name of the item
+         *
+         * @return int The item ID
+         *
+         * @throws NotAnItemException If the item name is not an EVE item
+        */
 
 
         public function getItemID(string $itemName): int {

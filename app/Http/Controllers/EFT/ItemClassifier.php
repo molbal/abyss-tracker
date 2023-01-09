@@ -75,6 +75,13 @@
                     return null;
                 }
         }
+        /**
+        * Classify an item's slot type
+         * 
+         * @param array $itemInfo An array containing the item's information
+         * 
+         * @return string The slot type of the item (high, mid, low, rig)
+        */
 
         private function classifyItemSlots($itemInfo) : string {
             if (!isset($itemInfo["dogma_effects"])) {
@@ -97,6 +104,13 @@
 
             return "";
         }
+        /**
+        * Recognize if an item is a booster or an implant.
+         * 
+         * @param array $itemInfo The item information.
+         * 
+         * @return string 'booster' or 'implant' if the item is a booster or an implant, empty string otherwise.
+        */
 
         private function recognizeBoosterOrImplant($itemInfo) : string {
             if (!isset($itemInfo["dogma_attributes"])) {
