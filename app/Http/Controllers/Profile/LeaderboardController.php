@@ -53,14 +53,7 @@ group by r.CHAR_ID, c.NAME order by 2 desc limit $limit;", [$from, $to]);
             });
         }
 
-        /**
-         * Gets the leaderboard pilots
-         *
-         * @param string $from
-         * @param string $to
-         *
-         * @return array
-         */
+
         public function getLeaderboardAverage(string $from, string $to, int $limit = 10) {
 
             [$from, $to] = $this->normalizeToAndFrom($from, $to);
@@ -81,14 +74,7 @@ group by r.CHAR_ID, c.NAME order by 2 desc limit $limit;", [$from, $to]);
             });
         }
 
-        /**
-         * Gets the leaderboard pilots
-         *
-         * @param string $from
-         * @param string $to
-         *
-         * @return array
-         */
+
         public function getLeaderboardRuntimeQuickest(string $from, string $to, int $limit = 10) {
 
             [$from, $to] = $this->normalizeToAndFrom($from, $to);
