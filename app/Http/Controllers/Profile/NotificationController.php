@@ -23,6 +23,13 @@ class NotificationController extends Controller
     public function __construct(MailService $mailService) {
         $this->mailService = $mailService;
     }
+    /**
+    * Sends a notification to the character associated with a fit when a new question is asked.
+     * 
+     * @param Fit $fit The fit associated with the notification.
+     * @param FitQuestion $fitQuestion The fit question associated with the notification.
+     * @param Char $sender The character who asked the fit question.
+    */
 
     public function sendNewFitQuestionNotification(Fit $fit, FitQuestion $fitQuestion, Char $sender) {
         $text = __('mail-notifications.new-question', [
@@ -38,6 +45,14 @@ class NotificationController extends Controller
         $this->mailService->sendMaiItoCharacter(config('tracker.accountant.char-id'), $fit->char->CHAR_ID, 'New question on your fit '.trim($fit->NAME), $text);
 
     }
+    /**
+    * Send a new fit answer notification
+     * 
+     * @param Fit $fit The fit object
+     * @param FitQuestion $question The fit question object
+     * @param FitAnswer $fitAnswer The fit answer object
+     * @param Char $sender The sender character object
+    */
 
     public function sendNewFitAnswerNotification(Fit $fit, FitQuestion $question, FitAnswer $fitAnswer, Char $sender) {
 

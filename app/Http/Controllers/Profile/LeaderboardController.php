@@ -9,6 +9,11 @@
     use Illuminate\Support\Facades\DB;
 
     class LeaderboardController extends Controller {
+        /**
+        * This function retrieves leaderboard data from the last 90, 30, and 7 days, as well as the average and quickest runtimes for each of those periods.
+         * 
+         * @return view The leaderboard view with the retrieved data.
+        */
 
         public function index() {
 
@@ -52,6 +57,15 @@ from runs r
 group by r.CHAR_ID, c.NAME order by 2 desc limit $limit;", [$from, $to]);
             });
         }
+        /**
+        * Get the leaderboard average of loot from a given date range
+         * 
+         * @param string $from The start date of the range
+         * @param string $to The end date of the range
+         * @param int $limit The maximum number of results to return
+         * 
+         * @return array An array of leaderboard averages
+        */
 
 
         public function getLeaderboardAverage(string $from, string $to, int $limit = 10) {
@@ -73,6 +87,15 @@ from runs r
 group by r.CHAR_ID, c.NAME order by 2 desc limit $limit;", [$from, $to]);
             });
         }
+        /**
+        * Get the leaderboard runtime quickest from a given date range
+         * 
+         * @param string $from Start date
+         * @param string $to End date
+         * @param int $limit Limit of records to return
+         * 
+         * @return array
+        */
 
 
         public function getLeaderboardRuntimeQuickest(string $from, string $to, int $limit = 10) {

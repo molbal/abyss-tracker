@@ -39,6 +39,13 @@ class AltRelationController extends Controller
 //            'chars' => $chars,
         ]);
     }
+    /**
+    * Filter Ajax
+     * 
+     * @param Request $request
+     * 
+     * @return array
+    */
 
     public function filterAjax(Request $request) {
         $chars = DB::table('chars')->whereRaw("chars.CHAR_ID not in (select privacy.CHAR_ID from privacy where privacy.PANEL='ALTS' and privacy.DISPLAY='private')")->where('chars.NAME', 'like', $request->get('q').'%')->limit(30)->get(['chars.CHAR_ID as id', 'chars.NAME as text']);
@@ -46,6 +53,15 @@ class AltRelationController extends Controller
             'results' => $chars
         ];
     }
+    /**
+    * Get all available characters for the logged in user.
+     *
+     * @param bool $excludeCurrentCharacter Whether to exclude the current character from the list. Default is true.
+     *
+     * @return Collection Collection of characters sorted by name.
+     *
+     * @throws SecurityViolationException If user is not logged in.
+    */
 
 
     public static function getAllMyAvailableCharacters(bool $excludeCurrentCharacter = true) {

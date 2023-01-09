@@ -35,6 +35,13 @@
 //            dd($rememberCargo);
             return view('settings', ['access' => $access, 'esi_on' => $esi_on, 'cargo' => $rememberCargo]);
         }
+        /**
+        * Save cargo setting for the current user.
+         *
+         * @param Request $request The request object
+         *
+         * @return \Illuminate\View\View The view to render
+        */
 
         public function saveCargo(Request $request) {
             if (!session()->has("login_id")) {
@@ -90,6 +97,13 @@
             ]);
             Cache::forget("aft.setting.bool.{$userId}.{$setting}");
         }
+        /**
+        * Add a token to the current Char
+         *
+         * @param Request $request The request containing the token name
+         *
+         * @return \Illuminate\Http\RedirectResponse The redirect response to the settings page
+        */
 
         public function addToken(Request $request) {
             $request->validate([
@@ -195,6 +209,12 @@
                     return false;
             }
         }
+        /**
+        * Gets all rights for the given user ID
+         * 
+         * @param int $userId The user ID
+         * @return array An array containing the rights
+        */
 
         public function getAllRights(int $userId) : array {
             $rights = ["LAST_RUNS", "TOTAL_LOOT", "TOTAL_RUNS", "LOOT", "SHIPS", "SURVIVAL", "ALTS"];

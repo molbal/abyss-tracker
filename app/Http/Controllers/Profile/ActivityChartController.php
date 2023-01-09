@@ -18,6 +18,15 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ActivityChartController extends Controller {
+    /**
+    * Get chart container
+     * 
+     * This function returns an ActivityChart object with the given year.
+     * 
+     * @param int $year The year to be used for the chart
+     * 
+     * @return ActivityChart An ActivityChart object
+    */
 
     public static function getChartContainer(int $year):ActivityChart {
 

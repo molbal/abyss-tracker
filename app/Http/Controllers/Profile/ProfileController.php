@@ -82,6 +82,15 @@ GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [$id]);
 
             return view('profile', ['id' => $id, 'name' => $name, 'last_runs' => $runs, 'my_avg_loot' => $my_avg_loot, 'my_sum_loot' => $my_sum_loot, 'my_runs_count' => $my_runs_count, 'my_survival_ratio' => $my_survival_ratio, 'query_ships' => $query_ships, 'favoriteShipsChart' => $favoriteShipsChart, 'access' => $access, 'loot' => $loot]);
         }
+        /**
+        * Download loot from the Abyss Tracker.
+         *
+         * @param int $id The character ID
+         * @param string $from The start date of the range
+         * @param string $to The end date of the range
+         *
+         * @return null|view Returns null or a view with an error message
+        */
 
         public function downloadLoot(int $id, string $from = "", string $to = "") {
 
@@ -325,6 +334,13 @@ GROUP BY ip.ITEM_ID ORDER BY 2 DESC;", [$id, $from, $to]);
                     return false;
             }
         }
+        /**
+        * Gets all rights for a given user.
+         *
+         * @param int $userId The ID of the user to get rights for.
+         *
+         * @return array An array of rights for the given user.
+        */
 
         public function getAllRights(int $userId) : array {
             $rights = ["LAST_RUNS", "TOTAL_LOOT", "TOTAL_RUNS", "LOOT", "SHIPS", "SURVIVAL"];
