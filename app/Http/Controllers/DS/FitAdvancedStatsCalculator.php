@@ -12,6 +12,13 @@
 
 
 	class FitAdvancedStatsCalculator {
+        /**
+        * Generates stats for a given fit_id
+         *
+         * @param int $fit_id The fit_id to generate stats for
+         *
+         * @return array An array of stats for the given fit_id
+        */
 
         public static function generate($fit_id) {
 
@@ -64,6 +71,15 @@
 
             return $stats;
         }
+        /**
+        * Calculate the threshold for a given set of data.
+         * 
+         * @param object $info The information to be used for the calculation.
+         * @param array $tt The array of runs to be used for the calculation.
+         * @param float $percent The percentage of the threshold to be calculated.
+         * 
+         * @return void
+        */
 
         private static function calculate_threshold($info,$tt,$percent) {
             $__ISK = $info->AVERAGE_ISK * 2 * (1-$percent);
@@ -105,6 +121,11 @@
                 $info->{'AVERAGE_ISK_BY_HR_DISPLAY_'.$display} = 0;
             }
         }
+        /**
+        * Function to echo out the given argument
+         * 
+         * @return void
+        */
 
         public static function echo_me() {
             echo "<pre>";

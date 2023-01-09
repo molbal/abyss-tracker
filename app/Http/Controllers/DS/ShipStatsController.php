@@ -10,6 +10,14 @@
     use Illuminate\Support\Facades\DB;
 
     class ShipStatsController {
+        /**
+        * Get the DPS chart for a given ship ID and step.
+         *
+         * @param int $shipId The ID of the ship to get the DPS chart for.
+         * @param int $step The step size for the chart (defaults to 25).
+         *
+         * @return ShipDpsDistribution The chart object.
+        */
         public static function getDpsChart(int $shipId, int $step = 25): ShipDpsDistribution {
             /** @var Collection $dataset */
             $dataset = \Cache::remember(sprintf("ship.%d.dps.%d", $shipId, $step), now()->addMinutes(30), function () use ($shipId, $step) {
