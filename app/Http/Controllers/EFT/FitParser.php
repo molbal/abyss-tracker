@@ -40,12 +40,6 @@
         }
 
 
-        /**
-         * @param string $eft
-         *
-         * @return Eft
-         * @throws MalformedEFTException Returns error if a malformed EFT string is entered
-         */
         public function getFitTypes(string $eft): Eft {
 
             $eftObj = new Eft();
@@ -62,13 +56,13 @@
                 $fitName = explode("]", explode(",", $first, 2)[1])[0];
                 $eftObj->setFitName($fitName);
             } catch (\Exception $e) {
+                // Throws exception if a malformed EFT string is entered
                 throw new MalformedEFTException("Could not extract fit name from line [".($fitName ?? 'Unknown fitName')."]: ".$e->getMessage());
             }
 
             $eftLines = collect([]);
 
             foreach ($lines as $line) {
-//                Log::info("Processing <$line>");
                 $line = trim($line);
                 if ($line == "") continue;
                 $eftLine = new EftLine();
@@ -143,14 +137,10 @@
             });
         }
 
-        /**
-         * @param string $itemName
-         *
-         * @return int item ID
-         * @throws \Exception When Item ID is not found
-         */
+
         public function getItemID(string $itemName): int {
             if (preg_match('/^\[Empty.+slot\]$/i',trim($itemName))) {
+                // When item is not found
                 throw new NotAnItemException("Item $itemName is not an EVE item");
             }
             // Call the API

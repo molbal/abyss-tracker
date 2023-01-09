@@ -32,8 +32,7 @@
          *
          * @param int $id
          *
-         * @return string can be: high, mid, low, rig, drone, ammo, cargo, booster, implant
-         * @throws \Exception
+         * @return string|null can be: high, mid, low, rig, drone, ammo, cargo, booster, implant
          */
         public function classify(int $id) : ?string {
                 try {
@@ -77,11 +76,6 @@
                 }
         }
 
-        /**
-         * @param $itemInfo
-         *
-         * @return string
-         */
         private function classifyItemSlots($itemInfo) : string {
             if (!isset($itemInfo["dogma_effects"])) {
                 return "";
@@ -104,11 +98,6 @@
             return "";
         }
 
-        /**
-         * @param $itemInfo
-         *
-         * @return string
-         */
         private function recognizeBoosterOrImplant($itemInfo) : string {
             if (!isset($itemInfo["dogma_attributes"])) {
                 return "";

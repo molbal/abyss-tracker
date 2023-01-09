@@ -22,21 +22,13 @@
         /** @var ResourceLookupService */
         protected $resourceLookup;
 
-        /**
-         * ItemPriceCalculator constructor.
-         *
-         * @param ResourceLookupService $resourceLookup
-         */
+
         public function __construct(ResourceLookupService $resourceLookup) {
             $this->resourceLookup = $resourceLookup;
         }
 
 
-        /**
-         * @param int $typeId
-         *
-         * @return ItemObject|null
-         */
+
         public function getFromTypeId(int $typeId): ?ItemObject {
             if ($typeId == 0) return null;
             try {
@@ -55,12 +47,6 @@
 
 
 
-        /**
-         * @param string $name
-         *
-         * @return ItemObject
-         * @throws \Exception
-         */
         public function getFromItemName(string $name): ?ItemObject {
             $typeId = $this->resourceLookup->itemNameToId($name);
             if (!$typeId) {
@@ -69,10 +55,6 @@
             return $this->getFromTypeId($typeId);
         }
 
-        /**
-         * Updates item prices table
-         * @param ItemObject $itemObj
-         */
         private function updateItemPricesTable(ItemObject $itemObj):void {
             try {
 
@@ -125,8 +107,10 @@
                 }
             });
         }
-        // Function to be called from Janice / EWB!
+
+
         public function updateBulkTablePrices(Collection $EveItems ) {
+            // Function to be called from Janice / EWB!
             try {
                 foreach( $EveItems as $EveItem ) {
                     $itemObj = new ItemObject();
@@ -144,11 +128,6 @@
             }
         }
 
-        /**
-         * @param int $typeId
-         *
-         * @return ItemObject
-         */
         private function appraise(int $typeId): ?ItemObject {
             return Cache::remember('tracker.cache.id.'.$typeId, now()->addMinute(), function() use ($typeId) {
 
