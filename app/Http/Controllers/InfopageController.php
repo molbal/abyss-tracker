@@ -44,14 +44,20 @@
 
         public function tierType(int $tier, string $type) {
 
+            set_time_limit(600);
+
+            clock()->event("Input validation", "")->begin();
             $type = ucfirst(strtolower($type));
             Validator::make(['tier' => $tier, 'type' => $type], [
                 'tier'  => 'required|numeric|exists:tier,TIER',
                 'type' => 'required|exists:type,TYPE'
             ])->validate();
+            clock()->event("Input validation", "")->end();
 
+            clock()->event("Getting labels", "")->begin();
             $labels = $this->historicLootController->getLabel();
-
+            clock()->event("Getting labels", "")->end();
+            clock()->event("Initializing  labels", "")->begin();
             $cc = new CruiserChart();
             $cc->load(route('infopage.weather.chart', ['tier' => $tier, 'type' => $type, 'hullSize' => ShipHullSize::CRUISER]));
             $cc->displayAxes(true);
@@ -108,9 +114,12 @@
                 ]
             ]);
             $fc->labels($labels);
+            clock()->event("Initializing  labels", "")->end();
 
-
+            clock()->event("Getting last 20 runs", "")->begin();
             $runs =  DB::table("v_runall")->orderBy("CREATED_AT", "DESC")->where("TIER", strval($tier))->where('TYPE', $type)->limit(20)->get();
+            clock()->event("Getting last 20 runs", "")->end();
+            clock()->event("Getting last drops", "")->begin();
             $drops = DB::select("SELECT          ip.ITEM_ID,
                 MAX(ip.PRICE_BUY) as PRICE_BUY,
                 MAX(ip.PRICE_SELL) as PRICE_SELL,
@@ -128,9 +137,12 @@ AND drc.TYPE=?
 GROUP BY ip.ITEM_ID
 ORDER BY 6 DESC LIMIT ?;
 ", [$tier, $type, $tier,$type, 10]);
+clock()->event("Getting last drops", "")->end();
 
+            clock()->event("Getting top players (through cache)", "")->begin();
             $heroes = Cache::remember("aft.infopage.tier.$tier.$type.people", now()->addMinutes(15), function() use ($tier, $type) {
-                return DB::table("runs")
+                clock()->event("Getting top players (DB access)", "")->begin();
+                $v = DB::table("runs")
                          ->where("runs.TIER", strval($tier))
                          ->where("runs.TYPE", $type)
                          ->where("runs.PUBLIC", true)
@@ -141,45 +153,80 @@ ORDER BY 6 DESC LIMIT ?;
                          ->join("chars", "runs.CHAR_ID","=","chars.CHAR_ID")
                          ->limit(6)
                          ->get();
+                clock()->event("Getting top players (DB access)", "")->end();
+                return $v;
             });
 
+            clock()->event("Getting top players (through cache)", "")->end();
 
+            clock()->event("Getting median values (through cache)", "")->begin();
             [$medianCruiser, $medianDestroyer, $medianFrigate, $atLoCruiser, $atHiCruiser, $atLoDestroyer, $atHiDestroyer, $atLoFrigate, $atHiFrigate] = Cache::remember('ao.runs.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($tier, $type) {
 
+                clock()->event("Calculating medianCruiser")->begin();
                 $medianCruiser = MedianController::getTierTypeMedian($tier,$type, ShipHullSize::CRUISER);
+                clock()->event("Calculating medianCruiser")->end();
+                clock()->event("Calculating medianDestroyer")->begin();
                 $medianDestroyer = MedianController::getTierTypeMedian($tier,$type, ShipHullSize::DESTROYER);
+                clock()->event("Calculating medianDestroyer")->end();
+                clock()->event("Calculating medianFrigate")->begin();
                 $medianFrigate = MedianController::getTierTypeMedian($tier,$type, ShipHullSize::FRIGATE);
+                clock()->event("Calculating medianFrigate")->end();
+                clock()->event("Calculating atLoCruiser")->begin();
                 $atLoCruiser = MedianController::getLootAtThresholdWeather($tier,$type, 20, ShipHullSize::CRUISER);
+                clock()->event("Calculating atLoCruiser")->end();
+                clock()->event("Calculating atHiCruiser")->begin();
                 $atHiCruiser = MedianController::getLootAtThresholdWeather($tier, $type,80, ShipHullSize::CRUISER);
+                clock()->event("Calculating atHiCruiser")->end();
+                clock()->event("Calculating atLoDestroyer")->begin();
                 $atLoDestroyer = MedianController::getLootAtThresholdWeather($tier,$type, 20, ShipHullSize::DESTROYER);
+                clock()->event("Calculating atLoDestroyer")->end();
+                clock()->event("Calculating atHiDestroyer")->begin();
                 $atHiDestroyer = MedianController::getLootAtThresholdWeather($tier,$type, 80, ShipHullSize::DESTROYER);
+                clock()->event("Calculating atHiDestroyer")->end();
+                clock()->event("Calculating atLoFrigate")->begin();
                 $atLoFrigate = MedianController::getLootAtThresholdWeather($tier,$type, 20, ShipHullSize::FRIGATE);
+                clock()->event("Calculating atLoFrigate")->end();
+                clock()->event("Calculating atHiFrigate")->begin();
                 $atHiFrigate = MedianController::getLootAtThresholdWeather($tier,$type, 80, ShipHullSize::FRIGATE);
+                clock()->event("Calculating atHiFrigate")->end();
 
                 return [$medianCruiser, $medianDestroyer, $medianFrigate, $atLoCruiser, $atHiCruiser, $atLoDestroyer, $atHiDestroyer, $atLoFrigate, $atHiFrigate];
             });
+            clock()->event("Getting median values (through cache)", "")->end();
 
-
+            clock()->event('Getting most used fits (through cache)')->begin();
             $popularFits = Cache::remember("aft.infopage.tier.$tier.$type.fits", now()->addMinutes(15), function() use ($tier, $type) {
+
+                clock()->event('Getting most used fits (DB access)')->begin();
                 $query = $this->fitSearchController->getStartingQuery()->where('fit_recommendations.'.strtoupper($type), DB::raw("'".$tier."'"))->limit(7)->orderByDesc("RUNS_COUNT");
                 $popularFits = $query->get();
+                clock()->event('Getting most used fits (DB access)')->end();
+                clock()->event('Populating fit tags')->begin();
                 foreach ($popularFits as $i => $result) {
                     $popularFits[$i]->TAGS = $this->fitSearchController->getFitTags($result->ID);
                 }
+                clock()->event('Populating fit tags')->end();
 
                 return $popularFits;
             });
+            clock()->event('Getting most used fits (through cache)')->end();
 
 
+            clock()->event('Getting runs count (through cache)')->begin();
             $count = Cache::remember('at.runs.count.'.$tier.'.'.$type, now()->addMinutes(30), function () use ($type,$tier) {
                 return Run::where('TIER', DB::raw("'".$tier."'"))->where('TYPE', $type)->count();
             });
+            clock()->event('Getting runs count (through cache)')->end();
 
 //            DB::enableQueryLog();
+            clock()->event('Getting filament ID and name')->begin();
             $filamentId = DB::table('filament_types')->where('TYPE', $type)->where('TIER', DB::raw("'".$tier."'"))->first('ITEM_ID')->ITEM_ID ?? 0;
             $filamentName = DB::table('item_prices')->where('ITEM_ID', $filamentId)->first('NAME')->NAME ?? "";
+            clock()->event('Getting filament ID and name')->end();
 //            dd(DB::getQueryLog());
+            clock()->event('Getting item market historyope')->begin();
             $filamentChart = $this->itemController->itemMarketHistoryChart($filamentId);
+            clock()->event('Getting item market historyope')->end();
 
 
 

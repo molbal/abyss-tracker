@@ -12,6 +12,13 @@
 
 
 	class FitBreakEvenCalculator {
+        /**
+        * Retrieve the maximum tiers for a given fit ID.
+         *
+         * @param int $fitId The fit ID to get the maximum tiers for.
+         *
+         * @return Collection A collection of the maximum tiers for the given fit ID.
+        */
 
         public static function getMaxTiers(int $fitId) : Collection {
             return collect(Cache::remember(sprintf("aft.median.max-tiers.%s", $fitId,), now()->addMinute(), function () use ($fitId) {
@@ -24,15 +31,18 @@
                     group by inn.TYPE limit 1;", [$fitId, $fitId]);
             }));
         }
-
         /**
-         * @param int                            $id
-         * @param \Illuminate\Support\Collection $maxTiers
-         * @param                                $fit
-         *
-         * @return \Illuminate\Support\Collection
-         */
-        public static function breaksEvenCalculation(int $id, \Illuminate\Support\Collection $maxTiers, $fit) : \Illuminate\Support\Collection {
+        * Calculates the break-even point for a given fit.
+         * 
+         * @param int $id The ID of the fit.
+         * @param Collection $maxTiers The collection of maximum tiers.
+         * @param $fit The fit object.
+         * 
+         * @return Collection The collection of break-even points.
+        */
+
+        public static function breaksEvenCalculation(int $id, Collection $maxTiers, $fit) : Collection
+        {
             $breaksEven = collect([]);
             foreach ($maxTiers as $i => $maxTier) {
                 $meanLootIsk = MedianController::getFitMedian($id, $maxTier->MAX_TIER, $maxTier->TYPE);

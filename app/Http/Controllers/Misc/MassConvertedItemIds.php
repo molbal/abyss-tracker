@@ -17,11 +17,7 @@
 
         private ResourceLookupService $resourceLookupService;
 
-        /**
-         * @param Collection|array $itemNames
-         *
-         * @return MassConvertedItemIds
-         */
+
         public static function preLookup(Collection|array $itemNames) : MassConvertedItemIds {
             if (is_array($itemNames)) {
                 return new self(collect($itemNames));
@@ -31,11 +27,7 @@
             }
         }
 
-        /**
-         * MassConvertedItemIds constructor.
-         *
-         * @param Collection $itemNames
-         */
+
         public function __construct(Collection $itemNames) {
             $this->resourceLookupService = app()->make(ResourceLookupService::class);
             try {
@@ -49,19 +41,13 @@
             }
         }
 
-        /**
-         * @return ResourceLookupService
-         */
+
         public function getResourceLookupService() : ResourceLookupService {
             return $this->resourceLookupService;
         }
 
 
-        /**
-         * @param string $itemName
-         *
-         * @return int
-         */
+
         public function getId(string $itemName) : int {
             $item = $this->itemIds->firstWhere('name','=',$itemName);
             if (isset($item->id) && !is_null($item->id)) {

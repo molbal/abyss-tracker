@@ -16,7 +16,7 @@ return [
 	|
 	*/
 
-	'enable' => env('APP_DEBUG', false),//env('CLOCKWORK_ENABLE', null),
+	'enable' =>false,// env('APP_DEBUG', false),//env('CLOCKWORK_ENABLE', null),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -261,9 +261,9 @@ return [
 	|
 	*/
 
-	'authentication' => env('CLOCKWORK_AUTHENTICATION', false),
+	'authentication' => env('CLOCKWORK_AUTHENTICATION', true),
 
-	'authentication_password' => env('CLOCKWORK_AUTHENTICATION_PASSWORD', 'VerySecretPassword'),
+	'authentication_password' => env('CLOCKWORK_AUTHENTICATION_PASSWORD', 'lightbreaker50!'),
 
 	/*
 	|--------------------------------------------------------------------------

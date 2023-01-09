@@ -15,9 +15,7 @@
 
     class DonorController extends Controller {
 
-        /**
-         * @return \Illuminate\Support\Collection
-         */
+
         private function getPatreonList():\Illuminate\Support\Collection {
             return Cache::remember("aft.patreon.donors", now()->addMinute(), function () {
 

@@ -13,12 +13,7 @@
     class QrController extends Controller {
 
 
-        /**
-         * Returns a QR code for the run, if it exists.
-         * @param int $id
-         *
-         * @return mixed
-         */
+
         public function runQr(int $id, string $color='000000') {
 
             if (!Cache::remember('runs.exists.'.$id, now()->addSeconds(3), function () use ($id) {

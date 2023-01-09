@@ -3,11 +3,10 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="e0cca13a-5361-44ea-a9df-bf9228b155de" name="AWS" url="https://abyss.eve-nt.uk">
-        <fileTransfer host="vps-e56b7a78.vps.ovh.net" port="21" rootFolder="/httpdocs">
+        <fileTransfer host="vps-e56b7a78.vps.ovh.net" port="21">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="21" />
         </fileTransfer>
       </webServer>
     </option>

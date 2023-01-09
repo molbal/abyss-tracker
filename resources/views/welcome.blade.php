@@ -82,8 +82,8 @@
             <div class="card card-body border-0 shadow-sm pb-2 mt-md-0 mt-3">
                 <div class="donor">
                     <img src="{{asset('me_irl.jpg')}}" class="portrait rounded-circle shadow-sm" alt="">
-                    <p class="h5 font-weight-bold mb-0 mt-2">I'm open to offers</p>
-                    <span style="">The creator of the Abyss Tracker is open to remote work.</span>
+                    <p class="h5 font-weight-bold mb-0 mt-2">I'm looking for work</p>
+                    <span style="">I am looking for a Solutions Architect or Laravel Backend Engineer job. (Hybrid in Den Haag, or remote)</span>
                 </div>
             </div>
             <div class="card-footer shadow-sm d-flex justify-content-between mb-4">

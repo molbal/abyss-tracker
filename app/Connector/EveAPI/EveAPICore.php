@@ -80,6 +80,7 @@
                     CURLOPT_RETURNTRANSFER => 1,
                     CURLOPT_USERAGENT => $this->userAgent,
                     CURLOPT_URL => $this->apiRoot . $fullPath,
+                    CURLOPT_TIMEOUT => 5,
                     CURLOPT_HTTPHEADER => [
                         isset($accessToken) ? 'authorization: Bearer ' . $accessToken : 'X-a: b', 'accept: application/json'
                     ]

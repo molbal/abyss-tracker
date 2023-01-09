@@ -15,13 +15,7 @@
 
         private FitHelper $helper;
 
-        /**
-         * MassItemSlotClassifier constructor.
-         *
-         * @param Collection $itemIds
-         *
-         * @throws \Exception
-         */
+
         private function __construct(Collection $itemIds) {
             $this->helper = FitHelper::getInstance();
 
