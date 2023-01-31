@@ -1,24 +1,13 @@
-## Abyss loot tracker
-This is an EVE Online related hobby project available at https://abyss.eve-nt.uk
+Dear Capsuleers,
 
-## Fit engine
-In separate repo: https://github.com/molbal/svcfitstat/
+I am writing to inform you that the repository has now been archived and the project has been transferred to EVE Workbench, where it will continue to be maintained and developed by Zorky, Lionear, and Raymund.
 
-## Issue tracker
-Please see here: https://github.com/molbal/abyss-tracker/issues
+I know that this move may not come as a surprise to many of you, but I wanted to take a moment to express my gratitude for your support throughout the years. Your contributions have been instrumental in bringing this project to where it is today, and I cannot thank you enough.
 
-## Sponsors
+I am confident that under the leadership of Zorky, Lionear, and Raymund, the project will continue to grow and flourish on EVE Workbench. They have the skills, knowledge, and experience to take this project to the next level, and I am excited to see what the future holds for it.
 
-### Patreon sponsors
-- blindfish
-- Crovan
-- Jan Andreasen
-- Levi van Tine
-- Malte Langkabel
-- Mitchell Manning
-- Oliver Morley
-- Stewart Simpson
-- torvalduruz
+Thank you again for your support, and I hope that you will continue to follow the project on EVE Workbench.
 
-### IDE license
-Integrated Development Environment proudly sponsored by Jetbrains.
+Fly Safe,
+
+Veetor
